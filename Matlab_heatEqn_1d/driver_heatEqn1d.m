@@ -92,7 +92,8 @@ end
 Phi = @(ustart, tstop, tstart, app, l) ...
           (app.M{l}\(ustart + (tstop-tstart)*app.b(x(2:end-1),tstop)));
                                       
-% solution and FAS right-hand side on each grid level
+% solution and FAS right-hand side on each grid level - without boundary
+% dofs!
 u = cell(L,1);
 v = cell(L,1);
 g = cell(L,1);
@@ -148,15 +149,18 @@ for nu = 1:maxit
     end
 end
 
-% plot residual reduction
+%% plot residual reduction
 figure;
 semilogy(0:iter,res(1:iter+1),'*-',options_plot{:});
 title([int2str(L),'-level MGRIT'])
 set(gca,options_labels{:})
 
-% plot solution
+%% plot solution
+% first add (zero) boundary
+u_comp = zeros(numel(x),numel(tc{1}));
+u_comp(2:nx,:) = u{1};
 figure;
-surf(x(2:end-1),t,u{1}');
+surf(x,t,u_comp');
 title('computed solution')
 xlabel('x'); ylabel('t');
 set(gca,options_labels{:})
