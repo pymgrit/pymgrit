@@ -1,4 +1,5 @@
-from application import application
+from abstract_classes import application
+from cable_voltage_driven import vector_system
 import scipy.sparse as sp
 from scipy import interpolate
 from scipy import linalg as la
@@ -6,201 +7,109 @@ from scipy.sparse.linalg import spsolve
 import numpy as np
 import scipy.io as sio
 from scipy import sparse
-import os
-import scipy.spatial.qhull as qhull
 
 
 class CableVoltageDriven(application.Application):
     """
     """
 
-    def __init__(self, linear, pwm, name, coarse_smooth, *args, **kwargs):
+    def __init__(self, name, nonlinear, pwm, *args, **kwargs):
         super(CableVoltageDriven, self).__init__(*args, **kwargs)
-        self.linear = linear
-
+        self.nonlinear = nonlinear
+        path = '/'.join(__file__.split('/')[:-1])
         self.name = name
         self.pwm = pwm
-        self.coarse_smooth = coarse_smooth
-        self.coarse_lvl, self.prb = self.get_coarse_grids(os.getcwd() + '/cable_voltage_driven/problems/' + self.name)
-        self.nx = np.zeros(self.coarse_lvl, dtype=int)
-        self.intom = 0.0254
-
-        for i in range(len(self.prb)):
-            r2 = 1.0 * self.intom
-            x = self.prb[i].mesh.node[:, 0]
-            y = self.prb[i].mesh.node[:, 1]
-            r = self.cart2pol(x, y)
-            self.nx[i] = len(np.where(abs(r - r2) > 1e-8)[0]) + 1  # +1 because of current unknown
-
-    def setup(self, lvl_max, t, spatial_coarsening):
-        """
-        """
-        pwm_tmp = np.repeat(int(self.pwm), lvl_max)
-        if self.coarse_smooth:
-            pwm_tmp[1:] = self.coarse_smooth
+        self.prb = sio.loadmat(path + '/problems/' + name + '.mat', struct_as_record=False, squeeze_me=True)[name]
+        self.nx = 0
 
         intom = 0.0254
         tol = 1e-8
         # r0 = 0.1 * intom
-        r1 = 0.5 * intom
+        # r1 = 0.5 * intom
         r2 = 1.0 * intom
-        iw = 100
-        f = 50
-        omega = 2 * np.pi * f
+        self.iw = 100
+        self.base_frequency = 50
+        self.pulses = 400  # corresponds to 20000 kHz
+        self.omega = 2 * np.pi * self.base_frequency
         rg_fe = 3
-        resistance = 0
 
-        bh = np.loadtxt('/'.join(__file__.split('/')[:-1]) + '/problems/BH.txt')
+        bh = np.loadtxt(path + '/problems/BH.txt')
+
         bchar = bh[:, 0]
         hchar = bh[:, 1]
-        nlin = self.nlin_initialise(bchar, hchar)
+        self.nlin = self.nlin_initialise(bchar, hchar)
 
-        x = [np.array(0)] * lvl_max
-        y = [np.array(0)] * lvl_max
-        idxnlinelem = [None] * lvl_max
-        idxdof = [np.array(0)] * lvl_max
-        msh = [None] * lvl_max
-        ksh = [None] * lvl_max
-        psh = [None] * lvl_max
-        app = [{}] * lvl_max
-        points = [np.array(0)] * lvl_max
-        nuelem = [None] * lvl_max
-        dif = [0] * lvl_max
-        vtx_int = [None] * lvl_max
-        wts_int = [None] * lvl_max
-        vtx_res = [None] * lvl_max
-        wts_res = [None] * lvl_max
-        r1_max_node = [0] * lvl_max
-        restriction = [None] * lvl_max
-        interpolation = [None] * lvl_max
-        # restriction_bay = [None] * lvl_max
-        a = [sp.csr_matrix(0)] * lvl_max
-        b = [sp.csr_matrix(0)] * lvl_max
+        self.sigmaelem = self.prb_mate_2_elem(self.prb, 'sigma').transpose()[0]
+        self.nuelem = self.prb_mate_2_elem(self.prb, 'nu').transpose()
+        elemregi = np.zeros_like(self.prb.mesh.elem[:, 3])
+        elemregi[self.prb.mesh.elem[:, 3] == 1] = self.prb.region[0, 2]
+        elemregi[self.prb.mesh.elem[:, 3] == 2] = self.prb.region[1, 2]
+        elemregi[self.prb.mesh.elem[:, 3] == 3] = self.prb.region[2, 2]
+        self.idxnlinelem = np.where(elemregi == rg_fe)[0]
+        pfem = self.current_pstr(self.prb)
+        mfem = self.edgemass_ll(self.prb.mesh, self.sigmaelem)
+        kfem = self.curlcurl_ll(self.prb.mesh, self.nuelem)
+        x = self.prb.mesh.node[:, 0]
+        y = self.prb.mesh.node[:, 1]
+        r = self.cart2pol(x, y)
+        self.idxdof = np.size(np.where(abs(r - r2) > tol))
+        self.points = np.vstack((x, y)).transpose()
+        self.msh = mfem[:self.idxdof, :self.idxdof]
+        self.ksh = kfem[:self.idxdof, :self.idxdof]
+        self.psh = pfem[:self.idxdof, 0].transpose()
 
-        i = 0
-        for lvl in range(lvl_max):
-            sigmaelem = self.prb_mate_2_elem(self.prb[i], 'sigma').transpose()[0]
-            nuelem[lvl] = self.prb_mate_2_elem(self.prb[i], 'nu').transpose()
+        tmp = np.hstack(
+            (
+                np.vstack((self.msh.toarray(), -self.psh.toarray()[0])),
+                np.zeros(self.idxdof + 1)[np.newaxis].T))
+        self.a = sparse.csr_matrix(tmp)
 
-            elemregi = np.zeros_like(self.prb[i].mesh.elem[:, 3])
-            elemregi[self.prb[i].mesh.elem[:, 3] == 1] = self.prb[i].region[0, 2]
-            elemregi[self.prb[i].mesh.elem[:, 3] == 2] = self.prb[i].region[1, 2]
-            elemregi[self.prb[i].mesh.elem[:, 3] == 3] = self.prb[i].region[2, 2]
-            idxnlinelem[lvl] = np.where(elemregi == rg_fe)[0]
+        tmp = np.zeros(self.idxdof + 1)
+        tmp[:self.psh.shape[1]] = -self.psh.toarray()
+        tmp[-1] = -0  # resistance
+        tmp = np.hstack((np.vstack((self.ksh.toarray(), np.zeros(self.psh.shape[1]))), tmp[np.newaxis].T))
+        self.b = sparse.csr_matrix(tmp)
+        self.mesh = self.prb.mesh
 
-            pfem = self.current_pstr(self.prb[i])
-            mfem = self.edgemass_ll(self.prb[i].mesh, sigmaelem)
-            kfem = self.curlcurl_ll(self.prb[i].mesh, nuelem[lvl])
+        self.u = [vector_system.VectorSystem(self.idxdof)] * self.nt
 
-            x[lvl] = self.prb[i].mesh.node[:, 0]
-            y[lvl] = self.prb[i].mesh.node[:, 1]
-            r = self.cart2pol(x[lvl], y[lvl])
-            idxdof[lvl] = np.where(abs(r - r2) > tol)
-            r1_max_node[lvl] = np.max(np.where(abs(r - r1) <= tol))
-
-            points[lvl] = np.vstack((x[lvl], y[lvl])).transpose()
-            dif[lvl] = np.size(points[lvl], 0) - np.size(idxdof[lvl])
-
-            msh[lvl] = mfem[0:np.size(idxdof[lvl]), 0:np.size(idxdof[lvl])]
-            ksh[lvl] = kfem[0:np.size(idxdof[lvl]), 0:np.size(idxdof[lvl])]
-            psh[lvl] = pfem[idxdof[lvl], 0].transpose()
-
-            tmp = np.hstack(
-                (
-                    np.vstack((msh[lvl].toarray(), -psh[lvl].toarray()[0])),
-                    np.zeros(np.size(idxdof[lvl]) + 1)[np.newaxis].T))
-            a[lvl] = sparse.csr_matrix(tmp)
-
-            tmp = np.zeros(np.size(idxdof[lvl]) + 1)
-            tmp[:psh[lvl].shape[1]] = -psh[lvl].toarray()
-            tmp[-1] = -resistance
-            tmp = np.hstack((np.vstack((ksh[lvl].toarray(), np.zeros(psh[lvl].shape[1]))), tmp[np.newaxis].T))
-            b[lvl] = sparse.csr_matrix(tmp)
-            if spatial_coarsening[lvl]:
-                i = i + 1
-
-        # TODO
-        # for lvl in range(lvl_max-1):
-        #     vtx_int[lvl], wts_int[lvl] = self.interp_weights(points[lvl + 1], points[lvl], d=2)
-        #     vtx_res[lvl], wts_res[lvl] = self.interp_weights(points[lvl], points[i + 1], d=2)
-        #     wts_int[lvl][np.size(idxdof[lvl]):] = 0
-        #     vtx_int[lvl][np.size(idxdof[lvl]):] = 0
-        #
-        #     interpolation[lvl] = sparse.lil_matrix((
-        #     np.size(points[lvl], 0), np.size(points[lvl + 1], 0)), dtype=float)
-        #     for j in range(np.size(points[lvl], 0)):
-        #         interpolation[lvl][j, vtx_int[lvl][j]] = wts_int[lvl][j]
-        #     restriction[lvl] = sparse.csr_matrix(
-        #         (1 * interpolation[lvl].transpose())[:np.size(idxdof[i + 1]), :np.size(idxdof[lvl])])
-        #     interpolation[lvl] = sparse.csr_matrix(interpolation[lvl][:np.size(idxdof[lvl]), :np.size(idxdof[i + 1])])
-        #
-        #     restriction_bay[lvl] = sparse.lil_matrix(
-        #     (np.size(points[i + 1], 0), np.size(points[lvl], 0)), dtype=float)
-        #     for j in range(np.size(points[i + 1], 0)):
-        #         restriction_bay[lvl][j, vtx_res[lvl][j]] = wts_res[lvl][j]
-        #     restriction_bay[lvl] = sparse.csr_matrix(
-        #         restriction_bay[lvl][:np.size(idxdof[i + 1]), :np.size(idxdof[lvl])])
-
-        for lvl in range(lvl_max):
-            app[lvl] = {'Msh': msh[lvl], 'nu': nuelem[lvl], 'Psh': psh[lvl], 'idxdof': idxdof[lvl],
-                        'idxnlinelem': idxnlinelem[lvl], 'Iw': iw, 'f': f, 'omega': omega, 'nlin': nlin,
-                        'mesh': self.prb[i].mesh, 'vtx_int': vtx_int[lvl], 'wts_int': wts_int[lvl],
-                        'vtx_res': vtx_res[lvl], "wts_res": wts_res[lvl], 'dif': dif[lvl], 'ksh': ksh[lvl],
-                        'r': restriction[lvl], 'P': interpolation[lvl], 'x': x[lvl], 'y': y[lvl], 'A': a[lvl],
-                        'B': b[lvl], 'pwm': pwm_tmp[lvl], 'linear': self.linear}
-            if spatial_coarsening[lvl]:
-                i = i + 1
-
-        return app
-
-    def initial_value(self):
-        """
-
-        :rtype: object
-        """
-        return np.zeros(self.nx[0])
-
-    def phi(self, u_start, t_start, t_stop, app):
-        if app['linear']:
-            return self.phi_linear(t_start, t_stop, u_start, app)
+    def step(self, u_start, t_start, t_stop):
+        tmp = np.zeros(len(u_start.mvp) + 1)
+        tmp[:-1] = np.copy(u_start.mvp)
+        tmp[-1] = u_start.current
+        if self.nonlinear:
+            tmp = self.newton(t_start, t_stop, tmp)
         else:
-            return self.newton(t_start, t_stop, u_start, app)
+            tmp = self.phi_linear(t_start, t_stop, tmp)
+        ret = vector_system.VectorSystem(u_start.size)
+        ret.mvp = tmp[:-1]
+        ret.current = tmp[-1]
+        return ret
 
-    @staticmethod
-    def get_coarse_grids(name):
-        count = 0
-        prb = []
-        for element in list(sio.loadmat(name, struct_as_record=False, squeeze_me=True).values()):
-            if isinstance(element, sio.matlab.mio5_params.mat_struct):
-                prb = prb + [element]
-                count = count + 1
-        return count, prb
+    def phi_linear(self, t_start, t_stop, vinit):
+        vstepsize = t_stop - t_start
 
-    def phi_linear(self, tstart, tstop, vinit, app):
-        vstepsize = tstop - tstart
-
-        if app['pwm']:
-            f = app['A'].dot(vinit) / vstepsize + self.cpwm(tstop, app['A'].shape[1])
+        if self.pwm:
+            f = self.a.dot(vinit) / vstepsize + self.cpwm(t_stop, self.a.shape[1])
         else:
-            f = app['A'].dot(vinit) / vstepsize + self.csin(tstop, app['A'].shape[1])
+            f = self.a.dot(vinit) / vstepsize + self.csin(t_stop, self.a.shape[1])
 
-        sys = app['A'] / vstepsize + app['B']
+        sys = self.a / vstepsize + self.b
 
         return spsolve(sys, f)
 
     def cpwm(self, t, size):
         tmp = np.zeros(size)
         tmp[-1] = 1
-        return (1 / 4) * (-self.utl_pwm(t, 50, 200) * tmp)
+        return (1 / 4) * (-self.utl_pwm(t, self.base_frequency, self.pulses) * tmp)
 
-    @staticmethod
-    def csin(t, size):
+    def csin(self, t, size):
         tmp = np.zeros(size)
         tmp[-1] = 1
-        return (1 / 4) * (-np.sin(2 * np.pi * 50 * t) * tmp)
+        return (1 / 4) * (-np.sin(2 * np.pi * self.base_frequency * t) * tmp)
 
     @staticmethod
-    def utl_pwm(t, freq, teeth=1100):
+    def utl_pwm(t, freq, teeth):
         # sawfish pattern with higher frequency
         saw = t * teeth * freq - np.floor(t * teeth * freq)
 
@@ -212,51 +121,48 @@ class CableVoltageDriven(application.Application):
 
         return pwm
 
-    def newton(self, tstart, tstop, vinit, app):
-        max_newton_iterations = app['max_ne_it']
-        newton_tol = app['ne_tol']
-        pwm = app['pwm']
+    def newton(self, tstart, tstop, vinit):
+        max_newton_iterations = 15
+        newton_tol = 1e-5
+        pwm = self.pwm
         xold = np.copy(vinit)
         xnew = np.copy(vinit)
 
         vmass = sparse.hstack(
-            (sparse.vstack((app['Msh'], -app['Psh'])), np.zeros(app['Psh'].shape[1] + 1)[np.newaxis].T)) / (
+            (sparse.vstack((self.msh, -self.psh)), np.zeros(self.psh.shape[1] + 1)[np.newaxis].T)) / (
                         tstop - tstart)
 
         def f(x):
-            return vmass.dot(x - xold) + self.eddy_current_rhs(app['mesh'], app['nu'], app['idxnlinelem'],
-                                                               app['idxdof'], tstop, x, app['Psh'], app['Iw'],
-                                                               app['omega'], app['nlin'], pwm)
+            return vmass.dot(x - xold) + self.eddy_current_rhs(self.mesh, self.nuelem, self.idxnlinelem,
+                                                               self.idxdof, tstop, x, self.psh, self.iw,
+                                                               self.omega, self.nlin, pwm)
 
         def j(x):
-            tmp = np.zeros(app['Psh'].shape[1] + 1)
-            tmp[:app['Psh'].shape[1]] = -app['Psh'].toarray()
+            tmp = np.zeros(self.psh.shape[1] + 1)
+            tmp[:self.psh.shape[1]] = -self.psh.toarray()
             r = 0
             tmp[-1] = -r
             tmp = tmp[np.newaxis].T
-            vjac = self.eddy_current_jac(app['mesh'], app['nu'], app['idxnlinelem'], app['idxdof'], x, app['nlin'])
-            vjac = sparse.hstack((sparse.vstack((vjac, np.zeros(app['Psh'].shape[1]))), tmp))
+            vjac = self.eddy_current_jac(self.mesh, self.nuelem, self.idxnlinelem, self.idxdof, x, self.nlin)
+            vjac = sparse.hstack((sparse.vstack((vjac, np.zeros(self.psh.shape[1]))), tmp))
             return vmass + vjac
 
         f_value = f(xnew)
-        f_norm = la.norm(f_value, np.inf)  # l2 norm of vector
+        f_norm = la.norm(f_value)  # l2 norm of vector
         iteration_counter = 0
         while abs(f_norm) > newton_tol and iteration_counter < max_newton_iterations:
             delta = spsolve(j(xnew), -f_value)
             xnew = xnew + delta
             f_value = f(xnew)
-            f_norm = la.norm(f_value, np.inf)
+            f_norm = la.norm(f_value)
             iteration_counter += 1
-            # print(iteration_counter)
 
         return xnew
 
     def eddy_current_rhs(self, mesh, nu, idxnlinelem, idxdof, t, ush, psh, iw, omega, nlin, pwm):
-        # Todo
-        iw + omega
 
         a = np.zeros(np.size(mesh.node, 0))
-        a[idxdof] = ush[:-1]
+        a[:idxdof] = ush[:-1]
         b = self.curl(mesh, a)
         bred = b[:, idxnlinelem]
         hred, nured = self.nlin_evaluate(nlin, bred, nargout=2)
@@ -272,13 +178,13 @@ class CableVoltageDriven(application.Application):
             c = self.cpwm(t, psh.shape[1] + 1)
         else:
             c = self.csin(t, psh.shape[1] + 1)
-        b = sparse.hstack((sparse.vstack((kfem[0:np.size(idxdof), 0:np.size(idxdof)], np.zeros(psh.shape[1]))), tmp))
+        b = sparse.hstack((sparse.vstack((kfem[:idxdof, :idxdof], np.zeros(psh.shape[1]))), tmp))
         rhs = b.dot(ush) - c
         return rhs
 
     def eddy_current_jac(self, mesh, nu, idxnlinelem, idxdof, ush, nlin):
         a = np.zeros(np.size(mesh.node, 0))
-        a[idxdof] = ush[:-1]
+        a[:idxdof] = ush[:-1]
         b = self.curl(mesh, a)
         bred = b[:, idxnlinelem]
         hred, nured, nudred, dnud_b2red = self.nlin_evaluate(nlin, bred)
@@ -288,7 +194,7 @@ class CableVoltageDriven(application.Application):
 
         kfem = self.curlcurl_ll_nonlinear(mesh, b, nu, dnud_b2)  # , Hc)
 
-        ksh = kfem[0:np.size(idxdof), 0:np.size(idxdof)]
+        ksh = kfem[:idxdof, :idxdof]
         return ksh
 
     @staticmethod
@@ -479,25 +385,3 @@ class CableVoltageDriven(application.Application):
         elemprop = mateprop[mt - 1, :]
 
         return elemprop
-
-    @staticmethod
-    def interp_weights(xyz, uvw, d=2, tol=0.1):
-        tri = qhull.Delaunay(xyz)
-        simplex = tri.find_simplex(uvw, tol=tol)
-        vertices = np.take(tri.simplices, simplex, axis=0)
-        temp = np.take(tri.transform, simplex, axis=0)
-        delta = uvw - temp[:, d]
-        bary = np.einsum('njk,nk->nj', temp[:, :d, :], delta)
-        wts = np.hstack((bary, 1 - bary.sum(axis=1, keepdims=True)))
-        wts[wts < 0] = 0
-        return vertices, wts
-
-    def restriction(self, u, app=None):
-        pass
-
-    def interpolation(self, u, app=None):
-        pass
-
-    def info(self):
-        return 'cable_voltage_driven/t-[' + str(self.t_start) + ';' + str(self.t_end) + ']/nt-' + str(
-            self.nt) + '/name-' + str(self.name) + '/pwm-' + str(self.pwm) + '/linear-' + str(self.linear) + '/'

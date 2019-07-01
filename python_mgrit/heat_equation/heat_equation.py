@@ -1,7 +1,8 @@
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
-from application import application
+from abstract_classes import application
+from heat_equation import vector_standard
 
 
 class HeatEquation(application.Application):
@@ -9,27 +10,21 @@ class HeatEquation(application.Application):
     TODO
     """
 
-    def __init__(self, x_start, x_end, *args, **kwargs):
+    def __init__(self, x_start, x_end, nx, *args, **kwargs):
         super(HeatEquation, self).__init__(*args, **kwargs)
         self.x_start = x_start
         self.x_end = x_end
-        self.x = np.linspace(self.x_start, self.x_end, self.nx[0])
+        self.x = np.linspace(self.x_start, self.x_end, nx)
         self.x = self.x[1:-1]
-        self.nx[0] = len(self.x)
+        self.nx = nx - 2
 
-    def setup(self, lvl_max, t, spatial_coarsening):
-        """
+        self.a = self.heat_sparse(np.size(self.x), (1 * (self.t[1] - self.t[0])) / (self.x[1] - self.x[0]) ** 2)
 
-        :rtype: object
-        """
-        a = [None] * lvl_max
-        app = [None] * lvl_max
+        self.u = [None] * self.nt
+        for i in range(self.nt):
+            self.u[i] = vector_standard.VectorStandard(self.nx)
 
-        for l in range(lvl_max):
-            a[l] = self.heat_sparse(np.size(self.x), (1 * (t[l][1] - t[l][0])) / (self.x[1] - self.x[0]) ** 2)
-            app[l] = {'A': a[l], 'x': self.x}
-
-        return app
+        self.u[0].vec = self.u_exact(self.x, 0)
 
     @staticmethod
     def heat_sparse(nx, fac):
@@ -50,13 +45,6 @@ class HeatEquation(application.Application):
             format='csr')
 
         return sp.csc_matrix(a)
-
-    def initial_value(self):
-        """
-
-        :rtype: object
-        """
-        return self.u_exact(self.x, 0)
 
     @staticmethod
     def u_exact(x, t):
@@ -83,15 +71,9 @@ class HeatEquation(application.Application):
             ret[i] = self.u_exact(x, t[i])
         return ret
 
-    def phi(self, u_start, t_start, t_stop, app):
-        return spsolve(app['A'], u_start + self.f(app['x'], t_stop) * (t_stop - t_start))
-
-    def restriction(self, u, app=None):
-        pass
-
-    def interpolation(self, u, app=None):
-        pass
-
-    def info(self):
-        return 'heat_equation/t-[' + str(self.t_start) + ';' + str(self.t_end) + ']/nt-' + str(
-            self.nt) + '/'
+    def step(self, u_start, t_start, t_stop):
+        tmp = u_start.vec
+        tmp = spsolve(self.a, tmp + self.f(self.x, t_stop) * (t_stop - t_start))
+        ret = vector_standard.VectorStandard(u_start.size)
+        ret.vec = tmp
+        return ret

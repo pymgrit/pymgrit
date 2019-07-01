@@ -1,18 +1,18 @@
 from mpi4py import MPI
-from scipy import linalg as la
 import time
 from operator import itemgetter
 from itertools import *
 import numpy as np
 import logging
-import pathlib
+import copy
 
 
 class MgritFas:
     """
     """
 
-    def __init__(self, problem, comm_time=MPI.COMM_WORLD, comm_space=None):
+    def __init__(self, problem, grid_transfer, it=10, tol=1e-7, nested_iteration=True, cf_iter=1, cycle_type='V',
+                 comm_time=MPI.COMM_WORLD, comm_space=None):
         """
         """
         logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S',
@@ -21,59 +21,86 @@ class MgritFas:
         self.problem = problem
         self.comm_time = comm_time
         self.comm_space = comm_space
-        self.phi = self.problem.phi
-        self.restriction = self.problem.restriction
-        self.interpolation = self.problem.interpolation
+        if self.comm_time.Get_rank() == 0:
+            logging.info(f"Start setup")
+
+        runtime_setup_start = time.time()
 
         # dummies
+        self.lvl_max = len(problem)
         self.u = []
+        self.step = []
         self.v = []
         self.g = []
         self.t = []
         self.proc_data = []
-        self.spatial_coarsening = []
         self.m = []
-        self.it = 0
-        self.tol = 0
-        self.conv = []
-        self.lvl_max = 0
-        self.app = []
-        self.setup_done = False
+        self.it = it
+        self.tol = tol
+        self.conv = np.zeros(it + 1)
         self.runtime_solve = 0
+        self.cf_iter = cf_iter
+        self.cycle_type = cycle_type
+        self.restriction = []
+        self.interpolation = []
 
-    def setup_and_solve(self, lvl_max, m, it_max, tol, cf_iter=1, cycle_type='V', nested_iteration=True,
-                        spatial_coarsening=False, spatial_max_lvl=0):
-        """
-        """
-        self.setup(lvl_max=lvl_max, m=m, it=it_max, tol=tol, nested_iteration=nested_iteration,
-                   spatial_coarsening=spatial_coarsening, spatial_max_lvl=spatial_max_lvl)
-        self.solve(cf_iter=cf_iter, cycle_type=cycle_type)
-        return self.u[0]
+        for lvl in range(self.lvl_max):
+            self.u.append(problem[lvl].u)
+            self.step.append(problem[lvl].step)
+            self.v.append([object] * len(self.u[lvl]))
+            self.g.append([object] * len(self.u[lvl]))
+            for time_step in range(len(self.u[lvl])):
+                if lvl == 0:
+                    self.v[lvl][time_step] = None
+                else:
+                    self.v[lvl][time_step] = self.u[lvl][time_step].clone_zeros()
+                self.g[lvl][time_step] = self.u[lvl][time_step].clone_zeros()
+            self.t.append(problem[lvl].t)
 
-    def iteration(self, lvl, cf_iter, cycle_type, iteration, first_f):
+        for lvl in range(self.lvl_max - 1):
+            self.m.append(int((np.size(self.t[lvl]) - 1) / (np.size(self.t[lvl + 1]) - 1)))
+            self.proc_data.append(
+                self.setup_points(nt=np.size(self.t[lvl]), m=self.m[lvl], size=self.comm_time.Get_size(),
+                                  rank=self.comm_time.Get_rank()))
+            self.restriction.append(grid_transfer[lvl].restriction)
+            self.interpolation.append(grid_transfer[lvl].interpolation)
+
+        if nested_iteration:
+            self.nested_iteration()
+
+        self.convergence_criteria(it=0)
+
+        runtime_setup_stop = time.time()
+
+        if self.comm_time.Get_rank() == 0:
+            logging.info(f"Setup took {runtime_setup_stop - runtime_setup_start} s")
+            logging.info(f"step 0  | con: {self.conv[0]}")
+
+    def iteration(self, lvl, cycle_type, iteration, first_f):
         """
         """
         if lvl == self.lvl_max - 1:
             self.forward_solve(lvl=lvl)
             self.u[lvl] = self.comm_time.bcast(self.u[lvl], root=0)
+
             return
 
         if (lvl > 0 or (iteration == 0 and lvl == 0)) and first_f:
             self.f_relax(lvl=lvl)
             self.f_exchange(lvl=lvl)
 
-        for i in range(cf_iter):
+        for i in range(self.cf_iter):
             self.c_relax(lvl=lvl)
             self.c_exchange(lvl=lvl)
             self.f_relax(lvl=lvl)
-            if i != cf_iter - 1:
+            if i != self.cf_iter - 1:
                 self.exchange(lvl=lvl)
 
         self.exchange(lvl=lvl)
 
         self.fas_residual(lvl=lvl)
 
-        self.iteration(lvl=lvl + 1, cf_iter=cf_iter, cycle_type=cycle_type, iteration=iteration, first_f=True)
+        self.iteration(lvl=lvl + 1, cycle_type=cycle_type, iteration=iteration, first_f=True)
 
         self.error_correction(lvl=lvl)
 
@@ -82,23 +109,28 @@ class MgritFas:
         self.exchange(lvl=lvl)
 
         if lvl != 0 and 'F' == cycle_type:
-            self.iteration(lvl=lvl, cf_iter=cf_iter, cycle_type='V', iteration=iteration, first_f=False)
+            self.iteration(lvl=lvl, cycle_type='V', iteration=iteration, first_f=False)
 
     def f_relax(self, lvl):
         """
         """
+        tmp_send = False
+        req_s = None
         rank = self.comm_time.Get_rank()
         if len(self.proc_data[lvl]['fpts']) > 0:
             for i in np.nditer(self.proc_data[lvl]['fpts']):
                 if i == np.min(self.proc_data[lvl]['fpts']) and self.proc_data[lvl]['comm_front']:
-                    req = self.comm_time.Irecv(self.u[lvl][self.proc_data[lvl]['all_pts'][0] - 1], rank - 1,
-                                               tag=self.proc_data[lvl]['all_pts'][0] - 1)
-                    req.Wait()
-                self.u[lvl][i] = self.g[lvl][i] + self.phi(self.u[lvl][i - 1], self.t[lvl][i - 1], self.t[lvl][i],
-                                                           self.app[lvl])
+                    # req = self.comm_time.irecv(source=rank - 1, tag=self.proc_data[lvl]['all_pts'][0] - 1)
+                    # self.u[lvl][self.proc_data[lvl]['all_pts'][0] - 1] = req.wait()
+                    self.u[lvl][self.proc_data[lvl]['all_pts'][0] - 1] = self.comm_time.recv(source=rank - 1, tag=
+                    self.proc_data[lvl]['all_pts'][0] - 1)
+                self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](self.u[lvl][i - 1], self.t[lvl][i - 1], self.t[lvl][i])
                 if i == np.max(self.proc_data[lvl]['fpts']) and self.proc_data[lvl]['comm_back']:
-                    self.comm_time.Isend(self.u[lvl][self.proc_data[lvl]['all_pts'][-1]], rank + 1,
-                                         tag=self.proc_data[lvl]['all_pts'][-1])
+                    tmp_send = True
+                    req_s = self.comm_time.isend(self.u[lvl][self.proc_data[lvl]['all_pts'][-1]], dest=rank + 1,
+                                                 tag=self.proc_data[lvl]['all_pts'][-1])
+        if tmp_send:
+            req_s.wait()
 
     def c_relax(self, lvl):
         """
@@ -106,124 +138,92 @@ class MgritFas:
         if len(self.proc_data[lvl]['cpts']) > 0:
             for i in np.nditer(self.proc_data[lvl]['cpts']):
                 if i != 0:
-                    self.u[lvl][i] = self.g[lvl][i] + self.phi(self.u[lvl][i - 1], self.t[lvl][i - 1], self.t[lvl][i],
-                                                               self.app[lvl])
+                    self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](self.u[lvl][i - 1], self.t[lvl][i - 1],
+                                                                     self.t[lvl][i])
 
     def convergence_criteria(self, it):
         """
         """
+        r = []
+        r_norm = []
         cpts = np.array(range(0, len(self.t[0]), self.m[0]))
         block_size, first_i = self.split_points(length=np.size(self.t[0]) - 1, size=self.comm_time.Get_size(),
                                                 rank=self.comm_time.Get_rank())
-        r = np.zeros((block_size, np.size(self.u[0], 1)))
         for i in range(first_i + 1, (block_size + first_i + 1)):
             if i in cpts:
-                j = i - first_i - 1
-                r[j] = self.phi(self.u[0][i - 1], self.t[0][i - 1], self.t[0][i], self.app[0]) - self.u[0][i]
+                r.append(self.step[0](self.u[0][i - 1], self.t[0][i - 1], self.t[0][i]) - self.u[0][i])
+                r_norm.append(r[-1].norm())
 
-        r_full = self.comm_time.gather(r, root=0)
-        tmp = None
+        tmp = self.comm_time.allgather(r_norm)
+        tmp = [item for sublist in tmp for item in sublist]
 
-        if self.comm_time.Get_rank() == 0:
-            r_full = np.vstack(r_full)
-            tmp = la.norm(r_full)
+        for item in tmp:
+            self.conv[it] += item ** 2
 
-        tmp = self.comm_time.bcast(tmp, root=0)
-        self.conv[it] = tmp
+        self.conv[it] = self.conv[it] ** 0.5
 
     def forward_solve(self, lvl):
         """
         """
         if self.comm_time.Get_rank() == 0:
             for i in range(1, np.size(self.t[lvl])):
-                self.u[lvl][i] = self.g[lvl][i] + self.phi(self.u[lvl][i - 1], self.t[lvl][i - 1], self.t[lvl][i],
-                                                           self.app[lvl])
-
-    def spatial_coarsening_per_level(self, spatial_coarsening, spatial_max_level):
-        self.spatial_coarsening = [False] * self.lvl_max
-        spatial_level = 0
-        for lvl in range(self.lvl_max):
-            if spatial_coarsening and spatial_level < spatial_max_level - 1 and self.lvl_max - lvl <= spatial_max_level:
-                self.spatial_coarsening[lvl] = True
-                spatial_level += 1
-            else:
-                self.spatial_coarsening[lvl] = False
+                self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](self.u[lvl][i - 1], self.t[lvl][i - 1], self.t[lvl][i])
 
     def fas_residual(self, lvl):
         """
         """
-        if self.spatial_coarsening[lvl]:
-            for i in range(len(self.proc_data[lvl]['all_cpts'])):
-                self.v[lvl + 1][i]=self.restriction(np.copy(self.u[lvl][self.proc_data[lvl]['all_cpts'][i]]),
-                                               self.app[lvl]['trans'])
-            #self.v[lvl + 1] = self.restriction(np.copy(self.u[lvl][self.proc_data[lvl]['all_cpts']]),
-            #                                   self.app[lvl]['trans'])
-            if np.size(self.proc_data[lvl]['cpts']) > 0:
-                for i in range(0, np.size(self.proc_data[lvl]['cpts'])):
-                    j = i + self.proc_data[lvl]['first_i']
-                    if j != 0:
-                        self.g[lvl + 1][i, :] = self.restriction(
-                            self.g[lvl][self.proc_data[lvl]['cpts'][i]] - self.u[lvl][
-                                self.proc_data[lvl]['cpts'][i]] + self.phi(
-                                self.u[lvl][self.proc_data[lvl]['cpts'][i] - 1],
-                                self.t[lvl][self.proc_data[lvl]['cpts'][i] - 1],
-                                self.t[lvl][self.proc_data[lvl]['cpts'][i]],
-                                self.app[lvl]),
-                            self.app[lvl]['trans']) + self.v[lvl + 1][
-                                                    j] - self.phi(self.v[lvl + 1][j - 1], self.t[lvl + 1][j - 1],
-                                                                  self.t[lvl + 1][j], self.app[lvl + 1])
-        else:
-            self.v[lvl + 1] = np.copy(self.u[lvl][self.proc_data[lvl]['all_cpts']])
-            if np.size(self.proc_data[lvl]['cpts']) > 0:
-                for i in range(0, np.size(self.proc_data[lvl]['cpts'])):
-                    j = i + self.proc_data[lvl]['first_i']
-                    if j != 0:
-                        self.g[lvl + 1][i] = self.g[lvl][self.proc_data[lvl]['cpts'][i]] \
-                                             + self.phi(self.u[lvl][self.proc_data[lvl]['cpts'][i] - 1],
-                                                        self.t[lvl][self.proc_data[lvl]['cpts'][i] - 1],
-                                                        self.t[lvl][self.proc_data[lvl]['cpts'][i]],
-                                                        self.app[lvl]) - self.u[lvl][self.proc_data[lvl]['cpts'][i]] \
-                                             - self.phi(self.v[lvl + 1][j - 1], self.t[lvl + 1][j - 1],
-                                                        self.t[lvl + 1][j], self.app[lvl + 1]) + \
-                                             self.v[lvl + 1][j]
-
-        self.g[lvl + 1] = np.vstack(
-            self.comm_time.allgather(self.g[lvl + 1][0:np.size(self.proc_data[lvl]['cpts']), :]))
-        self.u[lvl + 1] = np.copy(self.v[lvl + 1])
-
+        for i in range(len(self.proc_data[lvl]['all_cpts'])):
+            self.v[lvl + 1][i] = self.restriction[lvl](self.u[lvl][self.proc_data[lvl]['all_cpts'][i]])
+        if np.size(self.proc_data[lvl]['cpts']) > 0:
+            for i in range(0, np.size(self.proc_data[lvl]['cpts'])):
+                j = i + self.proc_data[lvl]['first_i']
+                if j != 0:
+                    self.g[lvl + 1][i] = self.restriction[lvl](
+                        self.g[lvl][self.proc_data[lvl]['cpts'][i]] - self.u[lvl][
+                            self.proc_data[lvl]['cpts'][i]] + self.step[lvl](
+                            self.u[lvl][self.proc_data[lvl]['cpts'][i] - 1],
+                            self.t[lvl][self.proc_data[lvl]['cpts'][i] - 1],
+                            self.t[lvl][self.proc_data[lvl]['cpts'][i]])) + self.v[lvl + 1][
+                                             j] - self.step[lvl + 1](self.v[lvl + 1][j - 1], self.t[lvl + 1][j - 1],
+                                                                     self.t[lvl + 1][j])
+        tmp = self.comm_time.allgather(self.g[lvl + 1][0:np.size(self.proc_data[lvl]['cpts'])])
+        self.g[lvl + 1] = [item for sublist in tmp for item in sublist]
+        self.u[lvl + 1] = copy.deepcopy(self.v[lvl + 1])
 
     def nested_iteration(self):
         self.forward_solve(self.lvl_max - 1)
         self.u[-1] = self.comm_time.bcast(self.u[-1], root=0)
 
         for lvl in range(self.lvl_max - 2, -1, -1):
-            if self.spatial_coarsening[lvl]:
-                for i in range(np.size(self.u[lvl + 1],0)):
-                    self.u[lvl][::self.m[lvl]][i]= self.interpolation(self.u[lvl + 1][i], self.app[lvl]['trans'])
-                #self.u[lvl][::self.m[lvl]] = self.interpolation(self.u[lvl + 1], self.app[lvl]['trans'])
-            else:
-                self.u[lvl][::self.m[lvl]] = self.u[lvl + 1]
+            tmp = [object] * len(self.u[lvl + 1])
+            for i in range(len(self.u[lvl + 1])):
+                tmp[i] = self.interpolation[lvl](u=self.u[lvl + 1][i])
+            self.u[lvl][::self.m[lvl]] = tmp
             if lvl > 0:
-                self.iteration(lvl, 1, 'V', 0, True)
+                self.iteration(lvl, 'V', 0, True)
+            # if self.comm_time.Get_rank() == 0:
+            #    for i in range(1, np.size(self.t[lvl])):
+            #        print(self.comm_time.Get_rank(),lvl,i, self.u[lvl][i].norm())
 
     def exchange(self, lvl):
-        self.u[lvl] = np.vstack(self.comm_time.allgather(
-            self.u[lvl][self.proc_data[lvl]['all_pts'][0]:(self.proc_data[lvl]['all_pts'][-1] + 1), :] if np.size(
-                self.proc_data[lvl]['all_pts']) > 0 else np.empty(
-                (0, self.u[lvl].shape[1]))))
+        tmp = self.comm_time.allgather(
+            self.u[lvl][self.proc_data[lvl]['all_pts'][0]:(self.proc_data[lvl]['all_pts'][-1] + 1)] if len(
+                self.proc_data[lvl]['all_pts']) > 0 else [])
+        self.u[lvl] = [item for sublist in tmp for item in sublist]
 
     def f_exchange(self, lvl):
         rank = self.comm_time.Get_rank()
         if (self.proc_data[lvl]['all_pts'].shape[0] > 0 and
                 self.proc_data[lvl]['all_pts'][0] > 0 and
                 np.size(np.where(self.proc_data[lvl]['cpts'] == self.proc_data[lvl]['all_pts'][0])[0]) == 1):
-            self.comm_time.Recv(self.u[lvl][self.proc_data[lvl]['all_pts'][0] - 1], rank - 1,
-                                tag=self.proc_data[lvl]['all_pts'][0] - 1)
+            self.u[lvl][self.proc_data[lvl]['all_pts'][0] - 1] = self.comm_time.recv(source=rank - 1,
+                                                                                     tag=self.proc_data[lvl]['all_pts'][
+                                                                                             0] - 1)
         if (self.proc_data[lvl]['all_pts'].shape[0] > 0 and
                 self.proc_data[lvl]['all_pts'][-1] < np.size(self.t[lvl]) - 1 and
                 np.size(np.where(self.proc_data[lvl]['fpts'] == self.proc_data[lvl]['all_pts'][-1])[0]) == 1 and
                 np.size(np.where(self.proc_data[lvl]['all_cpts'] == self.proc_data[lvl]['all_pts'][-1] + 1)[0]) == 1):
-            self.comm_time.Send(self.u[lvl][self.proc_data[lvl]['all_pts'][-1]], rank + 1,
+            self.comm_time.send(self.u[lvl][self.proc_data[lvl]['all_pts'][-1]], dest=rank + 1,
                                 tag=self.proc_data[lvl]['all_pts'][-1])
 
     def c_exchange(self, lvl):
@@ -232,80 +232,21 @@ class MgritFas:
                 self.proc_data[lvl]['all_pts'][0] > 0 and
                 np.size(np.where(self.proc_data[lvl]['fpts'] == self.proc_data[lvl]['all_pts'][0])[0]) == 1 and
                 np.size(np.where(self.proc_data[lvl]['all_cpts'] == self.proc_data[lvl]['all_pts'][0] - 1)[0]) == 1):
-            self.comm_time.Recv(self.u[lvl][self.proc_data[lvl]['all_pts'][0] - 1], rank - 1,
-                                tag=self.proc_data[lvl]['all_pts'][0] - 1)
+            self.u[lvl][self.proc_data[lvl]['all_pts'][0] - 1] = self.comm_time.recv(source=rank - 1,
+                                                                                     tag=self.proc_data[lvl]['all_pts'][
+                                                                                             0] - 1)
 
         if (self.proc_data[lvl]['all_pts'].shape[0] > 0 and
                 self.proc_data[lvl]['all_pts'][-1] < np.size(self.t[lvl]) - 1 and
                 np.size(np.where(self.proc_data[lvl]['cpts'] == self.proc_data[lvl]['all_pts'][-1])[0]) == 1):
-            self.comm_time.Send(self.u[lvl][self.proc_data[lvl]['all_pts'][-1]], rank + 1,
+            self.comm_time.send(self.u[lvl][self.proc_data[lvl]['all_pts'][-1]], dest=rank + 1,
                                 tag=self.proc_data[lvl]['all_pts'][-1])
 
-    def levels(self):
-        self.u = [np.array(0)] * self.lvl_max
-        self.v = [np.array(0)] * self.lvl_max
-        self.g = [np.array(0)] * self.lvl_max
-        self.t = [np.array(0)] * self.lvl_max
-        self.proc_data = [{}] * self.lvl_max
-
-        i = 0
-        for lvl in range(self.lvl_max):
-            self.t[lvl] = self.problem.t[np.array(range(0, np.size(self.problem.t), self.m[lvl] ** lvl))]
-            self.u[lvl] = np.zeros((np.size(self.t[lvl]), self.problem.nx[i]))
-            if lvl != 0:
-                self.v[lvl] = np.zeros_like(self.u[lvl])
-            self.g[lvl] = np.zeros_like(self.u[lvl])
-            self.proc_data[lvl] = self.setup_points(nt=np.size(self.t[lvl]), m=self.m[lvl],
-                                                    size=self.comm_time.Get_size(), rank=self.comm_time.Get_rank())
-            if self.spatial_coarsening[lvl]:
-                i = i + 1
-
-    def setup(self, lvl_max, m, it, tol, nested_iteration=True, spatial_coarsening=False, spatial_max_lvl=0):
-
-        if self.comm_time.Get_rank() == 0:
-            logging.info("Start setup")
-
-        runtime_setup_start = time.time()
-        self.lvl_max = lvl_max
-        self.it = it
-        self.tol = tol
-
-        if isinstance(m, (list, int, np.ndarray)):
-            if type(m) == int:
-                self.m = np.ones(lvl_max, dtype=int) * m
-            elif type(m) == list:
-                self.m = np.array(m, dtype=int)
-        else:
-            raise Exception('unknown type for m')
-
-        self.spatial_coarsening_per_level(spatial_coarsening=spatial_coarsening, spatial_max_level=spatial_max_lvl)
-        self.levels()
-
-        self.app = self.problem.setup(lvl_max=self.lvl_max, t=self.t, spatial_coarsening=self.spatial_coarsening)
-
-        self.u[0][0] = self.problem.initial_value()
-        if nested_iteration:
-            self.nested_iteration()
-
-        self.conv = np.zeros(it + 1)
-        self.convergence_criteria(it=0)
-
-        self.setup_done = True
-
-        runtime_setup_stop = time.time()
-
-        if self.comm_time.Get_rank() == 0:
-            logging.info(f"Setup took {runtime_setup_stop - runtime_setup_start} s")
-            logging.info(f"step 0 | norm r= {self.conv[0]}")
-
-    def solve(self, cf_iter=1, cycle_type='V'):
+    def solve(self):
         """
 
         :rtype: object
         """
-        if not self.setup_done:
-            raise Exception('setup solver')
-
         if self.comm_time.Get_rank() == 0:
             logging.info("Start solve")
 
@@ -313,7 +254,7 @@ class MgritFas:
         for iteration in range(self.it):
 
             time_it_start = time.time()
-            self.iteration(lvl=0, cf_iter=cf_iter, cycle_type=cycle_type, iteration=iteration, first_f=True)
+            self.iteration(lvl=0, cycle_type=self.cycle_type, iteration=iteration, first_f=True)
             time_it_stop = time.time()
             self.convergence_criteria(it=iteration + 1)
 
@@ -330,32 +271,18 @@ class MgritFas:
         if self.comm_time.Get_rank() == 0:
             self.runtime_solve = runtime_solve_stop - runtime_solve_start
             logging.info(f"Solve took {self.runtime_solve} s")
-            self.save()
 
-        return self.u[0]
-
-    def save(self):
-        path = 'results/' + self.problem.info() + 'L-' + str(self.lvl_max) + '|m-' + str(self.m) + '|sC-' + str(
-            self.spatial_coarsening)
-        pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-        np.savez(path + '/res', u=self.u[0], conv=self.conv, t=self.t[0], runtime=self.runtime_solve)
+        return {'u': self.u[0], 'time': self.runtime_solve, 'conv': self.conv}
 
     def error_correction(self, lvl):
-        e = self.u[lvl + 1][
-            self.proc_data[lvl]['first_i']:self.proc_data[lvl]['first_i'] + self.proc_data[lvl]['block_size']] - \
-            self.v[lvl + 1][
-            self.proc_data[lvl]['first_i']:self.proc_data[lvl]['first_i'] + self.proc_data[lvl]['block_size']]
+        e = []
+        for i in range(self.proc_data[lvl]['first_i'],
+                       self.proc_data[lvl]['first_i'] + self.proc_data[lvl]['block_size']):
+            e.append(self.u[lvl + 1][i] - self.v[lvl + 1][i])
 
-
-        if self.spatial_coarsening[lvl]:
-            tmp = np.zeros((self.proc_data[lvl]['block_size'], np.size(self.u[lvl],1)))
-            for i in range(self.proc_data[lvl]['block_size']):
-                tmp[i] = self.interpolation(e[i], self.app[lvl]['trans'])
-            e = tmp
-
-            #e = self.interpolation(e, self.app[lvl]['trans'])
-
-        self.u[lvl][self.proc_data[lvl]['cpts']] += e
+        for i in range(len(e)):
+            e[i] = self.interpolation[lvl](e[i])
+            self.u[lvl][self.proc_data[lvl]['cpts'][i]] = self.u[lvl][self.proc_data[lvl]['cpts'][i]] + e[i]
 
         self.c_exchange(lvl=lvl)
 

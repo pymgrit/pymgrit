@@ -168,8 +168,8 @@ def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
         uc = get_values_from(uc_file)
 
     # Return solution
-    ret_value = {'x': t, 'y': y, 'jL': jl, 'solver': 'odegetdp', 'version': getdpver, 'TempName': tmpname, 'iA': ia,
-                 'iB': ib, 'iC': ic, 'uA': ua, 'uB': ub, 'uC': uc}
+    ret_value = {'x': t, 'y': y, 'jl': jl, 'solver': 'odegetdp', 'version': getdpver, 'TempName': tmpname, 'ia': ia,
+                 'ib': ib, 'ic': ic, 'ua': ua, 'ub': ub, 'uc': uc}
 
     return ret_value
 
