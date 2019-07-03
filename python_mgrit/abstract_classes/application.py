@@ -14,7 +14,16 @@ class Application(ABC):
         self.nt = nt
         self.t = np.linspace(self.t_start, self.t_end, nt)
         self.vector = 0
+        self._u = []
+
+    @property
+    def u(self):
+        return self._u
+
+    @u.setter
+    def u(self, value):
+        self._u = value
 
     @abstractmethod
-    def step(self, u_start, t_start, t_stop):
+    def step(self, index):
         pass

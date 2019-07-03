@@ -17,7 +17,7 @@ class MgritFasMachine(mgrit_fas.MgritFas):
         """
         if lvl == self.lvl_max - 1:
             self.forward_solve(lvl=lvl)
-            self.u[lvl] = self.comm_time.bcast(self.u[lvl], root=0)
+            self.problem[lvl].u = self.comm_time.bcast(self.problem[lvl].u, root=0)
             return
 
         if first_f:
@@ -34,8 +34,6 @@ class MgritFasMachine(mgrit_fas.MgritFas):
         self.exchange(lvl=lvl)
 
         self.fas_residual(lvl=lvl)
-
-        self.u[lvl + 1] = np.copy(self.v[lvl + 1])
 
         self.iteration(lvl=lvl + 1, cycle_type=cycle_type, iteration=iteration, first_f=True)
 
@@ -56,7 +54,7 @@ class MgritFasMachine(mgrit_fas.MgritFas):
         new = np.zeros_like(self.last_it)
         j = 0
         for i in np.nditer(cpts):
-            new[j] = self.u[0][i].jl
+            new[j] = self.problem[0].u[i].jl
             j = j + 1
         self.conv[it] = la.norm(new - self.last_it)
         self.last_it = np.copy(new)
@@ -75,4 +73,4 @@ class MgritFasMachine(mgrit_fas.MgritFas):
                 logging.info(f"Post-processing took {runtime_pp_stop - runtime_pp_start} s")
                 self.save()
         self.last_it = np.zeros_like(self.last_it)
-        return self.u[0]
+        return {'u': self.problem[0].u, 'time': self.runtime_solve, 'conv': self.conv}

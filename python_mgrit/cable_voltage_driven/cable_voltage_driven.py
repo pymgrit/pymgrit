@@ -71,17 +71,19 @@ class CableVoltageDriven(application.Application):
         self.b = sparse.csr_matrix(tmp)
         self.mesh = self.prb.mesh
 
-        self.u = [vector_system.VectorSystem(self.idxdof)] * self.nt
+        self.u = []
+        for i in range(self.nt):
+            self.u = self.u + [vector_system.VectorSystem(self.idxdof)]
 
-    def step(self, u_start, t_start, t_stop):
-        tmp = np.zeros(len(u_start.mvp) + 1)
-        tmp[:-1] = np.copy(u_start.mvp)
-        tmp[-1] = u_start.current
+    def step(self, index):
+        tmp = np.zeros(len(self.u[index-1].mvp) + 1)
+        tmp[:-1] = np.copy(self.u[index-1].mvp)
+        tmp[-1] = self.u[index-1].current
         if self.nonlinear:
-            tmp = self.newton(t_start, t_stop, tmp)
+            tmp = self.newton(self.t[index-1], self.t[index], tmp)
         else:
-            tmp = self.phi_linear(t_start, t_stop, tmp)
-        ret = vector_system.VectorSystem(u_start.size)
+            tmp = self.phi_linear(self.t[index-1], self.t[index], tmp)
+        ret = vector_system.VectorSystem(self.u[index-1].size)
         ret.mvp = tmp[:-1]
         ret.current = tmp[-1]
         return ret

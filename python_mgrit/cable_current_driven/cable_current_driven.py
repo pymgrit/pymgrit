@@ -60,13 +60,13 @@ class CableCurrentDriven(application.Application):
 
         self.u = [vector_standard.VectorStandard(self.idxdof)] * self.nt
 
-    def step(self, u_start, t_start, t_stop):
-        tmp = np.copy(u_start.vec)
+    def step(self, index):
+        tmp = np.copy(self.u[index - 1].vec)
         if self.nonlinear:
-            tmp = self.newton(t_start, t_stop, tmp)
+            tmp = self.newton(self.t[index - 1], self.t[index], tmp)
         else:
-            tmp = self.phi_linear(t_start, t_stop, tmp)
-        ret = vector_standard.VectorStandard(u_start.size)
+            tmp = self.phi_linear(self.t[index - 1], self.t[index], tmp)
+        ret = vector_standard.VectorStandard(self.u[index - 1].size)
         ret.vec = tmp
         return ret
 
@@ -345,4 +345,3 @@ class CableCurrentDriven(application.Application):
         elemprop = mateprop[mt - 1, :]
 
         return elemprop
-

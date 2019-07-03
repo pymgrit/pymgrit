@@ -71,7 +71,10 @@ class HeatEquation(application.Application):
             ret[i] = self.u_exact(x, t[i])
         return ret
 
-    def step(self, u_start, t_start, t_stop):
+    def step(self, index):
+        u_start = self.u[index-1]
+        t_start = self.t[index-1]
+        t_stop = self.t[index]
         tmp = u_start.vec
         tmp = spsolve(self.a, tmp + self.f(self.x, t_stop) * (t_stop - t_start))
         ret = vector_standard.VectorStandard(u_start.size)
