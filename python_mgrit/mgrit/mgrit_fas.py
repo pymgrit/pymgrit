@@ -58,6 +58,9 @@ class MgritFas:
                 self.g[lvl][time_step] = self.problem[lvl].u[time_step].clone_zeros()
             self.t.append(problem[lvl].t)
 
+        if self.lvl_max == 1:
+            self.m.append(1)
+
         for lvl in range(self.lvl_max - 1):
             self.m.append(int((np.size(self.t[lvl]) - 1) / (np.size(self.t[lvl + 1]) - 1)))
             self.proc_data.append(
@@ -181,10 +184,10 @@ class MgritFas:
                 j = i + self.proc_data[lvl]['first_i']
                 if j != 0:
                     self.g[lvl + 1][i] = self.restriction[lvl](
-                        self.g[lvl][self.proc_data[lvl]['cpts'][i]] - self.problem[lvl].u[
-                            self.proc_data[lvl]['cpts'][i]] +
-                        self.step[lvl](index=self.proc_data[lvl]['cpts'][i])) + self.v[lvl + 1][j] - self.step[lvl + 1](
-                        index=j)
+                        self.g[lvl][self.proc_data[lvl]['cpts'][i]] \
+                        - self.problem[lvl].u[self.proc_data[lvl]['cpts'][i]] \
+                        + self.step[lvl](index=self.proc_data[lvl]['cpts'][i])) \
+                        + self.v[lvl + 1][j] - self.step[lvl + 1](index=j)
 
         tmp = self.comm_time.allgather(self.g[lvl + 1][0:np.size(self.proc_data[lvl]['cpts'])])
         self.g[lvl + 1] = [item for sublist in tmp for item in sublist]
