@@ -2,32 +2,38 @@ import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
 from abstract_classes import application
-from heat_equation import vector_standard
+from heat_equation import vector_standard_bdf2
+import math
 
 
 class HeatEquation(application.Application):
     """
-    TODO
     """
 
-    def __init__(self, x_start, x_end, nx, *args, **kwargs):
+    def __init__(self, x_start, x_end, nx, dt, *args, **kwargs):
         super(HeatEquation, self).__init__(*args, **kwargs)
         self.x_start = x_start
         self.x_end = x_end
         self.x = np.linspace(self.x_start, self.x_end, nx)
         self.x = self.x[1:-1]
         self.nx = nx - 2
+        self.dt = dt
 
-        self.a = self.heat_sparse(np.size(self.x), (1 * (self.t[1] - self.t[0])) / (self.x[1] - self.x[0]) ** 2)
+        self.u_ex = self.u_exact_complete(x=self.x, t=np.linspace(self.t_start, self.t_end, (self.nt - 1) * 2 + 1))
 
-        self.u = vector_standard.VectorStandard(self.nx)
+        self.a1 = self.heat_sparse(np.size(self.x),
+                                   (1 * (self.t[1] - self.t[0] - self.dt)) / (self.x[1] - self.x[0]) ** 2)
+        self.a2 = self.heat_sparse(np.size(self.x), (1 * self.dt) / (self.x[1] - self.x[0]) ** 2)
 
-        self.u.vec = self.u_exact(self.x, 0)
+        self.u = vector_standard_bdf2.VectorStandardBDF2(self.nx)
+
+        self.u.vec_first_time_point = self.u_exact(self.x, self.t[0])
+        self.u.vec_second_time_point = spsolve(self.a2,
+                                               self.u.vec_first_time_point + self.f(self.x, self.t[0] + dt) * self.dt)
 
     @staticmethod
     def heat_sparse(nx, fac):
         """
-        TODO
         """
         diagonal = np.zeros(nx)
         lower = np.zeros(nx - 1)
@@ -47,7 +53,6 @@ class HeatEquation(application.Application):
     @staticmethod
     def u_exact(x, t):
         """
-        TODO
         """
         # return x * (x - 1) * np.sin(2 * np.pi * t)
         return np.sin(np.pi * x) * np.cos(t)
@@ -55,14 +60,12 @@ class HeatEquation(application.Application):
     @staticmethod
     def f(x, t):
         """
-        TODO
         """
         # return 2 * np.pi * x * (x - 1) * np.cos(2 * np.pi * t) - 2 * np.sin(2 * np.pi * t)
         return - np.sin(np.pi * x) * (np.sin(t) - 1 * np.pi ** 2 * np.cos(t))
 
     def u_exact_complete(self, x, t):
         """
-        TODO
         """
         ret = np.zeros((np.size(t), np.size(x)))
         for i in range(np.size(t)):
@@ -70,8 +73,11 @@ class HeatEquation(application.Application):
         return ret
 
     def step(self, u_start, t_start, t_stop):
-        tmp = u_start.vec
-        tmp = spsolve(self.a, tmp + self.f(self.x, t_stop) * (t_stop - t_start))
-        ret = vector_standard.VectorStandard(u_start.size)
-        ret.vec = tmp
+        tmp1 = spsolve(self.a1, u_start.vec_second_time_point + self.f(self.x, t_stop) * (t_stop - t_start - self.dt))
+
+        tmp2 = spsolve(self.a2, tmp1 + self.f(self.x, t_stop + self.dt) * self.dt)
+
+        ret = vector_standard_bdf2.VectorStandardBDF2(u_start.size)
+        ret.vec_first_time_point = tmp1
+        ret.vec_second_time_point = tmp2
         return ret

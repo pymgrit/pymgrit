@@ -78,8 +78,6 @@ class MgritFas:
                         self.u_coarsest.append(self.problem[lvl].u.clone_zeros())
                     self.g_coarsest.append(self.problem[lvl].u.clone_zeros())
 
-        print(nested_iteration)
-
         if nested_iteration:
             self.nested_iteration()
 
