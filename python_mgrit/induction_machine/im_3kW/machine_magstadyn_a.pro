@@ -721,7 +721,7 @@ Resolution {
             GenerateJac[A] ; SolveJac[A] ; }
         EndIf
         Printf('point 1');
-        SaveSolution[A] ;
+        //SaveSolution[A] ;
         Printf('Point2');
         If(Flag_PrintFields)
             Printf('get_localfiels');
@@ -739,7 +739,7 @@ Resolution {
 
       If(Flag_AnalysisType==1)
         InitSolution[A];
-        SaveSolution[A];
+        //SaveSolution[A];
         InitMovingBand2D[MB];
 		
 
@@ -773,7 +773,7 @@ Resolution {
             IterativeLoop[Nb_max_iter, stop_criterion, relaxation_factor] {
               GenerateJac[A] ; SolveJac[A] ; }
           EndIf
-		  SaveSolution[A];
+		  //SaveSolution[A];  //save solution at each timepoint
 
           If(Flag_PrintFields)
                       Printf('get_localfiels');
@@ -790,7 +790,7 @@ Resolution {
             Evaluate[ $Trotor = 0 ];
           }
           If(!Flag_ImposedSpeed)
-            Generate[M]; Solve[M]; SaveSolution[M];
+            Generate[M]; Solve[M]; //SaveSolution[M];
             PostOperation[Mechanical] ;
           EndIf
 		  Print[{delta_theta[]}, Format "delta_theta[] = %g is greater than 1"];

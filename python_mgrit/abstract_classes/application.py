@@ -1,3 +1,4 @@
+from mpi4py import MPI
 import numpy as np
 from abc import ABC, abstractmethod
 
@@ -6,7 +7,7 @@ class Application(ABC):
     """
     """
 
-    def __init__(self, t_start=0, t_stop=0, nt=0):
+    def __init__(self, t_start, t_stop, nt):
         """
         """
         self.t_start = t_start
@@ -25,5 +26,5 @@ class Application(ABC):
         self._u = value
 
     @abstractmethod
-    def step(self, index):
+    def step(self, u_start, t_start, t_stop):
         pass

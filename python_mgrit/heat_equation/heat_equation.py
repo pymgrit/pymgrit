@@ -20,11 +20,9 @@ class HeatEquation(application.Application):
 
         self.a = self.heat_sparse(np.size(self.x), (1 * (self.t[1] - self.t[0])) / (self.x[1] - self.x[0]) ** 2)
 
-        self.u = [None] * self.nt
-        for i in range(self.nt):
-            self.u[i] = vector_standard.VectorStandard(self.nx)
+        self.u = vector_standard.VectorStandard(self.nx)
 
-        self.u[0].vec = self.u_exact(self.x, 0)
+        self.u.vec = self.u_exact(self.x, 0)
 
     @staticmethod
     def heat_sparse(nx, fac):
@@ -71,10 +69,10 @@ class HeatEquation(application.Application):
             ret[i] = self.u_exact(x, t[i])
         return ret
 
-    def step(self, index):
-        u_start = self.u[index-1]
-        t_start = self.t[index-1]
-        t_stop = self.t[index]
+    def step(self, u_start, t_start, t_stop):
+        # u_start = self.u[index-1]
+        # t_start = self.t[index-1]
+        # t_stop = self.t[index]
         tmp = u_start.vec
         tmp = spsolve(self.a, tmp + self.f(self.x, t_stop) * (t_stop - t_start))
         ret = vector_standard.VectorStandard(u_start.size)

@@ -58,15 +58,15 @@ class CableCurrentDriven(application.Application):
         self.psh = pfem[:self.idxdof, 0].transpose()
         self.mesh = self.prb.mesh
 
-        self.u = [vector_standard.VectorStandard(self.idxdof)] * self.nt
+        self.u = vector_standard.VectorStandard(self.idxdof)
 
-    def step(self, index):
-        tmp = np.copy(self.u[index - 1].vec)
+    def step(self, u_start, t_start, t_stop):
+        tmp = np.copy(u_start.vec)
         if self.nonlinear:
-            tmp = self.newton(self.t[index - 1], self.t[index], tmp)
+            tmp = self.newton(t_start, t_stop, tmp)
         else:
-            tmp = self.phi_linear(self.t[index - 1], self.t[index], tmp)
-        ret = vector_standard.VectorStandard(self.u[index - 1].size)
+            tmp = self.phi_linear(t_start, t_stop, tmp)
+        ret = vector_standard.VectorStandard(u_start.size)
         ret.vec = tmp
         return ret
 
