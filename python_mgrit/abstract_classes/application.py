@@ -1,4 +1,3 @@
-from mpi4py import MPI
 import numpy as np
 from abc import ABC, abstractmethod
 
@@ -15,7 +14,7 @@ class Application(ABC):
         self.nt = nt
         self.t = np.linspace(self.t_start, self.t_end, nt)
         self.vector = 0
-        self._u = []
+        self._u = None
 
     @property
     def u(self):

@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     problem = [heat0, heat1, heat2, heat3, heat4]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritFas(problem=problem, grid_transfer=transfer, cf_iter=1, nested_iteration=True, it=5)
+    mgrit = solver.MgritFas(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=5)
     res = mgrit.solve()
 
     #print(res['u'])

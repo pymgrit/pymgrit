@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     problem = [heat0, heat1, heat2]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritFas(problem=problem, grid_transfer=transfer)
+    mgrit = solver.MgritFas(problem=problem, transfer=transfer)
     res2 = mgrit.solve()
 
     heat0 = heat_equation_2pts_bdf2.HeatEquation(x_start=0, x_end=2, nx=1001,
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     problem = [heat0, heat1, heat2]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritFas(problem=problem, grid_transfer=transfer)
+    mgrit = solver.MgritFas(problem=problem, transfer=transfer)
     res3 = mgrit.solve()
 
     exact = problem[0].u_ex
@@ -49,4 +49,4 @@ if __name__ == '__main__':
     ebfd2 = exact - bdf2
 
     print('bdf1:', la.norm(ebfd1))
-    print('bdf1:', la.norm(ebfd2))
+    print('bdf2:', la.norm(ebfd2))
