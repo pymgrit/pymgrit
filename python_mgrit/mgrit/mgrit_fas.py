@@ -7,7 +7,10 @@ import logging
 import copy
 import sys
 from typing import Tuple, List
-from abstract_classes import application, grid_transfer
+from abstract_classes import application
+from abstract_classes import grid_transfer
+import pathlib
+import datetime
 
 
 class MgritFas:
@@ -83,6 +86,7 @@ class MgritFas:
         self.last_is_c_point = []  # Communication after C-relax
         self.send_to = []  # Which process contains next time point
         self.get_from = []  # Which process contains previous time point
+        self.save_solution = True  # Save solution?
 
         for lvl in range(self.lvl_max):
             self.t.append(copy.deepcopy(problem[lvl].t))
@@ -206,6 +210,7 @@ class MgritFas:
 
     def convergence_criteria(self, it: int) -> None:
         """
+        L2 norm of the residual
         :param it: Iteration number
         """
         runtime_conv = time.time()
@@ -387,16 +392,34 @@ class MgritFas:
                 break
 
         runtime_solve_stop = time.time()
-
-        solution = self.comm_time.gather([self.u[0][i] for i in self.index_local[0]], root=0)
+        self.runtime_solve = runtime_solve_stop - runtime_solve_start
 
         if self.comm_time_rank == 0:
-            solution = [item for sublist in solution for item in sublist]
-            self.runtime_solve = runtime_solve_stop - runtime_solve_start
             logging.info(f"Solve took {self.runtime_solve} s")
 
-        return {'u': solution, 'time': self.runtime_solve, 'conv': self.conv, 't': self.problem[0].t,
-                'time_setup': self.runtime_setup}
+        # solution = self.comm_time.gather([self.u[0][i] for i in self.index_local[0]], root=0)
+        #
+        # if self.comm_time_rank == 0:
+        #     solution = [item for sublist in solution for item in sublist]
+        #     self.runtime_solve = runtime_solve_stop - runtime_solve_start
+        #     logging.info(f"Solve took {self.runtime_solve} s")
+        #
+        # return {'u': solution, 'time': self.runtime_solve, 'conv': self.conv, 't': self.problem[0].t,
+        #         'time_setup': self.runtime_setup}
+
+        if self.save_solution:
+            self.save()
+        return {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
+                't': self.problem[0].t, 'time_setup': self.runtime_setup}
+
+    def save(self):
+        now = datetime.datetime.now().strftime("%Y-%m-%d|%H:%M:%S")
+        now = self.comm_time.bcast(now, root=0)
+        pathlib.Path('results/' + now).mkdir(parents=True, exist_ok=True)
+        sol = {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
+               't': self.problem[0].t, 'time_setup': self.runtime_setup}
+
+        np.save('results/' + now + '/' + str(self.t[0][0]) + '-' + str(self.t[0][-1]), sol)
 
     def error_correction(self, lvl: int) -> None:
         """
@@ -502,9 +525,10 @@ class MgritFas:
             tmp[0] = all_pts[0] - 1
             tmp[1:] = all_pts
             all_pts_with_ghost = tmp
-            self.t[lvl] = self.problem[lvl].t[all_pts_with_ghost]
         else:
             all_pts_with_ghost = all_pts
+
+        self.t[lvl] = self.problem[lvl].t[all_pts_with_ghost]
 
         # Setup local indices
         index_local_c = np.zeros_like(cpts)

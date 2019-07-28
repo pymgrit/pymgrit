@@ -4,6 +4,7 @@ import copy
 
 class GridTransferCopy(grid_transfer.GridTransfer):
     """
+    Standard grid transfer operator. Copies the values without changes
     """
 
     def __init__(self):

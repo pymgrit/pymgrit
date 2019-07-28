@@ -3,11 +3,11 @@ from abc import ABC, abstractmethod
 
 class Vector(ABC):
     """
+    Abstract class for one solution point. Each solution data structure has to be a child
     """
 
     def __init__(self):
-        """
-        """
+        pass
 
     @abstractmethod
     def __add__(self, other):

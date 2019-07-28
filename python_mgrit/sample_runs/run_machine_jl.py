@@ -18,7 +18,5 @@ if __name__ == '__main__':
 
     problem = [machine_0, machine_1, machine_2]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritFasMachine(compute_f_after_convergence=True, problem=problem, grid_transfer=transfer, it=5)
+    mgrit = solver.MgritFasMachine(compute_f_after_convergence=True, problem=problem, transfer=transfer, it=5)
     result = mgrit.solve()
-
-    1+1

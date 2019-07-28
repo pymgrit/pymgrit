@@ -19,4 +19,3 @@ if __name__ == '__main__':
     mgrit = solver.MgritFas(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=5)
     res = mgrit.solve()
 
-    #print(res['u'])

@@ -1,0 +1,4 @@
+include README.rst
+include cable_current_driven/problems/*
+include cable_voltage_driven/problems/*
+include induction_machine/im_3kW/*

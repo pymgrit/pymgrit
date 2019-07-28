@@ -1,20 +1,26 @@
 from mgrit import mgrit_fas
 import numpy as np
-from scipy import linalg as la
 import logging
 import time
 
 
 class MgritFasMachine(mgrit_fas.MgritFas):
 
-    def __init__(self, compute_f_after_convergence, *args, **kwargs):
+    def __init__(self, compute_f_after_convergence : bool, *args, **kwargs) -> None:
+        """
+        MGRIT optimized for the GETDP induction machine
+        :param compute_f_after_convergence:
+        :param args:
+        :param kwargs:
+        """
         super(MgritFasMachine, self).__init__(*args, **kwargs)
         self.last_it = []
         self.compute_f_after_convergence = compute_f_after_convergence
 
     def nested_iteration(self) -> None:
         """
-
+        Generate initial approximation by the computation and interpolation of approximations on coarser grids
+        Performs the nested_iteration with a continuous signal
         """
         change = False
         tmp_problem_pwm = np.zeros(len(self.problem))
@@ -70,7 +76,11 @@ class MgritFasMachine(mgrit_fas.MgritFas):
             self.f_exchange(lvl=lvl)
             self.iteration(lvl=lvl, cycle_type='V', iteration=iteration, first_f=False)
 
-    def convergence_criteria(self, it):
+    def convergence_criteria(self, it : int) -> None:
+        """
+        Maximum norm of all C-points
+        :param it: Iteration number
+        """
         if len(self.last_it) != len(self.index_local_c[0]):
             self.last_it = np.zeros(len(self.index_local_c[0]))
         new = np.zeros_like(self.last_it)
@@ -87,8 +97,10 @@ class MgritFasMachine(mgrit_fas.MgritFas):
         self.last_it = np.copy(new)
 
     def solve(self, cf_iter=1, cycle_type='V'):
+        tmp_save = self.save_solution
+        self.save_solution = False
         super(MgritFasMachine, self).solve()
-
+        self.save_solution = tmp_save
         if self.compute_f_after_convergence:
             if self.comm_time.Get_rank() == 0:
                 logging.info("Start post-processing: F-relax")
@@ -97,8 +109,11 @@ class MgritFasMachine(mgrit_fas.MgritFas):
             runtime_pp_stop = time.time()
             if self.comm_time.Get_rank() == 0:
                 logging.info(f"Post-processing took {runtime_pp_stop - runtime_pp_start} s")
-        solution = self.comm_time.gather([self.u[0][i] for i in self.index_local[0]], root=0)
-        if self.comm_time.Get_rank() == 0:
-            solution = [item for sublist in solution for item in sublist]
+        #solution = self.comm_time.gather([self.u[0][i] for i in self.index_local[0]], root=0)
+        #if self.comm_time.Get_rank() == 0:
+        #    solution = [item for sublist in solution for item in sublist]
         self.last_it = np.zeros_like(self.last_it)
-        return {'u': solution, 'time': self.runtime_solve, 'conv': self.conv, 't': self.problem[0].t}
+        if self.save_solution:
+            self.save()
+        return {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
+                't': self.problem[0].t, 'time_setup': self.runtime_setup}
