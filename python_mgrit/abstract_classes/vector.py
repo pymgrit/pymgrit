@@ -11,16 +11,30 @@ class Vector(ABC):
 
     @abstractmethod
     def __add__(self, other):
+        """
+        Standard addition
+        :param other:
+        """
         pass
 
     @abstractmethod
     def __sub__(self, other):
+        """
+        Standard subtraction
+        :param other:
+        """
         pass
 
     @abstractmethod
     def norm(self):
+        """
+        Norm of the solution construct
+        """
         pass
 
     @abstractmethod
     def clone_zeros(self):
+        """
+        Clones the solution construct with all zeros.
+        """
         pass

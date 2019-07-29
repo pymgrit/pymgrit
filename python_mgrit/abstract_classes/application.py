@@ -29,5 +29,11 @@ class Application(ABC):
         self._u = value
 
     @abstractmethod
-    def step(self, u_start, t_start, t_stop):
+    def step(self, u_start: object, t_start: float, t_stop: float) -> object:
+        """
+        Time stepper for problem
+        :param u_start: Start solution
+        :param t_start: Start time point
+        :param t_stop: End time point
+        """
         pass

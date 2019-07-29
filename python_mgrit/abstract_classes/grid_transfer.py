@@ -11,8 +11,16 @@ class GridTransfer(ABC):
 
     @abstractmethod
     def restriction(self, u):
+        """
+        Spatial restriction between two grids. Gets solutions of one grid and transforms it to another one
+        :param u: Start solution
+        """
         pass
 
     @abstractmethod
     def interpolation(self, u):
+        """
+        Spatial interpolation between two grids. Gets solutions of one grid and transforms it to another one
+        :param u: Start solution
+        """
         pass
