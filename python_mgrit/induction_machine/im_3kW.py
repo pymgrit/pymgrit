@@ -34,7 +34,15 @@ class InductionMachine(application.Application):
                                               u_back_size=self.further_unknowns_back,
                                               u_middle_size=len(un_to_cor))
 
-    def step(self, u_start, t_start, t_stop):
+    def step(self, u_start: vector_machine.VectorMachine, t_start: float,
+             t_stop: float) -> vector_machine.VectorMachine:
+        """
+
+        :param u_start:
+        :param t_start:
+        :param t_stop:
+        :return:
+        """
         tmp = np.append(u_start.u_front, u_start.u_middle)
         tmp = np.append(tmp, u_start.u_back)
 

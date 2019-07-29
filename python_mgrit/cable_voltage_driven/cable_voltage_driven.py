@@ -73,7 +73,8 @@ class CableVoltageDriven(application.Application):
 
         self.u = vector_system.VectorSystem(self.idxdof)
 
-    def step(self, u_start, t_start, t_stop):
+    def step(self, u_start: vector_system.VectorSystem, t_start: float,
+             t_stop: float) -> vector_system.VectorSystem:
         tmp = np.zeros(len(u_start.mvp) + 1)
         tmp[:-1] = np.copy(u_start.mvp)
         tmp[-1] = u_start.current
@@ -134,8 +135,7 @@ class CableVoltageDriven(application.Application):
 
         def f(x):
             return vmass.dot(x - xold) + self.eddy_current_rhs(self.mesh, self.nuelem, self.idxnlinelem,
-                                                               self.idxdof, tstop, x, self.psh, self.iw,
-                                                               self.omega, self.nlin, pwm)
+                                                               self.idxdof, tstop, x, self.psh, self.nlin, pwm)
 
         def j(x):
             tmp = np.zeros(self.psh.shape[1] + 1)
@@ -159,7 +159,7 @@ class CableVoltageDriven(application.Application):
 
         return xnew
 
-    def eddy_current_rhs(self, mesh, nu, idxnlinelem, idxdof, t, ush, psh, iw, omega, nlin, pwm):
+    def eddy_current_rhs(self, mesh, nu, idxnlinelem, idxdof, t, ush, psh, nlin, pwm):
 
         a = np.zeros(np.size(mesh.node, 0))
         a[:idxdof] = ush[:-1]
@@ -237,8 +237,8 @@ class CableVoltageDriven(application.Application):
     def nlin_evaluate(self, nlin, b, nargout=4):
         # A. Initialisation
         bm, bangle = self.pyth(b)
-        idxleft = (bm < nlin['Bmin']).nonzero()
-        idxright = (bm > nlin['Bmax']).nonzero()
+        idxleft = np.nonzero(bm < nlin['Bmin'])
+        idxright = np.nonzero(bm > nlin['Bmax'])
 
         # B. Determine the ordinate values
         ppval = interpolate.PPoly(nlin['spline'].c, nlin['spline'].x)

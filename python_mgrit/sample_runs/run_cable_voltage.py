@@ -1,4 +1,3 @@
-from mpi4py import MPI
 from mgrit import mgrit_fas as solver
 from cable_voltage_driven import cable_voltage_driven
 from cable_voltage_driven import grid_transfer_copy
@@ -14,11 +13,4 @@ if __name__ == '__main__':
     problem = [cable_0, cable_1, cable_2]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
     mgrit = solver.MgritFas(problem=problem, transfer=transfer, nested_iteration=True, it=5, debug_lvl=logging.INFO)
-    k = mgrit.solve()
-
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
-    if rank == 0:
-        print('a')
-
+    result = mgrit.solve()

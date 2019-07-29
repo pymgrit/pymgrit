@@ -2,7 +2,7 @@ import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
 from abstract_classes import application
-from heat_equation import vector_standard_bdf2
+from heat_equation_bdf2 import vector_standard_bdf2
 
 
 class HeatEquation(application.Application):
@@ -29,7 +29,7 @@ class HeatEquation(application.Application):
                                                                   (self.nt - 1) * 2 + 1))  # exact solution
 
         self.a1 = self.heat_sparse(np.size(self.x), (self.a * (self.t[1] - self.t[0] - self.dt)) / (
-                    self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
+                self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
         self.a2 = self.heat_sparse(np.size(self.x), (self.a * self.dt) / (
                 self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
 
@@ -81,7 +81,8 @@ class HeatEquation(application.Application):
             ret[i] = self.u_exact(x, t[i])
         return ret
 
-    def step(self, u_start: vector_standard_bdf2, t_start: float, t_stop: float) -> vector_standard_bdf2:
+    def step(self, u_start: vector_standard_bdf2.VectorStandardBDF2, t_start: float,
+             t_stop: float) -> vector_standard_bdf2.VectorStandardBDF2:
         """
         Backward Euler in time
         At each time step i = 1, ..., nt+1, we obtain the linear system

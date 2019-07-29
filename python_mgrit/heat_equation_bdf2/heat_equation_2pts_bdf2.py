@@ -2,7 +2,7 @@ import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
 from abstract_classes import application
-from heat_equation import vector_standard_bdf2
+from heat_equation_bdf2 import vector_standard_bdf2
 
 
 class HeatEquation(application.Application):
@@ -79,7 +79,8 @@ class HeatEquation(application.Application):
             ret[i] = self.u_exact(x, t[i])
         return ret
 
-    def step(self, u_start: vector_standard_bdf2, t_start: float, t_stop: float) -> vector_standard_bdf2:
+    def step(self, u_start: vector_standard_bdf2.VectorStandardBDF2, t_start: float,
+             t_stop: float) -> vector_standard_bdf2.VectorStandardBDF2:
         """
         BDF2 in time
         """

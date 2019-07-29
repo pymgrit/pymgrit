@@ -73,7 +73,8 @@ class HeatEquation(application.Application):
             ret[i] = self.u_exact(x, t[i])
         return ret
 
-    def step(self, u_start: vector_standard, t_start: float, t_stop: float) -> vector_standard:
+    def step(self, u_start: vector_standard.VectorStandard, t_start: float,
+             t_stop: float) -> vector_standard.VectorStandard:
         """
         Backward Euler in time
         At each time step i = 1, ..., nt+1, we obtain the linear system
@@ -92,6 +93,10 @@ class HeatEquation(application.Application):
         Mu_i = u_{i-1} + dt*b_i.
         This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
         which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)
+        :param u_start:
+        :param t_start:
+        :param t_stop:
+        :return:
         """
         tmp = u_start.vec
         tmp = spsolve(self.a, tmp + self.f(self.x, t_stop) * (t_stop - t_start))

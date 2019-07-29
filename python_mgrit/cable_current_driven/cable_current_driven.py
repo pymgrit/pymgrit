@@ -60,7 +60,8 @@ class CableCurrentDriven(application.Application):
 
         self.u = vector_standard.VectorStandard(self.idxdof)
 
-    def step(self, u_start, t_start, t_stop):
+    def step(self, u_start: vector_standard.VectorStandard, t_start: float,
+             t_stop: float) -> vector_standard.VectorStandard:
         tmp = np.copy(u_start.vec)
         if self.nonlinear:
             tmp = self.newton(t_start, t_stop, tmp)
@@ -197,8 +198,8 @@ class CableCurrentDriven(application.Application):
     def nlin_evaluate(self, nlin, b, nargout=4):
         # A. Initialisation
         bm, bangle = self.pyth(b)
-        idxleft = (bm < nlin['Bmin']).nonzero()
-        idxright = (bm > nlin['Bmax']).nonzero()
+        idxleft = np.nonzero(bm < nlin['Bmin'])
+        idxright = np.nonzero(bm > nlin['Bmax'])
 
         # B. Determine the ordinate values
         ppval = interpolate.PPoly(nlin['spline'].c, nlin['spline'].x)
