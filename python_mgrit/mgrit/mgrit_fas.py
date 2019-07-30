@@ -28,17 +28,16 @@ class MgritFas:
         """
         Initialize space-time matrix.
         Phi_args is for any random parameters you may think of later
-        :rtype: dict
-        :param problem:
-        :param transfer:
-        :param it:
-        :param tol:
-        :param nested_iteration:
-        :param cf_iter:
-        :param cycle_type:
-        :param comm_time:
-        :param comm_space:
-        :param debug_lvl:
+        :param problem: List of problems per MGRIT level
+        :param transfer: List of transfer operators per MGRIT level
+        :param it: Max number of iteration
+        :param tol: stopping criteria
+        :param nested_iteration: With or without nested iteration
+        :param cf_iter: Number of CF iteration in MGRIT iteration
+        :param cycle_type: 'F' or 'V' cycle
+        :param comm_time: Time communicator
+        :param comm_space: Space communicator
+        :param debug_lvl: Debug level
         """
         logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S',
                             level=debug_lvl, stream=sys.stdout)
@@ -123,6 +122,9 @@ class MgritFas:
 
         if self.comm_time_rank == 0:
             logging.info(f"Setup took {self.runtime_setup} s")
+
+    def check_input(self):
+        pass
 
     def create_u(self, lvl: int) -> None:
         """
