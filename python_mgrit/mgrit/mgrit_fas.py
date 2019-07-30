@@ -210,8 +210,19 @@ class MgritFas:
 
     def convergence_criteria(self, it: int) -> None:
         """
-        L2 norm of the residual
-        :param it: Iteration number
+        compute initial space-time residual
+        solve A(u) = g with
+             |   I                |
+         A = | -Phi   I           |
+             |       ...   ...    |
+             |            -Phi  I |
+        where Phi propagates u_{i-1} from t = t_{i-1} to t = t_i:
+           u_i = Phi(u_{i-1}) (including forcing from RHS of PDE)
+        and with
+           g = (u_0 0 ... 0)^T
+        The residual can be computed by
+         r_i = Phi(u_{i-1}) - u_i, i = 1, .... nt,
+         r_0 = 0
         """
         runtime_conv = time.time()
         r_norm = []
@@ -462,7 +473,7 @@ class MgritFas:
 
     def setup_points(self, lvl: int) -> None:
         """
-        Computes grid informations per process
+        Computes grid information per process
         :param lvl: the corresponding MGRIT level
         :return:
         """
