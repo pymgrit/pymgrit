@@ -40,6 +40,17 @@ class MgritFas:
         logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S',
                             level=debug_lvl, stream=sys.stdout)
 
+        if len(problem) != (len(transfer) + 1):
+            raise Exception('There should be exactly one transfer operator for each level except the coarsest grid')
+
+        for i in range(len(problem) - 1):
+            if len(problem[i].t) < len(problem[i + 1].t):
+                raise Exception(
+                    'The time grid on level ' + str(i + 1) + ' contains more time points than level ' + str(i))
+
+        if cycle_type != 'V' and cycle_type != 'F':
+            raise Exception("Cycle-type " + str(cycle_type) + " is not implemented. Choose 'V' or 'F'")
+
         runtime_setup_start = time.time()
         self.comm_time = comm_time
         self.comm_space = comm_space
