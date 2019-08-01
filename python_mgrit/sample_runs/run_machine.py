@@ -3,8 +3,17 @@ from induction_machine import im_3kW
 from induction_machine import grid_transfer_machine
 from induction_machine import grid_transfer_copy
 import numpy as np
+import pathlib
 
 if __name__ == '__main__':
+
+    def output_fcn(self):
+        name = 'induction_machine'
+        pathlib.Path('results/' + name).mkdir(parents=True, exist_ok=True)
+        sol = {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
+               't': self.problem[0].t, 'time_setup': self.runtime_setup}
+
+        np.save('results/' + name + '/' + str(self.t[0][0]) + '-' + str(self.t[0][-1]), sol)
 
     machine_0 = im_3kW.InductionMachine(nonlinear=False, pwm=False, grid='im_3kW_16k',
                                         t_start=0, t_stop=0.0002, nt=65)

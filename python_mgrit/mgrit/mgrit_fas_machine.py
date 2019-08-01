@@ -99,10 +99,10 @@ class MgritFasMachine(mgrit_fas.MgritFas):
         self.last_it = np.copy(new)
 
     def solve(self, cf_iter=1, cycle_type='V'):
-        tmp_save = self.save_solution
-        self.save_solution = False
+        tmp_output_fcn = self.output_fcn
+        self.output_fcn = None
         super(MgritFasMachine, self).solve()
-        self.save_solution = tmp_save
+        self.output_fcn = tmp_output_fcn
         if self.compute_f_after_convergence:
             if self.comm_time.Get_rank() == 0:
                 logging.info("Start post-processing: F-relax")
@@ -111,27 +111,8 @@ class MgritFasMachine(mgrit_fas.MgritFas):
             runtime_pp_stop = time.time()
             if self.comm_time.Get_rank() == 0:
                 logging.info(f"Post-processing took {runtime_pp_stop - runtime_pp_start} s")
-        # solution = self.comm_time.gather([self.u[0][i] for i in self.index_local[0]], root=0)
-        # if self.comm_time.Get_rank() == 0:
-        #    solution = [item for sublist in solution for item in sublist]
         self.last_it = np.zeros_like(self.last_it)
-        if self.save_solution:
-            self.save()
+        if self.output_fcn is not None:
+            self.output_fcn(self)
         return {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
                 't': self.problem[0].t, 'time_setup': self.runtime_setup}
-
-    def save(self):
-        now = datetime.datetime.now().strftime("%Y-%m-%d|%H:%M:%S")
-        now = self.comm_time.bcast(now, root=0)
-        pathlib.Path('results/' + now).mkdir(parents=True, exist_ok=True)
-        jl = [self.u[0][i].jl for i in self.index_local[0]]
-        ia = [self.u[0][i].ia for i in self.index_local[0]]
-        ib = [self.u[0][i].ib for i in self.index_local[0]]
-        ic = [self.u[0][i].ic for i in self.index_local[0]]
-        ua = [self.u[0][i].ua for i in self.index_local[0]]
-        ub = [self.u[0][i].ub for i in self.index_local[0]]
-        uc = [self.u[0][i].uc for i in self.index_local[0]]
-        sol = {'jl': jl, 'ia': ia, 'ib': ib, 'ic': ic, 'ua': ua, 'ub': ub, 'uc': uc, 'time': self.runtime_solve,
-               'conv': self.conv, 't': self.problem[0].t, 'time_setup': self.runtime_setup}
-
-        np.save('results/' + now + '/' + str(self.t[0][0]) + '-' + str(self.t[0][-1]), sol)
