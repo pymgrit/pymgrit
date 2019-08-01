@@ -1,12 +1,11 @@
 from mpi4py import MPI
-from firedrake import PeriodicSquareMesh, Ensemble, COMM_WORLD, File, Function
+from firedrake import PeriodicSquareMesh
 from mgrit import mgrit_fas as solver
 from firedrake_heat_equation import diffusion
 from firedrake_heat_equation import grid_transfer_copy
 import pathlib
 import numpy as np
-import glob
-import os
+from mgrit import split
 
 if __name__ == '__main__':
     def output_fcn(self):
@@ -27,8 +26,11 @@ if __name__ == '__main__':
 
     # mesh and DG function space
     n = 20
-    manager = Ensemble(COMM_WORLD, 1)
-    mesh = PeriodicSquareMesh(n, n, 10, comm=manager.comm)
+
+    comm_world = MPI.COMM_WORLD
+    comm_x, comm_t = split.split_commworld(comm_world, 2)
+
+    mesh = PeriodicSquareMesh(n, n, 10, comm=comm_x)
 
     heat0 = diffusion.Diffusion(mesh, kappa=0.1, t_start=0, t_stop=10, nt=101)
     heat1 = diffusion.Diffusion(mesh, kappa=0.1, t_start=0, t_stop=10, nt=17)
@@ -36,15 +38,14 @@ if __name__ == '__main__':
 
     problem = [heat0 , heat1,heat2]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritFas(problem=problem, transfer=transfer, it=5, comm_time=manager.ensemble_comm,
-                            comm_space=mesh.comm, output_fcn=output_fcn)
+    mgrit = solver.MgritFas(problem=problem, transfer=transfer, it=5, comm_time=comm_t,
+                            comm_space=comm_x, output_fcn=output_fcn)
     mgrit.solve()
 
-    comm = MPI.COMM_WORLD
-    size = comm.Get_size()
-    rank = comm.Get_rank()
-    comm.barrier()
-
+    # comm = MPI.COMM_WORLD
+    # size = comm.Get_size()
+    # rank = comm.Get_rank()
+    # comm.barrier()
     # if rank == 0:
     #     output = File("results/out.pvd")
     #     sol = []

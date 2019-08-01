@@ -21,7 +21,7 @@ class MgritFas:
 
     def __init__(self, problem: List[application.Application], transfer: List[grid_transfer.GridTransfer],
                  it: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
-                 cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: object = None,
+                 cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
                  debug_lvl: int = logging.INFO, output_fcn=None) -> None:
         """
         Initialize space-time matrix.
@@ -57,8 +57,16 @@ class MgritFas:
         self.comm_time_rank = self.comm_time.Get_rank()
         self.comm_time_size = self.comm_time.Get_size()
 
-        if self.comm_time_rank == 0:
-            logging.info(f"Start setup")
+        if self.comm_space != MPI.COMM_NULL:
+            self.spatial_parallel = True
+            self.comm_space_rank = self.comm_space.Get_rank()
+            self.comm_space_size = self.comm_space.Get_size()
+        else:
+            self.spatial_parallel = False
+            self.comm_space_rank = -99
+            self.comm_space_size = -99
+
+        self.log_info(f"Start setup")
 
         self.problem = problem  # List of problems per MGRIT level
         self.lvl_max = len(problem)  # Max level for MGRIT
@@ -133,8 +141,15 @@ class MgritFas:
         runtime_setup_stop = time.time()
         self.runtime_setup = runtime_setup_stop - runtime_setup_start
 
+        self.log_info(f"Setup took {self.runtime_setup} s")
+
+    def log_info(self, message):
         if self.comm_time_rank == 0:
-            logging.info(f"Setup took {self.runtime_setup} s")
+            if self.spatial_parallel:
+                if self.comm_space_rank == 0:
+                    logging.info(message)
+            else:
+                logging.info(message)
 
     def check_input(self):
         pass
@@ -255,10 +270,21 @@ class MgritFas:
         tmp = self.comm_time.allgather(r_norm)
         tmp = [item for sublist in tmp for item in sublist]
 
+        val = 0
         for item in tmp:
-            self.conv[it] += item ** 2
+            val += item ** 2
 
-        self.conv[it] = self.conv[it] ** 0.5
+        if self.spatial_parallel:
+            val = val ** 0.5
+            tmp = self.comm_space.allgather(val)
+
+            val = 0
+            for item in tmp:
+                val += item ** 2
+
+        val = val ** 0.5
+        self.conv[it] = val
+
         logging.debug(f"Convergence criteria on {self.comm_time_rank} took {time.time() - runtime_conv} s")
 
     def forward_solve(self, lvl: int) -> None:
@@ -391,8 +417,7 @@ class MgritFas:
         """
             :return:
         """
-        if self.comm_time_rank == 0:
-            logging.info("Start solve")
+        self.log_info("Start solve")
 
         runtime_solve_start = time.time()
         for iteration in range(self.it):
@@ -402,14 +427,13 @@ class MgritFas:
             time_it_stop = time.time()
             self.convergence_criteria(it=iteration + 1)
 
-            if self.comm_time_rank == 0:
-                if iteration == 0:
-                    logging.info('{0: <7}'.format(f"step {iteration + 1}") + '{0: <30}'.format(
+            if iteration == 0:
+                self.log_info('{0: <7}'.format(f"step {iteration + 1}") + '{0: <30}'.format(
                         f" | con: {self.conv[iteration + 1]}") + '{0: <35}'.format(
                         f" | con-fac: -") + '{0: <35}'.format(
                         f" | runtime: {time_it_stop - time_it_start} s"))
-                else:
-                    logging.info('{0: <7}'.format(f"step {iteration + 1}") + '{0: <30}'.format(
+            else:
+                self.log_info('{0: <7}'.format(f"step {iteration + 1}") + '{0: <30}'.format(
                         f" | con: {self.conv[iteration + 1]}") + '{0: <35}'.format(
                         f" | con-fac: {self.conv[iteration + 1] / self.conv[iteration]}") + '{0: <35}'.format(
                         f" | runtime: {time_it_stop - time_it_start} s"))
@@ -420,11 +444,11 @@ class MgritFas:
         runtime_solve_stop = time.time()
         self.runtime_solve = runtime_solve_stop - runtime_solve_start
 
-        if self.comm_time_rank == 0:
-            logging.info(f"Solve took {self.runtime_solve} s")
+        self.log_info(f"Solve took {self.runtime_solve} s")
 
         if self.output_fcn is not None:
             self.output_fcn(self)
+
         return {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
                 't': self.problem[0].t, 'time_setup': self.runtime_setup}
 
