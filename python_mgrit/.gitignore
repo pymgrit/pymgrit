@@ -10,5 +10,4 @@
 **/results/
 .idea/
 **/__pycache__/
-**/private/
 **/cluster_runs/
