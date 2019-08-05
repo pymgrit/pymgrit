@@ -1,8 +1,8 @@
 import unittest
 
 import numpy as np
-from mgrit import mgrit_fas
-from mgrit import mgrit_fas as solver
+from mgrit import mgrit
+from mgrit import mgrit as solver
 from heat_equation import heat_equation
 from heat_equation import grid_transfer_copy
 
@@ -11,15 +11,19 @@ class TestMgritFas(unittest.TestCase):
     def test_split_into(self):
         """
         """
+        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+                                           t_start=0, t_stop=2, nt=2 ** 2 + 1)
         result = np.array([4, 3, 3])
-        mgrit = mgrit_fas.MgritFas(problem=[], transfer=[], nested_iteration=False)
+        mgrit = solver.Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
         np.testing.assert_equal(result, mgrit.split_into(10, 3))
 
     def test_split_points(self):
         """
         """
+        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+                                           t_start=0, t_stop=2, nt=2 ** 2 + 1)
         result = (3, 4)
-        mgrit = mgrit_fas.MgritFas(problem=[], transfer=[], nested_iteration=False)
+        mgrit = solver.Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
         np.testing.assert_equal(result, mgrit.split_points(10, 3, 1))
 
     def test_heat_equation_run(self):
@@ -32,7 +36,7 @@ class TestMgritFas(unittest.TestCase):
 
         problem = [heat0, heat1, heat2]
         transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-        mgrit = solver.MgritFas(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=2)
+        mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=2)
         res = mgrit.solve()
 
         result_t = np.array([0, 0.5, 1, 1.5, 2])
