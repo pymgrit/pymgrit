@@ -1,4 +1,4 @@
-from mgrit import mgrit_fas as solver
+from mgrit import mgrit as solver
 from heat_equation import heat_equation
 from heat_equation import grid_transfer_copy
 import pathlib
@@ -28,6 +28,6 @@ if __name__ == '__main__':
     problem = [heat0, heat1, heat2, heat3, heat4]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy(),
                 grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritFas(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=5,
-                            output_fcn=output_fcn)
+    mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=5,
+                         output_fcn=output_fcn)
     res = mgrit.solve()

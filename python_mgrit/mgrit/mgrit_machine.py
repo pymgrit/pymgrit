@@ -1,4 +1,4 @@
-from mgrit import mgrit_fas
+from mgrit import mgrit
 import numpy as np
 import logging
 import time
@@ -6,7 +6,7 @@ import pathlib
 import datetime
 
 
-class MgritFasMachine(mgrit_fas.MgritFas):
+class MgritMachine(mgrit.Mgrit):
 
     def __init__(self, compute_f_after_convergence: bool, *args, **kwargs) -> None:
         """
@@ -15,7 +15,7 @@ class MgritFasMachine(mgrit_fas.MgritFas):
         :param args:
         :param kwargs:
         """
-        super(MgritFasMachine, self).__init__(*args, **kwargs)
+        super(MgritMachine, self).__init__(*args, **kwargs)
         self.last_it = []
         self.compute_f_after_convergence = compute_f_after_convergence
 
@@ -101,7 +101,7 @@ class MgritFasMachine(mgrit_fas.MgritFas):
     def solve(self, cf_iter=1, cycle_type='V'):
         tmp_output_fcn = self.output_fcn
         self.output_fcn = None
-        super(MgritFasMachine, self).solve()
+        super(MgritMachine, self).solve()
         self.output_fcn = tmp_output_fcn
         if self.compute_f_after_convergence:
             if self.comm_time.Get_rank() == 0:

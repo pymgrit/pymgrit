@@ -1,1 +1,1 @@
-__all__ = ['mgrit_fas', 'mgrit_fas_machine']
+__all__ = ['mgrit', 'mgrit_machine']

@@ -11,7 +11,7 @@ from abstract_classes import application
 from abstract_classes import grid_transfer
 
 
-class MgritFas:
+class Mgrit:
     """
     Set up an MGRIT solver, given an array of problems and an array of grid transfers
 

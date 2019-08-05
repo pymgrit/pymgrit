@@ -1,4 +1,4 @@
-from mgrit import mgrit_fas as solver
+from mgrit import mgrit as solver
 from induction_machine import im_3kW
 from induction_machine import grid_transfer_machine
 from induction_machine import grid_transfer_copy
@@ -30,5 +30,5 @@ if __name__ == '__main__':
     problem = [machine_0, machine_1, machine_2]
     transfer = [grid_transfer_copy.GridTransferCopy(),
                 grid_transfer_machine.GridTransferMachine(fine_grid='im_3kW_17k', coarse_grid='im_3kW_4k')]
-    mgrit = solver.MgritFas(problem=problem, transfer=transfer)
+    mgrit = solver.Mgrit(problem=problem, transfer=transfer)
     result2 = mgrit.solve()

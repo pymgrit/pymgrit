@@ -1,6 +1,6 @@
 from mpi4py import MPI
 from firedrake import PeriodicSquareMesh
-from mgrit import mgrit_fas as solver
+from mgrit import mgrit as solver
 from firedrake_heat_equation import diffusion
 from firedrake_heat_equation import grid_transfer_copy
 import pathlib
@@ -38,8 +38,8 @@ if __name__ == '__main__':
 
     problem = [heat0, heat1, heat2]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritFas(problem=problem, transfer=transfer, it=5, comm_time=comm_t,
-                            comm_space=comm_x, output_fcn=output_fcn)
+    mgrit = solver.Mgrit(problem=problem, transfer=transfer, it=5, comm_time=comm_t,
+                         comm_space=comm_x, output_fcn=output_fcn)
     mgrit.solve()
 
     # comm = MPI.COMM_WORLD
