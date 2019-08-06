@@ -11,7 +11,6 @@ def jl_solution(sol):
     for i in range(len(sol)):
         jl[i] = sol[i].jl
     return jl
-    plt.plot(t, jl, label = label, lw = 2)
 
 
 def solution(filelist):
@@ -40,8 +39,8 @@ jl = jl_solution(sol)
 plt.plot(t, jl, label='Sinus signal', lw=2, linestyle='--')
 
 
-plt.xlabel('Time / s', fontsize=fonts, weight='bold')
-plt.ylabel('Joule losses / ?', fontsize=fonts, weight='bold')
+plt.xlabel('Time [s]', fontsize=fonts, weight='bold')
+plt.ylabel('Joule losses [?]', fontsize=fonts, weight='bold')
 plt.xticks(size=fonts, weight='bold')
 plt.yticks(size=fonts, weight='bold')
 plt.legend(loc='upper right', prop={'size': fonts}, handlelength = 4)

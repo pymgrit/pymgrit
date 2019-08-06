@@ -93,7 +93,7 @@ def plotVoltage(Tend, steps):
         label.set_visible(False)
     plt.xlabel('Time / s')
     plt.ylabel('Voltage / V')
-    plt.savefig("voltage.eps", bbox_inches='tight')
+    plt.savefig("voltage.jpg", bbox_inches='tight')
     # plt.show()
 
 
