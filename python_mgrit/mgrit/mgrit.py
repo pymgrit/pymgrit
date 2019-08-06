@@ -103,6 +103,7 @@ class Mgrit:
         self.last_is_c_point = []  # Communication after C-relax
         self.send_to = []  # Which process contains next time point
         self.get_from = []  # Which process contains previous time point
+        self.nes_it = nested_iteration
 
         if output_fcn is not None and callable(output_fcn):
             self.output_fcn = output_fcn
@@ -387,6 +388,19 @@ class Mgrit:
             if lvl > 0:
                 self.iteration(lvl, 'V', 0, True)
 
+    def ouput_run_informations(self):
+        mes = 'Run parameter overview \n \n'
+        mes += '{0: <25}'.format(f'interval') + ' : ' + '[' + str(self.problem[0].t[0]) + ', ' + str(
+            self.problem[0].t[-1]) + '] \n'
+        mes += '{0: <25}'.format(f'number points ') + ' : ' + str(len(self.problem[0].t)) + ' points \n'
+        mes += '{0: <25}'.format(f'level') + ' : ' + str(self.lvl_max) + ' \n'
+        mes += '{0: <25}'.format(f'coarsening') + ' : ' + str(self.m) + ' \n'
+        mes += '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter) + ' \n'
+        mes += '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it) + ' \n'
+        mes += '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type) + ' \n'
+        mes += '{0: <25}'.format(f'stopping tolerance') + ' : ' + str(self.tol)
+        self.log_info(message=mes)
+
     def f_exchange(self, lvl: int) -> None:
         """
         Point exchange if the first point is a C-points. Typically, after an F-point update
@@ -430,15 +444,15 @@ class Mgrit:
             self.convergence_criteria(it=iteration + 1)
 
             if iteration == 0:
-                self.log_info('{0: <7}'.format(f"step {iteration + 1}") + '{0: <30}'.format(
-                    f" | con: {self.conv[iteration + 1]}") + '{0: <35}'.format(
-                    f" | con-fac: -") + '{0: <35}'.format(
-                    f" | runtime: {time_it_stop - time_it_start} s"))
+                self.log_info('{0: <7}'.format(f"step {iteration + 1}") +
+                              '{0: <30}'.format(f" | con: {self.conv[iteration + 1]}") +
+                              '{0: <35}'.format(f" | con-fac: -") +
+                              '{0: <35}'.format(f" | runtime: {time_it_stop - time_it_start} s"))
             else:
-                self.log_info('{0: <7}'.format(f"step {iteration + 1}") + '{0: <30}'.format(
-                    f" | con: {self.conv[iteration + 1]}") + '{0: <35}'.format(
-                    f" | con-fac: {self.conv[iteration + 1] / self.conv[iteration]}") + '{0: <35}'.format(
-                    f" | runtime: {time_it_stop - time_it_start} s"))
+                self.log_info('{0: <7}'.format(f"step {iteration + 1}") +
+                              '{0: <30}'.format(f" | con: {self.conv[iteration + 1]}") +
+                              '{0: <35}'.format(f" | con-fac: {self.conv[iteration + 1] / self.conv[iteration]}") +
+                              '{0: <35}'.format(f" | runtime: {time_it_stop - time_it_start} s"))
 
             if self.conv[iteration + 1] < self.tol:
                 break
@@ -450,6 +464,7 @@ class Mgrit:
         if self.output_fcn is not None:
             self.output_fcn(self)
 
+        self.ouput_run_informations()
         return {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
                 't': self.problem[0].t, 'time_setup': self.runtime_setup}
 
