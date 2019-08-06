@@ -66,6 +66,7 @@ class Mgrit:
             self.comm_space_rank = -99
             self.comm_space_size = -99
 
+        self.comm_time.barrier()
         self.log_info(f"Start setup")
 
         self.problem = problem  # List of problems per MGRIT level
@@ -138,9 +139,8 @@ class Mgrit:
         if nested_iteration:
             self.nested_iteration()
 
-        runtime_setup_stop = time.time()
-        self.runtime_setup = runtime_setup_stop - runtime_setup_start
-
+        self.comm_time.barrier()
+        self.runtime_setup = time.time() - runtime_setup_start
         self.log_info(f"Setup took {self.runtime_setup} s")
 
     def log_info(self, message):
@@ -417,6 +417,7 @@ class Mgrit:
         """
             :return:
         """
+        self.comm_time.barrier()
         self.log_info("Start solve")
 
         runtime_solve_start = time.time()
@@ -424,26 +425,26 @@ class Mgrit:
 
             time_it_start = time.time()
             self.iteration(lvl=0, cycle_type=self.cycle_type, iteration=iteration, first_f=True)
+            self.comm_time.barrier()
             time_it_stop = time.time()
             self.convergence_criteria(it=iteration + 1)
 
             if iteration == 0:
                 self.log_info('{0: <7}'.format(f"step {iteration + 1}") + '{0: <30}'.format(
-                        f" | con: {self.conv[iteration + 1]}") + '{0: <35}'.format(
-                        f" | con-fac: -") + '{0: <35}'.format(
-                        f" | runtime: {time_it_stop - time_it_start} s"))
+                    f" | con: {self.conv[iteration + 1]}") + '{0: <35}'.format(
+                    f" | con-fac: -") + '{0: <35}'.format(
+                    f" | runtime: {time_it_stop - time_it_start} s"))
             else:
                 self.log_info('{0: <7}'.format(f"step {iteration + 1}") + '{0: <30}'.format(
-                        f" | con: {self.conv[iteration + 1]}") + '{0: <35}'.format(
-                        f" | con-fac: {self.conv[iteration + 1] / self.conv[iteration]}") + '{0: <35}'.format(
-                        f" | runtime: {time_it_stop - time_it_start} s"))
+                    f" | con: {self.conv[iteration + 1]}") + '{0: <35}'.format(
+                    f" | con-fac: {self.conv[iteration + 1] / self.conv[iteration]}") + '{0: <35}'.format(
+                    f" | runtime: {time_it_stop - time_it_start} s"))
 
             if self.conv[iteration + 1] < self.tol:
                 break
 
-        runtime_solve_stop = time.time()
-        self.runtime_solve = runtime_solve_stop - runtime_solve_start
-
+        self.comm_time.barrier()
+        self.runtime_solve = time.time() - runtime_solve_start
         self.log_info(f"Solve took {self.runtime_solve} s")
 
         if self.output_fcn is not None:
