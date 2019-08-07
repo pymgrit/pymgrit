@@ -1,9 +1,18 @@
+# Setuptools distribution folder.
+/dist/
+
+**/results/
+**/private/
+**/cluster_runs/
+
+# Jetbrains
 .idea/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # C extensions
 *.so
