@@ -1,4 +1,4 @@
-image: python:3
+image: python:3.7
 
 stages:
   - build
@@ -7,6 +7,8 @@ stages:
 build:
   stage: build
   script:
+  - apt-get update
+  - apt-get install -y openmpi-common openmpi-bin
   - pip3 install -e .
 
 test:
