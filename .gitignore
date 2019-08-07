@@ -1,8 +1,9 @@
 # Setuptools distribution folder.
 /dist/
 
-**/results/
-**/cluster_runs/
+results/
+cluster_runs/
+private/
 
 # Jetbrains
 .idea/

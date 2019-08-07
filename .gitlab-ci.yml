@@ -13,3 +13,4 @@ test:
   stage: test
   script:
   - python3 setup.py test
+
