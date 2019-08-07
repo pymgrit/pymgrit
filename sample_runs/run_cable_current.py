@@ -1,4 +1,4 @@
-from mgrit import mgrit_fas as solver
+from mgrit import mgrit as solver
 from cable_current_driven import cable_current_driven
 from cable_current_driven import grid_transfer_copy
 import pathlib
@@ -21,5 +21,5 @@ if __name__ == '__main__':
                                                       t_start=0, t_stop=0.02, nt=5)
     problem = [cable_0, cable_1, cable_2]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritFas(problem=problem, transfer=transfer)
+    mgrit = solver.Mgrit(problem=problem, transfer=transfer)
     u = mgrit.solve()

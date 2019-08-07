@@ -2,7 +2,6 @@
 /dist/
 
 **/results/
-**/private/
 **/cluster_runs/
 
 # Jetbrains

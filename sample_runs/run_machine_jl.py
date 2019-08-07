@@ -1,4 +1,4 @@
-from mgrit import mgrit_fas_machine as solver
+from mgrit import mgrit_machine as solver
 from induction_machine import im_3kW
 from induction_machine import grid_transfer_copy
 import numpy as np
@@ -35,6 +35,6 @@ if __name__ == '__main__':
 
     problem = [machine_0, machine_1, machine_2]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritFasMachine(compute_f_after_convergence=True, problem=problem, transfer=transfer, it=5,
-                                   output_fcn=output_fcn)
+    mgrit = solver.MgritMachine(compute_f_after_convergence=True, problem=problem, transfer=transfer, it=5,
+                                output_fcn=output_fcn)
     result = mgrit.solve()
