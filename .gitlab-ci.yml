@@ -1,0 +1,15 @@
+image: python:3
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+  - pip3 install -e .
+
+test:
+  stage: test
+  script:
+  - python3 setup.py test
