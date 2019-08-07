@@ -3,7 +3,6 @@
 
 results/
 cluster_runs/
-private/
 
 # Jetbrains
 .idea/
