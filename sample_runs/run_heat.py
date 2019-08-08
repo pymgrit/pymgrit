@@ -30,5 +30,5 @@ if __name__ == '__main__':
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy(),
                 grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
     mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=5,
-                         output_fcn=output_fcn, output_lvl=2)
+                         output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
     res = mgrit.solve()

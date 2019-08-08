@@ -22,10 +22,15 @@ class Mgrit:
     def __init__(self, problem: List[application.Application], transfer: List[grid_transfer.GridTransfer],
                  it: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
                  cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
-                 debug_lvl: int = logging.INFO, output_fcn=None, output_lvl=1) -> None:
+                 logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1) -> None:
         """
         Initialize space-time matrix.
         Phi_args is for any random parameters you may think of later
+        :param output_fcn: Function to save results to file.
+        :param output_lvl: Output level, possible values 0, 1, 2:
+               0 -> output_fcn is never called
+               1 -> output_fcn is called when solve stops
+               0 -> output_fcn is called after each MGRIT iteration
         :param problem: List of problems per MGRIT level
         :param transfer: List of transfer operators per MGRIT level
         :param it: Max number of iteration
@@ -35,10 +40,12 @@ class Mgrit:
         :param cycle_type: 'F' or 'V' cycle
         :param comm_time: Time communicator
         :param comm_space: Space communicator
-        :param debug_lvl: Debug level
+        :param logging_lvl: Logging level:
+               Value <= 10: Debug logging level -> Runtime of all components
+               10 > Value <= 20: Info logging level -> Information per MGRIT iteration, summary at the end
         """
         logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S',
-                            level=debug_lvl, stream=sys.stdout)
+                            level=logging_lvl, stream=sys.stdout)
 
         if len(problem) != (len(transfer) + 1):
             raise Exception('There should be exactly one transfer operator for each level except the coarsest grid')
@@ -144,6 +151,9 @@ class Mgrit:
 
         if nested_iteration:
             self.nested_iteration()
+
+        if self.output_fcn is not None and self.output_lvl == 2:
+            self.output_fcn(self)
 
         self.comm_time.barrier()
         self.runtime_setup = time.time() - runtime_setup_start
