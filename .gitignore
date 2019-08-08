@@ -2,8 +2,8 @@
 /dist/
 
 results/
-cluster_runs/
 private/
+cluster_runs/
 
 # Jetbrains
 .idea/

@@ -7,11 +7,12 @@ import numpy as np
 if __name__ == '__main__':
     def output_fcn(self):
         name = 'heat_equation'
-        pathlib.Path('results/' + name).mkdir(parents=True, exist_ok=True)
+        pathlib.Path('results/' + name + '/' + str(self.solve_iter)).mkdir(parents=True, exist_ok=True)
         sol = {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
                't': self.problem[0].t, 'time_setup': self.runtime_setup}
 
-        np.save('results/' + name + '/' + str(self.t[0][0]) + '-' + str(self.t[0][-1]), sol)
+        np.save('results/' + name + '/' + str(self.solve_iter) + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),
+                sol)
 
 
     heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=1001, a=1,
@@ -29,5 +30,5 @@ if __name__ == '__main__':
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy(),
                 grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
     mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=5,
-                         output_fcn=output_fcn)
+                         output_fcn=output_fcn, output_lvl=2)
     res = mgrit.solve()
