@@ -2,7 +2,6 @@
 /dist/
 
 results/
-cluster_runs/
 
 # Jetbrains
 .idea/
