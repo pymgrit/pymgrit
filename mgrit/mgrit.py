@@ -22,7 +22,7 @@ class Mgrit:
     def __init__(self, problem: List[application.Application], transfer: List[grid_transfer.GridTransfer],
                  it: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
                  cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
-                 debug_lvl: int = logging.INFO, output_fcn=None) -> None:
+                 debug_lvl: int = logging.INFO, output_fcn=None, output_lvl=1) -> None:
         """
         Initialize space-time matrix.
         Phi_args is for any random parameters you may think of later
@@ -50,6 +50,9 @@ class Mgrit:
 
         if cycle_type != 'V' and cycle_type != 'F':
             raise Exception("Cycle-type " + str(cycle_type) + " is not implemented. Choose 'V' or 'F'")
+
+        if output_lvl not in [0, 1, 2]:
+            raise Exception("Unknown output level. Choose 0, 1 or 2.")
 
         runtime_setup_start = time.time()
         self.comm_time = comm_time
@@ -103,7 +106,9 @@ class Mgrit:
         self.last_is_c_point = []  # Communication after C-relax
         self.send_to = []  # Which process contains next time point
         self.get_from = []  # Which process contains previous time point
-        self.nes_it = nested_iteration
+        self.nes_it = nested_iteration  # Local nested iteration value
+        self.solve_iter = 0  # The actual MGRIT iteration, for output
+        self.output_lvl = output_lvl  # Output level, only 0,1,2
 
         if output_fcn is not None and callable(output_fcn):
             self.output_fcn = output_fcn
@@ -241,7 +246,7 @@ class Mgrit:
 
     def convergence_criteria(self, it: int) -> None:
         """
-        compute initial space-time residual
+        compute pace-time residual
         solve A(u) = g with
              |   I                |
          A = | -Phi   I           |
@@ -437,6 +442,7 @@ class Mgrit:
         runtime_solve_start = time.time()
         for iteration in range(self.it):
 
+            self.solve_iter = iteration + 1
             time_it_start = time.time()
             self.iteration(lvl=0, cycle_type=self.cycle_type, iteration=iteration, first_f=True)
             self.comm_time.barrier()
@@ -454,6 +460,9 @@ class Mgrit:
                               '{0: <35}'.format(f" | con-fac: {self.conv[iteration + 1] / self.conv[iteration]}") +
                               '{0: <35}'.format(f" | runtime: {time_it_stop - time_it_start} s"))
 
+            if self.output_fcn is not None and self.output_lvl == 2:
+                self.output_fcn(self)
+
             if self.conv[iteration + 1] < self.tol:
                 break
 
@@ -461,7 +470,7 @@ class Mgrit:
         self.runtime_solve = time.time() - runtime_solve_start
         self.log_info(f"Solve took {self.runtime_solve} s")
 
-        if self.output_fcn is not None:
+        if self.output_fcn is not None and self.output_lvl == 1:
             self.output_fcn(self)
 
         self.ouput_run_informations()
