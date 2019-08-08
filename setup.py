@@ -6,7 +6,7 @@ def readme():
         return f.read()
 
 
-setup(name='PyMgrit',
+setup(name='PyMGRIT',
       version='0.1',
       description='TODO',
       long_description='Really, the funniest around.',
@@ -14,8 +14,7 @@ setup(name='PyMgrit',
       author='Jens Hahne',
       author_email='jens.hahne@math.uni-wuppertal.de',
       license='MIT',
-      packages=['abstract_classes', 'cable_current_driven', 'cable_voltage_driven', 'heat_equation',
-                'induction_machine', 'mgrit'],
+      packages=['pymgrit'],
       install_requires=[
           'numpy', 'scipy', 'mpi4py'
       ],

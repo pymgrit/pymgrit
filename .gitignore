@@ -4,6 +4,7 @@
 results/
 private/
 cluster_runs/
+venv/
 
 # Jetbrains
 .idea/
