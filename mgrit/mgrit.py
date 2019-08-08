@@ -460,12 +460,12 @@ class Mgrit:
             self.convergence_criteria(it=iteration + 1)
 
             if iteration == 0:
-                self.log_info('{0: <7}'.format(f"step {iteration + 1}") +
+                self.log_info('{0: <7}'.format(f"iter {iteration + 1}") +
                               '{0: <30}'.format(f" | con: {self.conv[iteration + 1]}") +
                               '{0: <35}'.format(f" | con-fac: -") +
                               '{0: <35}'.format(f" | runtime: {time_it_stop - time_it_start} s"))
             else:
-                self.log_info('{0: <7}'.format(f"step {iteration + 1}") +
+                self.log_info('{0: <7}'.format(f"iter {iteration + 1}") +
                               '{0: <30}'.format(f" | con: {self.conv[iteration + 1]}") +
                               '{0: <35}'.format(f" | con-fac: {self.conv[iteration + 1] / self.conv[iteration]}") +
                               '{0: <35}'.format(f" | runtime: {time_it_stop - time_it_start} s"))
