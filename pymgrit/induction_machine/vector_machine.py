@@ -24,7 +24,7 @@ class VectorMachine(vector.Vector):
         self.ic = 0
 
     def __add__(self, other):
-        tmp = VectorMachine(self.u_front_size, self.u_middle_size, self.u_back_size)
+        tmp = VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
         tmp.u_front = self.u_front + other.u_front
         tmp.u_back = self.u_back + other.u_back
         tmp.u_middle = self.u_middle + other.u_middle
@@ -38,7 +38,7 @@ class VectorMachine(vector.Vector):
         return tmp
 
     def __sub__(self, other):
-        tmp = VectorMachine(self.u_front_size, self.u_middle_size, self.u_back_size)
+        tmp = VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
         tmp.u_front = self.u_front - other.u_front
         tmp.u_back = self.u_back - other.u_back
         tmp.u_middle = self.u_middle - other.u_middle
@@ -58,4 +58,4 @@ class VectorMachine(vector.Vector):
         return la.norm(tmp)
 
     def clone_zeros(self):
-        return VectorMachine(self.u_front_size, self.u_middle_size, self.u_back_size)
+        return VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
