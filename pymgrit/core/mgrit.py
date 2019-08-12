@@ -136,9 +136,10 @@ class Mgrit:
             self.create_u(lvl=lvl)
             if lvl == 0:
                 self.v.append(None)
+                self.g.append(None)
             else:
                 self.v.append(copy.deepcopy(self.u[lvl]))
-            self.g.append(copy.deepcopy(self.u[lvl]))
+                self.g.append(copy.deepcopy(self.u[lvl]))
             if lvl == self.lvl_max - 1:
                 for i in range(len(self.problem[lvl].t)):
                     if i == 0:
@@ -228,11 +229,14 @@ class Mgrit:
             for i in np.nditer(self.index_local_f[lvl]):
                 if i == np.min(self.index_local_f[lvl]) and self.comm_front[lvl]:
                     self.u[lvl][0] = self.comm_time.recv(source=self.get_from[lvl], tag=rank)
-
-                self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
-                                                                 t_start=self.t[lvl][i - 1],
-                                                                 t_stop=self.t[lvl][i])
-
+                if lvl == 0:
+                    self.u[lvl][i] = self.step[lvl](u_start=self.u[lvl][i - 1],
+                                                    t_start=self.t[lvl][i - 1],
+                                                    t_stop=self.t[lvl][i])
+                else:
+                    self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
+                                                                     t_start=self.t[lvl][i - 1],
+                                                                     t_stop=self.t[lvl][i])
                 if i == np.max(self.index_local_f[lvl]) and self.comm_back[lvl]:
                     tmp_send = True
                     req_s = self.comm_time.isend(self.u[lvl][-1], dest=self.send_to[lvl], tag=self.send_to[lvl])
@@ -249,9 +253,14 @@ class Mgrit:
         if len(self.index_local_c[lvl]) > 0:
             for i in np.nditer(self.index_local_c[lvl]):
                 if i != 0 or self.comm_time_rank != 0:
-                    self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
-                                                                     t_start=self.t[lvl][i - 1],
-                                                                     t_stop=self.t[lvl][i])
+                    if lvl == 0:
+                        self.u[lvl][i] = self.step[lvl](u_start=self.u[lvl][i - 1],
+                                                        t_start=self.t[lvl][i - 1],
+                                                        t_stop=self.t[lvl][i])
+                    else:
+                        self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
+                                                                         t_start=self.t[lvl][i - 1],
+                                                                         t_stop=self.t[lvl][i])
         logging.debug(f"C-relax on {self.comm_time_rank} took {time.time() - runtime_c} s")
 
     def convergence_criteria(self, it: int) -> None:
@@ -365,18 +374,27 @@ class Mgrit:
         if np.size(self.index_local_c[lvl]) > 0:
             for i in range(len(self.index_local_c[lvl])):
                 if i != 0 or self.comm_time_rank != 0:
-                    self.g[lvl + 1][self.index_local[lvl + 1][i]] = self.restriction[lvl](
-                        self.g[lvl][self.index_local_c[lvl][i]]
-                        - self.u[lvl][self.index_local_c[lvl][i]]
-                        + self.step[lvl](u_start=self.u[lvl][self.index_local_c[lvl][i] - 1],
-                                         t_start=self.t[lvl][self.index_local_c[lvl][i] - 1],
-                                         t_stop=self.t[lvl][self.index_local_c[lvl][i]])) \
-                                                                    + self.v[lvl + 1][
-                                                                        self.index_local[lvl + 1][i]] \
-                                                                    - self.step[lvl + 1](
-                        u_start=self.v[lvl + 1][self.index_local[lvl + 1][i] - 1],
-                        t_start=self.t[lvl + 1][self.index_local[lvl + 1][i] - 1],
-                        t_stop=self.t[lvl + 1][self.index_local[lvl + 1][i]])
+                    if lvl == 0:
+                        self.g[lvl + 1][self.index_local[lvl + 1][i]] = \
+                            self.restriction[lvl](self.step[lvl](u_start=self.u[lvl][self.index_local_c[lvl][i] - 1],
+                                                                 t_start=self.t[lvl][self.index_local_c[lvl][i] - 1],
+                                                                 t_stop=self.t[lvl][self.index_local_c[lvl][i]])
+                                                  - self.u[lvl][self.index_local_c[lvl][i]]) \
+                            + self.v[lvl + 1][self.index_local[lvl + 1][i]] \
+                            - self.step[lvl + 1](u_start=self.v[lvl + 1][self.index_local[lvl + 1][i] - 1],
+                                                 t_start=self.t[lvl + 1][self.index_local[lvl + 1][i] - 1],
+                                                 t_stop=self.t[lvl + 1][self.index_local[lvl + 1][i]])
+                    else:
+                        self.g[lvl + 1][self.index_local[lvl + 1][i]] = \
+                            self.restriction[lvl](self.g[lvl][self.index_local_c[lvl][i]]
+                                                  - self.u[lvl][self.index_local_c[lvl][i]]
+                                                  + self.step[lvl](u_start=self.u[lvl][self.index_local_c[lvl][i] - 1],
+                                                                   t_start=self.t[lvl][self.index_local_c[lvl][i] - 1],
+                                                                   t_stop=self.t[lvl][self.index_local_c[lvl][i]])) \
+                            + self.v[lvl + 1][self.index_local[lvl + 1][i]] \
+                            - self.step[lvl + 1](u_start=self.v[lvl + 1][self.index_local[lvl + 1][i] - 1],
+                                                 t_start=self.t[lvl + 1][self.index_local[lvl + 1][i] - 1],
+                                                 t_stop=self.t[lvl + 1][self.index_local[lvl + 1][i]])
 
         if lvl == self.lvl_max - 2:
             tmp_g = self.comm_time.gather([self.g[lvl + 1][i] for i in self.index_local_c[lvl + 1]], root=0)
