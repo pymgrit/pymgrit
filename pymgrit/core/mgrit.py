@@ -123,7 +123,7 @@ class Mgrit:
             self.output_fcn = None
 
         for lvl in range(self.lvl_max):
-            self.t.append(copy.deepcopy(problem[lvl].t))
+            self.t.append(np.copy(problem[lvl].t))
             if lvl != self.lvl_max - 1:
                 self.restriction.append(transfer[lvl].restriction)
                 self.interpolation.append(transfer[lvl].interpolation)
@@ -138,8 +138,10 @@ class Mgrit:
                 self.v.append(None)
                 self.g.append(None)
             else:
-                self.v.append(copy.deepcopy(self.u[lvl]))
-                self.g.append(copy.deepcopy(self.u[lvl]))
+                self.v.append([])
+                self.g.append([])
+                self.v[-1] = [item.clone_zeros() for item in self.u[lvl]]
+                self.g[-1] = [item.clone_zeros() for item in self.u[lvl]]
             if lvl == self.lvl_max - 1:
                 for i in range(len(self.problem[lvl].t)):
                     if i == 0:
