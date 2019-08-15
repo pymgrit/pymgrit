@@ -18,6 +18,7 @@ class MgritMachine(mgrit.Mgrit):
         super(MgritMachine, self).__init__(*args, **kwargs)
         self.last_it = []
         self.compute_f_after_convergence = compute_f_after_convergence
+        self.convergence_criteria(it=0)
 
     def nested_iteration(self) -> None:
         """

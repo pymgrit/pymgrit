@@ -6,7 +6,7 @@
 Include "im_3kW_data.geo" ;
 
 DefineConstant[
-  Flag_AnalysisType = {1,  Choices{0="Static",  1="Time domain",  2="Frequency domain"},
+  Flag_AnalysisType = {2,  Choices{0="Static",  1="Time domain",  2="Frequency domain"},
     Name "Input/29Type of analysis", Highlight "Blue",
     Help Str["- Use 'Static' to compute static fields created in the machine",
       "- Use 'Time domain' to compute the dynamic response of the machine",
@@ -130,7 +130,7 @@ Function{
   Period = 1/Freq ; // Fundamental period in s
 
   DefineConstant[
-    Flag_ImposedSpeed = { 1, Choices{0="None", 1="Synchronous speed (no load)",
+    Flag_ImposedSpeed = { 0, Choices{0="None", 1="Synchronous speed (no load)",
         2="Choose speed"}, Name "Input/30Imposed rotor speed [rpm]",
       Highlight "Blue", Visible Flag_AnalysisType!=2},
     myrpm = { rpm_nominal, Name "Input/31Speed [rpm]", Highlight "AliceBlue",
@@ -139,18 +139,15 @@ Function{
       Highlight "AliceBlue", Visible (!Flag_ImposedSpeed && Flag_AnalysisType!=2) },
     Frict = { 0, Name "Input/33Friction torque [Nm]",
       Highlight "AliceBlue", Visible (!Flag_ImposedSpeed && Flag_AnalysisType!=2) },
-    timemax = {0.022, Name "Input/40Simulation time",
+    NbrPeriod = {10, Name "Input/40Total number of periods",
       Highlight "AliceBlue", Visible (Flag_AnalysisType==1)},
-    dtime = {0.0001, Name "Input/41Time steps size",
-      Highlight "AliceBlue", Visible (Flag_AnalysisType==1)},
-//    NbrPeriod = {10, Name "Input/40Total number of periods",
-//      Highlight "AliceBlue", Visible (Flag_AnalysisType==1)},
-//    NbSteps = {100, Name "Input/41Number of time steps per period",
-//      Highlight "AliceBlue", Visible (Flag_AnalysisType==1)}
-    NbTrelax = {2, Name "Input/04Number of periods with damping",
-      Highlight "AliceBlue", Visible 1}   // relaxation of applied voltage, for reducing the transient
+    NbSteps = {100, Name "Input/41Number of time steps per period",
+      Highlight "AliceBlue", Visible (Flag_AnalysisType==1)}
   ];
 
+
+  // relaxation of applied voltage, for reducing the transient
+  NbTrelax = 2 ; // Number of periods while relaxation is applied
   Trelax = NbTrelax*Period;
   Frelax[] = (!Flag_NL || Flag_AnalysisType==0 || $Time>Trelax) ? 1. :
              0.5*(1.-Cos[Pi*$Time/Trelax]) ; // smooth step function
@@ -165,9 +162,11 @@ Function{
   wr = (Flag_AnalysisType==2) ? (1-slip)*2*Pi*Freq/NbrPolePairs : rpm/60*2*Pi ; // angular rotor speed in rad_mec/s
 
   // imposed movement with fixed speed wr
-  delta_theta[] = (Flag_ImposedSpeed) ? (dtime*wr) : ($Position-$PreviousPosition); // angle step (in rad)
+  delta_time = Period/NbSteps; // time step in s
+  delta_theta[] = (Flag_ImposedSpeed) ? (delta_time*wr) : ($Position-$PreviousPosition); // angle step (in rad)
   time0 = 0.;                 // initial time in s
-  
+  timemax = NbrPeriod*Period;  // final time  in s
+
   sigma[ Rotor_Bars ] = (Flag_AnalysisType==2 ? slip : 1.)*sigma_bars ;
 
   Stator_PhaseArea[] = SurfaceArea[]{STATOR_IND_AP} + SurfaceArea[]{STATOR_IND_AM};
@@ -186,10 +185,6 @@ Function{
   ] ;
   VV = Vrms * Sqrt[2] ;
   II = Irms * Sqrt[2] ;
-
- Printf("VV[] = %g ", VV);
- Printf("Irms[] = %g ", Irms);
- Printf("II[] = %g ", II);
 
   Friction[] = Frict ;
   Torque_mec[] = Tmec ;
