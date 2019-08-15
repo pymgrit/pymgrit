@@ -697,7 +697,6 @@ Resolution {
 	DeleteFile[StrCat[ResDir,"P",ExtGnuplot]];
 	DeleteFile[StrCat[ResDir,"V",ExtGnuplot]];
 	DeleteFile[StrCat[ResDir,"Irotor",ExtGnuplot]];
-    Printf('blubb11111');
       EndIf
 
       If(Flag_AnalysisType==0 || Flag_AnalysisType==2)
@@ -707,9 +706,8 @@ Resolution {
 
         InitMovingBand2D[MB] ;
         MeshMovingBand2D[MB] ;
-        Printf('before2');
         InitSolution[A] ;
-        Printf('after2');
+
         If(Flag_ParkTransformation && Flag_SrcType_Stator==1)
           PostOperation[ThetaPark_IABC] ;
         EndIf
@@ -720,14 +718,12 @@ Resolution {
           IterativeLoop[Nb_max_iter, stop_criterion, relaxation_factor]{
             GenerateJac[A] ; SolveJac[A] ; }
         EndIf
-        Printf('point 1');
         //SaveSolution[A] ;
-        Printf('Point2');
+
+        //PostOperation[Get_LocalFields] ; // This is new
         If(Flag_PrintFields)
-            Printf('get_localfiels');
           PostOperation[Get_LocalFields] ;
         EndIf
-        Printf('get_globalfiels');
         PostOperation[Get_GlobalQuantities] ;
         If(Flag_AnalysisType==0)
           PostOperation[Get_Torque];
@@ -745,8 +741,7 @@ Resolution {
 
         If(!Flag_ImposedSpeed) // Full dynamics
           InitSolution[M];
-          InitSolution[M]; // Twice for avoiding warning (a = d_t^2 x)
-          PostOperation[Mechanical] ;
+	  InitSolution[M]; // Twice for avoiding warning (a = d_t^2 x)
         EndIf
         
         // take care of non-zero initial time
