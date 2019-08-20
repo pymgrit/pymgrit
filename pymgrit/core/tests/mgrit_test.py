@@ -1,10 +1,9 @@
 import unittest
 
 import numpy as np
-from mgrit import mgrit
-from mgrit import mgrit as solver
-from heat_equation import heat_equation
-from heat_equation import grid_transfer_copy
+from pymgrit.core import mgrit as solver
+from pymgrit.heat_equation import heat_equation
+from pymgrit.heat_equation import grid_transfer_copy
 
 
 class TestMgritFas(unittest.TestCase):
