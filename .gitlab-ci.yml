@@ -7,6 +7,7 @@ stages:
 cache:
   key: ${CI_COMMIT_SHA}
   paths:
+    - /var/cache/apt/archives
     - venv/
     - PyMGRIT.egg-info/
 
@@ -23,11 +24,13 @@ lint:
   stage: test
   allow_failure: true
   script:
+    - apt-get install -y openmpi-common openmpi-bin
     - source ./venv/bin/activate
     - pylint pymgrit/
 
 test:
   stage: test
   script:
+    - apt-get install -y openmpi-common openmpi-bin
     - source ./venv/bin/activate
     - python3 setup.py test
