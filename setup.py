@@ -1,16 +1,10 @@
-import os
-import sys
-import subprocess
-
-import setuptools
-from setuptools import setup, find_packages, Extension
-from setuptools.command.build_ext import build_ext
-from setuptools.command.test import test as TestCommand
+from setuptools import setup, find_packages
 
 install_requires = (
     'numpy>=1.17.0',
     'scipy>=1.3.0',
-    'mpi4py>=3.0'
+    'mpi4py>=3.0',
+    'pylint>=2.3.0'
 )
 
 
