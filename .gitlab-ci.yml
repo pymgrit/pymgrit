@@ -26,7 +26,7 @@ lint:
     - apt-get update
     - apt-get install -y openmpi-common openmpi-bin
     - source ./venv/bin/activate
-    - pylint pymgrit/
+    - ./venv/bin/pylint pymgrit/
 
 test:
   stage: test
