@@ -33,7 +33,14 @@ class Vector(ABC):
         pass
 
     @abstractmethod
-    def clone_zeros(self):
+    def init_rand(self):
+        """
+        Clones the solution construct with random values.
+        """
+        pass
+
+    @abstractmethod
+    def init_zero(self):
         """
         Clones the solution construct with all zeros.
         """

@@ -31,5 +31,11 @@ class VectorSystem(vector.Vector):
         tmp[-1] = self.current
         return la.norm(tmp)
 
-    def clone_zeros(self):
+    def init_zero(self):
         return VectorSystem(self.size)
+
+    def init_rand(self):
+        tmp = VectorSystem(self.size)
+        tmp.mvp = np.random.rand(self.size)
+        tmp.current = np.random.rand(1)[0]
+        return tmp

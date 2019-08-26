@@ -29,7 +29,7 @@ def main():
     problem = [heat0, heat1, heat2, heat3, heat4]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy(),
                 grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=5,
+    mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=False, it=5,
                          output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
     return mgrit.solve()
 

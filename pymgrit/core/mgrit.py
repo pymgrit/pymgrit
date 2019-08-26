@@ -140,15 +140,15 @@ class Mgrit:
             else:
                 self.v.append([])
                 self.g.append([])
-                self.v[-1] = [item.clone_zeros() for item in self.u[lvl]]
-                self.g[-1] = [item.clone_zeros() for item in self.u[lvl]]
+                self.v[-1] = [item.init_zero() for item in self.u[lvl]]
+                self.g[-1] = [item.init_zero() for item in self.u[lvl]]
             if lvl == self.lvl_max - 1:
                 for i in range(len(self.problem[lvl].t)):
                     if i == 0:
                         self.u_coarsest.append(copy.deepcopy(self.problem[lvl].u))
                     else:
-                        self.u_coarsest.append(self.problem[lvl].u.clone_zeros())
-                    self.g_coarsest.append(self.problem[lvl].u.clone_zeros())
+                        self.u_coarsest.append(self.problem[lvl].u.init_zero())
+                    self.g_coarsest.append(self.problem[lvl].u.init_zero())
 
         self.setup_comm_info()
 
@@ -180,7 +180,10 @@ class Mgrit:
         """
         self.u.append([object] * self.block_size_this_lvl[lvl])
         for i in range(len(self.u[lvl])):
-            self.u[lvl][i] = self.problem[lvl].u.clone_zeros()
+            if lvl == 0:
+                self.u[lvl][i] = self.problem[lvl].u.init_rand()
+            else:
+                self.u[lvl][i] = self.problem[lvl].u.init_zero()
         if self.comm_time_rank == 0:
             self.u[lvl][0] = copy.deepcopy(self.problem[lvl].u)
 

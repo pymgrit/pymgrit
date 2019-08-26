@@ -57,5 +57,19 @@ class VectorMachine(vector.Vector):
         tmp = np.append(tmp, [self.jl, self.ua, self.ub, self.uc, self.ia, self.ib, self.ic])
         return la.norm(tmp)
 
-    def clone_zeros(self):
+    def init_zero(self):
         return VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
+
+    def init_rand(self):
+        tmp = VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
+        self.u_front = np.random.rand(len(self.u_front))
+        self.u_back = np.random.rand(len(self.u_back))
+        self.u_middle = np.random.rand(len(self.u_middle))
+        self.jl = np.random.rand(1)[0]
+        self.ua = np.random.rand(1)[0]
+        self.ub = np.random.rand(1)[0]
+        self.uc = np.random.rand(1)[0]
+        self.ia = np.random.rand(1)[0]
+        self.ib = np.random.rand(1)[0]
+        self.ic = np.random.rand(1)[0]
+        return tmp
