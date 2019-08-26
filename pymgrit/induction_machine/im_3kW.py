@@ -8,8 +8,12 @@ class InductionMachine(application.Application):
     """
     """
 
-    def __init__(self, nonlinear, pwm, grid, *args, **kwargs):
+    def __init__(self, nonlinear, pwm, grid, t=None, *args, **kwargs):
         super(InductionMachine, self).__init__(*args, **kwargs)
+
+        if t is not None:
+            self.t = t
+
         path = '/'.join(__file__.split('/')[:-1])
         self.pro_path = path + '/im_3kW/im_3kW.pro'
         self.getdp_path = path + '/getdp/getdp'
@@ -34,6 +38,8 @@ class InductionMachine(application.Application):
                                               u_back_size=self.further_unknowns_back,
                                               u_middle_size=len(un_to_cor))
 
+        self.count_solves = 0
+
     def step(self, u_start: vector_machine.VectorMachine, t_start: float,
              t_stop: float) -> vector_machine.VectorMachine:
         """
@@ -46,6 +52,7 @@ class InductionMachine(application.Application):
         tmp = np.append(u_start.u_front, u_start.u_middle)
         tmp = np.append(tmp, u_start.u_back)
 
+        self.gopt = {'Verbose': 0, 'TimeStep': (t_stop - t_start), 'Executable': self.getdp_path}
         soli = self.odegetdp(self.pro_path, np.array([t_start, t_stop]), tmp,
                              self.gopt, self.fopt, self.mesh)
         ret = vector_machine.VectorMachine(u_front_size=u_start.u_front_size,
@@ -61,6 +68,7 @@ class InductionMachine(application.Application):
         ret.ua = soli['ua'][-1]
         ret.ub = soli['ub'][-1]
         ret.uc = soli['uc'][-1]
+        self.count_solves += 1
         return ret
 
     @staticmethod

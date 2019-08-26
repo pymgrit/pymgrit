@@ -93,7 +93,9 @@ class MgritMachine(mgrit.Mgrit):
             for i in np.nditer(self.index_local_c[0]):
                 new[j] = self.u[0][i].jl
                 j = j + 1
-            tmp = np.max(np.abs(new - self.last_it))
+            tmp = 100 * np.max(
+                np.abs(np.abs(np.divide((new - self.last_it), new, out=np.zeros_like(self.last_it), where=new != 0))))
+            # tmp = np.max(np.abs(new - self.last_it))
 
         tmp = self.comm_time.allgather(tmp)
         self.conv[it] = np.max(np.abs(tmp))

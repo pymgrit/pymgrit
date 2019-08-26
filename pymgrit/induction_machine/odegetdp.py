@@ -5,6 +5,8 @@ import tempfile
 import warnings
 import os
 from subprocess import PIPE
+import time
+from shutil import copyfile
 
 
 def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
@@ -97,6 +99,7 @@ def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
         ib_file = os.path.join(tmpdir, 'resIb.dat')
         ic_file = os.path.join(tmpdir, 'resIc.dat')
 
+        # start = time.time()
         # Do preprocessing step
         exe_string = [getdpopts['Executable'],
                       fun,
@@ -123,9 +126,11 @@ def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
         if status.returncode:
             raise Exception('odegetdp: preprocessing failed')
 
+        # print('pre', time.time()-start)
         # check if init is correct
         numdof = np.size(init)
         numpres = get_preresolution(prefile)
+
         if numdof != np.sum(numpres):
             warnings.warn(
                 'odegetdp: INIT has wrong size: ' + str(numdof) + ' instead of ' + str(numpres) + ': ' + prefile)
@@ -148,12 +153,12 @@ def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
                       '-setnumber dtime', str(getdpopts['TimeStep']),
                       '-setstring ResDir', resdir,
                       funargstr]
-
+        # start = time.time()
         if getdpopts['Verbose'] == 1:
             status = subprocess.run(' '.join(exe_string), shell=True)
         else:
             status = subprocess.run(' '.join(exe_string), shell=True, stdout=PIPE, stderr=PIPE)
-
+        # print('solve', time.time()-start)
         if status.returncode:
             raise Exception('odegetdp: solving failed')
 
@@ -174,7 +179,7 @@ def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
     return ret_value
 
 
-def set_resolution(file, t, x, numdofs):
+def set_resolution_old(file, t, x, numdofs):
     with open(file, "w") as fid:
         # get positions of dofdata in x vector
         dofpos = np.cumsum([0, numdofs])
@@ -189,6 +194,24 @@ def set_resolution(file, t, x, numdofs):
                 y = x[dofpos[k]: dofpos[k + 1]]
                 fid.write("\n".join(" ".join(map(str, line)) for line in np.vstack((np.real(y), np.imag(x))).T))
                 fid.write('\n$EndSolution\n')
+    if np.max(np.isnan(x)) or np.max(np.isnan(t)):
+        warnings.warn('odegetdp: something went wrong')
+
+
+def set_resolution(file, t, x, numdofs):
+    dofpos = np.cumsum([0, numdofs])
+    com_str = ['$ResFormat /* GetDP 2.10.0, ascii */', '1.1 0', '$EndResFormat']
+
+    for j in range(np.size(t)):
+        for k in range(np.size(numdofs)):
+            com_str.append('$Solution  /* DofData #' + str(k) + ' */')
+            com_str.append(str(k) + ' ' + str(t) + ' 0 ' + str(j))
+            y = x[dofpos[k]: dofpos[k + 1]]
+            com_str.append("\n".join(" ".join(map(str, line)) for line in np.vstack((np.real(y), np.imag(x))).T))
+            com_str.append('$EndSolution\n')
+
+    with open(file, "w") as fid:
+        fid.write("\n".join(com_str))
     if np.max(np.isnan(x)) or np.max(np.isnan(t)):
         warnings.warn('odegetdp: something went wrong')
 
