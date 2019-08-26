@@ -67,6 +67,10 @@ class Mgrit:
         self.comm_time_rank = self.comm_time.Get_rank()
         self.comm_time_size = self.comm_time.Get_size()
 
+        if self.comm_time_size> len(problem[0].t):
+            raise Exception('More processors than time points. Not useful and not implemented yet')
+
+
         if self.comm_space != MPI.COMM_NULL:
             self.spatial_parallel = True
             self.comm_space_rank = self.comm_space.Get_rank()
