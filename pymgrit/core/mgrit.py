@@ -227,10 +227,12 @@ class Mgrit:
         tmp_send = False
         req_s = None
         rank = self.comm_time_rank
+        run = 0
         if len(self.index_local_f[lvl]) > 0:
             for i in np.nditer(self.index_local_f[lvl]):
-                if i == np.min(self.index_local_f[lvl]) and self.comm_front[lvl]:
+                if self.comm_front[lvl] and i == np.min(self.index_local_f[lvl]):
                     self.u[lvl][0] = self.comm_time.recv(source=self.get_from[lvl], tag=rank)
+                time_loop = time.time()
                 if lvl == 0:
                     self.u[lvl][i] = self.step[lvl](u_start=self.u[lvl][i - 1],
                                                     t_start=self.t[lvl][i - 1],
@@ -239,13 +241,16 @@ class Mgrit:
                     self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
                                                                      t_start=self.t[lvl][i - 1],
                                                                      t_stop=self.t[lvl][i])
-                if i == np.max(self.index_local_f[lvl]) and self.comm_back[lvl]:
+                run += (time.time() - time_loop)
+                if self.comm_back[lvl] and i == np.max(self.index_local_f[lvl]):
                     tmp_send = True
                     req_s = self.comm_time.isend(self.u[lvl][-1], dest=self.send_to[lvl], tag=self.send_to[lvl])
         if tmp_send:
             req_s.wait()
 
-        logging.debug(f"F-relax on {rank} took {time.time() - runtime_f} s")
+        logging.debug(
+            f"Time per solve {rank} took {run / len(self.index_local_f[lvl]) if len(self.index_local_f[lvl]) > 0 else 0} s")
+        # logging.debug(f"F-relax on {rank} took {time.time() - runtime_f} s")
 
     def c_relax(self, lvl: int) -> None:
         """
@@ -263,7 +268,7 @@ class Mgrit:
                         self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
                                                                          t_start=self.t[lvl][i - 1],
                                                                          t_stop=self.t[lvl][i])
-        logging.debug(f"C-relax on {self.comm_time_rank} took {time.time() - runtime_c} s")
+        # logging.debug(f"C-relax on {self.comm_time_rank} took {time.time() - runtime_c} s")
 
     def convergence_criteria(self, it: int) -> None:
         """
@@ -312,7 +317,7 @@ class Mgrit:
         val = val ** 0.5
         self.conv[it] = val
 
-        logging.debug(f"Convergence criteria on {self.comm_time_rank} took {time.time() - runtime_conv} s")
+        # logging.debug(f"Convergence criteria on {self.comm_time_rank} took {time.time() - runtime_conv} s")
 
     def forward_solve(self, lvl: int) -> None:
         """
@@ -332,7 +337,7 @@ class Mgrit:
             if self.comm_time_rank != 0:
                 self.u[lvl] = [self.u[lvl][0]] + self.u[lvl]
 
-        logging.debug(f"Forward solve on {self.comm_time_rank} took {time.time() - runtime_fs} s")
+        # logging.debug(f"Forward solve on {self.comm_time_rank} took {time.time() - runtime_fs} s")
 
     def get_c_point(self, lvl: int) -> application.Application:
         """
@@ -357,7 +362,7 @@ class Mgrit:
 
     def fas_residual(self, lvl: int) -> None:
         """
-        Inject the fine grid approximation and its esidual to the coarse grid
+        Inject the fine grid approximation and its residual to the coarse grid
         :param lvl: the corresponding MGRIT level
         """
         runtime_fas_res = time.time()
@@ -405,7 +410,7 @@ class Mgrit:
                 self.g_coarsest = [item for sublist in tmp_g for item in sublist]
                 self.u_coarsest = [item for sublist in tmp_u for item in sublist]
 
-        logging.debug(f"Fas residual on {self.comm_time_rank} took {time.time() - runtime_fas_res} s")
+        # logging.debug(f"Fas residual on {self.comm_time_rank} took {time.time() - runtime_fas_res} s")
 
     def nested_iteration(self) -> None:
         """
@@ -424,17 +429,21 @@ class Mgrit:
                 self.iteration(lvl, 'V', 0, True)
 
     def ouput_run_informations(self):
-        mes = 'Run parameter overview \n \n'
-        mes += '{0: <25}'.format(f'interval') + ' : ' + '[' + str(self.problem[0].t[0]) + ', ' + str(
-            self.problem[0].t[-1]) + '] \n'
-        mes += '{0: <25}'.format(f'number points ') + ' : ' + str(len(self.problem[0].t)) + ' points \n'
-        mes += '{0: <25}'.format(f'level') + ' : ' + str(self.lvl_max) + ' \n'
-        mes += '{0: <25}'.format(f'coarsening') + ' : ' + str(self.m) + ' \n'
-        mes += '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter) + ' \n'
-        mes += '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it) + ' \n'
-        mes += '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type) + ' \n'
-        mes += '{0: <25}'.format(f'stopping tolerance') + ' : ' + str(self.tol)
-        self.log_info(message=mes)
+        msg = ['Run parameter overview \n',
+               '{0: <25}'.format(f'interval') + ' : ' + '[' + str(self.problem[0].t[0]) + ', ' + str(
+                   self.problem[0].t[-1]) + ']',
+               '{0: <25}'.format(f'number points ') + ' : ' + str(len(self.problem[0].t)) + ' points',
+               '{0: <25}'.format(f'max dt ') + ' : ' + str(
+                   np.max(self.problem[0].t[1:] - self.problem[0].t[:-1])),
+               '{0: <25}'.format(f'level') + ' : ' + str(self.lvl_max),
+               '{0: <25}'.format(f'coarsening') + ' : ' + str(self.m),
+               '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter),
+               '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it),
+               '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type),
+               '{0: <25}'.format(f'stopping tolerance') + ' : ' + str(self.tol),
+               '{0: <25}'.format(f'communicator size time') + ' : ' + str(self.comm_time_size),
+               '{0: <25}'.format(f'communicator size space') + ' : ' + str(self.comm_space_size)]
+        self.log_info(message='\n'.join(msg))
 
     def f_exchange(self, lvl: int) -> None:
         """
@@ -447,7 +456,7 @@ class Mgrit:
             self.u[lvl][0] = self.comm_time.recv(source=self.get_from[lvl], tag=rank)
         if self.last_is_f_point[lvl]:
             self.comm_time.send(self.u[lvl][-1], dest=self.send_to[lvl], tag=self.send_to[lvl])
-        logging.debug(f"Exchange on {self.comm_time_rank} took {time.time() - runtime_ex} s")
+        # logging.debug(f"Exchange on {self.comm_time_rank} took {time.time() - runtime_ex} s")
 
     def c_exchange(self, lvl: int) -> None:
         """
@@ -460,7 +469,7 @@ class Mgrit:
             self.u[lvl][0] = self.comm_time.recv(source=self.get_from[lvl], tag=rank)
         if self.last_is_c_point[lvl]:
             self.comm_time.send(self.u[lvl][-1], dest=self.send_to[lvl], tag=self.send_to[lvl])
-        logging.debug(f"Exchange on {self.comm_time_rank} took {time.time() - runtime_ex} s")
+        # logging.debug(f"Exchange on {self.comm_time_rank} took {time.time() - runtime_ex} s")
 
     def solve(self) -> dict:
         """
