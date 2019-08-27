@@ -1,9 +1,9 @@
 from mpi4py import MPI
 
-def split_commworld(comm, px):
 
+def split_commworld(comm, px):
     rank = comm.Get_rank()
-    xcolor = rank //px
+    xcolor = rank // px
     tcolor = rank % px
 
     comm_x = comm.Split(color=xcolor, key=rank)
@@ -11,8 +11,8 @@ def split_commworld(comm, px):
 
     return comm_x, comm_t
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     comm_world = MPI.COMM_WORLD
     rank = comm_world.Get_rank()
     size = comm_world.Get_size()
@@ -24,4 +24,4 @@ if __name__ == '__main__':
     rank_t = comm_t.Get_rank()
     size_t = comm_t.Get_size()
 
-    print('Global', rank, '/', size, 'time', rank_t, '/', size_t , 'space',rank_x, '/', size_x )
+    print('Global', rank, '/', size, 'time', rank_t, '/', size_t, 'space', rank_x, '/', size_x)

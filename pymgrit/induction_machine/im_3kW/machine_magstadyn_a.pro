@@ -277,18 +277,19 @@ Function {
       EndIf
       If(Flag_PWM) // PWM excitation
         fm = Freq;
-        Printf("kooli fm[] = %g ", fm);
+        Printf("Freq fm[] = %g ", fm);
         fc = FreqPWM;
-        Printf("kooli fc[] = %g ", fc);
+        Printf("FreqPWM fc[] = %g ", fc);
         mf = fc/fm;
-        Printf("kooli[] = %g ", mf);
+        Printf("fc/fm[] = %g ", mf);
         Pm = 1/fm;
         Pc = 1/fc;
         ns = 480 * mf; //1000 number of samples 
         ma = modulationFactor; // 0.8;
         Ac = 1;
         Am = ma * Ac;      
-        
+        Printf("modulationFactor[] = %g ", modulationFactor);
+
         phase_m_A = pA;
         phase_m_B = pB;
         phase_m_C = pC;

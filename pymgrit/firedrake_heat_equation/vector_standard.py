@@ -25,5 +25,10 @@ class VectorStandard(vector.Vector):
     def norm(self):
         return la.norm(self.vec)
 
-    def clone_zeros(self):
+    def init_zero(self):
         return VectorStandard(self.size)
+
+    def init_rand(self):
+        tmp = VectorStandard(self.size)
+        tmp.vec = np.random.rand(self.size)
+        return tmp

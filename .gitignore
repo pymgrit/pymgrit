@@ -5,6 +5,8 @@ results/
 private/
 cluster_runs/
 venv/
+._sync_*
+.owncloudsync*
 
 # Jetbrains
 .idea/
@@ -134,3 +136,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+Würde ._sync_b8ec1e83e7a1.db löschen
+Würde ._sync_b8ec1e83e7a1.db-shm löschen
+Würde test.py löschen

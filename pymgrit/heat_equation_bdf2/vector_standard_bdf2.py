@@ -28,5 +28,11 @@ class VectorStandardBDF2(vector.Vector):
     def norm(self):
         return la.norm(np.append(self.vec_first_time_point, self.vec_second_time_point))
 
-    def clone_zeros(self):
+    def init_zero(self):
         return VectorStandardBDF2(self.size)
+
+    def init_rand(self):
+        tmp = VectorStandardBDF2(self.size)
+        tmp.vec_first_time_point = np.random.rand(self.size)
+        tmp.vec_second_time_point = np.random.rand(self.size)
+        return tmp
