@@ -9,8 +9,11 @@ def main():
     def output_fcn(self):
         name = 'advection_equation'
         pathlib.Path('results/' + name + '/' + str(self.solve_iter)).mkdir(parents=True, exist_ok=True)
-        sol = {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
-               't': self.problem[0].t, 'time_setup': self.runtime_setup}
+        u_vec = np.zeros((self.problem[0].nt, self.problem[0].nx))
+        for i in range(self.problem[0].nt):
+            u_vec[i] = self.u[0][i].vec
+        sol = {'u': [self.u[0][i].vec for i in self.index_local[0]], 'u_vec': u_vec, 't': self.problem[0].t,
+               'time': self.runtime_solve, 'conv': self.conv}
 
         np.save('results/' + name + '/' + str(self.solve_iter) + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),
                 sol)
