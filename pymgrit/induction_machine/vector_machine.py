@@ -5,9 +5,16 @@ from scipy import linalg as la
 
 class VectorMachine(vector.Vector):
     """
+    Solution vector for the machine
     """
 
     def __init__(self, u_front_size, u_middle_size, u_back_size):
+        """
+        One vector contains grid information and additional information about the current, voltage and joule losses
+        :param u_front_size:
+        :param u_middle_size:
+        :param u_back_size:
+        """
         super(VectorMachine, self).__init__()
         self.u_front_size = u_front_size
         self.u_middle_size = u_middle_size
@@ -24,6 +31,11 @@ class VectorMachine(vector.Vector):
         self.ic = 0
 
     def __add__(self, other):
+        """
+        Addition
+        :param other:
+        :return:
+        """
         tmp = VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
         tmp.u_front = self.u_front + other.u_front
         tmp.u_back = self.u_back + other.u_back
@@ -38,6 +50,11 @@ class VectorMachine(vector.Vector):
         return tmp
 
     def __sub__(self, other):
+        """
+        Subtraction
+        :param other:
+        :return:
+        """
         tmp = VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
         tmp.u_front = self.u_front - other.u_front
         tmp.u_back = self.u_back - other.u_back
@@ -52,15 +69,27 @@ class VectorMachine(vector.Vector):
         return tmp
 
     def norm(self):
+        """
+        Norm
+        :return:
+        """
         tmp = np.append(self.u_front, self.u_middle)
         tmp = np.append(tmp, self.u_back)
         tmp = np.append(tmp, [self.jl, self.ua, self.ub, self.uc, self.ia, self.ib, self.ic])
         return la.norm(tmp)
 
     def init_zero(self):
+        """
+        Initial solution vector with all zeros
+        :rtype: object
+        """
         return VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
 
     def init_rand(self):
+        """
+        Initial solution vector with random values
+        :rtype: object
+        """
         tmp = VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
         self.u_front = np.random.rand(len(self.u_front))
         self.u_back = np.random.rand(len(self.u_back))

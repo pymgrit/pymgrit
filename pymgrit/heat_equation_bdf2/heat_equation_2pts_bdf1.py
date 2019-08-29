@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
+
 from pymgrit.core import application
 from pymgrit.heat_equation_bdf2 import vector_standard_bdf2
 

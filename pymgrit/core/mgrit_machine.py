@@ -1,9 +1,8 @@
-from pymgrit.core import mgrit
 import numpy as np
 import logging
 import time
-import pathlib
-import datetime
+
+from pymgrit.core import mgrit
 
 
 class MgritMachine(mgrit.Mgrit):

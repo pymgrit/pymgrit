@@ -1,8 +1,9 @@
-from pymgrit.core import mgrit as solver
-from pymgrit.cable_current_driven import cable_current_driven
-from pymgrit.cable_current_driven import grid_transfer_copy
 import pathlib
 import numpy as np
+
+from pymgrit.core import mgrit as solver
+from pymgrit.core import grid_transfer_copy
+from pymgrit.cable_current_driven import cable_current_driven
 
 
 def main():

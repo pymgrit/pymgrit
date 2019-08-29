@@ -1,9 +1,10 @@
-from pymgrit.core import mgrit as solver
-from pymgrit.heat_equation_bdf2 import grid_transfer_copy
-from pymgrit.heat_equation_bdf2 import heat_equation_2pts_bdf2
-from pymgrit.heat_equation_bdf2 import heat_equation_2pts_bdf1
 import numpy as np
 import pathlib
+
+from pymgrit.core import mgrit as solver
+from pymgrit.core import grid_transfer_copy
+from pymgrit.heat_equation_bdf2 import heat_equation_2pts_bdf2
+from pymgrit.heat_equation_bdf2 import heat_equation_2pts_bdf1
 
 
 def main():

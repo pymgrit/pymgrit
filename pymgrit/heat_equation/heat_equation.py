@@ -1,8 +1,9 @@
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
+
 from pymgrit.core import application
-from pymgrit.heat_equation import vector_standard
+from pymgrit.core import vector_standard
 
 
 class HeatEquation(application.Application):
@@ -29,6 +30,7 @@ class HeatEquation(application.Application):
 
         self.u = vector_standard.VectorStandard(self.nx)  # Create initial value solution
         self.u.vec = self.u_exact(self.x, 0)  # Set initial value
+        self.count_solves = 0
 
     @staticmethod
     def heat_sparse(nx, fac):
@@ -102,4 +104,5 @@ class HeatEquation(application.Application):
         tmp = spsolve(self.a, tmp + self.f(self.x, t_stop) * (t_stop - t_start))
         ret = vector_standard.VectorStandard(u_start.size)
         ret.vec = tmp
+        self.count_solves += 1
         return ret

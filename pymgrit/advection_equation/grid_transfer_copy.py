@@ -1,5 +1,6 @@
-from pymgrit.core import grid_transfer
 import copy
+
+from pymgrit.core import grid_transfer
 
 
 class GridTransferCopy(grid_transfer.GridTransfer):

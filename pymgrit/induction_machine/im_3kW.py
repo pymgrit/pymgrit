@@ -1,18 +1,18 @@
-from pymgrit.core import application
 import numpy as np
+from typing import Tuple, List, Dict
+
+from pymgrit.core import application
 from pymgrit.induction_machine import odegetdp
 from pymgrit.induction_machine import vector_machine
 
 
 class InductionMachine(application.Application):
     """
+    Simulating an induction machine using the model... TODO
     """
 
-    def __init__(self, nonlinear, pwm, grid, t=None, *args, **kwargs):
+    def __init__(self, nonlinear, pwm, grid, *args, **kwargs):
         super(InductionMachine, self).__init__(*args, **kwargs)
-
-        if t is not None:
-            self.t = t
 
         path = '/'.join(__file__.split('/')[:-1])
         self.pro_path = path + '/im_3kW/im_3kW.pro'
@@ -43,7 +43,7 @@ class InductionMachine(application.Application):
     def step(self, u_start: vector_machine.VectorMachine, t_start: float,
              t_stop: float) -> vector_machine.VectorMachine:
         """
-
+        Perform one time step
         :param u_start:
         :param t_start:
         :param t_stop:
@@ -52,7 +52,6 @@ class InductionMachine(application.Application):
         tmp = np.append(u_start.u_front, u_start.u_middle)
         tmp = np.append(tmp, u_start.u_back)
 
-        self.gopt = {'Verbose': 0, 'TimeStep': (t_stop - t_start), 'Executable': self.getdp_path}
         soli = self.odegetdp(self.pro_path, np.array([t_start, t_stop]), tmp,
                              self.gopt, self.fopt, self.mesh)
         ret = vector_machine.VectorMachine(u_front_size=u_start.u_front_size,
@@ -72,7 +71,12 @@ class InductionMachine(application.Application):
         return ret
 
     @staticmethod
-    def pre_file(file):
+    def pre_file(file: str) -> Tuple[Dict, Dict, List]:
+        """
+        Read prefile and return mapping between nodes
+        :param file:
+        :return:
+        """
         with open(file) as f:
             content = f.readlines()
 

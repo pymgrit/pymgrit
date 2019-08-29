@@ -1,6 +1,7 @@
 import numpy as np
-from pymgrit.core import vector
 from scipy import linalg as la
+
+from pymgrit.core import vector
 
 
 class VectorStandard(vector.Vector):

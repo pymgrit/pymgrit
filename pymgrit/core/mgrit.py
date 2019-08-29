@@ -7,6 +7,7 @@ import logging
 import copy
 import sys
 from typing import Tuple, List
+
 from pymgrit.core import application
 from pymgrit.core import grid_transfer
 
@@ -61,15 +62,24 @@ class Mgrit:
         if output_lvl not in [0, 1, 2]:
             raise Exception("Unknown output level. Choose 0, 1 or 2.")
 
+        for lvl in range(1, len(problem)):
+            # if len(problem[lvl - 1].t) / int((len(problem[lvl - 1].t) - 1) / (len(problem[lvl].t) - 1)) > len(
+            #         problem[lvl].t):
+            #     raise Exception('More C points on level ' + str(lvl - 1) + ' than points on level' + str(lvl))
+            for time_point in problem[lvl].t:
+                if np.count_nonzero(problem[lvl - 1].t == time_point) != 1:
+                    raise Exception(
+                        'Point ' + str(time_point) + ' from level ' + str(lvl - 1) + ' is not a point of level ' + str(
+                            lvl))
+
         runtime_setup_start = time.time()
         self.comm_time = comm_time
         self.comm_space = comm_space
         self.comm_time_rank = self.comm_time.Get_rank()
         self.comm_time_size = self.comm_time.Get_size()
 
-        if self.comm_time_size> len(problem[0].t):
+        if self.comm_time_size > len(problem[0].t):
             raise Exception('More processors than time points. Not useful and not implemented yet')
-
 
         if self.comm_space != MPI.COMM_NULL:
             self.spatial_parallel = True
@@ -433,7 +443,7 @@ class Mgrit:
             self.f_exchange(lvl)
             self.c_exchange(lvl)
             if lvl > 0:
-                self.iteration(lvl, 'V', 0, True)
+                self.iteration(lvl=lvl, cycle_type='V', iteration=0, first_f=True)
 
     def ouput_run_informations(self):
         msg = ['Run parameter overview \n',

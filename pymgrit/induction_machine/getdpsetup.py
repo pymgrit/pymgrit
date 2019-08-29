@@ -5,12 +5,11 @@ import tempfile
 import warnings
 import os
 from subprocess import PIPE
+import time
+from shutil import copyfile
 
 
-# import time
-
-
-def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
+def odegetdp(fun, trange, varargin, dir, fargin=None, mesh=None):
     if fargin is None:
         fargin = []
 
@@ -24,9 +23,6 @@ def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
         raise Exception('Octave:invalid-input-arg', 'odegetp: TRANGE must contain at least 2 elements')
     if trange[0] >= trange[1]:
         raise Exception('Octave:invalid-input-arg', 'odegetp: invalid time span, TRANGE(1) >= TRANGE(2)')
-
-    if not isnumeric(init) or not isinstance(init, np.ndarray) or any(np.isnan(init)):
-        raise Exception('Octave:invalid-input-arg', 'odegetp: INIT must be a numeric vector')
 
     # Check if model exists
     if not isinstance(fun, str):
@@ -113,12 +109,6 @@ def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
                       '-setstring ResDir', resdir,
                       funargstr]
 
-        # Error and debug output
-        # if getdpopts['Verbose'] == 1:
-        #     status = subprocess.run(exe_string)
-        # else:
-        #     status = subprocess.run(exe_string, stdout=PIPE, stderr=PIPE)
-
         if getdpopts['Verbose'] == 1:
             status = subprocess.run(' '.join(exe_string), shell=True)
         else:
@@ -127,57 +117,9 @@ def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):
         if status.returncode:
             raise Exception('odegetdp: preprocessing failed')
 
-        # print('pre', time.time()-start)
-        # check if init is correct
-        numdof = np.size(init)
-        numpres = get_preresolution(prefile)
+        copyfile(prefile, os.path.join(dir, str(trange[1])))
 
-        if numdof != np.sum(numpres):
-            warnings.warn(
-                'odegetdp: INIT has wrong size: ' + str(numdof) + ' instead of ' + str(numpres) + ': ' + prefile)
-
-        # Create initial data
-        set_resolution(resfile, trange[0], init, numdof)
-
-        # Choose PostOperation
-        if 'PostOperation' in getdpopts:
-            funargstr = funargstr + ' -pos ' + getdpopts.PostOperation
-
-        # Launch GetDP to get solution and postproc
-        exe_string = [getdpopts['Executable'],
-                      fun,
-                      '-restart',
-                      '-msh', mshfile,
-                      '-name', tmpname,
-                      '-res', resfile,
-                      '-setnumber timemax', str(trange[1]),
-                      '-setnumber dtime', str(getdpopts['TimeStep']),
-                      '-setstring ResDir', resdir,
-                      funargstr]
-        # start = time.time()
-        if getdpopts['Verbose'] == 1:
-            status = subprocess.run(' '.join(exe_string), shell=True)
-        else:
-            status = subprocess.run(' '.join(exe_string), shell=True, stdout=PIPE, stderr=PIPE)
-        # print('solve', time.time()-start)
-        if status.returncode:
-            raise Exception('odegetdp: solving failed')
-
-        # Read results
-        t, y = getdp_read_resolution(resfile, numdof)
-        jl = get_values_from(joule_file)
-        ia = get_values_from(ia_file)
-        ib = get_values_from(ib_file)
-        ic = get_values_from(ic_file)
-        ua = get_values_from(ua_file)
-        ub = get_values_from(ub_file)
-        uc = get_values_from(uc_file)
-
-    # Return solution
-    ret_value = {'x': t, 'y': y, 'jl': jl, 'solver': 'odegetdp', 'version': getdpver, 'TempName': tmpname, 'ia': ia,
-                 'ib': ib, 'ic': ic, 'ua': ua, 'ub': ub, 'uc': uc}
-
-    return ret_value
+    return
 
 
 def set_resolution_old(file, t, x, numdofs):
