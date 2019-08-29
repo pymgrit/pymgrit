@@ -61,13 +61,15 @@ class Mgrit:
         if output_lvl not in [0, 1, 2]:
             raise Exception("Unknown output level. Choose 0, 1 or 2.")
 
-        for lvl in range(len(problem)):
-            if lvl < len(problem) - 1:
-                if (len(problem[lvl].t) - 1) % (len(problem[lvl + 1].t) - 1) != 0:
+        for lvl in range(1, len(problem)):
+            # if len(problem[lvl - 1].t) / int((len(problem[lvl - 1].t) - 1) / (len(problem[lvl].t) - 1)) > len(
+            #         problem[lvl].t):
+            #     raise Exception('More C points on level ' + str(lvl - 1) + ' than points on level' + str(lvl))
+            for time_point in problem[lvl].t:
+                if np.count_nonzero(problem[lvl - 1].t == time_point) != 1:
                     raise Exception(
-                        'Coarsening factor of ' + str(
-                            (len(problem[lvl].t) - 1) / (len(problem[lvl + 1].t) - 1)) + ' from level ' + str(
-                            lvl) + ' to ' + str(lvl + 1) + '. Has to be integer')
+                        'Point ' + str(time_point) + ' from level ' + str(lvl - 1) + ' is not a point of level ' + str(
+                            lvl))
 
         runtime_setup_start = time.time()
         self.comm_time = comm_time
@@ -440,7 +442,7 @@ class Mgrit:
             self.f_exchange(lvl)
             self.c_exchange(lvl)
             if lvl > 0:
-                self.iteration(lvl, 'V', 0, True)
+                self.iteration(lvl=lvl, cycle_type='V', iteration=0, first_f=True)
 
     def ouput_run_informations(self):
         msg = ['Run parameter overview \n',
