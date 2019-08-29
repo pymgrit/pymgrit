@@ -12,7 +12,7 @@ def split_commworld(comm, px):
     return comm_x, comm_t
 
 
-if __name__ == '__main__':
+def test():
     comm_world = MPI.COMM_WORLD
     rank = comm_world.Get_rank()
     size = comm_world.Get_size()
@@ -25,3 +25,7 @@ if __name__ == '__main__':
     size_t = comm_t.Get_size()
 
     print('Global', rank, '/', size, 'time', rank_t, '/', size_t, 'space', rank_x, '/', size_x)
+
+
+if __name__ == '__main__':
+    test()

@@ -1,7 +1,9 @@
-from pymgrit.core import grid_transfer
 import copy
 import numpy as np
 import scipy.spatial.qhull as qhull
+from typing import Tuple, List, Dict
+
+from pymgrit.core import grid_transfer
 
 
 class GridTransferMachine(grid_transfer.GridTransfer):
@@ -10,6 +12,7 @@ class GridTransferMachine(grid_transfer.GridTransfer):
 
     def __init__(self, coarse_grid, fine_grid):
         """
+        Constructor. Compute the transfer grid between both given grids in both directions.
         """
         super(GridTransferMachine, self).__init__()
         path = '/'.join(__file__.split('/')[:-1]) + '/im_3kW/'
@@ -24,11 +27,21 @@ class GridTransferMachine(grid_transfer.GridTransfer):
         self.transfer_data = self.interpolation_factors(data_coarse=data_coarse, data_fine=data_fine)
 
     def restriction(self, u):
+        """
+        Restriction
+        :param u:
+        :return:
+        """
         ret = copy.deepcopy(u)
         ret.u_middle = ret.u_middle[:self.transfer_data['sizeLvlStart']]
         return ret
 
     def interpolation(self, u):
+        """
+        Interpolation
+        :param u:
+        :return:
+        """
         ret = copy.deepcopy(u)
 
         new_middle = np.zeros(self.transfer_data['sizeLvlStop'] - self.transfer_data['sizeLvlStart'])
@@ -47,7 +60,15 @@ class GridTransferMachine(grid_transfer.GridTransfer):
 
         return ret
 
-    def compute_data(self, pre, msh, new_unknown_start, inner_r=0.04568666666666668):
+    def compute_data(self, pre: str, msh: str, new_unknown_start: int, inner_r: float = 0.04568666666666668) -> Dict:
+        """
+        Compute grids information
+        :param pre:
+        :param msh:
+        :param new_unknown_start:
+        :param inner_r:
+        :return:
+        """
         cor_to_un, un_to_cor, boundary = self.pre_file(pre)
         nodes, nodes_r = self.get_nodes(msh)
         lines, elements, lines_r, elements_r = self.get_elements(msh)
@@ -68,7 +89,18 @@ class GridTransferMachine(grid_transfer.GridTransfer):
         return data
 
     @staticmethod
-    def compute_mesh_transfer(values, vtx, wts, dif, dif2, fill_value=np.nan):
+    def compute_mesh_transfer(values: np.ndarray, vtx: np.ndarray, wts: np.ndarray, dif: int, dif2: int,
+                              fill_value: float = np.nan) -> np.ndarray:
+        """
+        Computes the mesh transfer
+        :param values:
+        :param vtx:
+        :param wts:
+        :param dif:
+        :param dif2:
+        :param fill_value:
+        :return:
+        """
         work = np.append(values, np.zeros(dif))
         ret = np.einsum('nj,nj->n', np.take(work, vtx), wts)
         ret[np.any(wts < 0, axis=1)] = fill_value
@@ -76,7 +108,12 @@ class GridTransferMachine(grid_transfer.GridTransfer):
         return ret
 
     @staticmethod
-    def get_nodes(file):
+    def get_nodes(file: str) -> Tuple[Dict, Dict]:
+        """
+        Get nodes from file
+        :param file:
+        :return:
+        """
         with open(file) as f:
             content = f.readlines()
 
@@ -101,7 +138,12 @@ class GridTransferMachine(grid_transfer.GridTransfer):
         return node_dict, point_to_node
 
     @staticmethod
-    def get_elements(file):
+    def get_elements(file: str) -> Tuple[Dict, Dict, Dict, Dict]:
+        """
+        Get elements from file
+        :param file:
+        :return:
+        """
         with open(file) as f:
             content = f.readlines()
 
@@ -143,7 +185,12 @@ class GridTransferMachine(grid_transfer.GridTransfer):
         return ele_line_dict, ele_triangle_dict, ele_line_dict_reverse, ele_triangle_dict_reverse
 
     @staticmethod
-    def pre_file(file):
+    def pre_file(file: str) -> Tuple[Dict, Dict, List]:
+        """
+        Read prefile and return mapping between nodes
+        :param file:
+        :return:
+        """
         with open(file) as f:
             content = f.readlines()
 
@@ -163,11 +210,29 @@ class GridTransferMachine(grid_transfer.GridTransfer):
         return cor_to_un, un_to_cor, boundary
 
     @staticmethod
-    def cart2pol(x, y):
+    def cart2pol(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """
+        Transform Cartesian coordinates to polar
+        :param x:
+        :param y:
+        :return:
+        """
         r = (x ** 2 + y ** 2) ** .5
         return r
 
-    def get_arrays(self, nodes_dict, lines_dict, elements_dict, inner_r, unknown_to_cor, boundary, new_start=0):
+    def get_arrays(self, nodes_dict: Dict, lines_dict: Dict, elements_dict: Dict, inner_r: float,
+                   unknown_to_cor: Dict, boundary: List, new_start: int = 0) -> Dict:
+        """
+        Compute mapping between grids
+        :param nodes_dict:
+        :param lines_dict:
+        :param elements_dict:
+        :param inner_r:
+        :param unknown_to_cor:
+        :param boundary:
+        :param new_start:
+        :return:
+        """
         points_com = np.zeros((len(nodes_dict), 2))
         ind = {}
 
@@ -303,8 +368,13 @@ class GridTransferMachine(grid_transfer.GridTransfer):
         }
         return ret_dict
 
-    def interpolation_factors(self, data_coarse, data_fine):
-
+    def interpolation_factors(self, data_coarse: Dict, data_fine: Dict) -> Dict:
+        """
+        Compute the interpolation factor for each point by two given grids
+        :param data_coarse:
+        :param data_fine:
+        :return:
+        """
         # vtxCom, wtsCom = interp_weights(data_coarse['unknownCom'], data_fine['unknown'][len(data_coarse['unToCor']):])
         vtx_inner, wts_inner = self.interp_weights(data_coarse['unknownComInner'], data_fine['unknownNewInner'])
         vtx_outer, wts_outer = self.interp_weights(data_coarse['unknownComOuter'], data_fine['unknownNewOuter'])
@@ -336,7 +406,15 @@ class GridTransferMachine(grid_transfer.GridTransfer):
         return ret_dict
 
     @staticmethod
-    def interp_weights(xyz, uvw, d=2, tol=0.1):
+    def interp_weights(xyz: np.ndarray, uvw: np.ndarray, d: int = 2, tol: float = 0.1) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Interpolation between two grids
+        :param xyz:
+        :param uvw:
+        :param d:
+        :param tol:
+        :return:
+        """
         tri = qhull.Delaunay(xyz)
         simplex = tri.find_simplex(uvw, tol=tol)
         vertices = np.take(tri.simplices, simplex, axis=0)

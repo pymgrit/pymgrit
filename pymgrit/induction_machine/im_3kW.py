@@ -1,11 +1,14 @@
-from pymgrit.core import application
 import numpy as np
+from typing import Tuple, List, Dict
+
+from pymgrit.core import application
 from pymgrit.induction_machine import odegetdp
 from pymgrit.induction_machine import vector_machine
 
 
 class InductionMachine(application.Application):
     """
+    Simulating an induction machine using the model... TODO
     """
 
     def __init__(self, nonlinear, pwm, grid, *args, **kwargs):
@@ -40,7 +43,7 @@ class InductionMachine(application.Application):
     def step(self, u_start: vector_machine.VectorMachine, t_start: float,
              t_stop: float) -> vector_machine.VectorMachine:
         """
-
+        Perform one time step
         :param u_start:
         :param t_start:
         :param t_stop:
@@ -68,7 +71,12 @@ class InductionMachine(application.Application):
         return ret
 
     @staticmethod
-    def pre_file(file):
+    def pre_file(file: str) -> Tuple[Dict, Dict, List]:
+        """
+        Read prefile and return mapping between nodes
+        :param file:
+        :return:
+        """
         with open(file) as f:
             content = f.readlines()
 

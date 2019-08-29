@@ -5,8 +5,9 @@ import tempfile
 import warnings
 import os
 from subprocess import PIPE
-import time
-from shutil import copyfile
+
+
+# import time
 
 
 def odegetdp(fun, trange, init, varargin, fargin=None, mesh=None):

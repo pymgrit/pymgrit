@@ -1,9 +1,10 @@
-from pymgrit.core import mgrit as solver
-from pymgrit.induction_machine import im_3kW
-from pymgrit.induction_machine import grid_transfer_machine
-from pymgrit.induction_machine import grid_transfer_copy
 import numpy as np
 import pathlib
+
+from pymgrit.core import mgrit as solver
+from pymgrit.core import grid_transfer_copy
+from pymgrit.induction_machine import im_3kW
+from pymgrit.induction_machine import grid_transfer_machine
 
 
 def main():

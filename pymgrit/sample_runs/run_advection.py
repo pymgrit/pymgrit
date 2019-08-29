@@ -1,8 +1,9 @@
+import pathlib
+import numpy as np
+
 from pymgrit.advection_equation import advection_equation
 from pymgrit.core import mgrit as solver
 from pymgrit.advection_equation import grid_transfer_copy
-import pathlib
-import numpy as np
 
 
 def main():
@@ -34,11 +35,10 @@ def main():
 
     # FCF-relax
     mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=False, it=10, tol=1e-50,
-                            output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
+                         output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
 
     return mgrit.solve()
 
 
 if __name__ == '__main__':
     main()
-

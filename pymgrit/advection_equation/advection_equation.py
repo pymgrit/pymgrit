@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
+
 from pymgrit.core import application
 from pymgrit.advection_equation import vector_standard
 

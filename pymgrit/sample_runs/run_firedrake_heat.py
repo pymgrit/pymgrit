@@ -2,7 +2,7 @@ from mpi4py import MPI
 from firedrake import PeriodicSquareMesh
 from pymgrit.core import mgrit as solver
 import diffusion
-import grid_transfer_copy
+from pymgrit.core import grid_transfer_copy
 import pathlib
 import numpy as np
 from pymgrit.core import split
@@ -32,7 +32,7 @@ def main():
 
     mesh = PeriodicSquareMesh(n, n, 10, comm=comm_x)
 
-    heat0 = diffusion.Diffusion(mesh, kappa=0.1, t_start=0, t_stop=10, nt=101)
+    heat0 = diffusion.Diffusion(mesh, kappa=0.1, t_start=0, t_stop=10, nt=65)
     heat1 = diffusion.Diffusion(mesh, kappa=0.1, t_start=0, t_stop=10, nt=17)
     heat2 = diffusion.Diffusion(mesh, kappa=0.1, t_start=0, t_stop=10, nt=5)
 

@@ -1,9 +1,9 @@
 import unittest
-
 import numpy as np
+
 from pymgrit.core import mgrit as solver
 from pymgrit.heat_equation import heat_equation
-from pymgrit.heat_equation import grid_transfer_copy
+from pymgrit.core import grid_transfer_copy
 
 
 class TestMgritFas(unittest.TestCase):
@@ -46,7 +46,7 @@ class TestMgritFas(unittest.TestCase):
         result_t3_vec = np.array([1.00615170e-01, 6.60847038e-17, -1.00615170e-01])
         result_t4_vec = np.array([-4.81527174e-01, -7.93016446e-17, 4.81527174e-01])
 
-        np.testing.assert_equal(result_t,res['t'])
+        np.testing.assert_equal(result_t, res['t'])
         np.testing.assert_equal(result_conv, res['conv'])
         np.testing.assert_almost_equal(result_t0_vec, res['u'][0].vec)
         np.testing.assert_almost_equal(result_t1_vec, res['u'][1].vec)

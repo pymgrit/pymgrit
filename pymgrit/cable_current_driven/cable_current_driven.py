@@ -1,15 +1,24 @@
-from pymgrit.core import application
-from pymgrit.cable_current_driven import vector_standard
-import scipy.sparse as sp
+"""
+Problem class for the voltage driven eddy current problem of a coaxial cable
+"""
+
+import numpy as np
+import scipy.sparse as sparse
 from scipy import interpolate
 from scipy import linalg as la
 from scipy.sparse.linalg import spsolve
-import numpy as np
 import scipy.io as sio
+from typing import Dict, Tuple
+
+from pymgrit.core import application
+from pymgrit.core import vector_standard
 
 
 class CableCurrentDriven(application.Application):
     """
+    2-d voltage driven eddy current problem on a coaxial cable
+    sigma dA/dt + Delta x (nu(||Delta x A||) Delta x A) = J_s
+    See: https://arxiv.org/abs/1810.13263
     """
 
     def __init__(self, name, nonlinear, pwm, *args, **kwargs):
@@ -62,6 +71,13 @@ class CableCurrentDriven(application.Application):
 
     def step(self, u_start: vector_standard.VectorStandard, t_start: float,
              t_stop: float) -> vector_standard.VectorStandard:
+        """
+        Performing one time step
+        :param u_start:
+        :param t_start:
+        :param t_stop:
+        :return:
+        """
         tmp = np.copy(u_start.vec)
         if self.nonlinear:
             tmp = self.newton(t_start, t_stop, tmp)
@@ -71,7 +87,14 @@ class CableCurrentDriven(application.Application):
         ret.vec = tmp
         return ret
 
-    def phi_linear(self, t_start, t_stop, vinit):
+    def phi_linear(self, t_start: float, t_stop: float, vinit: np.ndarray) -> np.ndarray:
+        """
+        Solves the linear system
+        :param t_start:
+        :param t_stop:
+        :param vinit:
+        :return:
+        """
         vstepsize = t_stop - t_start
 
         if self.pwm:
@@ -84,7 +107,14 @@ class CableCurrentDriven(application.Application):
         return spsolve(self.msh / vstepsize + self.ksh, f)
 
     @staticmethod
-    def utl_pwm(t, freq, teeth):
+    def utl_pwm(t: float, freq: float, teeth: int) -> float:
+        """
+        Create pulse width modulation signal
+        :param t:
+        :param freq:
+        :param teeth:
+        :return:
+        """
         # sawfish pattern with higher frequency
         saw = t * teeth * freq - np.floor(t * teeth * freq)
 
@@ -96,37 +126,60 @@ class CableCurrentDriven(application.Application):
 
         return pwm
 
-    def newton(self, tstart, tstop, vinit):
+    def newton(self, tstart: float, tstop: float, vinit: np.ndarray) -> np.ndarray:
+        """
+        Solve the problem using newtons method
+        :param tstart:
+        :param tstop:
+        :param vinit:
+        :return:
+        """
         max_newton_iterations = 15
         newton_tol = 1e-5
         pwm = self.pwm
-        xold = np.copy(vinit)
-        xnew = np.copy(vinit)
+        x_old = np.copy(vinit)
+        x_new = np.copy(vinit)
 
         vmass = self.msh / (tstop - tstart)
 
         def f(x):
-            return vmass.dot(x - xold) - self.eddy_current_rhs(self.mesh, self.nuelem, self.idxnlinelem,
-                                                               self.idxdof, tstop, x, self.psh, self.iw,
-                                                               self.omega, self.nlin, pwm)
+            return vmass.dot(x - x_old) - self.eddy_current_rhs(self.mesh, self.nuelem, self.idxnlinelem,
+                                                                self.idxdof, tstop, x, self.psh, self.iw,
+                                                                self.omega, self.nlin, pwm)
 
         def j(x):
             return vmass - self.eddy_current_jac(self.mesh, self.nuelem, self.idxnlinelem, self.idxdof, x, self.nlin)
 
-        f_value = f(xnew)
+        f_value = f(x_new)
         f_norm = la.norm(f_value, np.inf)  # l2 norm of vector
         iteration_counter = 0
         while abs(f_norm) > newton_tol and iteration_counter < max_newton_iterations:
-            delta = spsolve(j(xnew), -f_value)
-            xnew = xnew + delta
-            f_value = f(xnew)
+            delta = spsolve(j(x_new), -f_value)
+            x_new = x_new + delta
+            f_value = f(x_new)
             f_norm = la.norm(f_value, np.inf)
             iteration_counter += 1
 
-        return xnew
+        return x_new
 
-    def eddy_current_rhs(self, mesh, nu, idxnlinelem, idxdof, t, ush, psh, iw, omega, nlin, pwm):
-
+    def eddy_current_rhs(self, mesh: sio.matlab.mio, nu: np.ndarray, idxnlinelem: np.ndarray, idxdof: int, t: float,
+                         ush: np.ndarray, psh: sparse.csc_matrix, iw: int, omega: float, nlin: Dict,
+                         pwm: bool) -> np.ndarray:
+        """
+        Constructing the right hand side for eddy current problem
+        :param omega:
+        :param iw:
+        :param mesh:
+        :param nu:
+        :param idxnlinelem:
+        :param idxdof:
+        :param t:
+        :param ush:
+        :param psh:
+        :param nlin:
+        :param pwm:
+        :return:
+        """
         a = np.zeros(np.size(mesh.node, 0))
         a[:idxdof] = ush
         b = self.curl(mesh, a)
@@ -143,7 +196,18 @@ class CableCurrentDriven(application.Application):
                   (psh * iw * np.sin(omega * t)).toarray()[0]
         return rhs
 
-    def eddy_current_jac(self, mesh, nu, idxnlinelem, idxdof, ush, nlin):
+    def eddy_current_jac(self, mesh: sio.matlab.mio, nu: np.ndarray, idxnlinelem: np.ndarray, idxdof: int,
+                         ush: np.ndarray, nlin: Dict) -> sparse.csr_matrix:
+        """
+        Constructs the Jacobi Matrix
+        :param mesh:
+        :param nu:
+        :param idxnlinelem:
+        :param idxdof:
+        :param ush:
+        :param nlin:
+        :return:
+        """
         a = np.zeros(np.size(mesh.node, 0))
         a[:idxdof] = ush
         b = self.curl(mesh, a)
@@ -159,17 +223,32 @@ class CableCurrentDriven(application.Application):
         return ksh
 
     @staticmethod
-    def curlcurl_ll(mesh, nu):
+    def curlcurl_ll(mesh: sio.matlab.mio, nu: np.ndarray) -> sparse.csr_matrix:
+        """
+        returns the curl-curl matrix for the element-wise constant reluctivities reginu
+        :param mesh:
+        :param nu:
+        :return:
+        """
         numnode = np.size(mesh.node, 0)
         i = np.repeat(mesh.elem[:, 0:3], 3)
         j = np.tile(mesh.elem[:, 0:3], 3).flatten()
         v = (np.einsum('ij,ik->ijk', (mesh.b.transpose() * nu[1]).transpose(), mesh.b) + np.einsum('ij,ik->ijk', (
                 mesh.c.transpose() * nu[0]).transpose(), mesh.c)).flatten() / np.repeat(mesh.area * mesh.depth * 4, 9)
-        kfem = sp.csr_matrix((v, (i - 1, j - 1)), shape=(numnode, numnode))
+        kfem = sparse.csr_matrix((v, (i - 1, j - 1)), shape=(numnode, numnode))
         return kfem
 
     @staticmethod
-    def curlcurl_ll_nonlinear(mesh, b, nu, dnud_b2):
+    def curlcurl_ll_nonlinear(mesh: sio.matlab.mio, b: np.ndarray, nu: np.ndarray,
+                              dnud_b2: np.ndarray) -> sparse.csr_matrix:
+        """
+        returns the curl-curl matrix and magnetisation vector for the element-wise magnetic properties
+        :param mesh:
+        :param b:
+        :param nu:
+        :param dnud_b2:
+        :return:
+        """
         numnode = np.size(mesh.node, 0)
         i = np.tile(mesh.elem[:, 0:3], 3).flatten()
         j = np.repeat(mesh.elem[:, 0:3], 3)
@@ -183,11 +262,17 @@ class CableCurrentDriven(application.Application):
         v = np.einsum('wij,wkj->wik', np.einsum('wij,wjk->wik', shape, nud), shape).flatten() / np.repeat(
             mesh.area * mesh.depth * 4, 9)
 
-        kfem = sp.csr_matrix((v, (i - 1, j - 1)), shape=(numnode, numnode))
+        kfem = sparse.csr_matrix((v, (i - 1, j - 1)), shape=(numnode, numnode))
         return kfem
 
     @staticmethod
-    def curl(mesh, az):
+    def curl(mesh: sio.matlab.mio, az: np.ndarray) -> np.ndarray:
+        """
+        computes the magnetic flux density for a given distribution of the line-integrated magnetic vector potential
+        :param mesh:
+        :param az:
+        :return:
+        """
         u = np.asarray([az[mesh.elem[:, 0] - 1], az[mesh.elem[:, 1] - 1], az[mesh.elem[:, 2] - 1]]).transpose()
 
         bp = np.asarray([np.sum(np.multiply(mesh.c, u), 1), -np.sum(np.multiply(mesh.b, u), 1)])
@@ -195,7 +280,14 @@ class CableCurrentDriven(application.Application):
         b = bp / [denom, denom]
         return b
 
-    def nlin_evaluate(self, nlin, b, nargout=4):
+    def nlin_evaluate(self, nlin: Dict, b: np.ndarray, nargout: int = 4) -> Tuple:
+        """
+        evaluates a nonlinear material characteristic for a given abscis input determining the working point
+        :param nlin:
+        :param b:
+        :param nargout:
+        :return:
+        """
         # A. Initialisation
         bm, bangle = self.pyth(b)
         idxleft = np.nonzero(bm < nlin['Bmin'])
@@ -209,7 +301,7 @@ class CableCurrentDriven(application.Application):
         h = bangle * np.vstack((hm, hm))
 
         # C. Determine the chord reluctivity (slope between the (0,0) data point and the working point)
-        nu = self.savedivide(hm, bm, nlin['initialslope'])
+        nu = self.save_divide(hm, bm, nlin['initialslope'])
 
         if nargout == 2:
             return h, nu
@@ -221,29 +313,47 @@ class CableCurrentDriven(application.Application):
         nud[idxleft] = nlin['initialslope']
         nud[idxright] = nlin['finalslope']
 
-        dnud_b2 = self.savedivide(nud - nu, 2 * bm ** 2)
+        dnud_b2 = self.save_divide(nud - nu, 2 * bm ** 2)
 
         return h, nu, nud, dnud_b2
 
     @staticmethod
-    def pyth(b, nargout=2):
+    def pyth(b: np.ndarray) -> Tuple:
+        """
+        returns the magnitude of the vector/coordinate B
+        :param b:
+        :return:
+        """
         bm = np.sqrt(np.sum(np.multiply(b, np.conj(b)), 0))
-        if nargout == 2:
-            bangle = b
-            idx = np.nonzero(bm)[0]
-            bangle[:, idx] = bangle[:, idx] / np.vstack((bm[idx], bm[idx]))
-            return bm, bangle
-        return bm
+        # if nargout == 2:
+        bangle = b
+        idx = np.nonzero(bm)[0]
+        bangle[:, idx] = bangle[:, idx] / np.vstack((bm[idx], bm[idx]))
+        return bm, bangle
+        # return bm
 
     @staticmethod
-    def savedivide(x, y, value=0):
+    def save_divide(x: np.ndarray, y: np.ndarray, value: np.ndarray = 0) -> np.ndarray:
+        """
+        divides vector x through vector y avoiding division through zero and introducing value instead
+        :param x:
+        :param y:
+        :param value:
+        :return:
+        """
         z = value * np.ones(np.size(x))
         i = y.ravel().nonzero()
         z[i] = x[i] / y[i]
         return z
 
     @staticmethod
-    def nlin_initialise(bchar, hchar):
+    def nlin_initialise(bchar: np.ndarray, hchar: np.ndarray) -> Dict:
+        """
+        initialises the data for further use when evaluating nonlinear material characteristics
+        :param bchar:
+        :param hchar:
+        :return:
+        """
         nlin = {'B': np.sort(np.abs(bchar)), 'H': np.sort(np.abs(hchar))}
 
         if nlin['B'][0] == 0:
@@ -272,12 +382,23 @@ class CableCurrentDriven(application.Application):
         return nlin
 
     @staticmethod
-    def cart2pol(x, y):
+    def cart2pol(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """
+        Transform Cartesian coordinates to polar or cylindrical
+        :param x:
+        :param y:
+        :return:
+        """
         r = (x ** 2 + y ** 2) ** .5
         return r
 
     @staticmethod
-    def current_pstr(prb):
+    def current_pstr(prb: sio.matlab.mio) -> sparse.csr_matrix:
+        """
+        computes the coupling blocks for stranded conductors
+        :param prb:
+        :return:
+        """
         numnode = np.size(prb.mesh.node, 0)
         numelem = np.size(prb.mesh.elem, 0)
         numregi = np.size(prb.region, 0)
@@ -313,10 +434,16 @@ class CableCurrentDriven(application.Application):
             if wr != 0:
                 pstr[i, wr] = pstr[i, wr] + 1
 
-        return sp.csr_matrix(pstr)
+        return sparse.csr_matrix(pstr)
 
     @staticmethod
-    def edgemass_ll(mesh, sigma):
+    def edgemass_ll(mesh: sio.matlab.mio, sigma: np.ndarray) -> sparse.csr_matrix:
+        """
+        returns the cff-edge-mass matrix for a certain element-wise constant conductivity
+        :param mesh:
+        :param sigma:
+        :return:
+        """
         numnode = np.size(mesh.node, 0)
         numelem = np.size(mesh.elem, 0)
         i = np.repeat(mesh.elem[:, 0:3], 3)
@@ -324,11 +451,17 @@ class CableCurrentDriven(application.Application):
         v = np.repeat(mesh.area, 9) / 12 * np.tile(np.array([[2, 1, 1], [1, 2, 1], [1, 1, 2]]).flatten(),
                                                    numelem) * np.repeat(sigma, 9) / np.repeat(mesh.depth, 9)
 
-        mfem = sp.csr_matrix((v, (i - 1, j - 1)), shape=(numnode, numnode))
+        mfem = sparse.csr_matrix((v, (i - 1, j - 1)), shape=(numnode, numnode))
         return mfem
 
     @staticmethod
-    def prb_mate_2_elem(prb, mateprop):
+    def prb_mate_2_elem(prb: sio.matlab.mio, mateprop: str) -> np.ndarray:
+        """
+        translates a material-wise property into an element-wise property
+        :param prb:
+        :param mateprop:
+        :return:
+        """
         prop = mateprop
 
         if prop == 'nu':
@@ -338,8 +471,7 @@ class CableCurrentDriven(application.Application):
             mateprop = np.array(
                 [[0], [0], [10000000]])
         else:
-            print("error")
-            return
+            raise Exception("error")
 
         rg = prb.mesh.elem[:, 3]
         mt = np.array(prb.region[rg - 1, 2], dtype=int)
