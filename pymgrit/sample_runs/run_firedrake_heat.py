@@ -28,7 +28,7 @@ def main():
     n = 20
 
     comm_world = MPI.COMM_WORLD
-    comm_x, comm_t = split.split_commworld(comm_world, 2)
+    comm_x, comm_t = split.split_communicator(comm_world, 2)
 
     mesh = PeriodicSquareMesh(n, n, 10, comm=comm_x)
 

@@ -1,5 +1,8 @@
-import numpy as np
+"""
+Abstract class for problems. Each problem has to be a child
+"""
 from abc import ABC, abstractmethod
+import numpy as np
 
 
 class Application(ABC):
@@ -22,10 +25,18 @@ class Application(ABC):
 
     @property
     def u(self):
+        """
+        Property u
+        :return:
+        """
         return self._u
 
     @u.setter
     def u(self, value):
+        """
+        Property u
+        :return:
+        """
         self._u = value
 
     @abstractmethod
@@ -36,4 +47,3 @@ class Application(ABC):
         :param t_start: Start time point
         :param t_stop: End time point
         """
-        pass
