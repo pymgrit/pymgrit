@@ -1,3 +1,7 @@
+"""
+Solution vector for the induction machine
+"""
+
 import numpy as np
 from pymgrit.core import vector
 from scipy import linalg as la
@@ -75,7 +79,7 @@ class VectorMachine(vector.Vector):
         """
         tmp = np.append(self.u_front, self.u_middle)
         tmp = np.append(tmp, self.u_back)
-        tmp = np.append(tmp, [self.jl, self.ua, self.ub, self.uc, self.ia, self.ib, self.ic])
+        # tmp = np.append(tmp, [self.jl, self.ua, self.ub, self.uc, self.ia, self.ib, self.ic])
         return la.norm(tmp)
 
     def init_zero(self):
@@ -90,15 +94,16 @@ class VectorMachine(vector.Vector):
         Initial solution vector with random values
         :rtype: object
         """
-        tmp = VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
-        self.u_front = np.random.rand(len(self.u_front))
-        self.u_back = np.random.rand(len(self.u_back))
-        self.u_middle = np.random.rand(len(self.u_middle))
-        self.jl = np.random.rand(1)[0]
-        self.ua = np.random.rand(1)[0]
-        self.ub = np.random.rand(1)[0]
-        self.uc = np.random.rand(1)[0]
-        self.ia = np.random.rand(1)[0]
-        self.ib = np.random.rand(1)[0]
-        self.ic = np.random.rand(1)[0]
-        return tmp
+        return VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
+        # tmp = VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
+        # self.u_front = np.random.rand(len(self.u_front))
+        # self.u_back = np.random.rand(len(self.u_back))
+        # self.u_middle = np.random.rand(len(self.u_middle))
+        # # self.jl = np.random.rand(1)[0]
+        # # self.ua = np.random.rand(1)[0]
+        # # self.ub = np.random.rand(1)[0]
+        # # self.uc = np.random.rand(1)[0]
+        # # self.ia = np.random.rand(1)[0]
+        # # self.ib = np.random.rand(1)[0]
+        # # self.ic = np.random.rand(1)[0]
+        # return tmp

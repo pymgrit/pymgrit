@@ -1,3 +1,7 @@
+"""
+Standard solution vector. Contains one numpy array
+"""
+
 import numpy as np
 from scipy import linalg as la
 
@@ -6,11 +10,12 @@ from pymgrit.core import vector
 
 class VectorStandard(vector.Vector):
     """
+    Standard solution vector. Contains one numpy array
     """
 
     def __init__(self, size):
         """
-        Standard solution vector. Contains one numpy array
+        Constructor
         :param size:
         """
         super(VectorStandard, self).__init__()

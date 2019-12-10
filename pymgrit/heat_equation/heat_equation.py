@@ -1,3 +1,8 @@
+"""
+Heat equation 1-d example
+"""
+
+import time
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
@@ -25,12 +30,14 @@ class HeatEquation(application.Application):
         self.nx = nx - 2  # homogeneous BCs
         self.a = a  # diffusion coefficient
 
-        self.a = self.heat_sparse(np.size(self.x), (self.a * (self.t[1] - self.t[0])) / (
-                self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
+        # setup matrix that acts in space for time integrator Ph
+        self.a = self.heat_sparse(np.size(self.x), (self.a * (self.t[1] - self.t[0])) /
+                                  (self.x[1] - self.x[0]) ** 2)
 
         self.u = vector_standard.VectorStandard(self.nx)  # Create initial value solution
         self.u.vec = self.u_exact(self.x, 0)  # Set initial value
         self.count_solves = 0
+        self.runtime_solves = 0
 
     @staticmethod
     def heat_sparse(nx, fac):
@@ -60,7 +67,7 @@ class HeatEquation(application.Application):
         return np.sin(np.pi * x) * np.cos(t)
 
     @staticmethod
-    def f(x, t):
+    def rhs(x, t):
         """
         Right-hand-side
         """
@@ -100,9 +107,12 @@ class HeatEquation(application.Application):
         :param t_stop:
         :return:
         """
+        start = time.time()
         tmp = u_start.vec
-        tmp = spsolve(self.a, tmp + self.f(self.x, t_stop) * (t_stop - t_start))
+        tmp = spsolve(self.a, tmp + self.rhs(self.x, t_stop) * (t_stop - t_start))
         ret = vector_standard.VectorStandard(u_start.size)
         ret.vec = tmp
+        stop = time.time()
+        self.runtime_solves += stop - start
         self.count_solves += 1
         return ret

@@ -1,11 +1,19 @@
-import numpy as np
+"""
+MGRIT optimized for the GETDP induction machine
+with joule losses as convergence criteria
+"""
+
 import logging
 import time
+import numpy as np
 
 from pymgrit.core import mgrit
 
 
 class MgritMachine(mgrit.Mgrit):
+    """
+    MGRIT optimized for the GETDP induction machine
+    """
 
     def __init__(self, compute_f_after_convergence: bool, *args, **kwargs) -> None:
         """
@@ -17,7 +25,7 @@ class MgritMachine(mgrit.Mgrit):
         super(MgritMachine, self).__init__(*args, **kwargs)
         self.last_it = []
         self.compute_f_after_convergence = compute_f_after_convergence
-        self.convergence_criteria(it=0)
+        self.convergence_criteria(iteration=0)
 
     def nested_iteration(self) -> None:
         """
@@ -50,6 +58,7 @@ class MgritMachine(mgrit.Mgrit):
 
     def iteration(self, lvl, cycle_type, iteration, first_f):
         """
+        Performs one iteration
         """
         if lvl == self.lvl_max - 1:
             self.forward_solve(lvl=lvl)
@@ -59,7 +68,7 @@ class MgritMachine(mgrit.Mgrit):
             self.f_relax(lvl=lvl)
             self.f_exchange(lvl=lvl)
 
-        for i in range(self.cf_iter):
+        for _ in range(self.cf_iter):
             self.c_relax(lvl=lvl)
             self.c_exchange(lvl=lvl)
             self.f_relax(lvl=lvl)
@@ -74,21 +83,21 @@ class MgritMachine(mgrit.Mgrit):
         if lvl > 0:
             self.f_relax(lvl=lvl)
 
-        if lvl != 0 and 'F' == cycle_type:
+        if lvl != 0 and cycle_type == 'F':
             self.f_exchange(lvl=lvl)
             self.iteration(lvl=lvl, cycle_type='V', iteration=iteration, first_f=False)
 
-    def convergence_criteria(self, it: int) -> None:
+    def convergence_criteria(self, iteration: int) -> None:
         """
         Maximum norm of all C-points
-        :param it: Iteration number
+        :param iteration: Iteration number
         """
         if len(self.last_it) != len(self.index_local_c[0]):
             self.last_it = np.zeros(len(self.index_local_c[0]))
         new = np.zeros_like(self.last_it)
         j = 0
         tmp = 0
-        if len(self.index_local_c[0]) > 0:
+        if self.index_local_c[0].size > 0:
             for i in np.nditer(self.index_local_c[0]):
                 new[j] = self.u[0][i].jl
                 j = j + 1
@@ -97,10 +106,10 @@ class MgritMachine(mgrit.Mgrit):
             # tmp = np.max(np.abs(new - self.last_it))
 
         tmp = self.comm_time.allgather(tmp)
-        self.conv[it] = np.max(np.abs(tmp))
+        self.conv[iteration] = np.max(np.abs(tmp))
         self.last_it = np.copy(new)
 
-    def solve(self, cf_iter=1, cycle_type='V'):
+    def solve(self) -> dict:
         tmp_output_fcn = self.output_fcn
         self.output_fcn = None
         super(MgritMachine, self).solve()

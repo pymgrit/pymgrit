@@ -1,3 +1,7 @@
+"""
+Standard grid transfer. Copies values
+"""
+
 import copy
 
 from pymgrit.core import grid_transfer
