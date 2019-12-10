@@ -259,7 +259,6 @@ Function {
   Iabc[]     = Pinv[] * Idq0[] ;
   Flux_dq0[] = P[] * Vector[$Flux_a, $Flux_b, $Flux_c] ;
 
-  Printf("wieso Freq[] = %g ", Freq);
   If(Flag_ParkTransformation)
     II = 1. ;
     IA[] = CompX[ Iabc[] ] ;
@@ -273,22 +272,22 @@ Function {
         IA[] = modulationFactor * F_Sin_wt_p[]{2*Pi*Freq, pA} ;
         IB[] = modulationFactor * F_Sin_wt_p[]{2*Pi*Freq, pB} ;
         IC[] = modulationFactor * F_Sin_wt_p[]{2*Pi*Freq, pC} ;
-        Printf('SINE');
+        // Printf('SINE');
       EndIf
       If(Flag_PWM) // PWM excitation
         fm = Freq;
-        Printf("Freq fm[] = %g ", fm);
+        //Printf("Freq fm[] = %g ", fm);
         fc = FreqPWM;
-        Printf("FreqPWM fc[] = %g ", fc);
+        //Printf("FreqPWM fc[] = %g ", fc);
         mf = fc/fm;
-        Printf("fc/fm[] = %g ", mf);
+        //Printf("fc/fm[] = %g ", mf);
         Pm = 1/fm;
         Pc = 1/fc;
         ns = 480 * mf; //1000 number of samples 
         ma = modulationFactor; // 0.8;
         Ac = 1;
         Am = ma * Ac;      
-        Printf("modulationFactor[] = %g ", modulationFactor);
+        // Printf("modulationFactor[] = %g ", modulationFactor);
 
         phase_m_A = pA;
         phase_m_B = pB;
@@ -314,7 +313,7 @@ Function {
         IA[] = F_PWM_A[] ;
         IB[] = F_PWM_B[] ;
         IC[] = F_PWM_C[] ; 
-        Printf('PWM');
+        // Printf('PWM');
       EndIf
     EndIf
     If(Flag_ConstantSource)
@@ -324,7 +323,7 @@ Function {
       Frelax[] = 1;
     EndIf
   EndIf
-  Printf("kooli[] = %g ", II);
+
   js[PhaseA] = II * NbWires[]/SurfCoil[] * IA[] * Idir[] * Vector[0, 0, 1] ;
   js[PhaseB] = II * NbWires[]/SurfCoil[] * IB[] * Idir[] * Vector[0, 0, 1] ;
   js[PhaseC] = II * NbWires[]/SurfCoil[] * IC[] * Idir[] * Vector[0, 0, 1] ;
@@ -772,11 +771,11 @@ Resolution {
 		  //SaveSolution[A];  //save solution at each timepoint
 
           If(Flag_PrintFields)
-                      Printf('get_localfiels');
+                      //Printf('get_localfiels');
             PostOperation[Get_LocalFields] ;			
           EndIf
           Test[ $Time > time0 ]{
-                      Printf('get_globalfiels');
+                      //Printf('get_globalfiels');
             PostOperation[Get_GlobalQuantities];
             PostOperation[Get_Torque] ;
           }
@@ -798,9 +797,9 @@ Resolution {
           EndIf
           MeshMovingBand2D[MB] ;
         }
-        Printf('before');
+        //Printf('before');
         SaveSolution[A]; //save soln in the end of the interval only
-        Printf('after');
+        //Printf('after');
       EndIf // End Flag_AnalysisType==1 (Time domain)
     }
   }
@@ -1020,7 +1019,7 @@ PostOperation Get_LocalFields UsingPost MagStaDyn_a_2D {
 	 File StrCat[ResDir,"js",ExtGmsh], LastTimeStepOnly,
 	 AppendTimeStepToFileName Flag_SaveAllSteps ] ;
 
-    Printf('hallo');
+
   Print[ js_A, OnPoint { 0.056737197, 0.015202686, 0.0}, Format TimeTable, File > StrCat[ResDir,"js_A",ExtGnuplot], LastTimeStepOnly] ;
   Print[ js_B, OnPoint { 0.048115900, 0.033691116, 0.0}, Format TimeTable, File > StrCat[ResDir,"js_B",ExtGnuplot], LastTimeStepOnly] ;
   Print[ js_C, OnPoint { 0.015202686, 0.056737197, 0.0}, Format TimeTable, File > StrCat[ResDir,"js_C",ExtGnuplot], LastTimeStepOnly] ;
@@ -1042,9 +1041,9 @@ PostOperation Get_LocalFields UsingPost MagStaDyn_a_2D {
 }
 
 PostOperation Get_GlobalQuantities UsingPost MagStaDyn_a_2D {
-            Printf('step1');
+
   If(!Flag_Cir)
-              Printf('step2');
+
     If(!Flag_ParkTransformation)
       Print[ I, OnRegion PhaseA_pos, Format Table,
 	     File > StrCat[ResDir,"Ia",ExtGnuplot], LastTimeStepOnly,
@@ -1072,7 +1071,7 @@ PostOperation Get_GlobalQuantities UsingPost MagStaDyn_a_2D {
     EndIf
   EndIf
   If(Flag_Cir && Flag_SrcType_StatorA==2)
-  Printf('step3');
+
   Print[{Flag_SrcType_Stator}, Format "gagaga[] = %f is greater than 1"];
      // Print[ I, OnRegion Input1, Format Table];
     Print[ I, OnRegion Input1, Format Table,
@@ -1083,7 +1082,7 @@ PostOperation Get_GlobalQuantities UsingPost MagStaDyn_a_2D {
 	   SendToServer StrCat[poV,"A"]{0}, Color "Pink" ];
   EndIf
   If(Flag_Cir && Flag_SrcType_StatorB==2)
-  Printf('step4');
+  //Printf('step4');
   Print[{Flag_SrcType_Stator}, Format "gagaga2[] = %g is greater than 1"];
     Print[ I, OnRegion Input2, Format Table,
 	   File > StrCat[ResDir,"Ib",ExtGnuplot], LastTimeStepOnly,
@@ -1093,7 +1092,7 @@ PostOperation Get_GlobalQuantities UsingPost MagStaDyn_a_2D {
 	   SendToServer StrCat[poV,"B"]{0}, Color "Yellow" ];
   EndIf
   If(Flag_Cir && Flag_SrcType_StatorB==2)
-  Printf('step5');
+
   Print[{delta_theta[]}, Format "gagaga3[] = %g is greater than 1"];
     Print[ I, OnRegion Input3, Format Table,
 	   File > StrCat[ResDir,"Ic",ExtGnuplot], LastTimeStepOnly,
@@ -1103,7 +1102,7 @@ PostOperation Get_GlobalQuantities UsingPost MagStaDyn_a_2D {
 	   SendToServer StrCat[poV,"C"]{0}, Color "LightGreen" ];
   EndIf
   If(Flag_Cir && Flag_SrcType_StatorA==0)
-  Printf('step6');
+
     Print[ I, OnRegion R1, Format Table,
 	   File > StrCat[ResDir,"Ia",ExtGnuplot], LastTimeStepOnly,
 	   SendToServer StrCat[poI,"A"]{0}, Color "Pink" ];
@@ -1112,7 +1111,7 @@ PostOperation Get_GlobalQuantities UsingPost MagStaDyn_a_2D {
 	   SendToServer StrCat[poV,"A"]{0}, Color "Pink" ];
   EndIf
   If(Flag_Cir && Flag_SrcType_StatorB==0)
-  Printf('step7');
+
     Print[ I, OnRegion R2, Format Table,
 	   File > StrCat[ResDir,"Ib",ExtGnuplot], LastTimeStepOnly,
 	   SendToServer StrCat[poI,"B"]{0}, Color "Yellow" ];
@@ -1128,7 +1127,7 @@ PostOperation Get_GlobalQuantities UsingPost MagStaDyn_a_2D {
 	   File > StrCat[ResDir,"Uc",ExtGnuplot], LastTimeStepOnly,
 	   SendToServer StrCat[poV,"C"]{0}, Color "LightGreen" ];
   EndIf
-Printf('step8');
+
   Print[ I, OnRegion RotorC, Format Table,
 	 File > StrCat[ResDir,"Irotor",ExtGnuplot], LastTimeStepOnly,
 	 SendToServer StrCat[poI,"rotor"]{0}, Color "LightCyan" ];

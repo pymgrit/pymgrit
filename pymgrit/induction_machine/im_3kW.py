@@ -1,5 +1,6 @@
-import numpy as np
 from typing import Tuple, List, Dict
+import time
+import numpy as np
 
 from pymgrit.core import application
 from pymgrit.induction_machine import odegetdp
@@ -38,7 +39,8 @@ class InductionMachine(application.Application):
                                               u_back_size=self.further_unknowns_back,
                                               u_middle_size=len(un_to_cor))
 
-        self.count_solves = 0
+        # self.count_solves = 0
+        # self.time_solves = 0
 
     def step(self, u_start: vector_machine.VectorMachine, t_start: float,
              t_stop: float) -> vector_machine.VectorMachine:
@@ -49,6 +51,7 @@ class InductionMachine(application.Application):
         :param t_stop:
         :return:
         """
+        # start = time.time()
         tmp = np.append(u_start.u_front, u_start.u_middle)
         tmp = np.append(tmp, u_start.u_back)
 
@@ -67,7 +70,8 @@ class InductionMachine(application.Application):
         ret.ua = soli['ua'][-1]
         ret.ub = soli['ub'][-1]
         ret.uc = soli['uc'][-1]
-        self.count_solves += 1
+        # self.time_solves += time.time() - start
+        # self.count_solves += 1
         return ret
 
     @staticmethod

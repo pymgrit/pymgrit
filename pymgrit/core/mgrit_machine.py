@@ -1,5 +1,6 @@
 """
 MGRIT optimized for the GETDP induction machine
+with joule losses as convergence criteria
 """
 
 import logging
@@ -24,7 +25,7 @@ class MgritMachine(mgrit.Mgrit):
         super(MgritMachine, self).__init__(*args, **kwargs)
         self.last_it = []
         self.compute_f_after_convergence = compute_f_after_convergence
-        self.convergence_criteria(it=0)
+        self.convergence_criteria(iteration=0)
 
     def nested_iteration(self) -> None:
         """
@@ -108,7 +109,7 @@ class MgritMachine(mgrit.Mgrit):
         self.conv[iteration] = np.max(np.abs(tmp))
         self.last_it = np.copy(new)
 
-    def solve(self) -> None:
+    def solve(self) -> dict:
         tmp_output_fcn = self.output_fcn
         self.output_fcn = None
         super(MgritMachine, self).solve()

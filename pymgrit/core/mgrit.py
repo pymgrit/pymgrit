@@ -67,16 +67,10 @@ class Mgrit:
             raise Exception("Unknown output level. Choose 0, 1 or 2.")
 
         for lvl in range(1, len(problem)):
-            # if len(problem[lvl - 1].t) / int((len(problem[lvl - 1].t) - 1) / (len(problem[lvl].t) - 1)) > len(
-            #         problem[lvl].t):
-            #     raise Exception('More C points on level ' + str(lvl - 1) + ' than points on level' + str(lvl))
-            for time_point in problem[lvl].t:
-                if np.count_nonzero(problem[lvl - 1].t == time_point) != 1:
-                    raise Exception(
-                        'Point ' + str(time_point) + ' from level ' + str(lvl - 1) + ' is not a point of level ' + str(
-                            lvl))
+            if len(set(problem[lvl - 1].t.tolist()).intersection(set(problem[lvl].t.tolist()))) != len(problem[lvl].t):
+                raise Exception(
+                    'Some points from level ' + str(lvl - 1) + ' are not points of level ' + str(lvl))
 
-        runtime_setup_start = time.time()
         self.comm_time = comm_time
         self.comm_space = comm_space
         self.comm_time_rank = self.comm_time.Get_rank()
@@ -95,6 +89,7 @@ class Mgrit:
             self.comm_space_size = -99
 
         self.comm_time.barrier()
+        runtime_setup_start = time.time()
         self.log_info(f"Start setup")
 
         self.problem = problem  # List of problems per MGRIT level
@@ -173,11 +168,12 @@ class Mgrit:
         if nested_iteration:
             self.nested_iteration()
 
+        self.comm_time.barrier()
+        self.runtime_setup = time.time() - runtime_setup_start
+
         if self.output_fcn is not None and self.output_lvl == 2:
             self.output_fcn(self)
 
-        self.comm_time.barrier()
-        self.runtime_setup = time.time() - runtime_setup_start
         self.log_info(f"Setup took {self.runtime_setup} s")
 
     def log_info(self, message: str) -> None:
@@ -611,23 +607,6 @@ class Mgrit:
                           in
                           sublist])
 
-        # Communication in F-relax
-        need_communication_front = False
-        need_communication_back = False
-
-        if np.size(fpts) > 0 and fpts[np.argmin(fpts)] - 1 in all_fpts:
-            need_communication_front = True
-        if np.size(fpts) > 0 and fpts[np.argmax(fpts)] + 1 in all_fpts:
-            need_communication_back = True
-
-        # Communication before and after C- and F-relax
-        first_is_c_point = bool(all_pts.size > 0 and all_pts[0] in cpts and all_pts[0] != 0)
-        first_is_f_point = bool(all_pts.size > 0 and all_pts[0] in fpts2 and all_pts[0] - 1 in all_cpts)
-        last_is_c_point = bool(all_pts.size > 0 and all_pts[-1] in cpts and all_pts[-1] != points_time - 1)
-        last_is_f_point = bool(
-            all_pts.size > 0 and all_pts[-1] in fpts2 and all_pts[-1] != points_time - 1 and all_pts[
-                -1] + 1 in all_cpts)
-
         # Add ghost point if needed, set time interval
         if self.comm_time_rank != 0 and all_pts.size > 0:
             tmp = np.zeros(len(all_pts) + 1, dtype=int)
@@ -638,32 +617,25 @@ class Mgrit:
             all_pts_with_ghost = all_pts
 
         self.t[lvl] = self.problem[lvl].t[all_pts_with_ghost]
+        self.cpts.append(cpts)
+        self.block_size_this_lvl.append(len(all_pts_with_ghost))
+
+        # Communication in F-relax
+        self.comm_front.append(bool(fpts.size > 0 and fpts[np.argmin(fpts)] - 1 in all_fpts))
+        self.comm_back.append(bool(fpts.size > 0 and fpts[np.argmax(fpts)] + 1 in all_fpts))
 
         # Setup local indices
-        index_local_c = np.zeros_like(cpts)
-        index_local_f = np.zeros_like(fpts2)
-        index_local = np.zeros_like(all_pts)
+        self.index_local.append(np.nonzero(all_pts[:, None] == all_pts_with_ghost)[1])
+        self.index_local_c.append(np.nonzero(cpts[:, None] == all_pts_with_ghost)[1])
+        self.index_local_f.append(np.nonzero(fpts2[:, None] == all_pts_with_ghost)[1])
 
-        for idx, val in enumerate(cpts):
-            index_local_c[idx] = np.where(val == all_pts_with_ghost)[0]
-
-        for idx, val in enumerate(fpts2):
-            index_local_f[idx] = np.where(val == all_pts_with_ghost)[0]
-
-        for idx, val in enumerate(all_pts):
-            index_local[idx] = np.where(val == all_pts_with_ghost)[0]
-
-        self.cpts.append(cpts)
-        self.comm_front.append(need_communication_front)
-        self.comm_back.append(need_communication_back)
-        self.block_size_this_lvl.append(len(all_pts_with_ghost))
-        self.index_local.append(index_local)
-        self.index_local_c.append(index_local_c)
-        self.index_local_f.append(index_local_f)
-        self.first_is_c_point.append(first_is_c_point)
-        self.first_is_f_point.append(first_is_f_point)
-        self.last_is_c_point.append(last_is_c_point)
-        self.last_is_f_point.append(last_is_f_point)
+        # Communication before and after C- and F-relax
+        self.first_is_c_point.append(bool(all_pts.size > 0 and all_pts[0] in cpts and all_pts[0] != 0))
+        self.first_is_f_point.append(bool(all_pts.size > 0 and all_pts[0] in fpts2 and all_pts[0] - 1 in all_cpts))
+        self.last_is_c_point.append(bool(all_pts.size > 0 and all_pts[-1] in cpts and all_pts[-1] != points_time - 1))
+        self.last_is_f_point.append(bool(
+            all_pts.size > 0 and all_pts[-1] in fpts2 and all_pts[-1] != points_time - 1 and all_pts[
+                -1] + 1 in all_cpts))
 
     def setup_comm_info(self) -> None:
         """

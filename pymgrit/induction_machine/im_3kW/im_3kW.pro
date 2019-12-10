@@ -187,9 +187,9 @@ Function{
   VV = Vrms * Sqrt[2] ;
   II = Irms * Sqrt[2] ;
 
- Printf("VV[] = %g ", VV);
- Printf("Irms[] = %g ", Irms);
- Printf("II[] = %g ", II);
+ //Printf("VV[] = %g ", VV);
+ //Printf("Irms[] = %g ", Irms);
+ //Printf("II[] = %g ", II);
 
   Friction[] = Frict ;
   Torque_mec[] = Tmec ;
