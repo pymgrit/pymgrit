@@ -193,7 +193,7 @@ class Mgrit:
 
     def create_u(self, lvl: int) -> None:
         """
-
+        Create the solution vector. Level 0 has random values
         :param lvl:
         """
         self.u.append([object] * self.block_size_this_lvl[lvl])
@@ -207,6 +207,7 @@ class Mgrit:
 
     def iteration(self, lvl: int, cycle_type: str, iteration: int, first_f: bool) -> None:
         """
+        Performs one MGRIT iteration
         :return:
         :param lvl: the corresponding MGRIT level
         :param cycle_type:
@@ -242,6 +243,7 @@ class Mgrit:
 
     def f_relax(self, lvl: int) -> None:
         """
+        Performs a F-relaxation
         :param lvl: the corresponding MGRIT level
         """
         runtime_f = time.time()
@@ -270,6 +272,7 @@ class Mgrit:
 
     def c_relax(self, lvl: int) -> None:
         """
+        Perfoms a C relaxation
         :param lvl: the corresponding MGRIT level
         """
         runtime_c = time.time()
@@ -492,7 +495,9 @@ class Mgrit:
 
     def solve(self) -> dict:
         """
-            :return:
+        Main function for solving the problem. Performs MGRIT iterations until a stopping criteria
+        is reached or the maximum number of iterations
+        :return:
         """
         self.comm_time.barrier()
         self.log_info("Start solve")
