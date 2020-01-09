@@ -3,8 +3,6 @@ MGRIT optimized for the GETDP induction machine
 with residual norm as convergence criteria
 """
 
-import logging
-import time
 import numpy as np
 
 from pymgrit.core import mgrit
@@ -52,36 +50,3 @@ class MgritMachine2(mgrit.Mgrit):
         if change:
             for lvl in range(len(self.problem)):
                 self.problem[lvl].fopt[-1] = tmp_problem_pwm[lvl]
-
-    def f_relax(self, lvl: int) -> None:
-        """
-        :param lvl: the corresponding MGRIT level
-        """
-        runtime_f = time.time()
-        tmp_send = False
-        req_s = None
-        rank = self.comm_time_rank
-        if self.index_local_f[lvl].size > 0:
-            for i in np.nditer(self.index_local_f[lvl]):
-                try:
-                    if self.comm_front[lvl] and i == np.min(self.index_local_f[lvl]):
-                        self.u[lvl][0] = self.comm_time.recv(source=self.get_from[lvl], tag=rank)
-                    if lvl == 0:
-                        self.u[lvl][i] = self.step[lvl](u_start=self.u[lvl][i - 1],
-                                                        t_start=self.t[lvl][i - 1],
-                                                        t_stop=self.t[lvl][i])
-                    else:
-                        self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
-                                                                         t_start=self.t[lvl][i - 1],
-                                                                         t_stop=self.t[lvl][i])
-                    if self.comm_back[lvl] and i == np.max(self.index_local_f[lvl]):
-                        tmp_send = True
-                        req_s = self.comm_time.isend(self.u[lvl][-1], dest=self.send_to[lvl], tag=self.send_to[lvl])
-                except:
-                    print(i)
-                    raise Exception('error at point'+str(i))
-
-        if tmp_send:
-            req_s.wait()
-
-        logging.debug(f"F-relax on {rank} took {time.time() - runtime_f} s")

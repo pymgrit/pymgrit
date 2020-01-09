@@ -1,7 +1,7 @@
 import numpy as np
 from firedrake import *
 from pymgrit.core import application
-from pymgrit.firedrake_heat_equation import vector_standard
+from pymgrit.core import vector_standard
 
 
 class Diffusion(application.Application):
@@ -63,6 +63,10 @@ class Diffusion(application.Application):
         self.initialise()
 
     def step(self, u_start, t_start, t_stop):
+        """
+        Performs one time step
+        :rtype: object
+        """
         # compute backward Euler update
         self.dt.assign(t_stop-t_start)
         tmp = Function(self.function_space)

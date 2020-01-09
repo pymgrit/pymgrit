@@ -9,7 +9,8 @@ from pymgrit.induction_machine import vector_machine
 
 class InductionMachine(application.Application):
     """
-    Simulating an induction machine using the model... TODO
+    Simulating an induction machine using the mode 'im_3_kW' from
+    https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines
     """
 
     def __init__(self, nonlinear, pwm, grid, *args, **kwargs):

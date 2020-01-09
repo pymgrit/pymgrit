@@ -3,7 +3,7 @@ from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
 
 from pymgrit.core import application
-from pymgrit.advection_equation import vector_standard
+from pymgrit.core import vector_standard
 
 
 class AdvectionEquation(application.Application):

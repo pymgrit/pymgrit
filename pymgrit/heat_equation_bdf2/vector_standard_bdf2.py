@@ -6,6 +6,7 @@ from pymgrit.core import vector
 
 class VectorStandardBDF2(vector.Vector):
     """
+    Solution vector for two points
     """
 
     def __init__(self, size):

@@ -1,10 +1,12 @@
-from mpi4py import MPI
-from firedrake import PeriodicSquareMesh
-from pymgrit.core import mgrit as solver
-import diffusion
-from pymgrit.core import grid_transfer_copy
 import pathlib
 import numpy as np
+
+from firedrake import PeriodicSquareMesh
+from mpi4py import MPI
+
+from pymgrit.core import mgrit as solver
+from pymgrit.firedrake_heat_equation import diffusion
+from pymgrit.core import grid_transfer_copy
 from pymgrit.core import split
 
 

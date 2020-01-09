@@ -1,7 +1,7 @@
 import numpy as np
 import pathlib
 
-from pymgrit.core import mgrit_machine as solver
+from pymgrit.core import mgrit_machine
 from pymgrit.core import grid_transfer_copy
 from pymgrit.induction_machine import im_3kW
 
@@ -36,7 +36,7 @@ def main():
 
     problem = [machine_0, machine_1, machine_2]
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.MgritMachine(compute_f_after_convergence=True, problem=problem, transfer=transfer, it=5,
+    mgrit = mgrit_machine.MgritMachine(compute_f_after_convergence=True, problem=problem, transfer=transfer, it=5,
                                 output_fcn=output_fcn)
     return mgrit.solve()
 

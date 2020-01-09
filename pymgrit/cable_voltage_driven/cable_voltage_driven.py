@@ -16,6 +16,7 @@ from pymgrit.core import vector
 
 class VectorSystem(vector.Vector):
     """
+    Solution vector of the system
     """
 
     def __init__(self, size):

@@ -3,7 +3,7 @@ import numpy as np
 
 from pymgrit.advection_equation import advection_equation
 from pymgrit.core import mgrit as solver
-from pymgrit.advection_equation import grid_transfer_copy
+from pymgrit.core import grid_transfer_copy
 
 
 def main():

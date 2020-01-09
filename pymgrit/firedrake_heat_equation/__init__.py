@@ -1,1 +1,1 @@
-__all__ = ['diffusion', 'grid_transfer_copy', 'vector_standard']
+__all__ = ['diffusion']
