@@ -27,7 +27,8 @@ class Mgrit:
     def __init__(self, problem: List[application.Application], transfer: List[grid_transfer.GridTransfer],
                  it: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
                  cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
-                 logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1) -> None:
+                 logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1,
+                 random_init_guess: bool = False) -> None:
         """
         Initialize space-time matrix.
         Phi_args is for any random parameters you may think of later
@@ -129,6 +130,7 @@ class Mgrit:
         self.nes_it = nested_iteration  # Local nested iteration value
         self.solve_iter = 0  # The actual MGRIT iteration, for output
         self.output_lvl = output_lvl  # Output level, only 0,1,2
+        self.random_init_guess = random_init_guess  # Random initial guess
 
         if output_fcn is not None and callable(output_fcn):
             self.output_fcn = output_fcn
@@ -199,7 +201,10 @@ class Mgrit:
         self.u.append([object] * self.block_size_this_lvl[lvl])
         for i in range(len(self.u[lvl])):
             if lvl == 0:
-                self.u[lvl][i] = self.problem[lvl].u.init_rand()
+                if self.random_init_guess:
+                    self.u[lvl][i] = self.problem[lvl].u.init_rand()
+                else:
+                    self.u[lvl][i] = self.problem[lvl].u.init_zero()
             else:
                 self.u[lvl][i] = self.problem[lvl].u.init_zero()
         if self.comm_time_rank == 0:

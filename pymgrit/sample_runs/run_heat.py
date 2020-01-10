@@ -31,7 +31,7 @@ def main():
     transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy(),
                 grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
     mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, cycle_type='F', nested_iteration=False, it=10,
-                         output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
+                         output_fcn=output_fcn, output_lvl=2, logging_lvl=20, random_init_guess=False)
 
     return mgrit.solve()
 
