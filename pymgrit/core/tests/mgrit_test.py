@@ -18,7 +18,7 @@ class TestMgritFas(unittest.TestCase):
         """
         Test the function split_into
         """
-        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=2 ** 2 + 1)
         result = np.array([4, 3, 3])
         mgrit = solver.Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
@@ -28,7 +28,7 @@ class TestMgritFas(unittest.TestCase):
         """
         Test the function split points
         """
-        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=2 ** 2 + 1)
         result_proc0 = (4, 0)
         result_proc1 = (3, 4)
@@ -42,11 +42,11 @@ class TestMgritFas(unittest.TestCase):
         """
         Test one run for the heat equation
         """
-        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=2 ** 2 + 1)
-        heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=2 ** 1 + 1)
-        heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=2 ** 0 + 1)
 
         problem = [heat0, heat1, heat2]
@@ -74,11 +74,11 @@ class TestMgritFas(unittest.TestCase):
         """
         Test for the function setup points
         """
-        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=65)
-        heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=17)
-        heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=5)
 
         problem = [heat0, heat1, heat2]
@@ -218,11 +218,11 @@ class TestMgritFas(unittest.TestCase):
         """
         Test for the function comm_info
         """
-        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=65)
-        heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=17)
-        heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, a=1,
+        heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
                                            t_start=0, t_stop=2, nt=5)
 
         problem = [heat0, heat1, heat2]

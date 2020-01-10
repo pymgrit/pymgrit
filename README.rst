@@ -1,7 +1,7 @@
 Installation
 ------------
 
-PyMGRIT requires ...
+PyMGRIT requires ``numpy``, ``scipy`` and ``mpi4py``
 
     >>> pip install pymgrit
 
@@ -12,12 +12,16 @@ or
 Introduction
 ------------
 
-TODO
+PyMGRIT is a library for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python
 
 Getting Help
 ------------
 
-TODO
+For documentation see (TODO)
+
+Create an issue (TODO)
+
+Look at the Tutorial(TODO) or the Examples(TODO)
 
 What ist MGRIT?
 ---------------

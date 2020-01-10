@@ -15,8 +15,8 @@ def readme():
 
 setup(name='PyMGRIT',
       version='0.1',
-      description='TODO',
-      long_description='Really, the funniest around.',
+      description='Python implementation of the MGRIT algorithm',
+      long_description='Python implementation of the MGRIT algorithm',
       url='TODO',
       author='Jens Hahne',
       author_email='jens.hahne@math.uni-wuppertal.de',

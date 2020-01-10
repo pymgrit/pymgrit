@@ -17,11 +17,11 @@ def main():
         np.save('results/' + name + '/' + str(self.t[0][0]) + '-' + str(self.t[0][-1]), sol)
 
     dt = 2 / 128
-    heat0 = heat_equation_2pts_bdf1.HeatEquation(x_start=0, x_end=2, nx=1001, a=1,
+    heat0 = heat_equation_2pts_bdf1.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
                                                  t_start=0, t_stop=2, nt=65, dt=dt)
-    heat1 = heat_equation_2pts_bdf1.HeatEquation(x_start=0, x_end=2, nx=1001, a=1,
+    heat1 = heat_equation_2pts_bdf1.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
                                                  t_start=0, t_stop=2, nt=17, dt=dt)
-    heat2 = heat_equation_2pts_bdf1.HeatEquation(x_start=0, x_end=2, nx=1001, a=1,
+    heat2 = heat_equation_2pts_bdf1.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
                                                  t_start=0, t_stop=2, nt=5, dt=dt)
 
     problem = [heat0, heat1, heat2]
@@ -29,11 +29,11 @@ def main():
     mgrit = solver.Mgrit(problem=problem, transfer=transfer)
     mgrit.solve()
 
-    heat0 = heat_equation_2pts_bdf2.HeatEquation(x_start=0, x_end=2, nx=1001, a=1,
+    heat0 = heat_equation_2pts_bdf2.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
                                                  t_start=0, t_stop=2, nt=65, dt=dt)
-    heat1 = heat_equation_2pts_bdf2.HeatEquation(x_start=0, x_end=2, nx=1001, a=1,
+    heat1 = heat_equation_2pts_bdf2.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
                                                  t_start=0, t_stop=2, nt=17, dt=dt)
-    heat2 = heat_equation_2pts_bdf2.HeatEquation(x_start=0, x_end=2, nx=1001, a=1,
+    heat2 = heat_equation_2pts_bdf2.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
                                                  t_start=0, t_stop=2, nt=5, dt=dt)
 
     problem = [heat0, heat1, heat2]

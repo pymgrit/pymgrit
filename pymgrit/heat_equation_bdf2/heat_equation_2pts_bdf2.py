@@ -16,7 +16,7 @@ class HeatEquation(application.Application):
     => solution u(x,t) = sin(pi*x)*cos(t)
     """
 
-    def __init__(self, x_start, x_end, nx, dt, a, *args, **kwargs):
+    def __init__(self, x_start, x_end, nx, dt, d, *args, **kwargs):
         super(HeatEquation, self).__init__(*args, **kwargs)
         self.x_start = x_start
         self.x_end = x_end
@@ -24,13 +24,13 @@ class HeatEquation(application.Application):
         self.x = self.x[1:-1]
         self.nx = nx - 2
         self.dt = dt
-        self.a = a
+        self.d = d
 
         self.u_ex = self.u_exact_complete(x=self.x, t=np.linspace(self.t_start, self.t_end, (self.nt - 1) * 2 + 1))
 
-        self.a1 = self.heat_sparse(np.size(self.x), (self.a * (self.t[1] - self.t[0] - self.dt)) / (
+        self.a1 = self.heat_sparse(np.size(self.x), (self.d * (self.t[1] - self.t[0] - self.dt)) / (
                 self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
-        self.a2 = self.heat_sparse(np.size(self.x), (self.a * self.dt) / (
+        self.a2 = self.heat_sparse(np.size(self.x), (self.d * self.dt) / (
                 self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
 
         self.u = vector_standard_bdf2.VectorStandardBDF2(self.nx)  # Create initial value solution

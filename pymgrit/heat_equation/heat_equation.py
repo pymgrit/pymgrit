@@ -21,17 +21,17 @@ class HeatEquation(application.Application):
     => solution u(x,t) = sin(pi*x)*cos(t)
     """
 
-    def __init__(self, x_start, x_end, nx, a, *args, **kwargs):
+    def __init__(self, x_start, x_end, nx, d, *args, **kwargs):
         super(HeatEquation, self).__init__(*args, **kwargs)
         self.x_start = x_start  # lower interval bound of spatial domain
         self.x_end = x_end  # upper interval bound of spatial domain
         self.x = np.linspace(self.x_start, self.x_end, nx)  # Spatial domain
         self.x = self.x[1:-1]  # homogeneous BCs
         self.nx = nx - 2  # homogeneous BCs
-        self.a = a  # diffusion coefficient
+        self.d = d  # diffusion coefficient
 
         # setup matrix that acts in space for time integrator Ph
-        self.a = self.heat_sparse(np.size(self.x), (self.a * (self.t[1] - self.t[0])) /
+        self.a = self.heat_sparse(np.size(self.x), (self.d * (self.t[1] - self.t[0])) /
                                   (self.x[1] - self.x[0]) ** 2)
 
         self.u = vector_standard.VectorStandard(self.nx)  # Create initial value solution

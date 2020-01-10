@@ -2,13 +2,13 @@
 Problem class for the voltage driven eddy current problem of a coaxial cable
 """
 
+from typing import Dict, Tuple
 import numpy as np
 from scipy import interpolate
 from scipy import linalg as la
 from scipy.sparse.linalg import spsolve
 from scipy import sparse
 import scipy.io as sio
-from typing import Dict, Tuple
 
 from pymgrit.core import application
 from pymgrit.core import vector
@@ -216,8 +216,7 @@ class CableVoltageDriven(application.Application):
         x_new = np.copy(vinit)
 
         vmass = sparse.hstack(
-            (sparse.vstack((self.msh, -self.psh)), np.zeros(self.psh.shape[1] + 1)[np.newaxis].T)) / (
-                        tstop - tstart)
+            (sparse.vstack((self.msh, -self.psh)), np.zeros(self.psh.shape[1] + 1)[np.newaxis].T)) / (tstop - tstart)
 
         def f(x):
             return vmass.dot(x - x_old) + self.eddy_current_rhs(self.mesh, self.nuelem, self.idxnlinelem,
@@ -318,8 +317,9 @@ class CableVoltageDriven(application.Application):
         numnode = np.size(mesh.node, 0)
         i = np.repeat(mesh.elem[:, 0:3], 3)
         j = np.tile(mesh.elem[:, 0:3], 3).flatten()
-        v = (np.einsum('ij,ik->ijk', (mesh.b.transpose() * nu[1]).transpose(), mesh.b) + np.einsum('ij,ik->ijk', (
-                mesh.c.transpose() * nu[0]).transpose(), mesh.c)).flatten() / np.repeat(mesh.area * mesh.depth * 4, 9)
+        v = (np.einsum('ij,ik->ijk', (mesh.b.transpose() * nu[1]).transpose(), mesh.b) +
+             np.einsum('ij,ik->ijk', (mesh.c.transpose() * nu[0]).transpose(), mesh.c)).flatten() / np.repeat(
+            mesh.area * mesh.depth * 4, 9)
         kfem = sparse.csr_matrix((v, (i - 1, j - 1)), shape=(numnode, numnode))
         return kfem
 
