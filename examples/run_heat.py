@@ -1,5 +1,8 @@
+import os
+from os import sys
 import pathlib
 import numpy as np
+
 
 from pymgrit.heat_equation import heat_equation
 from pymgrit.core import mgrit as solver
@@ -37,4 +40,7 @@ def main():
 
 
 if __name__ == '__main__':
+    print(__package__)
+    if __package__ is None:
+        sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
     main()

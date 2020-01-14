@@ -1,10 +1,4 @@
-# Setuptools distribution folder.
-/dist/
-
-results/
 private/
-cluster_runs/
-venv/
 ._sync_*
 .owncloudsync*
 

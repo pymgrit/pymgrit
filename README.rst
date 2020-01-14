@@ -1,7 +1,7 @@
 Installation
 ------------
 
-PyMGRIT requires ``numpy``, ``scipy`` and ``mpi4py``
+PyMGRIT requires ``mpicc`` (from ``openmpi`` or ``mpich``)
 
     >>> pip install pymgrit
 
