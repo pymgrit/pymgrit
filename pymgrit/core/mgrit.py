@@ -195,7 +195,7 @@ class Mgrit:
 
     def create_u(self, lvl: int) -> None:
         """
-        Create the solution vector. Level 0 has random values
+        Create the solution vector.
         :param lvl:
         """
         self.u.append([object] * self.block_size_this_lvl[lvl])
