@@ -12,8 +12,7 @@ extras_requires = {
         'sphinx'
     ],
     'tests': [
-        'nose',
-        'nose-cover3'
+        'tox',
     ],
     'firedrake': [
         'firedrake'

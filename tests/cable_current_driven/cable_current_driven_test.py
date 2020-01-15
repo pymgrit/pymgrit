@@ -1,16 +1,33 @@
 import unittest
 import numpy as np
 import scipy.io as sio
+import os.path
 
 from pymgrit.cable_current_driven import cable_current_driven
-from pymgrit.core import vector_standard
 
 
 class TestCableCurrentDriven(unittest.TestCase):
-    def test_nlin_initialise(self):
-        # prb = sio.loadmat('../problems/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
+    problem_directory = None
+    current_directory = None
 
-        bh = np.loadtxt('../problems/BH.txt')
+    def setUp(self):
+        self.problem_directory = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            '..',
+            '..',
+            'src',
+            'pymgrit',
+            'cable_current_driven',
+            'problems'
+        )
+
+        self.current_directory = os.path.dirname(os.path.realpath(__file__))
+
+
+    def test_nlin_initialise(self):
+        # prb = sio.loadmat(self.problem_directory + '/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
+
+        bh = np.loadtxt(self.problem_directory + '/BH.txt')
 
         bchar = bh[:, 0]
         hchar = bh[:, 1]
@@ -49,7 +66,7 @@ class TestCableCurrentDriven(unittest.TestCase):
         np.testing.assert_almost_equal(final_wmagn, nlin['finalWmagn'])
 
     def test_prb_mate_2_elem(self):
-        prb = sio.loadmat('../problems/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
+        prb = sio.loadmat(self.problem_directory + '/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
 
         sigmaelem = cable_current_driven.CableCurrentDriven.prb_mate_2_elem(prb, 'sigma').transpose()[0]
 
@@ -70,7 +87,7 @@ class TestCableCurrentDriven(unittest.TestCase):
         np.testing.assert_equal(test_sigmaelem, sigmaelem)
 
     def test_prb_mate_2_elem_nu(self):
-        prb = sio.loadmat('../problems/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
+        prb = sio.loadmat(self.problem_directory + '/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
 
         nuelem = cable_current_driven.CableCurrentDriven.prb_mate_2_elem(prb, 'nu').transpose()
 
@@ -81,38 +98,38 @@ class TestCableCurrentDriven(unittest.TestCase):
         np.testing.assert_equal(test_nuelem, nuelem)
 
     def test_current_pstr(self):
-        prb = sio.loadmat('../problems/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
+        prb = sio.loadmat(self.problem_directory + '/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
 
         pfem = cable_current_driven.CableCurrentDriven.current_pstr(prb)
 
-        test_pfem = np.load('pfem.npy', allow_pickle=True).item()
+        test_pfem = np.load(self.current_directory + '/pfem.npy', allow_pickle=True).item()
 
         np.testing.assert_equal(test_pfem.toarray(), pfem.toarray())
 
     def test_edgemass_ll(self):
-        prb = sio.loadmat('../problems/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
+        prb = sio.loadmat(self.problem_directory + '/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
 
         sigmaelem = cable_current_driven.CableCurrentDriven.prb_mate_2_elem(prb, 'sigma').transpose()[0]
 
         mfem = cable_current_driven.CableCurrentDriven.edgemass_ll(prb.mesh, sigmaelem)
 
-        test_mfem = np.load('mfem.npy', allow_pickle=True).item()
+        test_mfem = np.load(self.current_directory + '/mfem.npy', allow_pickle=True).item()
 
-        np.testing.assert_equal(test_mfem.toarray(), mfem.toarray())
+        np.testing.assert_almost_equal(test_mfem.toarray(), mfem.toarray())
 
     def test_curlcurl_ll(self):
-        prb = sio.loadmat('../problems/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
+        prb = sio.loadmat(self.problem_directory + '/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
 
         nuelem = cable_current_driven.CableCurrentDriven.prb_mate_2_elem(prb, 'nu').transpose()
 
         kfem = cable_current_driven.CableCurrentDriven.curlcurl_ll(prb.mesh, nuelem)
 
-        test_kfem = np.load('kfem.npy', allow_pickle=True).item()
+        test_kfem = np.load(self.current_directory + '/kfem.npy', allow_pickle=True).item()
 
-        np.testing.assert_equal(test_kfem.toarray(), kfem.toarray())
+        np.testing.assert_almost_equal(test_kfem.toarray(), kfem.toarray())
 
     def test_cart2pol(self):
-        prb = sio.loadmat('../problems/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
+        prb = sio.loadmat(self.problem_directory + '/cable_61.mat', struct_as_record=False, squeeze_me=True)['cable_61']
 
         x = prb.mesh.node[:, 0]
         y = prb.mesh.node[:, 1]
