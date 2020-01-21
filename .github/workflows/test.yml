@@ -1,4 +1,4 @@
-name: Lint
+name: Test
 
 on: [push]
 
@@ -18,7 +18,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install openmpi
+    - name: Install mpich
       run: sudo apt update && sudo apt install -y mpich
 
     - name: Cache pip
