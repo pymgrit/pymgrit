@@ -1,3 +1,10 @@
+|Test Status| |Lint Status|
+
+.. |Test Status| image:: https://github.com/pymgrit/pymgrit/workflows/Lint/badge.svg
+   :target: https://github.com/pymgrit/pymgrit/actions
+.. |Lint Status| image:: https://github.com/pymgrit/pymgrit/workflows/Test/badge.svg
+   :target: https://github.com/pymgrit/pymgrit/actions
+
 Installation
 ------------
 
