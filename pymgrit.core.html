@@ -35,29 +35,347 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pymgrit-core-application-module">
-<h2>pymgrit.core.application module<a class="headerlink" href="#pymgrit-core-application-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.core.application">
+<span id="pymgrit-core-application-module"></span><h2>pymgrit.core.application module<a class="headerlink" href="#module-pymgrit.core.application" title="Permalink to this headline">¶</a></h2>
+<p>Abstract class for problems. Each problem has to be a child</p>
+<dl class="class">
+<dt id="pymgrit.core.application.Application">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.application.</code><code class="sig-name descname">Application</code><span class="sig-paren">(</span><em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em>, <em class="sig-param">nt: int</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.application.Application" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract class for problems. Each problem has to be a child</p>
+<dl class="method">
+<dt id="pymgrit.core.application.Application.step">
+<em class="property">abstract </em><code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: object</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; object<a class="headerlink" href="#pymgrit.core.application.Application.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time stepper for problem
+:param u_start: Start solution
+:param t_start: Start time point
+:param t_stop: End time point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.application.Application.u">
+<em class="property">property </em><code class="sig-name descname">u</code><a class="headerlink" href="#pymgrit.core.application.Application.u" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property u
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="pymgrit-core-grid-transfer-module">
-<h2>pymgrit.core.grid_transfer module<a class="headerlink" href="#pymgrit-core-grid-transfer-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.core.grid_transfer">
+<span id="pymgrit-core-grid-transfer-module"></span><h2>pymgrit.core.grid_transfer module<a class="headerlink" href="#module-pymgrit.core.grid_transfer" title="Permalink to this headline">¶</a></h2>
+<p>Abstract class for grid transfers. Each grid transfer has to be a child</p>
+<dl class="class">
+<dt id="pymgrit.core.grid_transfer.GridTransfer">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.grid_transfer.</code><code class="sig-name descname">GridTransfer</code><a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract class for grid transfers. Each grid transfer has to be a child</p>
+<dl class="method">
+<dt id="pymgrit.core.grid_transfer.GridTransfer.interpolation">
+<em class="property">abstract </em><code class="sig-name descname">interpolation</code><span class="sig-paren">(</span><em class="sig-param">u</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer.interpolation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spatial interpolation between two grids.
+Gets solutions of one grid and transforms it to another one
+:param u: Start solution</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.grid_transfer.GridTransfer.restriction">
+<em class="property">abstract </em><code class="sig-name descname">restriction</code><span class="sig-paren">(</span><em class="sig-param">u</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer.restriction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spatial restriction between two grids.
+Gets solutions of one grid and transforms it to another one
+:param u: Start solution</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="pymgrit-core-grid-transfer-copy-module">
-<h2>pymgrit.core.grid_transfer_copy module<a class="headerlink" href="#pymgrit-core-grid-transfer-copy-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.core.grid_transfer_copy">
+<span id="pymgrit-core-grid-transfer-copy-module"></span><h2>pymgrit.core.grid_transfer_copy module<a class="headerlink" href="#module-pymgrit.core.grid_transfer_copy" title="Permalink to this headline">¶</a></h2>
+<p>Standard grid transfer. Copies values</p>
+<dl class="class">
+<dt id="pymgrit.core.grid_transfer_copy.GridTransferCopy">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.grid_transfer_copy.</code><code class="sig-name descname">GridTransferCopy</code><a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pymgrit.core.grid_transfer.GridTransfer" title="pymgrit.core.grid_transfer.GridTransfer"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.grid_transfer.GridTransfer</span></code></a></p>
+<p>Standard grid transfer. Copies values</p>
+<dl class="method">
+<dt id="pymgrit.core.grid_transfer_copy.GridTransferCopy.interpolation">
+<code class="sig-name descname">interpolation</code><span class="sig-paren">(</span><em class="sig-param">u</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy.interpolation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate u
+:rtype: object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.grid_transfer_copy.GridTransferCopy.restriction">
+<code class="sig-name descname">restriction</code><span class="sig-paren">(</span><em class="sig-param">u</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy.restriction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restrict u
+:rtype: object</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="pymgrit-core-mgrit-module">
-<h2>pymgrit.core.mgrit module<a class="headerlink" href="#pymgrit-core-mgrit-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.core.mgrit">
+<span id="pymgrit-core-mgrit-module"></span><h2>pymgrit.core.mgrit module<a class="headerlink" href="#module-pymgrit.core.mgrit" title="Permalink to this headline">¶</a></h2>
+<p>MGRIT in FAS formulation</p>
+<dl class="class">
+<dt id="pymgrit.core.mgrit.Mgrit">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.mgrit.</code><code class="sig-name descname">Mgrit</code><span class="sig-paren">(</span><em class="sig-param">problem: List[pymgrit.core.application.Application], transfer: List[pymgrit.core.grid_transfer.GridTransfer], it: int = 100, tol: float = 1e-07, nested_iteration: bool = True, cf_iter: int = 1, cycle_type: str = 'V', comm_time: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Intracomm object&gt;, comm_space: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Comm object&gt;, logging_lvl: int = 20, output_fcn=None, output_lvl=1, random_init_guess: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Set up an MGRIT solver, given an array of problems and an array of grid transfers</p>
+<p>The problems are assumed to have a  of constant dimension and the spacetime
+matrix stencil solved is [-Phi  I].</p>
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.c_exchange">
+<code class="sig-name descname">c_exchange</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.c_exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point exchange if the first point is a F-points. Typically, after an C-point update
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.c_relax">
+<code class="sig-name descname">c_relax</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.c_relax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perfoms a C relaxation
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.convergence_criteria">
+<code class="sig-name descname">convergence_criteria</code><span class="sig-paren">(</span><em class="sig-param">iteration: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.convergence_criteria" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute pace-time residual
+solve A(u) = g with</p>
+<blockquote>
+<div><blockquote>
+<div><div class="line-block">
+<div class="line">I                |</div>
 </div>
-<div class="section" id="pymgrit-core-split-module">
-<h2>pymgrit.core.split module<a class="headerlink" href="#pymgrit-core-split-module" title="Permalink to this headline">¶</a></h2>
+</div></blockquote>
+<dl>
+<dt>A = | -Phi   I           |</dt><dd><div class="line-block">
+<div class="line">…   …    |</div>
+<div class="line-block">
+<div class="line">-Phi  I |</div>
 </div>
-<div class="section" id="pymgrit-core-vector-module">
-<h2>pymgrit.core.vector module<a class="headerlink" href="#pymgrit-core-vector-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pymgrit-core-vector-standard-module">
-<h2>pymgrit.core.vector_standard module<a class="headerlink" href="#pymgrit-core-vector-standard-module" title="Permalink to this headline">¶</a></h2>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>where Phi propagates u_{i-1} from t = t_{i-1} to t = t_i:</dt><dd><p>u_i = Phi(u_{i-1}) (including forcing from RHS of PDE)</p>
+</dd>
+<dt>and with</dt><dd><p>g = (u_0 0 … 0)^T</p>
+</dd>
+<dt>The residual can be computed by</dt><dd><p>r_i = Phi(u_{i-1}) - u_i, i = 1, …. nt,
+r_0 = 0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.create_u">
+<code class="sig-name descname">create_u</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.create_u" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the solution vector.
+:param lvl:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.error_correction">
+<code class="sig-name descname">error_correction</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.error_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the coarse grid error approximation
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.f_exchange">
+<code class="sig-name descname">f_exchange</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.f_exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point exchange if the first point is a C-points. Typically, after an F-point update
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.f_relax">
+<code class="sig-name descname">f_relax</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.f_relax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a F-relaxation
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.fas_residual">
+<code class="sig-name descname">fas_residual</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.fas_residual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inject the fine grid approximation and its residual to the coarse grid
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.forward_solve">
+<code class="sig-name descname">forward_solve</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.forward_solve" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Solve the problem via time stepping on coarsest grid</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param lvl</dt>
+<dd class="field-odd"><p>the corresponding MGRIT level</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.get_c_point">
+<code class="sig-name descname">get_c_point</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; pymgrit.core.application.Application<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.get_c_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exchange of the first/last C-point between two processes
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em>, <em class="sig-param">cycle_type: str</em>, <em class="sig-param">iteration: int</em>, <em class="sig-param">first_f: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs one MGRIT iteration
+:return:
+:param lvl: the corresponding MGRIT level
+:param cycle_type:
+:param iteration:
+:param first_f:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.log_info">
+<code class="sig-name descname">log_info</code><span class="sig-paren">(</span><em class="sig-param">message: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.log_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the message to the logger. Only one processor
+:param message:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.nested_iteration">
+<code class="sig-name descname">nested_iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.nested_iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate initial approximation by the computation and interpolation of approximations on coarser grids</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.ouput_run_informations">
+<code class="sig-name descname">ouput_run_informations</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.ouput_run_informations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs run information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.setup_comm_info">
+<code class="sig-name descname">setup_comm_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.setup_comm_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes which process holds the previous and next point for each lvl and process</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.setup_points">
+<code class="sig-name descname">setup_points</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.setup_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes grid information per process
+:param lvl: the corresponding MGRIT level
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function for solving the problem. Performs MGRIT iterations until a stopping criteria
+is reached or the maximum number of iterations
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.split_into">
+<em class="property">static </em><code class="sig-name descname">split_into</code><span class="sig-paren">(</span><em class="sig-param">number_points: int</em>, <em class="sig-param">procs: int</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.split_into" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split points
+:param number_points:
+:param procs:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.mgrit.Mgrit.split_points">
+<code class="sig-name descname">split_points</code><span class="sig-paren">(</span><em class="sig-param">length: int</em>, <em class="sig-param">size: int</em>, <em class="sig-param">rank: int</em><span class="sig-paren">)</span> &#x2192; Tuple[int, int]<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.split_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split points evenly in size parts and compute the first point and block size of the process interval
+:param length: Number of points
+:param size: Number of processes
+:param rank: Rank
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.core.split">
+<span id="pymgrit-core-split-module"></span><h2>pymgrit.core.split module<a class="headerlink" href="#module-pymgrit.core.split" title="Permalink to this headline">¶</a></h2>
+<p>Splits a communicator for space-time parallelism</p>
+<dl class="function">
+<dt id="pymgrit.core.split.split_communicator">
+<code class="sig-prename descclassname">pymgrit.core.split.</code><code class="sig-name descname">split_communicator</code><span class="sig-paren">(</span><em class="sig-param">comm: mpi4py.MPI.Comm</em>, <em class="sig-param">splitting: int</em><span class="sig-paren">)</span> &#x2192; Tuple[mpi4py.MPI.Comm, mpi4py.MPI.Comm]<a class="headerlink" href="#pymgrit.core.split.split_communicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the communicator
+:param comm:
+:param splitting:
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pymgrit.core.vector">
+<span id="pymgrit-core-vector-module"></span><h2>pymgrit.core.vector module<a class="headerlink" href="#module-pymgrit.core.vector" title="Permalink to this headline">¶</a></h2>
+<p>Abstract class for one solution point. Each solution data structure has to be a child</p>
+<dl class="class">
+<dt id="pymgrit.core.vector.Vector">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.vector.</code><code class="sig-name descname">Vector</code><a class="headerlink" href="#pymgrit.core.vector.Vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract class for one solution point. Each solution data structure has to be a child</p>
+<dl class="method">
+<dt id="pymgrit.core.vector.Vector.init_rand">
+<em class="property">abstract </em><code class="sig-name descname">init_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.init_rand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the solution construct with random values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.vector.Vector.init_zero">
+<em class="property">abstract </em><code class="sig-name descname">init_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.init_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the solution construct with all zeros.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.vector.Vector.norm">
+<em class="property">abstract </em><code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Norm of the solution construct</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pymgrit.core.vector_standard">
+<span id="pymgrit-core-vector-standard-module"></span><h2>pymgrit.core.vector_standard module<a class="headerlink" href="#module-pymgrit.core.vector_standard" title="Permalink to this headline">¶</a></h2>
+<p>Standard solution vector. Contains one numpy array</p>
+<dl class="class">
+<dt id="pymgrit.core.vector_standard.VectorStandard">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.vector_standard.</code><code class="sig-name descname">VectorStandard</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector_standard.VectorStandard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
+<p>Standard solution vector. Contains one numpy array</p>
+<dl class="method">
+<dt id="pymgrit.core.vector_standard.VectorStandard.init_rand">
+<code class="sig-name descname">init_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector_standard.VectorStandard.init_rand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial solution vector with random values
+:rtype: object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.vector_standard.VectorStandard.init_zero">
+<code class="sig-name descname">init_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector_standard.VectorStandard.init_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial solution vector with all zeros
+:rtype: object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.vector_standard.VectorStandard.norm">
+<code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector_standard.VectorStandard.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Norm
+:rtype: object</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pymgrit.core">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit.core" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

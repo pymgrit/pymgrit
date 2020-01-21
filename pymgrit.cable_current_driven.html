@@ -35,11 +35,193 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pymgrit-cable-current-driven-cable-current-driven-module">
-<h2>pymgrit.cable_current_driven.cable_current_driven module<a class="headerlink" href="#pymgrit-cable-current-driven-cable-current-driven-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.cable_current_driven.cable_current_driven">
+<span id="pymgrit-cable-current-driven-cable-current-driven-module"></span><h2>pymgrit.cable_current_driven.cable_current_driven module<a class="headerlink" href="#module-pymgrit.cable_current_driven.cable_current_driven" title="Permalink to this headline">¶</a></h2>
+<p>Problem class for the voltage driven eddy current problem of a coaxial cable</p>
+<dl class="class">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.cable_current_driven.cable_current_driven.</code><code class="sig-name descname">CableCurrentDriven</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">nonlinear</em>, <em class="sig-param">pwm</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>2-d voltage driven eddy current problem on a coaxial cable
+sigma dA/dt + Delta x (nu(||Delta x A||) Delta x A) = J_s
+See: <a class="reference external" href="https://arxiv.org/abs/1810.13263">https://arxiv.org/abs/1810.13263</a></p>
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.cart2pol">
+<em class="property">static </em><code class="sig-name descname">cart2pol</code><span class="sig-paren">(</span><em class="sig-param">x: numpy.ndarray</em>, <em class="sig-param">y: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.cart2pol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform Cartesian coordinates to polar or cylindrical
+:param x:
+:param y:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.curl">
+<em class="property">static </em><code class="sig-name descname">curl</code><span class="sig-paren">(</span><em class="sig-param">mesh: &lt;module 'scipy.io.matlab.mio' from '/usr/local/lib/python3.7/dist-packages/scipy/io/matlab/mio.py'&gt;</em>, <em class="sig-param">az: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.curl" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the magnetic flux density for a given distribution of the line-integrated magnetic vector potential
+:param mesh:
+:param az:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.curlcurl_ll">
+<em class="property">static </em><code class="sig-name descname">curlcurl_ll</code><span class="sig-paren">(</span><em class="sig-param">mesh: &lt;module 'scipy.io.matlab.mio' from '/usr/local/lib/python3.7/dist-packages/scipy/io/matlab/mio.py'&gt;</em>, <em class="sig-param">nu: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; scipy.sparse.csr.csr_matrix<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.curlcurl_ll" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the curl-curl matrix for the element-wise constant reluctivities reginu
+:param mesh:
+:param nu:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.curlcurl_ll_nonlinear">
+<em class="property">static </em><code class="sig-name descname">curlcurl_ll_nonlinear</code><span class="sig-paren">(</span><em class="sig-param">mesh: &lt;module 'scipy.io.matlab.mio' from '/usr/local/lib/python3.7/dist-packages/scipy/io/matlab/mio.py'&gt;</em>, <em class="sig-param">b: numpy.ndarray</em>, <em class="sig-param">nu: numpy.ndarray</em>, <em class="sig-param">dnud_b2: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; scipy.sparse.csr.csr_matrix<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.curlcurl_ll_nonlinear" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the curl-curl matrix and magnetisation vector for the element-wise magnetic properties
+:param mesh:
+:param b:
+:param nu:
+:param dnud_b2:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.current_pstr">
+<em class="property">static </em><code class="sig-name descname">current_pstr</code><span class="sig-paren">(</span><em class="sig-param">prb: &lt;module 'scipy.io.matlab.mio' from '/usr/local/lib/python3.7/dist-packages/scipy/io/matlab/mio.py'&gt;</em><span class="sig-paren">)</span> &#x2192; scipy.sparse.csr.csr_matrix<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.current_pstr" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the coupling blocks for stranded conductors
+:param prb:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.eddy_current_jac">
+<code class="sig-name descname">eddy_current_jac</code><span class="sig-paren">(</span><em class="sig-param">mesh: &lt;module 'scipy.io.matlab.mio' from '/usr/local/lib/python3.7/dist-packages/scipy/io/matlab/mio.py'&gt;</em>, <em class="sig-param">nu: numpy.ndarray</em>, <em class="sig-param">idxnlinelem: numpy.ndarray</em>, <em class="sig-param">idxdof: int</em>, <em class="sig-param">ush: numpy.ndarray</em>, <em class="sig-param">nlin: Dict</em><span class="sig-paren">)</span> &#x2192; scipy.sparse.csr.csr_matrix<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.eddy_current_jac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs the Jacobi Matrix
+:param mesh:
+:param nu:
+:param idxnlinelem:
+:param idxdof:
+:param ush:
+:param nlin:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.eddy_current_rhs">
+<code class="sig-name descname">eddy_current_rhs</code><span class="sig-paren">(</span><em class="sig-param">mesh: &lt;module 'scipy.io.matlab.mio' from '/usr/local/lib/python3.7/dist-packages/scipy/io/matlab/mio.py'&gt;</em>, <em class="sig-param">nu: numpy.ndarray</em>, <em class="sig-param">idxnlinelem: numpy.ndarray</em>, <em class="sig-param">idxdof: int</em>, <em class="sig-param">t: float</em>, <em class="sig-param">ush: numpy.ndarray</em>, <em class="sig-param">psh: scipy.sparse.csc.csc_matrix</em>, <em class="sig-param">iw: int</em>, <em class="sig-param">omega: float</em>, <em class="sig-param">nlin: Dict</em>, <em class="sig-param">pwm: bool</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.eddy_current_rhs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructing the right hand side for eddy current problem
+:param omega:
+:param iw:
+:param mesh:
+:param nu:
+:param idxnlinelem:
+:param idxdof:
+:param t:
+:param ush:
+:param psh:
+:param nlin:
+:param pwm:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.edgemass_ll">
+<em class="property">static </em><code class="sig-name descname">edgemass_ll</code><span class="sig-paren">(</span><em class="sig-param">mesh: &lt;module 'scipy.io.matlab.mio' from '/usr/local/lib/python3.7/dist-packages/scipy/io/matlab/mio.py'&gt;</em>, <em class="sig-param">sigma: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; scipy.sparse.csr.csr_matrix<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.edgemass_ll" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the cff-edge-mass matrix for a certain element-wise constant conductivity
+:param mesh:
+:param sigma:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.newton">
+<code class="sig-name descname">newton</code><span class="sig-paren">(</span><em class="sig-param">tstart: float</em>, <em class="sig-param">tstop: float</em>, <em class="sig-param">vinit: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.newton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the problem using newtons method
+:param tstart:
+:param tstop:
+:param vinit:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.nlin_evaluate">
+<code class="sig-name descname">nlin_evaluate</code><span class="sig-paren">(</span><em class="sig-param">nlin: Dict</em>, <em class="sig-param">b: numpy.ndarray</em>, <em class="sig-param">nargout: int = 4</em><span class="sig-paren">)</span> &#x2192; Tuple<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.nlin_evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates a nonlinear material characteristic for a given abscis input determining the working point
+:param nlin:
+:param b:
+:param nargout:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.nlin_initialise">
+<em class="property">static </em><code class="sig-name descname">nlin_initialise</code><span class="sig-paren">(</span><em class="sig-param">bchar: numpy.ndarray</em>, <em class="sig-param">hchar: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.nlin_initialise" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialises the data for further use when evaluating nonlinear material characteristics
+:param bchar:
+:param hchar:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.phi_linear">
+<code class="sig-name descname">phi_linear</code><span class="sig-paren">(</span><em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em>, <em class="sig-param">vinit: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.phi_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves the linear system
+:param t_start:
+:param t_stop:
+:param vinit:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.prb_mate_2_elem">
+<em class="property">static </em><code class="sig-name descname">prb_mate_2_elem</code><span class="sig-paren">(</span><em class="sig-param">prb: &lt;module 'scipy.io.matlab.mio' from '/usr/local/lib/python3.7/dist-packages/scipy/io/matlab/mio.py'&gt;</em>, <em class="sig-param">mateprop: str</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.prb_mate_2_elem" title="Permalink to this definition">¶</a></dt>
+<dd><p>translates a material-wise property into an element-wise property
+:param prb:
+:param mateprop:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.pyth">
+<em class="property">static </em><code class="sig-name descname">pyth</code><span class="sig-paren">(</span><em class="sig-param">b: numpy.ndarray</em><span class="sig-paren">)</span> &#x2192; Tuple<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.pyth" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the magnitude of the vector/coordinate B
+:param b:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.save_divide">
+<em class="property">static </em><code class="sig-name descname">save_divide</code><span class="sig-paren">(</span><em class="sig-param">x: numpy.ndarray</em>, <em class="sig-param">y: numpy.ndarray</em>, <em class="sig-param">value: numpy.ndarray = 0</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.save_divide" title="Permalink to this definition">¶</a></dt>
+<dd><p>divides vector x through vector y avoiding division through zero and introducing value instead
+:param x:
+:param y:
+:param value:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.core.vector_standard.VectorStandard</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.core.vector_standard.VectorStandard<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performing one time step
+:param u_start:
+:param t_start:
+:param t_stop:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.utl_pwm">
+<em class="property">static </em><code class="sig-name descname">utl_pwm</code><span class="sig-paren">(</span><em class="sig-param">t: float</em>, <em class="sig-param">freq: float</em>, <em class="sig-param">teeth: int</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#pymgrit.cable_current_driven.cable_current_driven.CableCurrentDriven.utl_pwm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create pulse width modulation signal
+:param t:
+:param freq:
+:param teeth:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.cable_current_driven">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit.cable_current_driven" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

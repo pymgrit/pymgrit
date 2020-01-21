@@ -35,11 +35,85 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pymgrit-heat-equation-heat-equation-module">
-<h2>pymgrit.heat_equation.heat_equation module<a class="headerlink" href="#pymgrit-heat-equation-heat-equation-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.heat_equation.heat_equation">
+<span id="pymgrit-heat-equation-heat-equation-module"></span><h2>pymgrit.heat_equation.heat_equation module<a class="headerlink" href="#module-pymgrit.heat_equation.heat_equation" title="Permalink to this headline">¶</a></h2>
+<p>Heat equation 1-d example</p>
+<dl class="class">
+<dt id="pymgrit.heat_equation.heat_equation.HeatEquation">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat_equation.heat_equation.</code><code class="sig-name descname">HeatEquation</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">d</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat_equation.heat_equation.HeatEquation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>Heat equation 1-d example
+u_t - a*u_xx = b(x,t),  a &gt; 0, x in [0,1], t in [0,T]</p>
+<blockquote>
+<div><p>u(0,t)  = u(1,t) = 0,   t in [0,T]
+u(x,0)  = sin(pi*x),    x in [0,1]</p>
+</div></blockquote>
+<p>with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t))
+=&gt; solution u(x,t) = sin(pi*x)*cos(t)</p>
+<dl class="method">
+<dt id="pymgrit.heat_equation.heat_equation.HeatEquation.heat_sparse">
+<em class="property">static </em><code class="sig-name descname">heat_sparse</code><span class="sig-paren">(</span><em class="sig-param">nx</em>, <em class="sig-param">fac</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat_equation.heat_equation.HeatEquation.heat_sparse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Central FD in space</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.heat_equation.heat_equation.HeatEquation.rhs">
+<em class="property">static </em><code class="sig-name descname">rhs</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat_equation.heat_equation.HeatEquation.rhs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Right-hand-side</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.heat_equation.heat_equation.HeatEquation.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.core.vector_standard.VectorStandard</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.core.vector_standard.VectorStandard<a class="headerlink" href="#pymgrit.heat_equation.heat_equation.HeatEquation.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backward Euler in time
+At each time step i = 1, …, nt+1, we obtain the linear system
+| 1+2ar   -ar                     | |  u_{1,i}   |   |  u_{1,i-1}   |
+|  -ar   1+2ar  -ar               | |  u_{2,i}   |   |  u_{2,i-1}   |
+|         …   …    …        | |    …     | = |     …      |
+|               -ar   1+2ar  -ar  | | u_{nx-1,i} |   | u_{nx-1,i-1} |
+|                      -ar  1+2ar | |  u_{nx,i}  |   |  u_{nx,i-1}  |</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line-block">
+<div class="line">dt*b_{1,i}   |</div>
+<div class="line">dt*b_{2,i}   |</div>
+<div class="line-block">
+<div class="line">…       |</div>
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="line">dt*b_{nx-1,i} |</div>
+<div class="line-block">
+<div class="line">dt*b_{nx,i}  |</div>
+</div>
+</div>
+</div></blockquote>
+<p>with r = (dt/dx^2), which we denote by
+Mu_i = u_{i-1} + dt*b_i.
+This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
+which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)
+:param u_start:
+:param t_start:
+:param t_stop:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.heat_equation.heat_equation.HeatEquation.u_exact">
+<em class="property">static </em><code class="sig-name descname">u_exact</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat_equation.heat_equation.HeatEquation.u_exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solution for one time point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.heat_equation.heat_equation.HeatEquation.u_exact_complete">
+<code class="sig-name descname">u_exact_complete</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat_equation.heat_equation.HeatEquation.u_exact_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solution for all time points</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pymgrit.heat_equation">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit.heat_equation" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
