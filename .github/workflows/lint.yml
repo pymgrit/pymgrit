@@ -12,14 +12,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-      
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Install openmpi
-      run: sudo apt-get update && sudo apt-get install -y openmpi-common openmpi-bin
+      run: sudo apt update && sudo apt install -y mpich
 
     - name: Cache pip
       uses: actions/cache@v1
@@ -29,12 +29,12 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
           ${{ runner.os }}-
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install .
-    
+
     - name: Lint with pylint
       continue-on-error: true
       run: |
