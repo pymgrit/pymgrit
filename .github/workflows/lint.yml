@@ -39,4 +39,4 @@ jobs:
       continue-on-error: true
       run: |
         pip install pylint
-        pylint
+        pylint src/
