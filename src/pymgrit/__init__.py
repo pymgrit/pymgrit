@@ -1,6 +1,4 @@
 from .advection_equation.advection_equation import AdvectionEquation
-from .cable_current_driven.cable_current_driven import CableCurrentDriven
-from .cable_voltage_driven.cable_voltage_driven import CableVoltageDriven
 from .core.application import Application
 from .core.grid_transfer import GridTransfer
 from .core.grid_transfer_copy import GridTransferCopy
@@ -16,8 +14,6 @@ from .parallel_model.parallel_model import ParallelModel
 
 __all__ = [
     AdvectionEquation,
-    CableCurrentDriven,
-    CableVoltageDriven,
     Application,
     GridTransfer,
     GridTransferCopy,
