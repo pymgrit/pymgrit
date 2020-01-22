@@ -3,8 +3,7 @@ from setuptools import setup, find_packages
 install_requires = [
     'numpy>=1.17.0',
     'scipy>=1.3.0',
-    'mpi4py>=3.0',
-    'pylint>=2.3.0'
+    'mpi4py>=3.0'
 ]
 
 extras_requires = {
@@ -13,9 +12,6 @@ extras_requires = {
     ],
     'tests': [
         'tox',
-    ],
-    'firedrake': [
-        'firedrake'
     ]
 }
 
@@ -25,11 +21,11 @@ def long_description():
         return f.read()
 
 
-setup(name='PyMGRIT',
+setup(name='pymgrit',
       version='0.1',
       description='Python implementation of the MGRIT algorithm',
       long_description=long_description(),
-      url='TODO',
+      url='https://github.com/pymgrit/pymgrit',
       author='Jens Hahne',
       author_email='jens.hahne@math.uni-wuppertal.de',
       license='MIT',
