@@ -1,9 +1,13 @@
-|Test Status| |Lint Status|
+|Test Status| |Lint Status| |Docs Status| |Publish Status|
 
-.. |Test Status| image:: https://github.com/pymgrit/pymgrit/workflows/Lint/badge.svg
-   :target: https://github.com/pymgrit/pymgrit/actions
-.. |Lint Status| image:: https://github.com/pymgrit/pymgrit/workflows/Test/badge.svg
-   :target: https://github.com/pymgrit/pymgrit/actions
+.. |Lint Status| image:: https://github.com/pymgrit/pymgrit/workflows/Lint/badge.svg
+   :target: https://github.com/pymgrit/pymgrit/actions?query=workflow%3ALint
+.. |Test Status| image:: https://github.com/pymgrit/pymgrit/workflows/Test/badge.svg
+   :target: https://github.com/pymgrit/pymgrit/actions?query=workflow%3ATest
+.. |Docs Status| image:: https://github.com/pymgrit/pymgrit/workflows/Docs/badge.svg
+   :target: https://github.com/pymgrit/pymgrit/actions?query=workflow%3ADocs
+.. |Publish Status| image:: https://github.com/pymgrit/pymgrit/workflows/Publish/badge.svg
+   :target: https://github.com/pymgrit/pymgrit/actions?query=workflow%3APublish
 
 Installation
 ------------
