@@ -18,10 +18,8 @@ def main():
         np.save('results/' + name + '/' + str(self.solve_iter) + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),
                 sol)
 
-    adv0 = AdvectionEquation(c=1, x_start=-16, x_end=16, nx=65,
-                                                t_start=0, t_stop=6.4, nt=65)
-    adv1 = AdvectionEquation(c=1, x_start=-16, x_end=16, nx=65,
-                                                t_start=0, t_stop=6.4, nt=33)
+    adv0 = AdvectionEquation(c=1, x_start=-16, x_end=16, nx=65, t_start=0, t_stop=6.4, nt=65)
+    adv1 = AdvectionEquation(c=1, x_start=-16, x_end=16, nx=65, t_start=0, t_stop=6.4, nt=33)
 
     # # for time-stepping tests
     # problem = [adv0]

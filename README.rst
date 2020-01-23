@@ -47,7 +47,8 @@ TODO
 PyMGRIT Features
 ----------------
 
-TODO
+    - Classical Multigrid-Reduction-in-Time (MGRIT)
+    - Additional coarsening in space
 
 Example Usage
 ----------------
