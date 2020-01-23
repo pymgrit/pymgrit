@@ -463,7 +463,7 @@ class Mgrit:
                '{0: <25}'.format(f'max dt ') + ' : ' + str(
                    np.max(self.problem[0].t[1:] - self.problem[0].t[:-1])),
                '{0: <25}'.format(f'level') + ' : ' + str(self.lvl_max),
-               '{0: <25}'.format(f'coarsening') + ' : ' + str(self.m),
+               '{0: <25}'.format(f'coarsening') + ' : ' + str(self.m[:-1]),
                '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter),
                '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it),
                '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type),
@@ -542,8 +542,8 @@ class Mgrit:
             self.output_fcn(self)
 
         self.ouput_run_informations()
-        return {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
-                't': self.problem[0].t, 'time_setup': self.runtime_setup}
+        return {'conv': self.conv[np.where(self.conv != 0)], 'time_setup': self.runtime_setup,
+                'time_solve': self.runtime_solve}
 
     def error_correction(self, lvl: int) -> None:
         """
