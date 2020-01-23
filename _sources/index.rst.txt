@@ -9,13 +9,14 @@ TODO: What is pymgrit?
 
     usage/installation
     usage/quickstart
+    usage/examples
 
 .. toctree::
-    :caption: Examples
+    :caption: Problems
     :maxdepth: 2
 
-    examples/example1
-    usage/quickstart
+    problems/advection
+    problems/heat_equation
 
 
 :ref:`modindex`
