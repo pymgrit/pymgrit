@@ -3,13 +3,13 @@ import numpy as np
 
 from mpi4py import MPI
 
-from pymgrit.parallel_model import parallel_model, mgrit_parallel_model
-from pymgrit.core import grid_transfer_copy
+from pymgrit.parallel_model.mgrit_parallel_model import MgritParallelModel
+from pymgrit.parallel_model.parallel_model import ParallelModel
 
 
 def main():
     def output_fcn(self):
-        name = 'heat_equation'
+        name = 'parallel_model'
         pathlib.Path('results/' + name + '/' + str(self.solve_iter)).mkdir(parents=True, exist_ok=True)
         sol = {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
                't': self.problem[0].t, 'time_setup': self.runtime_setup}
@@ -19,18 +19,15 @@ def main():
 
     sleep = 0.01
 
-    heat0 = parallel_model.ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 10 + 1)
-    heat1 = parallel_model.ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 8 + 1)
-    heat2 = parallel_model.ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 6 + 1)
-    heat3 = parallel_model.ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 4 + 1)
-    heat4 = parallel_model.ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 2 + 1)
+    heat0 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 10 + 1)
+    heat1 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 8 + 1)
+    heat2 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 6 + 1)
+    heat3 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 4 + 1)
+    heat4 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 2 + 1)
 
     problem = [heat0, heat1, heat2, heat3, heat4]
-    transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy(),
-                grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = mgrit_parallel_model.MgritParallelModel(problem=problem, transfer=transfer, cf_iter=1, cycle_type='V',
-                                                    nested_iteration=False, it=1,
-                                                    output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
+    mgrit = MgritParallelModel(problem=problem, cf_iter=1, cycle_type='V', nested_iteration=False, it=1,
+                               output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
 
     mgrit.solve()
 

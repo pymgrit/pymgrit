@@ -1,12 +1,9 @@
-import os
-from os import sys
 import pathlib
 import numpy as np
 
 
-from pymgrit.heat_equation import heat_equation
-from pymgrit.core import mgrit as solver
-from pymgrit.core import grid_transfer_copy
+from pymgrit.heat_equation.heat_equation import HeatEquation
+from pymgrit.core.mgrit import Mgrit
 
 
 def main():
@@ -19,28 +16,18 @@ def main():
         np.save('results/' + name + '/' + str(self.solve_iter) + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),
                 sol)
 
-    heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
-                                       t_start=0, t_stop=2, nt=65)
-    heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
-                                       t_start=0, t_stop=2, nt=33)
-    heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
-                                       t_start=0, t_stop=2, nt=17)
-    heat3 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
-                                       t_start=0, t_stop=2, nt=9)
-    heat4 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=1001, d=1,
-                                       t_start=0, t_stop=2, nt=5)
+    heat0 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=65)
+    heat1 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=33)
+    heat2 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=17)
+    heat3 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=9)
+    heat4 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=5)
 
     problem = [heat0, heat1, heat2, heat3, heat4]
-    transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy(),
-                grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, cycle_type='F', nested_iteration=False, it=10,
+    mgrit = Mgrit(problem=problem, cf_iter=1, cycle_type='F', nested_iteration=False, it=10,
                          output_fcn=output_fcn, output_lvl=2, logging_lvl=20, random_init_guess=False)
 
     return mgrit.solve()
 
 
 if __name__ == '__main__':
-    print(__package__)
-    if __package__ is None:
-        sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
     main()

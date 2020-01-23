@@ -12,8 +12,9 @@ import numpy as np
 
 from mpi4py import MPI
 
-from pymgrit.core import application
-from pymgrit.core import grid_transfer
+from pymgrit.core.application import Application
+from pymgrit.core.grid_transfer import GridTransfer
+from pymgrit.core.grid_transfer_copy import GridTransferCopy
 
 
 class Mgrit:
@@ -24,7 +25,7 @@ class Mgrit:
     matrix stencil solved is [-Phi  I].
     """
 
-    def __init__(self, problem: List[application.Application], transfer: List[grid_transfer.GridTransfer],
+    def __init__(self, problem: List[Application], transfer: List[GridTransfer] = None,
                  it: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
                  cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
                  logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1,
@@ -36,7 +37,7 @@ class Mgrit:
         :param output_lvl: Output level, possible values 0, 1, 2:
                0 -> output_fcn is never called
                1 -> output_fcn is called when solve stops
-               0 -> output_fcn is called after each MGRIT iteration
+               2 -> output_fcn is called after each MGRIT iteration
         :param problem: List of problems per MGRIT level
         :param transfer: List of transfer operators per MGRIT level
         :param it: Max number of iteration
@@ -52,6 +53,9 @@ class Mgrit:
         """
         logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S',
                             level=logging_lvl, stream=sys.stdout)
+
+        if transfer == None:
+            transfer = [GridTransferCopy() for i in range(len(problem) - 1)]
 
         if len(problem) != (len(transfer) + 1):
             raise Exception('There should be exactly one transfer operator for each level except the coarsest grid')
@@ -363,7 +367,7 @@ class Mgrit:
 
         logging.debug(f"Forward solve on {self.comm_time_rank} took {time.time() - runtime_fs} s")
 
-    def get_c_point(self, lvl: int) -> application.Application:
+    def get_c_point(self, lvl: int) -> Application:
         """
         Exchange of the first/last C-point between two processes
         :param lvl: the corresponding MGRIT level

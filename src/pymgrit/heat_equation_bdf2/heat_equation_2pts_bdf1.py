@@ -6,7 +6,7 @@ from pymgrit.core import application
 from . import vector_standard_bdf2
 
 
-class HeatEquation(application.Application):
+class HeatEquationBDF1(application.Application):
     """
     Heat equation 1-d example
     u_t - a*u_xx = b(x,t),  a > 0, x in [0,1], t in [0,T]
@@ -17,7 +17,7 @@ class HeatEquation(application.Application):
     """
 
     def __init__(self, x_start, x_end, nx, dt, d, *args, **kwargs):
-        super(HeatEquation, self).__init__(*args, **kwargs)
+        super(HeatEquationBDF1, self).__init__(*args, **kwargs)
         self.x_start = x_start  # lower interval bound of spatial domain
         self.x_end = x_end  # upper interval bound of spatial domain
         self.x = np.linspace(self.x_start, self.x_end, nx)  # Spatial domain
