@@ -53,8 +53,8 @@ PyMGRIT Features
 Example Usage
 ----------------
 
-PyMGRIT is easy to use! The following code constructs a 1-d heat equation example and solves the resulting linear system
-with the MGRIT algorithm::
+PyMGRIT is easy to use! The following code constructs a 1-d heat equation example and solves the resulting space-time
+system of equations with MGRIT::
 
     import pymgrit
     heat_lvl_0 = pymgrit.HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=65)

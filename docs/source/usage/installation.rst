@@ -2,4 +2,10 @@
 Installation
 ************
 
-TODO: Write installation guide
+PyMGRIT requires ``mpicc`` (from ``openmpi`` or ``mpich``)
+
+    >>> pip install pymgrit
+
+or
+
+    >>> python setup.py install

@@ -3,12 +3,11 @@ Standard solution vector. Contains one numpy array
 """
 
 import numpy as np
-from scipy import linalg as la
 
-from pymgrit.core import vector
+from pymgrit.core.vector import Vector
 
 
-class VectorStandard(vector.Vector):
+class VectorStandard(Vector):
     """
     Standard solution vector. Contains one numpy array
     """
@@ -45,7 +44,7 @@ class VectorStandard(vector.Vector):
         Norm
         :rtype: object
         """
-        return la.norm(self.vec)
+        return np.linalg.norm(self.vec)
 
     def init_zero(self):
         """
