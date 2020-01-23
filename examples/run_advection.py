@@ -1,9 +1,8 @@
 import pathlib
 import numpy as np
 
-from pymgrit.advection_equation import advection_equation
-from pymgrit.core import mgrit as solver
-from pymgrit.core import grid_transfer_copy
+from pymgrit.advection_equation.advection_equation import AdvectionEquation
+from pymgrit.core.mgrit import Mgrit
 
 
 def main():
@@ -19,9 +18,9 @@ def main():
         np.save('results/' + name + '/' + str(self.solve_iter) + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),
                 sol)
 
-    adv0 = advection_equation.AdvectionEquation(c=1, x_start=-16, x_end=16, nx=65,
+    adv0 = AdvectionEquation(c=1, x_start=-16, x_end=16, nx=65,
                                                 t_start=0, t_stop=6.4, nt=65)
-    adv1 = advection_equation.AdvectionEquation(c=1, x_start=-16, x_end=16, nx=65,
+    adv1 = AdvectionEquation(c=1, x_start=-16, x_end=16, nx=65,
                                                 t_start=0, t_stop=6.4, nt=33)
 
     # # for time-stepping tests
@@ -30,14 +29,13 @@ def main():
 
     # for 2-level tests
     problem = [adv0, adv1]
-    transfer = [grid_transfer_copy.GridTransferCopy()]
 
     # # F-relax
-    # mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=0, nested_iteration=False, it=10, tol=1e-50,
+    # mgrit = solver.Mgrit(problem=problem, cf_iter=0, nested_iteration=False, it=10, tol=1e-50,
     #                         output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
 
     # FCF-relax
-    mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=False, it=10, tol=1e-50,
+    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=False, it=10, tol=1e-50,
                          output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
 
     return mgrit.solve()
