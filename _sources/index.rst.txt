@@ -5,33 +5,68 @@ Welcome to PyMGRIT's documentation!
 Getting help
 ------------
 
-    - Try the :doc:'FAQ <help/faq>'
+    - Try the :doc:`FAQ <help/faq>`.
+    - Looking for specific information? Try the :ref:`genindex` or :ref:`modindex`. TODO genindex
+    - Report bugs with PyMGRIT in our `issue tracker`_.
+
+.. _issue tracker: https://github.com/pymgrit/pymgrit/issues
 
 TODO: What is pymgrit?
 
+-----
+Usage
+-----
+
 .. toctree::
     :caption: Usage
-    :maxdepth: 1
+    :hidden:
 
     usage/installation
-        Get PyMGRIT installed.
     usage/quickstart
-        Write your first PyMGRIT project.
+    usage/tutorial
     usage/examples
-        Learn more by playing with a pre-made PyMGRIT project.
+
+:doc:`usage/installation`
+    Get PyMGRIT installed.
+
+:doc:`usage/quickstart`
+    Write your first PyMGRIT program.
+
+:doc:`usage/tutorial`
+    Write your first problem and solve it.
+
+:doc:`usage/installation`
+    Learn more by playing with a pre-made PyMGRIT project.
+
+------------
+Applications
+------------
 
 .. toctree::
-    :caption: Problems
-    :maxdepth: 1
+    :caption: Applications
+    :hidden:
 
-    problems/advection
-    problems/heat_equation
+    applications/advection
+    applications/heat_equation
+
+:doc:`applications/advection`
+    Advection problem
+
+:doc:`applications/heat_equation`
+    1-d Heat equation
+
+----
+Help
+----
 
 .. toctree::
     :caption: Help
-    :maxdepth: 1
+    :hidden:
 
     help/faq
+
+:doc:`help/faq`
+    Get answers to most frequently asked questions.
 
 
 :ref:`modindex`

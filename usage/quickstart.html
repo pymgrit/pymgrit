@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="next" title="Tutorial" href="tutorial.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
@@ -84,12 +84,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Problems</span></p>
+<p class="caption"><span class="caption-text">Applications</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../problems/advection.html">Advection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../problems/heat_equation.html">Heat Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/heat_equation.html">Heat Equation</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Help</span></p>
 <ul>
@@ -160,7 +161,44 @@
             
   <div class="section" id="quickstart">
 <h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
-<p>TODO: Write quickstart guide</p>
+<p>PyMGRIT is easy to use! The following code constructs a 1-d heat equation example and solves the resulting space-time
+system of equations with MGRIT:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymgrit</span>
+<span class="n">heat_lvl_0</span> <span class="o">=</span> <span class="n">pymgrit</span><span class="o">.</span><span class="n">HeatEquation</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">65</span><span class="p">)</span>
+<span class="n">heat_lvl_1</span> <span class="o">=</span> <span class="n">pymgrit</span><span class="o">.</span><span class="n">HeatEquation</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">heat_lvl_2</span> <span class="o">=</span> <span class="n">pymgrit</span><span class="o">.</span><span class="n">HeatEquation</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="p">[</span><span class="n">heat_lvl_0</span><span class="p">,</span> <span class="n">heat_lvl_1</span><span class="p">,</span> <span class="n">heat_lvl_2</span><span class="p">]</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">pymgrit</span><span class="o">.</span><span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Program output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">53</span> <span class="o">-</span> <span class="n">Start</span> <span class="n">setup</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">53</span> <span class="o">-</span> <span class="n">Setup</span> <span class="n">took</span> <span class="mf">0.1085507869720459</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">54</span> <span class="o">-</span> <span class="n">Start</span> <span class="n">solve</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">54</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">1</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">0.010531208413419799</span>   <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="o">-</span>                       <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.21976184844970703</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">55</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">2</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">0.0006683816775940518</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.06346676006737657</span>     <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.15288186073303223</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">55</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">3</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">4.0050232837502924e-05</span> <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.05992120098454857</span>     <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.12258291244506836</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">55</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">4</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">2.0920119846420314e-06</span> <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.052234702183381</span>       <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.13314509391784668</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">55</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">5</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">8.482152793325008e-08</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.040545431171496886</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.13439655303955078</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">55</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">6</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">2.120708067856101e-09</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.025002002669946982</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.12366461753845215</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">55</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">7</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">2.003907620345022e-11</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.009449238444077046</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.15373992919921875</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">55</span> <span class="o">-</span> <span class="n">Solve</span> <span class="n">took</span> <span class="mf">1.1199557781219482</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">23</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">55</span> <span class="o">-</span> <span class="n">Run</span> <span class="n">parameter</span> <span class="n">overview</span>
+
+<span class="n">interval</span>                  <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+<span class="n">number</span> <span class="n">points</span>             <span class="p">:</span> <span class="mi">65</span> <span class="n">points</span>
+<span class="nb">max</span> <span class="n">dt</span>                    <span class="p">:</span> <span class="mf">0.03125</span>
+<span class="n">level</span>                     <span class="p">:</span> <span class="mi">3</span>
+<span class="n">coarsening</span>                <span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">cf_iter</span>                   <span class="p">:</span> <span class="mi">1</span>
+<span class="n">nested</span> <span class="n">iteration</span>          <span class="p">:</span> <span class="kc">True</span>
+<span class="n">cycle</span> <span class="nb">type</span>                <span class="p">:</span> <span class="n">V</span>
+<span class="n">stopping</span> <span class="n">tolerance</span>        <span class="p">:</span> <span class="mf">1e-10</span>
+<span class="n">communicator</span> <span class="n">size</span> <span class="n">time</span>    <span class="p">:</span> <span class="mi">1</span>
+<span class="n">communicator</span> <span class="n">size</span> <span class="n">space</span>   <span class="p">:</span> <span class="o">-</span><span class="mi">99</span>
+</pre></div>
+</div>
 </div>
 
 
@@ -171,7 +209,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
