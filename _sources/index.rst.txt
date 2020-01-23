@@ -5,7 +5,7 @@ TODO: What is pymgrit?
 
 .. toctree::
     :caption: Usage
-    :maxdepth: 2
+    :maxdepth: 1
 
     usage/installation
     usage/quickstart
@@ -13,7 +13,7 @@ TODO: What is pymgrit?
 
 .. toctree::
     :caption: Problems
-    :maxdepth: 2
+    :maxdepth: 1
 
     problems/advection
     problems/heat_equation
