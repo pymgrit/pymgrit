@@ -36,6 +36,5 @@ jobs:
         pip install tox
 
     - name: Test with tox / nose
-      continue-on-error: true
       run: |
         tox

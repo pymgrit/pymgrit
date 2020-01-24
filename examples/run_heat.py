@@ -1,7 +1,6 @@
 import pathlib
 import numpy as np
 
-
 from pymgrit.heat_equation.heat_equation import HeatEquation
 from pymgrit.core.mgrit import Mgrit
 
@@ -24,10 +23,31 @@ def main():
 
     problem = [heat0, heat1, heat2, heat3, heat4]
     mgrit = Mgrit(problem=problem, cf_iter=1, cycle_type='F', nested_iteration=False, it=10,
-                         output_fcn=output_fcn, output_lvl=2, logging_lvl=20, random_init_guess=False)
+                  output_fcn=output_fcn, output_lvl=2, logging_lvl=20, random_init_guess=False)
+
+    return mgrit.solve()
+
+
+def main2():
+    t_int_0 = np.linspace(0, 2, 65);
+    t_int_1 = np.linspace(0, 2, 33);
+    t_int_2 = np.linspace(0, 2, 17);
+    t_int_3 = np.linspace(0, 2, 9);
+    t_int_4 = np.linspace(0, 2, 5);
+
+    heat0 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_0)
+    heat1 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_1)
+    heat2 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_2)
+    heat3 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_3)
+    heat4 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_4)
+
+    problem = [heat0, heat1, heat2, heat3, heat4]
+    mgrit = Mgrit(problem=problem, cf_iter=1, cycle_type='F', nested_iteration=False, it=10, output_lvl=2,
+                  logging_lvl=20, random_init_guess=False)
 
     return mgrit.solve()
 
 
 if __name__ == '__main__':
     main()
+    main2()
