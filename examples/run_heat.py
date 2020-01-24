@@ -29,17 +29,12 @@ def main():
 
 
 def main2():
-    t_int_0 = np.linspace(0, 2, 65);
-    t_int_1 = np.linspace(0, 2, 33);
-    t_int_2 = np.linspace(0, 2, 17);
-    t_int_3 = np.linspace(0, 2, 9);
-    t_int_4 = np.linspace(0, 2, 5);
 
-    heat0 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_0)
-    heat1 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_1)
-    heat2 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_2)
-    heat3 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_3)
-    heat4 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=t_int_4)
+    heat0 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1,  t_start=0, t_stop=2, nt=65)
+    heat1 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=heat0.t[::2])
+    heat2 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=heat1.t[::2])
+    heat3 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=heat2.t[::2])
+    heat4 = HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_interval=heat3.t[::2])
 
     problem = [heat0, heat1, heat2, heat3, heat4]
     mgrit = Mgrit(problem=problem, cf_iter=1, cycle_type='F', nested_iteration=False, it=10, output_lvl=2,
