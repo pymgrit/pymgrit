@@ -168,8 +168,13 @@
 <dl class="class">
 <dt id="pymgrit.core.application.Application">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.application.</code><code class="sig-name descname">Application</code><span class="sig-paren">(</span><em class="sig-param">t_start: float = None</em>, <em class="sig-param">t_stop: float = None</em>, <em class="sig-param">nt: int = None</em>, <em class="sig-param">t_interval: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.application.Application" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstract class for problems. Each problem has to be a child</p>
+<dl class="attribute">
+<dt id="pymgrit.core.application.Application.required_attributes">
+<code class="sig-name descname">required_attributes</code><em class="property"> = ['vector_initial_value']</em><a class="headerlink" href="#pymgrit.core.application.Application.required_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="pymgrit.core.application.Application.step">
 <em class="property">abstract </em><code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: object</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; object<a class="headerlink" href="#pymgrit.core.application.Application.step" title="Permalink to this definition">¶</a></dt>
@@ -180,11 +185,23 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="pymgrit.core.application.Application.u">
-<em class="property">property </em><code class="sig-name descname">u</code><a class="headerlink" href="#pymgrit.core.application.Application.u" title="Permalink to this definition">¶</a></dt>
+<dt id="pymgrit.core.application.Application.vector_initial_value">
+<em class="property">property </em><code class="sig-name descname">vector_initial_value</code><a class="headerlink" href="#pymgrit.core.application.Application.vector_initial_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Property u
 :return:</p>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.core.application.MetaApplication">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.application.</code><code class="sig-name descname">MetaApplication</code><a class="headerlink" href="#pymgrit.core.application.MetaApplication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></p>
+<p>MetaClass for application class. Checks if required attributes are set.</p>
+<dl class="attribute">
+<dt id="pymgrit.core.application.MetaApplication.required_attributes">
+<code class="sig-name descname">required_attributes</code><em class="property"> = []</em><a class="headerlink" href="#pymgrit.core.application.MetaApplication.required_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
