@@ -1,14 +1,29 @@
 """
 Abstract class for problems. Each problem has to be a child
 """
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 import numpy as np
 
 
-class Application(ABC):
+class MetaApplication(ABCMeta):
+    """
+    MetaClass for application class. Checks if required attributes are set.
+    """
+    required_attributes = []
+
+    def __call__(self, *args, **kwargs):
+        obj = super(MetaApplication, self).__call__(*args, **kwargs)
+        for attr_name in obj.required_attributes:
+            if not getattr(obj, attr_name):
+                raise ValueError('required attribute (%s) not set' % attr_name)
+        return obj
+
+
+class Application(object, metaclass=MetaApplication):
     """
     Abstract class for problems. Each problem has to be a child
     """
+    required_attributes = ['vector_initial_value']
 
     def __init__(self, t_start: float = None, t_stop: float = None, nt: int = None,
                  t_interval: np.ndarray = None) -> None:
@@ -26,7 +41,6 @@ class Application(ABC):
             self.t_end = t_stop
             self.nt = nt
             self.t = np.linspace(self.t_start, self.t_end, nt)
-            self._u = None
         else:
             if not isinstance(t_interval, np.ndarray):
                 raise Exception('t_interval has the wrong type. Should be a numpy array')
@@ -34,23 +48,22 @@ class Application(ABC):
             self.t_end = t_interval[-1]
             self.nt = len(t_interval)
             self.t = t_interval
-            self._u = None
 
     @property
-    def u(self):
+    def vector_initial_value(self):
         """
         Property u
         :return:
         """
-        return self._u
+        return self._vector_initial_value
 
-    @u.setter
-    def u(self, value):
+    @vector_initial_value.setter
+    def vector_initial_value(self, value):
         """
         Property u
         :return:
         """
-        self._u = value
+        self._vector_initial_value = value
 
     @abstractmethod
     def step(self, u_start: object, t_start: float, t_stop: float) -> object:

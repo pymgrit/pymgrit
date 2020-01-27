@@ -17,7 +17,7 @@ class ParallelModel(application.Application):
         super(ParallelModel, self).__init__(*args, **kwargs)
 
         self.sleep = sleep
-        self.u = vector_standard.VectorStandard(1)  # Create initial value solution
+        self.vector_initial_value = vector_standard.VectorStandard(1)  # Create initial value solution
         self.count_solves = 0
         self.runtime_solves = 0
 

@@ -19,11 +19,11 @@ def main():
 
     sleep = 0.01
 
-    heat0 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 10 + 1)
-    heat1 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 8 + 1)
-    heat2 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 6 + 1)
-    heat3 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 4 + 1)
-    heat4 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 2 + 1)
+    heat0 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 5 + 1)
+    heat1 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 4 + 1)
+    heat2 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 3 + 1)
+    heat3 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 2 + 1)
+    heat4 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 1 + 1)
 
     problem = [heat0, heat1, heat2, heat3, heat4]
     mgrit = MgritParallelModel(problem=problem, cf_iter=1, cycle_type='V', nested_iteration=False, it=1,

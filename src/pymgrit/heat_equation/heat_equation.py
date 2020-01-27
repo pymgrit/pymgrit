@@ -34,8 +34,8 @@ class HeatEquation(application.Application):
         self.a = self.heat_sparse(np.size(self.x), (self.d * (self.t[1] - self.t[0])) /
                                   (self.x[1] - self.x[0]) ** 2)
 
-        self.u = vector_standard.VectorStandard(self.nx)  # Create initial value solution
-        self.u.vec = self.u_exact(self.x, 0)  # Set initial value
+        self.vector_initial_value = vector_standard.VectorStandard(self.nx)  # Create initial value solution
+        self.vector_initial_value.vec = self.u_exact(self.x, 0)  # Set initial value
         self.count_solves = 0
         self.runtime_solves = 0
 

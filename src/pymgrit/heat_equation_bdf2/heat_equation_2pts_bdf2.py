@@ -33,9 +33,9 @@ class HeatEquationBDF2(application.Application):
         self.a2 = self.heat_sparse(np.size(self.x), (self.d * self.dt) / (
                 self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
 
-        self.u = vector_standard_bdf2.VectorStandardBDF2(self.nx)  # Create initial value solution
-        self.u.vec_first_time_point = self.u_exact(self.x, self.t[0])  # Set initial value
-        self.u.vec_second_time_point = self.u_exact(self.x, self.t[0] + dt)  # Set initial value
+        self.vector_initial_value = vector_standard_bdf2.VectorStandardBDF2(self.nx)  # Create initial value solution
+        self.vector_initial_value.vec_first_time_point = self.u_exact(self.x, self.t[0])  # Set initial value
+        self.vector_initial_value.vec_second_time_point = self.u_exact(self.x, self.t[0] + dt)  # Set initial value
 
     @staticmethod
     def heat_sparse(nx, fac):

@@ -29,7 +29,7 @@ class AdvectionEquation(application.Application):
         self.a = self.advection_sparse(self.nx, (c * (self.t[1] - self.t[0])) / (self.x[1] - self.x[0]))
 
         # set initial condition
-        self.u = vector_standard.VectorStandard(self.nx)
+        self.vector_initial_value = vector_standard.VectorStandard(self.nx)
         self.initialise()
 
     @staticmethod
@@ -60,16 +60,16 @@ class AdvectionEquation(application.Application):
         Initial condition
         """
         # # low frequencies
-        # self.u.vec = 2 * np.cos((np.pi/16)*self.x)
+        # self.vector_initial_value.vec = 2 * np.cos((np.pi/16)*self.x)
 
         # high frequencies
-        self.u.vec = 2 * np.cos((10*np.pi / 16) * self.x)
+        self.vector_initial_value.vec = 2 * np.cos((10*np.pi / 16) * self.x)
 
         # # linear combination of low and high frequencies
-        # self.u.vec = 2 * np.cos((np.pi/8)*self.x) + 2 * np.cos((15 * np.pi / 16) * self.x)
+        # self.vector_initial_value.vec = 2 * np.cos((np.pi/8)*self.x) + 2 * np.cos((15 * np.pi / 16) * self.x)
 
         # Gaussian
-        #self.u.vec = np.exp(-self.x ** 2)
+        #self.vector_initial_value.vec = np.exp(-self.x ** 2)
 
     def step(self, u_start, t_start, t_stop):
         tmp = u_start.vec
