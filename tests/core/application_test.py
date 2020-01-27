@@ -15,6 +15,7 @@ class ApplicationTest(Application):
 
     def __init__(self, *args, **kwargs):
         super(ApplicationTest, self).__init__(*args, **kwargs)
+        self.vector_initial_value = 2
 
     def step(self, u_start, t_start: float, t_stop: float):
         pass
