@@ -1,7 +1,7 @@
 """
 Abstract class for problems. Each problem has to be a child
 """
-from abc import ABC, ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod
 import numpy as np
 
 
