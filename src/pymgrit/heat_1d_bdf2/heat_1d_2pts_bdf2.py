@@ -2,11 +2,11 @@ import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
 
-from pymgrit.core import application
-from . import vector_standard_bdf2
+from pymgrit.core.application import Application
+from .vector_heat_1d_2pts import VectorHeat1D2Pts
 
 
-class HeatEquationBDF2(application.Application):
+class Heat1DBDF2(Application):
     """
     Heat equation 1-d example
     u_t - a*u_xx = b(x,t),  a > 0, x in [0,1], t in [0,T]
@@ -17,7 +17,7 @@ class HeatEquationBDF2(application.Application):
     """
 
     def __init__(self, x_start, x_end, nx, dt, d, *args, **kwargs):
-        super(HeatEquationBDF2, self).__init__(*args, **kwargs)
+        super(Heat1DBDF2, self).__init__(*args, **kwargs)
         self.x_start = x_start
         self.x_end = x_end
         self.x = np.linspace(self.x_start, self.x_end, nx)
@@ -33,9 +33,10 @@ class HeatEquationBDF2(application.Application):
         self.a2 = self.heat_sparse(np.size(self.x), (self.d * self.dt) / (
                 self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
 
-        self.vector_initial_value = vector_standard_bdf2.VectorStandardBDF2(self.nx)  # Create initial value solution
-        self.vector_initial_value.vec_first_time_point = self.u_exact(self.x, self.t[0])  # Set initial value
-        self.vector_initial_value.vec_second_time_point = self.u_exact(self.x, self.t[0] + dt)  # Set initial value
+        self.vector_template = VectorHeat1D2Pts(self.nx)  # Create initial value solution
+        self.vector_t_start = VectorHeat1D2Pts(self.nx)
+        self.vector_t_start.set_values(first_time_point=self.u_exact(self.x, self.t[0]),
+                                       second_time_point=self.u_exact(self.x, self.t[0] + dt))
 
     @staticmethod
     def heat_sparse(nx, fac):
@@ -57,15 +58,13 @@ class HeatEquationBDF2(application.Application):
 
         return sp.csc_matrix(a)
 
-    @staticmethod
-    def u_exact(x, t):
+    def u_exact(self, x, t):
         """
         Solution for one time point
         """
         return np.sin(np.pi * x) * np.cos(t)
 
-    @staticmethod
-    def f(x, t):
+    def f(self, x, t):
         """
         Right-hand-side
         """
@@ -80,25 +79,24 @@ class HeatEquationBDF2(application.Application):
             ret[i] = self.u_exact(x, t[i])
         return ret
 
-    def step(self, u_start: vector_standard_bdf2.VectorStandardBDF2, t_start: float,
-             t_stop: float) -> vector_standard_bdf2.VectorStandardBDF2:
+    def step(self, u_start: VectorHeat1D2Pts, t_start: float, t_stop: float) -> VectorHeat1D2Pts:
         """
         BDF2 in time
         """
-        rhs = (4 / 3) * u_start.vec_second_time_point - \
-              (1 / 3) * u_start.vec_first_time_point + \
+        first, second = u_start.get_values()
+        rhs = (4 / 3) * second - \
+              (1 / 3) * first + \
               (2 / 3) * self.f(self.x, t_stop) * (t_stop - t_start - self.dt)
 
         tmp1 = spsolve(self.a1, rhs)
 
         rhs = (4 / 3) * tmp1 - \
-              (1 / 3) * u_start.vec_second_time_point + \
+              (1 / 3) * second + \
               (2 / 3) * self.f(self.x, t_stop + self.dt) * self.dt
 
         tmp2 = spsolve(self.a2, rhs)
 
-        ret = vector_standard_bdf2.VectorStandardBDF2(u_start.size)
-        ret.vec_first_time_point = tmp1
-        ret.vec_second_time_point = tmp2
+        ret = VectorHeat1D2Pts(u_start.size)
+        ret.set_values(first_time_point=tmp1, second_time_point=tmp2)
 
         return ret

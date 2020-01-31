@@ -1,17 +1,12 @@
-"""
-Heat equation 1-d example
-"""
-
-import time
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
 
-from pymgrit.core import application
-from pymgrit.core import vector_standard
+from pymgrit.core.application import Application
+from .vector_heat_1d_2pts import VectorHeat1D2Pts
 
 
-class HeatEquation(application.Application):
+class Heat1DBDF1(Application):
     """
     Heat equation 1-d example
     u_t - a*u_xx = b(x,t),  a > 0, x in [0,1], t in [0,T]
@@ -21,23 +16,31 @@ class HeatEquation(application.Application):
     => solution u(x,t) = sin(pi*x)*cos(t)
     """
 
-    def __init__(self, x_start, x_end, nx, d, *args, **kwargs):
-        super(HeatEquation, self).__init__(*args, **kwargs)
+    def __init__(self, x_start, x_end, nx, dt, d, *args, **kwargs):
+        super(Heat1DBDF1, self).__init__(*args, **kwargs)
         self.x_start = x_start  # lower interval bound of spatial domain
         self.x_end = x_end  # upper interval bound of spatial domain
         self.x = np.linspace(self.x_start, self.x_end, nx)  # Spatial domain
         self.x = self.x[1:-1]  # homogeneous BCs
         self.nx = nx - 2  # homogeneous BCs
+        self.dt = dt  # time-step size
         self.d = d  # diffusion coefficient
 
-        # setup matrix that acts in space for time integrator Ph
-        self.a = self.heat_sparse(np.size(self.x), (self.d * (self.t[1] - self.t[0])) /
-                                  (self.x[1] - self.x[0]) ** 2)
+        self.u_ex = self.u_exact_complete(x=self.x, t=np.linspace(self.t_start, self.t_end, (self.nt - 1) * 2 + 1))
 
-        self.vector_initial_value = vector_standard.VectorStandard(self.nx)  # Create initial value solution
-        self.vector_initial_value.vec = self.u_exact(self.x, 0)  # Set initial value
-        self.count_solves = 0
-        self.runtime_solves = 0
+        self.a1 = self.heat_sparse(np.size(self.x), (self.d * (self.t[1] - self.t[0] - self.dt)) / (
+                self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
+        self.a2 = self.heat_sparse(np.size(self.x), (self.d * self.dt) / (
+                self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
+
+        self.vector_template = VectorHeat1D2Pts(self.nx)  # Create initial value solution
+        self.vector_t_start = VectorHeat1D2Pts(self.nx)
+
+        self.vector_t_start.set_values(first_time_point=self.u_exact(self.x, self.t[0]),
+                                       second_time_point=spsolve(self.a2,
+                                                                 self.u_exact(self.x, self.t[0]) +
+                                                                 self.f(self.x, self.t[0] + dt) *
+                                                                 self.dt))
 
     @staticmethod
     def heat_sparse(nx, fac):
@@ -59,15 +62,13 @@ class HeatEquation(application.Application):
 
         return sp.csc_matrix(a)
 
-    @staticmethod
-    def u_exact(x, t):
+    def u_exact(self, x, t):
         """
         Solution for one time point
         """
         return np.sin(np.pi * x) * np.cos(t)
 
-    @staticmethod
-    def rhs(x, t):
+    def f(self, x, t):
         """
         Right-hand-side
         """
@@ -82,8 +83,7 @@ class HeatEquation(application.Application):
             ret[i] = self.u_exact(x, t[i])
         return ret
 
-    def step(self, u_start: vector_standard.VectorStandard, t_start: float,
-             t_stop: float) -> vector_standard.VectorStandard:
+    def step(self, u_start: VectorHeat1D2Pts, t_start: float, t_stop: float) -> VectorHeat1D2Pts:
         """
         Backward Euler in time
         At each time step i = 1, ..., nt+1, we obtain the linear system
@@ -102,17 +102,12 @@ class HeatEquation(application.Application):
         Mu_i = u_{i-1} + dt*b_i.
         This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
         which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)
-        :param u_start:
-        :param t_start:
-        :param t_stop:
-        :return:
         """
-        start = time.time()
-        tmp = u_start.vec
-        tmp = spsolve(self.a, tmp + self.rhs(self.x, t_stop) * (t_stop - t_start))
-        ret = vector_standard.VectorStandard(u_start.size)
-        ret.vec = tmp
-        stop = time.time()
-        self.runtime_solves += stop - start
-        self.count_solves += 1
+        first, second = u_start.get_values()
+        tmp1 = spsolve(self.a1, second + self.f(self.x, t_stop) * (t_stop - t_start - self.dt))
+
+        tmp2 = spsolve(self.a2, tmp1 + self.f(self.x, t_stop + self.dt) * self.dt)
+
+        ret = VectorHeat1D2Pts(u_start.size)
+        ret.set_values(first_time_point=tmp1, second_time_point=tmp2)
         return ret

@@ -159,15 +159,15 @@ class Mgrit:
             else:
                 self.v.append([])
                 self.g.append([])
-                self.v[-1] = [item.init_zero() for item in self.u[lvl]]
-                self.g[-1] = [item.init_zero() for item in self.u[lvl]]
+                self.v[-1] = [item.clone_zero() for item in self.u[lvl]]
+                self.g[-1] = [item.clone_zero() for item in self.u[lvl]]
             if lvl == self.lvl_max - 1:
                 for i in range(len(self.problem[lvl].t)):
                     if i == 0:
-                        self.u_coarsest.append(copy.deepcopy(self.problem[lvl].vector_initial_value))
+                        self.u_coarsest.append(copy.deepcopy(self.problem[lvl].vector_t_start))
                     else:
-                        self.u_coarsest.append(self.problem[lvl].vector_initial_value.init_zero())
-                    self.g_coarsest.append(self.problem[lvl].vector_initial_value.init_zero())
+                        self.u_coarsest.append(self.problem[lvl].vector_template.clone_zero())
+                    self.g_coarsest.append(self.problem[lvl].vector_template.clone_zero())
 
         self.setup_comm_info()
 
@@ -206,13 +206,13 @@ class Mgrit:
         for i in range(len(self.u[lvl])):
             if lvl == 0:
                 if self.random_init_guess:
-                    self.u[lvl][i] = self.problem[lvl].vector_initial_value.init_rand()
+                    self.u[lvl][i] = self.problem[lvl].vector_template.clone_rand()
                 else:
-                    self.u[lvl][i] = self.problem[lvl].vector_initial_value.init_zero()
+                    self.u[lvl][i] = self.problem[lvl].vector_template.clone_zero()
             else:
-                self.u[lvl][i] = self.problem[lvl].vector_initial_value.init_zero()
+                self.u[lvl][i] = self.problem[lvl].vector_template.clone_zero()
         if self.comm_time_rank == 0:
-            self.u[lvl][0] = copy.deepcopy(self.problem[lvl].vector_initial_value)
+            self.u[lvl][0] = copy.deepcopy(self.problem[lvl].vector_t_start)
 
     def iteration(self, lvl: int, cycle_type: str, iteration: int, first_f: bool) -> None:
         """

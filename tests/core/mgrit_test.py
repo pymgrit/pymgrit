@@ -4,19 +4,17 @@ Tests for the mgrit class
 import nose
 import numpy as np
 
-from pymgrit.core import mgrit as solver
-from pymgrit.heat_equation import heat_equation
-from pymgrit.core import grid_transfer_copy
+from pymgrit.core.mgrit import Mgrit
+from pymgrit.heat_1d.heat_1d import Heat1D
 
 
 def test_split_into():
     """
     Test the function split_into
     """
-    heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
-                                       t_start=0, t_stop=2, nt=2 ** 2 + 1)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, d=1, t_start=0, t_stop=2, nt=2 ** 2 + 1)
     result = np.array([4, 3, 3])
-    mgrit = solver.Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
+    mgrit = Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
     np.testing.assert_equal(result, mgrit.split_into(10, 3))
 
 
@@ -24,12 +22,11 @@ def test_split_points():
     """
     Test the function split points
     """
-    heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
-                                       t_start=0, t_stop=2, nt=2 ** 2 + 1)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, d=1, t_start=0, t_stop=2, nt=2 ** 2 + 1)
     result_proc0 = (4, 0)
     result_proc1 = (3, 4)
     result_proc2 = (3, 7)
-    mgrit = solver.Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
+    mgrit = Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
     np.testing.assert_equal(result_proc0, mgrit.split_points(10, 3, 0))
     np.testing.assert_equal(result_proc1, mgrit.split_points(10, 3, 1))
     np.testing.assert_equal(result_proc2, mgrit.split_points(10, 3, 2))
@@ -39,16 +36,11 @@ def test_heat_equation_run():
     """
     Test one run for the heat equation
     """
-    heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
-                                       t_start=0, t_stop=2, nt=65)
-    heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
-                                       t_start=0, t_stop=2, nt=17)
-    heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
-                                       t_start=0, t_stop=2, nt=5)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, d=1,t_start=0, t_stop=2, nt=65)
+    heat1 = Heat1D(x_start=0, x_end=2, nx=5, d=1,t_start=0, t_stop=2, nt=17)
+    heat2 = Heat1D(x_start=0, x_end=2, nx=5, d=1,t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
-    transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=2,
-                         random_init_guess=False)
+    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, it=2, random_init_guess=False)
     res = mgrit.solve()
     result_conv = np.array([0.00267692, 0.00018053])
     np.testing.assert_almost_equal(result_conv, res['conv'])
@@ -58,15 +50,11 @@ def test_setup_points():
     """
     Test for the function setup points
     """
-    heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
-                                       t_start=0, t_stop=2, nt=65)
-    heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
-                                       t_start=0, t_stop=2, nt=17)
-    heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1,
-                                       t_start=0, t_stop=2, nt=5)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, d=1,t_start=0, t_stop=2, nt=65)
+    heat1 = Heat1D(x_start=0, x_end=2, nx=5, d=1,t_start=0, t_stop=2, nt=17)
+    heat2 = Heat1D(x_start=0, x_end=2, nx=5, d=1,t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
-    transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=2)
+    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, it=2)
     size = 7
     cpts = []
     comm_front = []
@@ -186,12 +174,11 @@ def test_setup_comm_info():
     """
     Test for the function comm_info
     """
-    heat0 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1, t_start=0, t_stop=2, nt=65)
-    heat1 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1, t_start=0, t_stop=2, nt=17)
-    heat2 = heat_equation.HeatEquation(x_start=0, x_end=2, nx=5, d=1, t_start=0, t_stop=2, nt=5)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, d=1, t_start=0, t_stop=2, nt=65)
+    heat1 = Heat1D(x_start=0, x_end=2, nx=5, d=1, t_start=0, t_stop=2, nt=17)
+    heat2 = Heat1D(x_start=0, x_end=2, nx=5, d=1, t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
-    transfer = [grid_transfer_copy.GridTransferCopy(), grid_transfer_copy.GridTransferCopy()]
-    mgrit = solver.Mgrit(problem=problem, transfer=transfer, cf_iter=1, nested_iteration=True, it=2)
+    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, it=2)
     size = 7
     send_to = []
     get_from = []

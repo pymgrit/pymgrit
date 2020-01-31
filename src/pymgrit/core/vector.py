@@ -34,13 +34,25 @@ class Vector(ABC):
         """
 
     @abstractmethod
-    def init_rand(self):
+    def clone_rand(self):
         """
         Clones the solution construct with random values.
         """
 
     @abstractmethod
-    def init_zero(self):
+    def clone_zero(self):
         """
         Clones the solution construct with all zeros.
+        """
+
+    @abstractmethod
+    def set_values(self, *args, **kwargs):
+        """
+        Sets the values
+        """
+
+    @abstractmethod
+    def get_values(self, *args, **kwargs):
+        """
+        Gets the values
         """

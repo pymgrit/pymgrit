@@ -11,8 +11,8 @@ class MetaApplication(ABCMeta):
     """
     required_attributes = []
 
-    def __call__(self, *args, **kwargs):
-        obj = super(MetaApplication, self).__call__(*args, **kwargs)
+    def __call__(cls, *args, **kwargs):
+        obj = super(MetaApplication, cls).__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if not getattr(obj, attr_name):
                 raise ValueError('required attribute (%s) not set' % attr_name)
@@ -23,7 +23,7 @@ class Application(object, metaclass=MetaApplication):
     """
     Abstract class for problems. Each problem has to be a child
     """
-    required_attributes = ['vector_initial_value']
+    required_attributes = ['vector_template', 'vector_t_start']
 
     def __init__(self, t_start: float = None, t_stop: float = None, nt: int = None,
                  t_interval: np.ndarray = None) -> None:
@@ -50,20 +50,36 @@ class Application(object, metaclass=MetaApplication):
             self.t = t_interval
 
     @property
-    def vector_initial_value(self):
+    def vector_template(self):
         """
         Property u
         :return:
         """
-        return self._vector_initial_value
+        return self._vector_template
 
-    @vector_initial_value.setter
-    def vector_initial_value(self, value):
+    @vector_template.setter
+    def vector_template(self, value):
         """
         Property u
         :return:
         """
-        self._vector_initial_value = value
+        self._vector_template = value
+
+    @property
+    def vector_t_start(self):
+        """
+        Property u
+        :return:
+        """
+        return self._vector_t_start
+
+    @vector_t_start.setter
+    def vector_t_start(self, value):
+        """
+        Property u
+        :return:
+        """
+        self._vector_t_start = value
 
     @abstractmethod
     def step(self, u_start: object, t_start: float, t_stop: float) -> object:

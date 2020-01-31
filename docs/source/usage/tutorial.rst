@@ -19,8 +19,8 @@ this size afterwards. Furthermore, the functions must override the functions
     - `__add__`: For the addition of two objects of our class
     - `__sub__`: For the substraction of two objects of our class
     - `norm`: The norm of the class
-    - `init_zero`: Initialization of the data with zeros
-    - `init_rand`: Initialization of the data with random values
+    - `clone_zero`: Initialization of the data with zeros
+    - `clone_rand`: Initialization of the data with random values
 ::
 
     import numpy as np
@@ -46,10 +46,10 @@ this size afterwards. Furthermore, the functions must override the functions
         def norm(self):
             return np.linalg.norm(self.vec)
 
-        def init_zero(self):
+        def clone_zero(self):
             return VectorStandard(self.size)
 
-        def init_rand(self):
+        def clone_rand(self):
             tmp = VectorStandard(self.size)
             tmp.vec = np.random.rand(self.size)
             return tmp
