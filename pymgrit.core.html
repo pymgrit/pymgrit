@@ -172,7 +172,7 @@
 <p>Abstract class for problems. Each problem has to be a child</p>
 <dl class="attribute">
 <dt id="pymgrit.core.application.Application.required_attributes">
-<code class="sig-name descname">required_attributes</code><em class="property"> = ['vector_initial_value']</em><a class="headerlink" href="#pymgrit.core.application.Application.required_attributes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">required_attributes</code><em class="property"> = ['vector_template', 'vector_t_start']</em><a class="headerlink" href="#pymgrit.core.application.Application.required_attributes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -185,8 +185,15 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="pymgrit.core.application.Application.vector_initial_value">
-<em class="property">property </em><code class="sig-name descname">vector_initial_value</code><a class="headerlink" href="#pymgrit.core.application.Application.vector_initial_value" title="Permalink to this definition">¶</a></dt>
+<dt id="pymgrit.core.application.Application.vector_t_start">
+<em class="property">property </em><code class="sig-name descname">vector_t_start</code><a class="headerlink" href="#pymgrit.core.application.Application.vector_t_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property u
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.application.Application.vector_template">
+<em class="property">property </em><code class="sig-name descname">vector_template</code><a class="headerlink" href="#pymgrit.core.application.Application.vector_template" title="Permalink to this definition">¶</a></dt>
 <dd><p>Property u
 :return:</p>
 </dd></dl>
@@ -466,15 +473,21 @@ is reached or the maximum number of iterations
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Abstract class for one solution point. Each solution data structure has to be a child</p>
 <dl class="method">
-<dt id="pymgrit.core.vector.Vector.init_rand">
-<em class="property">abstract </em><code class="sig-name descname">init_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.init_rand" title="Permalink to this definition">¶</a></dt>
+<dt id="pymgrit.core.vector.Vector.clone_rand">
+<em class="property">abstract </em><code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.clone_rand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clones the solution construct with random values.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pymgrit.core.vector.Vector.init_zero">
-<em class="property">abstract </em><code class="sig-name descname">init_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.init_zero" title="Permalink to this definition">¶</a></dt>
+<dt id="pymgrit.core.vector.Vector.clone_zero">
+<em class="property">abstract </em><code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.clone_zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clones the solution construct with all zeros.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.core.vector.Vector.get_values">
+<em class="property">abstract </em><code class="sig-name descname">get_values</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.get_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the values</p>
 </dd></dl>
 
 <dl class="method">
@@ -483,40 +496,17 @@ is reached or the maximum number of iterations
 <dd><p>Norm of the solution construct</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="pymgrit.core.vector.Vector.set_values">
+<em class="property">abstract </em><code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.set_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the values</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
-<div class="section" id="module-pymgrit.core.vector_standard">
-<span id="pymgrit-core-vector-standard-module"></span><h2>pymgrit.core.vector_standard module<a class="headerlink" href="#module-pymgrit.core.vector_standard" title="Permalink to this headline">¶</a></h2>
-<p>Standard solution vector. Contains one numpy array</p>
-<dl class="class">
-<dt id="pymgrit.core.vector_standard.VectorStandard">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.vector_standard.</code><code class="sig-name descname">VectorStandard</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector_standard.VectorStandard" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
-<p>Standard solution vector. Contains one numpy array</p>
-<dl class="method">
-<dt id="pymgrit.core.vector_standard.VectorStandard.init_rand">
-<code class="sig-name descname">init_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector_standard.VectorStandard.init_rand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initial solution vector with random values
-:rtype: object</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.core.vector_standard.VectorStandard.init_zero">
-<code class="sig-name descname">init_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector_standard.VectorStandard.init_zero" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initial solution vector with all zeros
-:rtype: object</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.core.vector_standard.VectorStandard.norm">
-<code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector_standard.VectorStandard.norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Norm
-:rtype: object</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="pymgrit-core-vector-standard-module">
+<h2>pymgrit.core.vector_standard module<a class="headerlink" href="#pymgrit-core-vector-standard-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-pymgrit.core">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit.core" title="Permalink to this headline">¶</a></h2>

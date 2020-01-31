@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pymgrit.advection_1d package &mdash; PyMGRIT 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PyMGRIT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Applications</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/heat_equation.html">Heat Equation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Help</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="help/faq.html">Frequently Asked Questions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyMGRIT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>pymgrit.advection_1d package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pymgrit.advection_1d.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pymgrit-advection-1d-package">
+<h1>pymgrit.advection_1d package<a class="headerlink" href="#pymgrit-advection-1d-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pymgrit.advection_1d.advection_1d">
+<span id="pymgrit-advection-1d-advection-1d-module"></span><h2>pymgrit.advection_1d.advection_1d module<a class="headerlink" href="#module-pymgrit.advection_1d.advection_1d" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pymgrit.advection_1d.advection_1d.Advection1D">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.advection_1d.advection_1d.</code><code class="sig-name descname">Advection1D</code><span class="sig-paren">(</span><em class="sig-param">c</em>, <em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.Advection1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>Class containing the description of the advection problem.</p>
+<dl class="method">
+<dt id="pymgrit.advection_1d.advection_1d.Advection1D.advection_sparse">
+<em class="property">static </em><code class="sig-name descname">advection_sparse</code><span class="sig-paren">(</span><em class="sig-param">nx</em>, <em class="sig-param">fac</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.Advection1D.advection_sparse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define discretization matrix for advection problem.</p>
+<p>Discretization is first-order upwind in space and
+backward Euler in time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.advection_1d.advection_1d.Advection1D.initialise">
+<code class="sig-name descname">initialise</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.Advection1D.initialise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial condition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.advection_1d.advection_1d.Advection1D.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.advection_1d.advection_1d.VectorAdvection1D</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.Advection1D.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time stepper for problem
+:param u_start: Start solution
+:param t_start: Start time point
+:param t_stop: End time point</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.advection_1d.advection_1d.VectorAdvection1D">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.advection_1d.advection_1d.</code><code class="sig-name descname">VectorAdvection1D</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.VectorAdvection1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
+<p>Vector for the 1D advection equation</p>
+<dl class="method">
+<dt id="pymgrit.advection_1d.advection_1d.VectorAdvection1D.clone_rand">
+<code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.VectorAdvection1D.clone_rand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the solution construct with random values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.advection_1d.advection_1d.VectorAdvection1D.clone_zero">
+<code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.VectorAdvection1D.clone_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the solution construct with all zeros.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.advection_1d.advection_1d.VectorAdvection1D.get_values">
+<code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.VectorAdvection1D.get_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.advection_1d.advection_1d.VectorAdvection1D.norm">
+<code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.VectorAdvection1D.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Norm of the solution construct</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.advection_1d.advection_1d.VectorAdvection1D.set_values">
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection_1d.advection_1d.VectorAdvection1D.set_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the values</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pymgrit.advection_1d">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit.advection_1d" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Jens Hahne
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
