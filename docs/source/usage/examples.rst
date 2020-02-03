@@ -11,9 +11,38 @@ Table of Contents
 -----------------
 
     - `Simple solve`_
+    - `Output function`_
+    - `Spatial coarsening`_
+    - `Parameters`_
+    - `Define multigrid structure`_
+
 
 ------------
 Simple solve
 ------------
+
+Test
+
+---------------
+Output function
+---------------
+
+Test
+
+------------------
+Spatial coarsening
+------------------
+
+Test
+
+----------
+Parameters
+----------
+
+Test
+
+--------------------------
+Define multigrid structure
+--------------------------
 
 Test

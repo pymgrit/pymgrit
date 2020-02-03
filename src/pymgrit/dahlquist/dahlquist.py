@@ -58,5 +58,4 @@ class Dahlquist(Application):
 
     def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
         tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
-        ret = VectorDahlquist(tmp)
-        return ret
+        return VectorDahlquist(tmp)
