@@ -2,37 +2,39 @@
 Quickstart
 **********
 
-PyMGRIT is easy to use! The following code constructs a 1-d heat equation example and solves the resulting space-time
-system of equations with MGRIT::
+PyMGRIT is easy to use! The following code generates an example of a scalar ODE and solves the resulting problem with the MGRIT algorithm.::
 
-    import pymgrit
-    heat_lvl_0 = pymgrit.HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=65)
-    heat_lvl_1 = pymgrit.HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=17)
-    heat_lvl_2 = pymgrit.HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=5)
-    problem = [heat_lvl_0, heat_lvl_1, heat_lvl_2]
-    mgrit = pymgrit.Mgrit(problem=problem, tol=1e-10)
-    sol = mgrit.solve()
+    from pymgrit import *
+
+    # Creating the finest level problem
+    dahlquist = Dahlquist(t_start=0, t_stop=5, nt=11)
+
+    # Setup the multilevel structure by using the simple_setup_problem function
+    dahlquist_multilevel_strucutre = simple_setup_problem(problem=dahlquist, level=2,coarsening=2)
+
+    # Setup of the MGRIT algorithm with the multilevel structure
+    mgrit = Mgrit(problem=dahlquist_multilevel_strucutre, tol = 1e-10)
+
+    # Solve
+    mgrit.solve()
 
 Program output::
 
-    INFO - 23-01-20 11:48:53 - Start setup
-    INFO - 23-01-20 11:48:53 - Setup took 0.1085507869720459 s
-    INFO - 23-01-20 11:48:54 - Start solve
-    INFO - 23-01-20 11:48:54 - iter 1  | con: 0.010531208413419799   | con-fac: -                       | runtime: 0.21976184844970703 s
-    INFO - 23-01-20 11:48:55 - iter 2  | con: 0.0006683816775940518  | con-fac: 0.06346676006737657     | runtime: 0.15288186073303223 s
-    INFO - 23-01-20 11:48:55 - iter 3  | con: 4.0050232837502924e-05 | con-fac: 0.05992120098454857     | runtime: 0.12258291244506836 s
-    INFO - 23-01-20 11:48:55 - iter 4  | con: 2.0920119846420314e-06 | con-fac: 0.052234702183381       | runtime: 0.13314509391784668 s
-    INFO - 23-01-20 11:48:55 - iter 5  | con: 8.482152793325008e-08  | con-fac: 0.040545431171496886    | runtime: 0.13439655303955078 s
-    INFO - 23-01-20 11:48:55 - iter 6  | con: 2.120708067856101e-09  | con-fac: 0.025002002669946982    | runtime: 0.12366461753845215 s
-    INFO - 23-01-20 11:48:55 - iter 7  | con: 2.003907620345022e-11  | con-fac: 0.009449238444077046    | runtime: 0.15373992919921875 s
-    INFO - 23-01-20 11:48:55 - Solve took 1.1199557781219482 s
-    INFO - 23-01-20 11:48:55 - Run parameter overview
-
-    interval                  : [0.0, 2.0]
-    number points             : 65 points
-    max dt                    : 0.03125
-    level                     : 3
-    coarsening                : [4, 4]
+    INFO - 03-02-20 11:19:03 - Start setup
+    INFO - 03-02-20 11:19:03 - Setup took 0.009920358657836914 s
+    INFO - 03-02-20 11:19:03 - Start solve
+    INFO - 03-02-20 11:19:03 - iter 1  | con: 7.186185937031941e-05  | con-fac: -                       | runtime: 0.01379704475402832 s
+    INFO - 03-02-20 11:19:03 - iter 2  | con: 1.2461067076355103e-06 | con-fac: 0.017340307063501627    | runtime: 0.007235527038574219 s
+    INFO - 03-02-20 11:19:03 - iter 3  | con: 2.1015566145245807e-08 | con-fac: 0.016864981158092696    | runtime: 0.005523681640625 s
+    INFO - 03-02-20 11:19:03 - iter 4  | con: 3.144127445017594e-10  | con-fac: 0.014960945726074891    | runtime: 0.004599332809448242 s
+    INFO - 03-02-20 11:19:03 - iter 5  | con: 3.975214076032893e-12  | con-fac: 0.01264329816633959     | runtime: 0.0043201446533203125 s
+    INFO - 03-02-20 11:19:03 - Solve took 0.042092084884643555 s
+    INFO - 03-02-20 11:19:03 - Run parameter overview
+    interval                  : [0.0, 5.0]
+    number points             : 101 points
+    max dt                    : 0.05000000000000071
+    level                     : 2
+    coarsening                : [2]
     cf_iter                   : 1
     nested iteration          : True
     cycle type                : V

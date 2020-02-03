@@ -10,5 +10,6 @@ from .heat_1d_bdf2.heat_1d_2pts_bdf2 import Heat1DBDF2
 from .heat_1d_bdf2.vector_heat_1d_2pts import VectorHeat1D2Pts
 from .parallel_model.mgrit_parallel_model import MgritParallelModel
 from .parallel_model.parallel_model import ParallelModel
+from .core.simple_setup_problem import simple_setup_problem
 
 __all__ = [s for s in dir() if not s.startswith('_')]

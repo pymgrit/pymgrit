@@ -10,7 +10,7 @@ from pymgrit.core.vector import Vector
 
 class VectorDahlquist(Vector):
     """
-    Vector for the 1D advection equation
+    Vector for the dahlquist test equation
     """
 
     def __init__(self, value):
@@ -53,8 +53,8 @@ class Dahlquist(Application):
 
     def __init__(self, *args, **kwargs):
         super(Dahlquist, self).__init__(*args, **kwargs)
-        self.vector_template = VectorDahlquist(0)  # Create initial value solution
-        self.vector_t_start = VectorDahlquist(1)  # Create initial value solution
+        self.vector_template = VectorDahlquist(0)  # Setting the class which is used for each time point
+        self.vector_t_start = VectorDahlquist(1)  # Setting the initial condition
 
     def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
         tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()

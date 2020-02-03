@@ -21,39 +21,51 @@ this size afterwards. Furthermore, the functions must override the functions
     - `norm`: The norm of the class
     - `clone_zero`: Initialization of the data with zeros
     - `clone_rand`: Initialization of the data with random values
+    - `set_values`: Sets the solution
+    - `get_values`: Gets the solution
+
 ::
 
     import numpy as np
-    from pymgrit.core. import vector
 
-    class VectorStandard(vector.Vector):
+    from pymgrit.core.vector import Vector
 
-        def __init__(self, size):
-            super(VectorStandard, self).__init__()
-            self.size = size
-            self.vec = np.zeros(size)
+
+    class VectorDahlquist(Vector):
+        """
+        Vector for the dahlquist test equation
+        """
+
+        def __init__(self, value):
+            super(VectorDahlquist, self).__init__()
+            self.value = value
 
         def __add__(self, other):
-            tmp = VectorStandard(self.size)
-            tmp.vec = self.vec + other.vec
+            tmp = VectorDahlquist(0)
+            tmp.set_values(self.get_values() + other.get_values())
             return tmp
 
         def __sub__(self, other):
-            tmp = VectorStandard(self.size)
-            tmp.vec = self.vec - other.vec
+            tmp = VectorDahlquist(0)
+            tmp.set_values(self.get_values() - other.get_values())
             return tmp
 
         def norm(self):
-            return np.linalg.norm(self.vec)
+            return np.linalg.norm(self.value)
 
         def clone_zero(self):
-            return VectorStandard(self.size)
+            return VectorDahlquist(0)
 
         def clone_rand(self):
-            tmp = VectorStandard(self.size)
-            tmp.vec = np.random.rand(self.size)
+            tmp = VectorDahlquist(0)
+            tmp.set_values(np.random.rand(1)[0])
             return tmp
 
+        def set_values(self, value):
+            self.value = value
+
+        def get_values(self):
+            return self.value
 
 -----------
 Application
@@ -62,18 +74,25 @@ Application
 TODO!
 
 The next step is to write your first problem application. Therefore, write a class that inherits from `Application`.
-The variable `u` has to be specified and set to the class defined in the previous step. Furthermore, the function
+The variables `vector_template` and 'vector_t_start' have to be specified and set
 `step` has to be specified::
 
-    from pymgrit.core import application
+    from pymgrit.core.application import Application
 
-    class ApplicationExample(application.Application):
-        def __init__(self, sleep, *args, **kwargs):
-            super(ApplicationExample, self).__init__(*args, **kwargs)
-            self.u = VectorStandard(1)  # Create initial value solution
+    class Dahlquist(Application):
+        """
+        Solves  u' = lambda u,
+        with lambda=-1 and y(0) = 1
+        """
 
-        def step(self, u_start: VectorStandard, t_start: float,t_stop: float) -> VectorStandard:
-            ret = VectorStandard(1)
+        def __init__(self, *args, **kwargs):
+            super(Dahlquist, self).__init__(*args, **kwargs)
+            self.vector_template = VectorDahlquist(0)  # Setting the class which is used for each time point
+            self.vector_t_start = VectorDahlquist(1)  # Setting the initial condition
+
+        def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
+            tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
+            ret = VectorDahlquist(tmp)
             return ret
 
 -----------------
@@ -82,10 +101,16 @@ Solve the problem
 
 TODO::
 
-    import pymgrit
-    problem_lvl_0 = ApplicationExample(t_start=0, t_stop=2, nt=65)
-    problem_lvl_1 = ApplicationExample(t_start=0, t_stop=2, nt=17)
-    problem_lvl_2 = ApplicationExample(t_start=0, t_stop=2, nt=5)
-    problem = [problem_lvl_0, problem_lvl_1, problem_lvl_2]
-    mgrit = pymgrit.Mgrit(problem=problem, tol=1e-10)
-    sol = mgrit.solve()
+    from pymgrit import *
+
+    # Creating the finest level problem
+    dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
+
+    # Setup the multilevel structure by using the simple_setup_problem function
+    dahlquist_multilevel_strucutre = simple_setup_problem(problem=dahlquist, level=2,coarsening=2)
+
+    # Setup of the MGRIT algorithm with the multilevel structure
+    mgrit = Mgrit(problem=dahlquist_multilevel_strucutre, tol = 1e-10)
+
+    # Solve
+    mgrit.solve()
