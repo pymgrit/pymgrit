@@ -27,9 +27,7 @@ this size afterwards. Furthermore, the functions must override the functions
 ::
 
     import numpy as np
-
     from pymgrit.core.vector import Vector
-
 
     class VectorDahlquist(Vector):
         """
