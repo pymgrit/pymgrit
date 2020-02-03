@@ -85,13 +85,16 @@ The variables `vector_template` and 'vector_t_start' have to be specified and se
 
         def __init__(self, *args, **kwargs):
             super(Dahlquist, self).__init__(*args, **kwargs)
-            self.vector_template = VectorDahlquist(0)  # Setting the class which is used for each time point
-            self.vector_t_start = VectorDahlquist(1)  # Setting the initial condition
+
+            # Setting the class which is used for each time point (mandatory)
+            self.vector_template = VectorDahlquist(0)
+
+            # Setting the initial condition (mandatory)
+            self.vector_t_start = VectorDahlquist(1)
 
         def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
             tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
-            ret = VectorDahlquist(tmp)
-            return ret
+            return VectorDahlquist(tmp)
 
 -----------------
 Solve the problem

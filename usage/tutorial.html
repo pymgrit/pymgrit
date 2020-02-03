@@ -245,13 +245,16 @@ The variables <cite>vector_template</cite> and ‘vector_t_start’ have to be s
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Dahlquist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vector_template</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Setting the class which is used for each time point</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vector_t_start</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Setting the initial condition</span>
+
+        <span class="c1"># Setting the class which is used for each time point (mandatory)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector_template</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Setting the initial condition (mandatory)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector_t_start</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_start</span><span class="p">:</span> <span class="n">VectorDahlquist</span><span class="p">,</span> <span class="n">t_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorDahlquist</span><span class="p">:</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">t_stop</span> <span class="o">-</span> <span class="n">t_start</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_start</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
