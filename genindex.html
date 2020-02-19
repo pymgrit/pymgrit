@@ -22,10 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -88,8 +88,12 @@
 </ul>
 <p class="caption"><span class="caption-text">Applications</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/dahlquist.html">Dahlquist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/brusselator.html">Brusselator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/arenstorf_orbit.html">Arenstorf orbit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applications/heat_equation.html">Heat Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/firedrake_diffusion_2d.html">Firedrake Diffusion 2D</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Help</span></p>
 <ul>
@@ -231,6 +235,8 @@
 </li>
         <li><a href="pymgrit.heat_1d_bdf2.html#pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_rand">(pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts method)</a>
 </li>
+        <li><a href="pymgrit.lorentz.html#pymgrit.lorentz.lorentz.VectorLorentz.clone_rand">(pymgrit.lorentz.lorentz.VectorLorentz method)</a>
+</li>
         <li><a href="pymgrit.parallel_model.html#pymgrit.parallel_model.parallel_model.VectorParallelModel.clone_rand">(pymgrit.parallel_model.parallel_model.VectorParallelModel method)</a>
 </li>
         <li><a href="pymgrit.html#pymgrit.Vector.clone_rand">(pymgrit.Vector method)</a>
@@ -248,6 +254,8 @@
         <li><a href="pymgrit.heat_1d.html#pymgrit.heat_1d.heat_1d.VectorHeat1D.clone_zero">(pymgrit.heat_1d.heat_1d.VectorHeat1D method)</a>
 </li>
         <li><a href="pymgrit.heat_1d_bdf2.html#pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_zero">(pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts method)</a>
+</li>
+        <li><a href="pymgrit.lorentz.html#pymgrit.lorentz.lorentz.VectorLorentz.clone_zero">(pymgrit.lorentz.lorentz.VectorLorentz method)</a>
 </li>
         <li><a href="pymgrit.parallel_model.html#pymgrit.parallel_model.parallel_model.VectorParallelModel.clone_zero">(pymgrit.parallel_model.parallel_model.VectorParallelModel method)</a>
 </li>
@@ -359,6 +367,8 @@
 </li>
         <li><a href="pymgrit.heat_1d_bdf2.html#pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts.get_values">(pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts method)</a>
 </li>
+        <li><a href="pymgrit.lorentz.html#pymgrit.lorentz.lorentz.VectorLorentz.get_values">(pymgrit.lorentz.lorentz.VectorLorentz method)</a>
+</li>
         <li><a href="pymgrit.parallel_model.html#pymgrit.parallel_model.parallel_model.VectorParallelModel.get_values">(pymgrit.parallel_model.parallel_model.VectorParallelModel method)</a>
 </li>
         <li><a href="pymgrit.html#pymgrit.Vector.get_values">(pymgrit.Vector method)</a>
@@ -467,6 +477,12 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pymgrit.lorentz.html#pymgrit.lorentz.lorentz.Lorentz">Lorentz (class in pymgrit.lorentz.lorentz)</a>
+</li>
+      <li><a href="pymgrit.lorentz.html#pymgrit.lorentz.lorentz.lorentz">lorentz() (in module pymgrit.lorentz.lorentz)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
@@ -511,6 +527,8 @@
 </li>
         <li><a href="pymgrit.heat_1d_bdf2.html#pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts.norm">(pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts method)</a>
 </li>
+        <li><a href="pymgrit.lorentz.html#pymgrit.lorentz.lorentz.VectorLorentz.norm">(pymgrit.lorentz.lorentz.VectorLorentz method)</a>
+</li>
         <li><a href="pymgrit.parallel_model.html#pymgrit.parallel_model.parallel_model.VectorParallelModel.norm">(pymgrit.parallel_model.parallel_model.VectorParallelModel method)</a>
 </li>
         <li><a href="pymgrit.html#pymgrit.Vector.norm">(pymgrit.Vector method)</a>
@@ -548,6 +566,8 @@
 </li>
       <li><a href="pymgrit.advection_1d.html#module-pymgrit.advection_1d.advection_1d">pymgrit.advection_1d.advection_1d (module)</a>
 </li>
+      <li><a href="pymgrit.arenstorf_orbit.html#module-pymgrit.arenstorf_orbit">pymgrit.arenstorf_orbit (module)</a>
+</li>
       <li><a href="pymgrit.core.html#module-pymgrit.core">pymgrit.core (module)</a>
 </li>
       <li><a href="pymgrit.core.html#module-pymgrit.core.application">pymgrit.core.application (module)</a>
@@ -560,10 +580,10 @@
 </li>
       <li><a href="pymgrit.core.html#module-pymgrit.core.split">pymgrit.core.split (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pymgrit.core.html#module-pymgrit.core.vector">pymgrit.core.vector (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pymgrit.dahlquist.html#module-pymgrit.dahlquist">pymgrit.dahlquist (module)</a>
 </li>
       <li><a href="pymgrit.dahlquist.html#module-pymgrit.dahlquist.dahlquist">pymgrit.dahlquist.dahlquist (module)</a>
@@ -579,6 +599,10 @@
       <li><a href="pymgrit.heat_1d_bdf2.html#module-pymgrit.heat_1d_bdf2.heat_1d_2pts_bdf2">pymgrit.heat_1d_bdf2.heat_1d_2pts_bdf2 (module)</a>
 </li>
       <li><a href="pymgrit.heat_1d_bdf2.html#module-pymgrit.heat_1d_bdf2.vector_heat_1d_2pts">pymgrit.heat_1d_bdf2.vector_heat_1d_2pts (module)</a>
+</li>
+      <li><a href="pymgrit.lorentz.html#module-pymgrit.lorentz">pymgrit.lorentz (module)</a>
+</li>
+      <li><a href="pymgrit.lorentz.html#module-pymgrit.lorentz.lorentz">pymgrit.lorentz.lorentz (module)</a>
 </li>
       <li><a href="pymgrit.parallel_model.html#module-pymgrit.parallel_model">pymgrit.parallel_model (module)</a>
 </li>
@@ -634,6 +658,8 @@
         <li><a href="pymgrit.heat_1d.html#pymgrit.heat_1d.heat_1d.VectorHeat1D.set_values">(pymgrit.heat_1d.heat_1d.VectorHeat1D method)</a>
 </li>
         <li><a href="pymgrit.heat_1d_bdf2.html#pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts.set_values">(pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts method)</a>
+</li>
+        <li><a href="pymgrit.lorentz.html#pymgrit.lorentz.lorentz.VectorLorentz.set_values">(pymgrit.lorentz.lorentz.VectorLorentz method)</a>
 </li>
         <li><a href="pymgrit.parallel_model.html#pymgrit.parallel_model.parallel_model.VectorParallelModel.set_values">(pymgrit.parallel_model.parallel_model.VectorParallelModel method)</a>
 </li>
@@ -700,6 +726,8 @@
         <li><a href="pymgrit.heat_1d_bdf2.html#pymgrit.heat_1d_bdf2.heat_1d_2pts_bdf1.Heat1DBDF1.step">(pymgrit.heat_1d_bdf2.heat_1d_2pts_bdf1.Heat1DBDF1 method)</a>
 </li>
         <li><a href="pymgrit.heat_1d_bdf2.html#pymgrit.heat_1d_bdf2.heat_1d_2pts_bdf2.Heat1DBDF2.step">(pymgrit.heat_1d_bdf2.heat_1d_2pts_bdf2.Heat1DBDF2 method)</a>
+</li>
+        <li><a href="pymgrit.lorentz.html#pymgrit.lorentz.lorentz.Lorentz.step">(pymgrit.lorentz.lorentz.Lorentz method)</a>
 </li>
         <li><a href="pymgrit.parallel_model.html#pymgrit.parallel_model.parallel_model.ParallelModel.step">(pymgrit.parallel_model.parallel_model.ParallelModel method)</a>
 </li>
@@ -780,6 +808,8 @@
         <li><a href="pymgrit.heat_1d_bdf2.html#pymgrit.heat_1d_bdf2.vector_heat_1d_2pts.VectorHeat1D2Pts">(class in pymgrit.heat_1d_bdf2.vector_heat_1d_2pts)</a>
 </li>
       </ul></li>
+      <li><a href="pymgrit.lorentz.html#pymgrit.lorentz.lorentz.VectorLorentz">VectorLorentz (class in pymgrit.lorentz.lorentz)</a>
+</li>
       <li><a href="pymgrit.parallel_model.html#pymgrit.parallel_model.parallel_model.VectorParallelModel">VectorParallelModel (class in pymgrit.parallel_model.parallel_model)</a>
 </li>
   </ul></td>

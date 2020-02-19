@@ -8,4 +8,4 @@ PyMGRIT requires ``mpicc`` (from ``openmpi`` or ``mpich``)
 
 or
 
-    >>> python setup.py install
+    >>> pip install .

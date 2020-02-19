@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -94,8 +94,12 @@
 </ul>
 <p class="caption"><span class="caption-text">Applications</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/dahlquist.html">Dahlquist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/brusselator.html">Brusselator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/arenstorf_orbit.html">Arenstorf orbit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../applications/heat_equation.html">Heat Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/firedrake_diffusion_2d.html">Firedrake Diffusion 2D</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Help</span></p>
 <ul>
@@ -166,22 +170,20 @@
             
   <div class="section" id="tutorial">
 <h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
-<p>This tutorial will walk you trough these tasks:</p>
+<p>In the following tutorial you will write your first own application and use the MGRIT algorithm to solve the time dependent problem. To accomplish this, this tutorial will go through the following tasks:</p>
 <ol class="arabic simple">
-<li><p>Write your first vector structure</p></li>
-<li><p>Write your first application</p></li>
-<li><p>Solve your application problem</p></li>
+<li><p>Write your first <a class="reference internal" href="#vector-structure">vector structure</a></p></li>
+<li><p>Write your first <a class="reference internal" href="#application">application</a></p></li>
+<li><p><a class="reference internal" href="#solve-the-problem">Solve the problem</a></p></li>
 </ol>
 <div class="section" id="vector-structure">
 <h2>Vector structure<a class="headerlink" href="#vector-structure" title="Permalink to this headline">¶</a></h2>
-<p>The first step is to write a data structure that holds the solution of one time point. The data structure must inherit
-from the class <cite>Vector</cite> laying in the core of PyMGRIT. Our class gets a size as integer and creates a numpy array of
-this size afterwards. Furthermore, the functions must override the functions</p>
+<p>The first step is to write a data structure that contains the solution of a point in time. The data structure must inherit from the ‘Vector’ class, which is at the core of PyMGRIT. Our class receives a size as an integer and then generates a numpy array of that size containing the solutions. Furthermore the following functions must be defined:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><cite>__add__</cite>: For the addition of two objects of our class</p></li>
 <li><p><cite>__sub__</cite>: For the substraction of two objects of our class</p></li>
-<li><p><cite>norm</cite>: The norm of the class</p></li>
+<li><p><cite>norm</cite>: Some norm for measuring the convergence</p></li>
 <li><p><cite>clone_zero</cite>: Initialization of the data with zeros</p></li>
 <li><p><cite>clone_rand</cite>: Initialization of the data with random values</p></li>
 <li><p><cite>set_values</cite>: Sets the solution</p></li>
@@ -231,11 +233,16 @@ this size afterwards. Furthermore, the functions must override the functions</p>
 </div>
 <div class="section" id="application">
 <h2>Application<a class="headerlink" href="#application" title="Permalink to this headline">¶</a></h2>
-<p>TODO!</p>
-<p>The next step is to write your first problem application. Therefore, write a class that inherits from <cite>Application</cite>.
-The variables <cite>vector_template</cite> and ‘vector_t_start’ have to be specified and set
-<cite>step</cite> has to be specified:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit.core.application</span> <span class="kn">import</span> <span class="n">Application</span>
+<p>In the next step we write our first application. In our case we use Dahlquist test equation. Every application must inherit from the class ‘Application’ from the PyMGRIT core. The superclass takes care of generating the time interval. Our application must contain the following information:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Variable: <cite>vector_template</cite> : Selected as data structure for each event</p></li>
+<li><p>Variable: <cite>vector_t_start</cite> : Same data structure. Set the initial conditions here</p></li>
+<li><p>Function: <cite>step</cite> : Time integrator</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#Import superclass Application</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.application</span> <span class="kn">import</span> <span class="n">Application</span>
 
 <span class="k">class</span> <span class="nc">Dahlquist</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -260,17 +267,17 @@ The variables <cite>vector_template</cite> and ‘vector_t_start’ have to be s
 </div>
 <div class="section" id="solve-the-problem">
 <h2>Solve the problem<a class="headerlink" href="#solve-the-problem" title="Permalink to this headline">¶</a></h2>
-<p>TODO:</p>
+<p>The last step is to create an object of the application. Using the application object and the function ‘simple_setup_problem’ from the PyMGRIT core a multilevel structure is created. This is passed to the MGRIT algorithm and solved.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># Creating the finest level problem</span>
 <span class="n">dahlquist</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
 
 <span class="c1"># Setup the multilevel structure by using the simple_setup_problem function</span>
-<span class="n">dahlquist_multilevel_strucutre</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">dahlquist_multilevel_structure</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="c1"># Setup of the MGRIT algorithm with the multilevel structure</span>
-<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_strucutre</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span>
 
 <span class="c1"># Solve</span>
 <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>

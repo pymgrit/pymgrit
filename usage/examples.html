@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Advection" href="../applications/advection.html" />
+    <link rel="next" title="Dahlquist" href="../applications/dahlquist.html" />
     <link rel="prev" title="Tutorial" href="tutorial.html" /> 
 </head>
 
@@ -88,17 +88,22 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#simple-solve">Simple solve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mgrit-parameters">MGRIT Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#output-function">Output function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#spatial-coarsening">Spatial coarsening</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#define-multigrid-structure">Define multigrid structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#spatial-transfer-operator">Spatial transfer operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#space-time-parallelism">Space &amp; time parallelism</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">Applications</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/dahlquist.html">Dahlquist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/brusselator.html">Brusselator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/arenstorf_orbit.html">Arenstorf orbit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../applications/heat_equation.html">Heat Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications/firedrake_diffusion_2d.html">Firedrake Diffusion 2D</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Help</span></p>
 <ul>
@@ -175,32 +180,166 @@
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="#simple-solve">Simple solve</a></p></li>
+<li><p><a class="reference internal" href="#mgrit-parameters">MGRIT Parameters</a></p></li>
 <li><p><a class="reference internal" href="#output-function">Output function</a></p></li>
-<li><p><a class="reference internal" href="#spatial-coarsening">Spatial coarsening</a></p></li>
-<li><p><a class="reference internal" href="#parameters">Parameters</a></p></li>
 <li><p><a class="reference internal" href="#define-multigrid-structure">Define multigrid structure</a></p></li>
+<li><p><a class="reference internal" href="#spatial-transfer-operator">Spatial transfer operator</a></p></li>
+<li><p><a class="reference internal" href="#space-time-parallelism">Space &amp; time parallelism</a></p></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="simple-solve">
 <h2>Simple solve<a class="headerlink" href="#simple-solve" title="Permalink to this headline">¶</a></h2>
-<p>Test</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
+
+<span class="c1"># Creating the finest level problem</span>
+<span class="n">dahlquist</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
+
+<span class="c1"># Setup the multilevel structure by using the simple_setup_problem function</span>
+<span class="n">dahlquist_multilevel_structure</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Setup of the MGRIT algorithm with the multilevel structure</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
+
+<span class="c1"># Solve</span>
+<span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mgrit-parameters">
+<h2>MGRIT Parameters<a class="headerlink" href="#mgrit-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The MGRIT algorithm in PyMGRIT has a variety of parameters and features. The example ‘example_parameters’ describes these and gives an overview of what is possible with PyMGRIT:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+
+<span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
+
+<span class="c1"># Creating the finest level problem</span>
+<span class="n">dahlquist</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
+
+<span class="c1"># Setup the multilevel structure by using the simple_setup_problem function</span>
+<span class="n">dahlquist_multilevel_structure</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Setup of the MGRIT algorithm with the multilevel structure</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span>   <span class="c1"># Problem structure</span>
+              <span class="n">transfer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                            <span class="c1"># Spatial grid transfer. Automatically set if None.</span>
+              <span class="n">it</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>                                    <span class="c1"># Maximal number of iterations</span>
+              <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>                                <span class="c1"># Stopping tolerance</span>
+              <span class="n">nested_iteration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                    <span class="c1"># Nested iterations</span>
+              <span class="n">cf_iter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                                <span class="c1"># Number of CF iterations per relaxation step</span>
+              <span class="n">cycle_type</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>                           <span class="c1"># &#39;V&#39; or &#39;F&#39; relaxation</span>
+              <span class="n">comm_time</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="p">,</span>                 <span class="c1"># Time communicator</span>
+              <span class="n">comm_space</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_NULL</span><span class="p">,</span>               <span class="c1"># Space communicator</span>
+              <span class="n">logging_lvl</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>                           <span class="c1"># Logging level:</span>
+                                                        <span class="c1"># 00 - 10: Debug -&gt; Runtime of all components</span>
+                                                        <span class="c1"># 11 - 20: Info  -&gt; Info per iteration + summary</span>
+                                                        <span class="c1"># 31 - 50: None  -&gt; No information</span>
+              <span class="n">output_fcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                          <span class="c1"># Save solutions to file</span>
+              <span class="n">output_lvl</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                             <span class="c1"># Output level:</span>
+                                                        <span class="c1"># 0 -&gt; output_fcn is never called</span>
+                                                        <span class="c1"># 1 -&gt; output_fcn is called when solve stops</span>
+                                                        <span class="c1"># 2 -&gt; output_fcn is called after each MGRIT iteration</span>
+              <span class="n">random_init_guess</span><span class="o">=</span><span class="kc">False</span>                   <span class="c1"># Random initial guess of all unknowns?</span>
+              <span class="p">)</span>
+
+<span class="c1"># Solve</span>
+<span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="output-function">
 <h2>Output function<a class="headerlink" href="#output-function" title="Permalink to this headline">¶</a></h2>
-<p>Test</p>
+<p>To store the solutions an output function must be written, which is passed to the MGRIT algorithm. The output function is called in the algorithm after each iteration, at the end or not at all, depending on the setting (see example parameter). The output function is called on each processor. In the example the solution is written to a file via the numpy function save.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
+
+<span class="c1"># Define output function that writes the solution to a file</span>
+<span class="k">def</span> <span class="nf">output_fcn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1">#Set path to solution</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;results/&#39;</span> <span class="o">+</span> <span class="s1">&#39;dahlquist&#39;</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solve_iter</span><span class="p">)</span>
+    <span class="c1"># Create path if not existing</span>
+    <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Save solution to file.</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>  <span class="c1"># Add time information for distinguish procs</span>
+    <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_local</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>   <span class="c1"># Save each time step per processors</span>
+
+    <span class="c1"># Creating the finest level problem</span>
+    <span class="n">dahlquist</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
+
+    <span class="c1"># Setup the multilevel structure by using the simple_setup_problem function</span>
+    <span class="n">dahlquist_multilevel_structure</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Setup of the MGRIT algorithm with the multilevel structure</span>
+    <span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span> <span class="n">output_fcn</span><span class="o">=</span><span class="n">output_fcn</span><span class="p">)</span>
+
+    <span class="c1"># Solve</span>
+    <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+    <span class="c1"># Plot solution if one processor was used</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="c1">##path_to_solution##)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="spatial-coarsening">
-<h2>Spatial coarsening<a class="headerlink" href="#spatial-coarsening" title="Permalink to this headline">¶</a></h2>
-<p>Test</p>
-</div>
-<div class="section" id="parameters">
-<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
-<p>Test</p>
 </div>
 <div class="section" id="define-multigrid-structure">
 <h2>Define multigrid structure<a class="headerlink" href="#define-multigrid-structure" title="Permalink to this headline">¶</a></h2>
-<p>Test</p>
+<p>There are several ways to create a multi-level structure that can be solved by the MGRIT algorithm:</p>
+<ul class="simple">
+<li><p>Using the simple setup function</p></li>
+<li><p>Setup each level by t_start, t_end, nt</p></li>
+<li><p>Setup by intervals</p></li>
+<li><p>Mix</p></li>
+</ul>
+<p>The following example shows the different possibilities:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
+
+<span class="c1"># Different ways for creating the multilevel structure</span>
+
+<span class="c1"># Variant 1: Simple setup</span>
+<span class="n">dahlquist_multilevel_structure_1</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">),</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                                                        <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+<span class="c1"># Variant 2: Setup each level by t_start, t_end, nt</span>
+<span class="n">dahlquist_lvl_0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">51</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_2</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
+<span class="n">dahlquist_multilevel_structure_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">dahlquist_lvl_0</span><span class="p">,</span> <span class="n">dahlquist_lvl_1</span><span class="p">,</span> <span class="n">dahlquist_lvl_2</span><span class="p">]</span>
+<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+<span class="c1"># Variant 3: Setup by intervals</span>
+<span class="n">t_interval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># Takes every second point from t_interval</span>
+<span class="n">dahlquist_lvl_2</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">[::</span><span class="mi">4</span><span class="p">])</span>  <span class="c1"># Takes every fourth point from t_interval</span>
+<span class="n">dahlquist_multilevel_structure_3</span> <span class="o">=</span> <span class="p">[</span><span class="n">dahlquist_lvl_0</span><span class="p">,</span> <span class="n">dahlquist_lvl_1</span><span class="p">,</span> <span class="n">dahlquist_lvl_2</span><span class="p">]</span>
+<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_3</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+<span class="c1"># Variant 4: Mix</span>
+<span class="n">dahlquist_lvl_0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">dahlquist_lvl_0</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># Using t from the upper level.</span>
+<span class="n">dahlquist_lvl_2</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
+<span class="n">dahlquist_multilevel_structure_4</span> <span class="o">=</span> <span class="p">[</span><span class="n">dahlquist_lvl_0</span><span class="p">,</span> <span class="n">dahlquist_lvl_1</span><span class="p">,</span> <span class="n">dahlquist_lvl_2</span><span class="p">]</span>
+<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_4</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="spatial-transfer-operator">
+<h2>Spatial transfer operator<a class="headerlink" href="#spatial-transfer-operator" title="Permalink to this headline">¶</a></h2>
+<p>TODO</p>
+</div>
+<div class="section" id="space-time-parallelism">
+<h2>Space &amp; time parallelism<a class="headerlink" href="#space-time-parallelism" title="Permalink to this headline">¶</a></h2>
+<p>TODO</p>
 </div>
 </div>
 
@@ -212,7 +351,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../applications/advection.html" class="btn btn-neutral float-right" title="Advection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../applications/dahlquist.html" class="btn btn-neutral float-right" title="Dahlquist" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

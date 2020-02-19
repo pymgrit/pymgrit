@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -87,8 +87,12 @@
 </ul>
 <p class="caption"><span class="caption-text">Applications</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/dahlquist.html">Dahlquist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/brusselator.html">Brusselator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/arenstorf_orbit.html">Arenstorf orbit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applications/heat_equation.html">Heat Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/advection.html">Advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/firedrake_diffusion_2d.html">Firedrake Diffusion 2D</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Help</span></p>
 <ul>
@@ -242,7 +246,7 @@ which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t
 <dt id="pymgrit.heat_1d.heat_1d.VectorHeat1D">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat_1d.heat_1d.</code><code class="sig-name descname">VectorHeat1D</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat_1d.heat_1d.VectorHeat1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
-<p>Vector for the 1D advection equation</p>
+<p>Vector for the 1D heat equation</p>
 <dl class="method">
 <dt id="pymgrit.heat_1d.heat_1d.VectorHeat1D.clone_rand">
 <code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat_1d.heat_1d.VectorHeat1D.clone_rand" title="Permalink to this definition">¶</a></dt>
