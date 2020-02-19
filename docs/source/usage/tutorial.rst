@@ -2,23 +2,21 @@
 Tutorial
 **********
 
-This tutorial will walk you trough these tasks:
+In the following tutorial you will write your first own application and use the MGRIT algorithm to solve the time dependent problem. To accomplish this, this tutorial will go through the following tasks:
 
-#. Write your first vector structure
-#. Write your first application
-#. Solve your application problem
+#. Write your first `vector structure`_
+#. Write your first `application`_
+#. `Solve the problem`_
 
 -----------------
 Vector structure
 -----------------
 
-The first step is to write a data structure that holds the solution of one time point. The data structure must inherit
-from the class `Vector` laying in the core of PyMGRIT. Our class gets a size as integer and creates a numpy array of
-this size afterwards. Furthermore, the functions must override the functions
+The first step is to write a data structure that contains the solution of a point in time. The data structure must inherit from the 'Vector' class, which is at the core of PyMGRIT. Our class receives a size as an integer and then generates a numpy array of that size containing the solutions. Furthermore the following functions must be defined:
 
     - `__add__`: For the addition of two objects of our class
     - `__sub__`: For the substraction of two objects of our class
-    - `norm`: The norm of the class
+    - `norm`: Some norm for measuring the convergence
     - `clone_zero`: Initialization of the data with zeros
     - `clone_rand`: Initialization of the data with random values
     - `set_values`: Sets the solution
@@ -69,12 +67,15 @@ this size afterwards. Furthermore, the functions must override the functions
 Application
 -----------
 
-TODO!
+In the next step we write our first application. In our case we use Dahlquist test equation. Every application must inherit from the class 'Application' from the PyMGRIT core. The superclass takes care of generating the time interval. Our application must contain the following information:
 
-The next step is to write your first problem application. Therefore, write a class that inherits from `Application`.
-The variables `vector_template` and 'vector_t_start' have to be specified and set
-`step` has to be specified::
+    - Variable: `vector_template` : Selected as data structure for each event
+    - Variable: `vector_t_start` : Same data structure. Set the initial conditions here
+    - Function: `step` : Time integrator
 
+::
+
+    #Import superclass Application
     from pymgrit.core.application import Application
 
     class Dahlquist(Application):
@@ -100,7 +101,7 @@ The variables `vector_template` and 'vector_t_start' have to be specified and se
 Solve the problem
 -----------------
 
-TODO::
+The last step is to create an object of the application. Using the application object and the function 'simple_setup_problem' from the PyMGRIT core a multilevel structure is created. This is passed to the MGRIT algorithm and solved.::
 
     from pymgrit import *
 
@@ -108,10 +109,10 @@ TODO::
     dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
 
     # Setup the multilevel structure by using the simple_setup_problem function
-    dahlquist_multilevel_strucutre = simple_setup_problem(problem=dahlquist, level=2,coarsening=2)
+    dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2,coarsening=2)
 
     # Setup of the MGRIT algorithm with the multilevel structure
-    mgrit = Mgrit(problem=dahlquist_multilevel_strucutre, tol = 1e-10)
+    mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol = 1e-10)
 
     # Solve
     mgrit.solve()

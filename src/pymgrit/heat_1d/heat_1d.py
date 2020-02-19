@@ -12,7 +12,7 @@ from pymgrit.core.vector import Vector
 
 class VectorHeat1D(Vector):
     """
-    Vector for the 1D advection equation
+    Vector for the 1D heat equation
     """
 
     def __init__(self, size):

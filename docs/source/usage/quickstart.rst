@@ -2,7 +2,7 @@
 Quickstart
 **********
 
-PyMGRIT is easy to use! The following code generates an example of dahlquist test equation u' = lambda u and solves the resulting problem with the MGRIT algorithm.::
+PyMGRIT is easy to use! The following code generates an example of dahlquist test equation u' = lambda u and solves the resulting problem using the MGRIT algorithm with two-levels.::
 
     from pymgrit import *
 
@@ -10,13 +10,13 @@ PyMGRIT is easy to use! The following code generates an example of dahlquist tes
     dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
 
     # Setup the multilevel structure by using the simple_setup_problem function
-    dahlquist_multilevel_strucutre = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
+    dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
 
     # Setup of the MGRIT algorithm with the multilevel structure
-    mgrit = Mgrit(problem=dahlquist_multilevel_strucutre, tol=1e-10)
+    mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
 
     # Solve
-    return mgrit.solve()
+    mgrit.solve()
 
 Program output::
 

@@ -46,14 +46,27 @@ Applications
     :caption: Applications
     :hidden:
 
-    applications/advection
+    applications/dahlquist
+    applications/brusselator
+    applications/arenstorf_orbit
     applications/heat_equation
+    applications/advection
+    applications/firedrake_diffusion_2d
+
+:doc:`applications/dahlquist`
+    Dahlquist test equation
+
+:doc:`applications/brusselator`
+    Brusselator
+
+:doc:`applications/arenstorf_orbit`
+    Arenstorf_orbit
+
+:doc:`applications/heat_equation`
+    Heat equation
 
 :doc:`applications/advection`
     Advection problem
-
-:doc:`applications/heat_equation`
-    1-d Heat equation
 
 ----
 Help
