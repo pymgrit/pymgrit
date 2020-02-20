@@ -7,8 +7,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install mpich
 fi
 
-pip install .
-pip install sphinx sphinx-rtd-theme
+pip3 install .
+pip3 install sphinx sphinx-rtd-theme
 sphinx-apidoc -o docs/source src/pymgrit
 sphinx-build -b html docs/source docs/build/html
 
