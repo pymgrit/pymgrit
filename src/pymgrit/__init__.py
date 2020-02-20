@@ -1,4 +1,4 @@
-from .advection_1d.advection_1d import Advection1D
+from .advection.advection_1d import Advection1D
 from .core.application import Application
 from .core.grid_transfer import GridTransfer
 from .core.grid_transfer_copy import GridTransferCopy

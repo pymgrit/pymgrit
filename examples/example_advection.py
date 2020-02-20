@@ -1,7 +1,7 @@
 import pathlib
 import numpy as np
 
-from pymgrit.advection_1d.advection_1d import Advection1D
+from pymgrit.advection.advection_1d import Advection1D
 from pymgrit.core.mgrit import Mgrit
 
 
@@ -34,9 +34,9 @@ def main():
 
     # FCF-relax
     mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=False, it=10, tol=1e-50,
-                         output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
+                  output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
 
-    return mgrit.solve()
+    mgrit.solve()
 
 
 if __name__ == '__main__':

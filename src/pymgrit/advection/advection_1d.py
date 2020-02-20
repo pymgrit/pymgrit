@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
+from scipy.sparse import identity
 
 from pymgrit.core.application import Application
 from pymgrit.core.vector import Vector
@@ -61,9 +62,12 @@ class Advection1D(Application):
         # periodic boundary conditions
         self.x = self.x[0:-1]
         self.nx = nx - 1
+        self.dx = self.x[1] - self.x[0]
+
+        self.identity = identity(self.nx, dtype='float', format='csr')
 
         # set discretization matrix
-        self.a = self.advection_sparse(self.nx, (c * (self.t[1] - self.t[0])) / (self.x[1] - self.x[0]))
+        self.space_disc = self.compute_matrix()
 
         # set initial condition
         self.vector_template = VectorAdvection1D(self.nx)
@@ -71,28 +75,27 @@ class Advection1D(Application):
 
         self.initialise()
 
-    @staticmethod
-    def advection_sparse(nx, fac):
+    def compute_matrix(self):
         """
         Define discretization matrix for advection problem.
 
         Discretization is first-order upwind in space and
         backward Euler in time.
         """
-        diagonal = np.zeros(nx)
-        lower = np.zeros(nx - 1)
 
-        diagonal[:] = 1 + fac
-        lower[:] = -fac
+        fac = self.c / self.dx
 
-        a = sp.diags(
+        diagonal = np.ones(self.nx) * fac
+        lower = np.ones(self.nx) * -fac
+
+        matrix = sp.diags(
             diagonals=[diagonal, lower],
-            offsets=[0, -1], shape=(nx, nx),
+            offsets=[0, -1], shape=(self.nx, self.nx),
             format='lil')
         # set periodic entry
-        a[0, nx - 1] = -fac
+        matrix[0, self.nx - 1] = -fac
 
-        return sp.csc_matrix(a)
+        return sp.csr_matrix(matrix)
 
     def initialise(self):
         """
@@ -112,7 +115,7 @@ class Advection1D(Application):
 
     def step(self, u_start: VectorAdvection1D, t_start: float, t_stop: float):
         tmp = u_start.get_values()
-        tmp = spsolve(self.a, tmp)
+        tmp = spsolve((t_stop - t_start) * self.space_disc + self.identity, tmp)
         ret = VectorAdvection1D(len(tmp))
         ret.set_values(tmp)
         return ret
