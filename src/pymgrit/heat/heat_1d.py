@@ -5,6 +5,7 @@ Heat equation 1-d example
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
+from scipy.sparse import identity
 
 from pymgrit.core.application import Application
 from pymgrit.core.vector import Vector
@@ -58,41 +59,40 @@ class Heat1D(Application):
     => solution u(x,t) = sin(pi*x)*cos(t)
     """
 
-    def __init__(self, x_start, x_end, nx, d, *args, **kwargs):
+    def __init__(self, x_start, x_end, nx, a, *args, **kwargs):
         super(Heat1D, self).__init__(*args, **kwargs)
         self.x_start = x_start  # lower interval bound of spatial domain
         self.x_end = x_end  # upper interval bound of spatial domain
         self.x = np.linspace(self.x_start, self.x_end, nx)  # Spatial domain
         self.x = self.x[1:-1]  # homogeneous BCs
         self.nx = nx - 2  # homogeneous BCs
-        self.d = d  # diffusion coefficient
+        self.a = a  # diffusion coefficient
+        self.dx = self.x[1] - self.x[0]
+        self.identity = identity(self.nx, dtype='float', format='csr')
 
-        # setup matrix that acts in space for time integrator Ph
-        self.a = self.heat_sparse(np.size(self.x), (self.d * (self.t[1] - self.t[0])) /
-                                  (self.x[1] - self.x[0]) ** 2)
+        self.space_disc = self.compute_matrix()
 
         self.vector_template = VectorHeat1D(self.nx)
         self.vector_t_start = VectorHeat1D(self.nx)  # Create initial value solution
         self.vector_t_start.set_values(self.u_exact(self.x, 0))  # Set initial value
 
-    def heat_sparse(self, nx, fac):
+    def compute_matrix(self):
         """
-        Central FD in space
+        Space discretization
         """
-        diagonal = np.zeros(nx)
-        lower = np.zeros(nx - 1)
-        upper = np.zeros(nx - 1)
 
-        diagonal[:] = 1 + 2 * fac
-        lower[:] = -fac
-        upper[:] = -fac
+        fac = self.a / self.dx ** 2
 
-        a = sp.diags(
+        diagonal = np.ones(self.nx) * 2 * fac
+        lower = np.ones(self.nx - 1) * -fac
+        upper = np.ones(self.nx - 1) * -fac
+
+        matrix = sp.diags(
             diagonals=[diagonal, lower, upper],
-            offsets=[0, -1, 1], shape=(nx, nx),
+            offsets=[0, -1, 1], shape=(self.nx, self.nx),
             format='csr')
 
-        return sp.csc_matrix(a)
+        return matrix
 
     def u_exact(self, x, t):
         """
@@ -140,7 +140,8 @@ class Heat1D(Application):
         :return:
         """
         tmp = u_start.get_values()
-        tmp = spsolve(self.a, tmp + self.rhs(self.x, t_stop) * (t_stop - t_start))
+        tmp = spsolve((t_stop - t_start) * self.space_disc + self.identity,
+                      tmp + self.rhs(self.x, t_stop) * (t_stop - t_start))
         ret = VectorHeat1D(len(tmp))
         ret.set_values(tmp)
         return ret

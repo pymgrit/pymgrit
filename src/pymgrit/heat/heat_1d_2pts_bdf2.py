@@ -1,9 +1,10 @@
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
+from scipy.sparse import identity
 
 from pymgrit.core.application import Application
-from .vector_heat_1d_2pts import VectorHeat1D2Pts
+from pymgrit.heat.vector_heat_1d_2pts import VectorHeat1D2Pts
 
 
 class Heat1DBDF2(Application):
@@ -16,7 +17,7 @@ class Heat1DBDF2(Application):
     => solution u(x,t) = sin(pi*x)*cos(t)
     """
 
-    def __init__(self, x_start, x_end, nx, dt, d, *args, **kwargs):
+    def __init__(self, x_start, x_end, nx, dt, a, *args, **kwargs):
         super(Heat1DBDF2, self).__init__(*args, **kwargs)
         self.x_start = x_start
         self.x_end = x_end
@@ -24,39 +25,37 @@ class Heat1DBDF2(Application):
         self.x = self.x[1:-1]
         self.nx = nx - 2
         self.dt = dt
-        self.d = d
+        self.a = a
+        self.dx = self.x[1] - self.x[0]
 
         self.u_ex = self.u_exact_complete(x=self.x, t=np.linspace(self.t_start, self.t_end, (self.nt - 1) * 2 + 1))
 
-        self.a1 = self.heat_sparse(np.size(self.x), (self.d * (self.t[1] - self.t[0] - self.dt)) / (
-                self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
-        self.a2 = self.heat_sparse(np.size(self.x), (self.d * self.dt) / (
-                self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
+        self.identity = identity(self.nx, dtype='float', format='csr')
+
+        self.space_disc = self.compute_matrix()
 
         self.vector_template = VectorHeat1D2Pts(self.nx)  # Create initial value solution
         self.vector_t_start = VectorHeat1D2Pts(self.nx)
         self.vector_t_start.set_values(first_time_point=self.u_exact(self.x, self.t[0]),
                                        second_time_point=self.u_exact(self.x, self.t[0] + dt))
 
-    @staticmethod
-    def heat_sparse(nx, fac):
+    def compute_matrix(self):
         """
-        Central FD in space for bdf2
+        Space discretization
         """
-        diagonal = np.zeros(nx)
-        lower = np.zeros(nx - 1)
-        upper = np.zeros(nx - 1)
 
-        diagonal[:] = 1 + (4 / 3) * fac
-        lower[:] = -(2 / 3) * fac
-        upper[:] = -(2 / 3) * fac
+        fac = self.a / self.dx ** 2
 
-        a = sp.diags(
+        diagonal = np.ones(self.nx) * (4 / 3) * fac
+        lower = np.ones(self.nx - 1) * -(2 / 3) * fac
+        upper = np.ones(self.nx - 1) * -(2 / 3) * fac
+
+        matrix = sp.diags(
             diagonals=[diagonal, lower, upper],
-            offsets=[0, -1, 1], shape=(nx, nx),
+            offsets=[0, -1, 1], shape=(self.nx, self.nx),
             format='csr')
 
-        return sp.csc_matrix(a)
+        return matrix
 
     def u_exact(self, x, t):
         """
@@ -88,13 +87,13 @@ class Heat1DBDF2(Application):
               (1 / 3) * first + \
               (2 / 3) * self.f(self.x, t_stop) * (t_stop - t_start - self.dt)
 
-        tmp1 = spsolve(self.a1, rhs)
+        tmp1 = spsolve((t_stop - t_start - self.dt) * self.space_disc + self.identity, rhs)
 
         rhs = (4 / 3) * tmp1 - \
               (1 / 3) * second + \
               (2 / 3) * self.f(self.x, t_stop + self.dt) * self.dt
 
-        tmp2 = spsolve(self.a2, rhs)
+        tmp2 = spsolve(self.dt * self.space_disc + self.identity, rhs)
 
         ret = VectorHeat1D2Pts(u_start.size)
         ret.set_values(first_time_point=tmp1, second_time_point=tmp2)

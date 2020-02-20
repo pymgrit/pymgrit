@@ -3,7 +3,8 @@ from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
 
 from pymgrit.core.application import Application
-from .vector_heat_1d_2pts import VectorHeat1D2Pts
+from pymgrit.heat.vector_heat_1d_2pts import VectorHeat1D2Pts
+from scipy.sparse import identity
 
 
 class Heat1DBDF1(Application):
@@ -16,7 +17,7 @@ class Heat1DBDF1(Application):
     => solution u(x,t) = sin(pi*x)*cos(t)
     """
 
-    def __init__(self, x_start, x_end, nx, dt, d, *args, **kwargs):
+    def __init__(self, x_start, x_end, nx, dt, a, *args, **kwargs):
         super(Heat1DBDF1, self).__init__(*args, **kwargs)
         self.x_start = x_start  # lower interval bound of spatial domain
         self.x_end = x_end  # upper interval bound of spatial domain
@@ -24,23 +25,41 @@ class Heat1DBDF1(Application):
         self.x = self.x[1:-1]  # homogeneous BCs
         self.nx = nx - 2  # homogeneous BCs
         self.dt = dt  # time-step size
-        self.d = d  # diffusion coefficient
+        self.a = a  # diffusion coefficient
+        self.dx = self.x[1] - self.x[0]
 
         self.u_ex = self.u_exact_complete(x=self.x, t=np.linspace(self.t_start, self.t_end, (self.nt - 1) * 2 + 1))
 
-        self.a1 = self.heat_sparse(np.size(self.x), (self.d * (self.t[1] - self.t[0] - self.dt)) / (
-                self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
-        self.a2 = self.heat_sparse(np.size(self.x), (self.d * self.dt) / (
-                self.x[1] - self.x[0]) ** 2)  # setup matrix that acts in space for time integrator Phi
+        self.identity = identity(self.nx, dtype='float', format='csr')
+
+        self.space_disc = self.compute_matrix()
 
         self.vector_template = VectorHeat1D2Pts(self.nx)  # Create initial value solution
         self.vector_t_start = VectorHeat1D2Pts(self.nx)
 
         self.vector_t_start.set_values(first_time_point=self.u_exact(self.x, self.t[0]),
-                                       second_time_point=spsolve(self.a2,
+                                       second_time_point=spsolve(self.dt * self.space_disc + self.identity,
                                                                  self.u_exact(self.x, self.t[0]) +
                                                                  self.f(self.x, self.t[0] + dt) *
                                                                  self.dt))
+
+    def compute_matrix(self):
+        """
+        Space discretization
+        """
+
+        fac = self.a / self.dx ** 2
+
+        diagonal = np.ones(self.nx) * 2 * fac
+        lower = np.ones(self.nx - 1) * -fac
+        upper = np.ones(self.nx - 1) * -fac
+
+        matrix = sp.diags(
+            diagonals=[diagonal, lower, upper],
+            offsets=[0, -1, 1], shape=(self.nx, self.nx),
+            format='csr')
+
+        return matrix
 
     @staticmethod
     def heat_sparse(nx, fac):
@@ -104,9 +123,11 @@ class Heat1DBDF1(Application):
         which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)
         """
         first, second = u_start.get_values()
-        tmp1 = spsolve(self.a1, second + self.f(self.x, t_stop) * (t_stop - t_start - self.dt))
+        tmp1 = spsolve((t_stop - t_start - self.dt) * self.space_disc + self.identity,
+                       second + self.f(self.x, t_stop) * (t_stop - t_start - self.dt))
 
-        tmp2 = spsolve(self.a2, tmp1 + self.f(self.x, t_stop + self.dt) * self.dt)
+        tmp2 = spsolve(self.dt * self.space_disc + self.identity,
+                       tmp1 + self.f(self.x, t_stop + self.dt) * self.dt)
 
         ret = VectorHeat1D2Pts(u_start.size)
         ret.set_values(first_time_point=tmp1, second_time_point=tmp2)
