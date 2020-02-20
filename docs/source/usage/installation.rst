@@ -4,8 +4,8 @@ Installation
 
 PyMGRIT requires ``mpicc`` (from ``openmpi`` or ``mpich``)
 
-    >>> pip install pymgrit
+    >>> pip3 install pymgrit
 
 or
 
-    >>> pip install .
+    >>> pip3 install .

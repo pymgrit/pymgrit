@@ -2,20 +2,30 @@
 Quickstart
 **********
 
-PyMGRIT is easy to use! The following code generates an example of dahlquist test equation u' = lambda u and solves the resulting problem using the MGRIT algorithm with two-levels.::
+PyMGRIT is easy to use! In the following, we generate a discrete Dahlquist test problem and solve the resulting linear system using a two-level MGRIT algorithm.
+
+Look at the Application :doc:`Dahlquist <applications/dahlquist>` for more information about this test problem.
+
+First, import PyMGRIT::
 
     from pymgrit import *
 
-    # Creating the finest level problem
+Create Dahlquist's test problem for the time interval [0, 5] with 101 equidistant time points (100 time points + 1 time point for the initial time t = 0)::
+
     dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
 
-    # Setup the multilevel structure by using the simple_setup_problem function
+Construct a multigrid hierarchy for the test problem `dahlquist`::
+
     dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
 
-    # Setup of the MGRIT algorithm with the multilevel structure
+This tells PyMGRIT to set up a hierarchy with two temporal grid levels using the test problem `dahlquist` and a temporal coarsening factor of two, i.e., on the fine grid, the number of time points is 101, and on the coarse grid, 51 (=100/2+1) time points are used.
+
+Set up the MGRIT solver for the test problem using `dahlquist_multilevel_structure` and set the solver tolerance to 1e-10::
+
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
 
-    # Solve
+Finally, solve the test problem using the `solve()` routine of the solver `mgrit`::
+
     mgrit.solve()
 
 Program output::
@@ -41,3 +51,24 @@ Program output::
     stopping tolerance        : 1e-10
     communicator size time    : 1
     communicator size space   : -99
+
+
+-------
+Summary
+-------
+The following code generates a discrete Dahlquist test problem and solves the resulting linear system using the MGRIT algorithm with two time levels::
+
+    # Import PyMGRIT
+    from pymgrit import *
+
+    # Create Dahlquist's test problem with 101 time steps in the interval [0, 5]
+    dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
+
+    # Construct a two-level multigrid hierarchy for the test problem using a coarsening factor of 2
+    dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
+
+    # Set up the MGRIT solver for the test problem and set the solver tolerance to 1e-10
+    mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
+
+    # Solve the test problem
+    mgrit.solve()
