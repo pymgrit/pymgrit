@@ -90,8 +90,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#application">Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#solving-the-problem">Solving the problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#application-class">Application class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#solving-the-problem">Solving the problem</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Summary</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
@@ -179,8 +185,8 @@
 \[u' = \lambda u \;\;\text{ in } (0, 5] \text{ with }\; u(0) = 1,\]</div>
 <p>discretized by Backward Euler. To accomplish this, this tutorial will go through the following tasks:</p>
 <ol class="arabic simple">
-<li><p>Writing the <a class="reference internal" href="#vector-class">vector class</a> for all time-dependent information</p></li>
-<li><p>Writing the <a class="reference internal" href="#application">application</a> class holding any time-independent data</p></li>
+<li><p>Writing the <a class="reference internal" href="#vector-class">vector class</a> holding all time-dependent information</p></li>
+<li><p>Writing the <a class="reference internal" href="#application-class">application class</a> holding any time-independent data</p></li>
 <li><p><a class="reference internal" href="#solving-the-problem">Solving the problem</a></p></li>
 </ol>
 <div class="section" id="vector-class">
@@ -203,7 +209,8 @@
 </pre></div>
 </div>
 <p>Furthermore, we must define the following seven member functions: <cite>set_values</cite>, <cite>get_values</cite>, <cite>clone_zero</cite>, <cite>clone_rand</cite>, <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite>.</p>
-<p>The function <cite>set_values</cite> receives data values and overwrites the values of the vector data and <cite>get_values</cite> returns the vector data. For our class <cite>VectorDahlquist</cite>, we define the following member functions:</p>
+<p>The function <cite>set_values</cite> receives data values and overwrites the values of the vector data and <cite>get_values</cite> returns the vector data.
+For our class <cite>VectorDahlquist</cite>, the vector data is the scalar member variable <cite>value</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
@@ -221,7 +228,9 @@
     <span class="k">return</span> <span class="n">tmp</span>
 </pre></div>
 </div>
-<p>The functions <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite> define the addition and subtraction of two vector objects or the norm of a vector object, respectively. For our class <cite>VectorDahlquist</cite>, we define these member functions as follows:</p>
+<p>The functions <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite> define the addition and subtraction of two vector objects and the norm of a vector object, respectively.
+For our class <cite>VectorDahlquist</cite>, adding or subtracting two vector objects means adding or subtracting the values of the member variable <cite>value</cite> by using the functions <cite>get_values</cite> and <cite>set_values</cite>.
+We define the norm of a vector object as the norm (from numpy) of the member variable <cite>value</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
@@ -243,13 +252,13 @@
 <p>The following member functions must be defined:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><cite>set_values</cite>: Setting vector data</p></li>
-<li><p><cite>get_values</cite>: Getting vector data</p></li>
-<li><p><cite>clone_zero</cite>: Initialization of vector data with zeros</p></li>
-<li><p><cite>clone_rand</cite>: Initialization of vector data with random values</p></li>
-<li><p><cite>__add__</cite>: Addition of two vector objects</p></li>
-<li><p><cite>__sub__</cite>: Subtraction of two vector objects</p></li>
-<li><p><cite>norm</cite>: Norm of a vector object (for measuring convergence)</p></li>
+<li><p><cite>set_values</cite> : Setting vector data</p></li>
+<li><p><cite>get_values</cite> : Getting vector data</p></li>
+<li><p><cite>clone_zero</cite> : Initialization of vector data with zeros</p></li>
+<li><p><cite>clone_rand</cite> : Initialization of vector data with random values</p></li>
+<li><p><cite>__add__</cite> : Addition of two vector objects</p></li>
+<li><p><cite>__sub__</cite> : Subtraction of two vector objects</p></li>
+<li><p><cite>norm</cite> : Norm of a vector object (for measuring convergence)</p></li>
 </ul>
 </div></blockquote>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -264,6 +273,20 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">VectorDahlquist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
+    <span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">clone_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clone_rand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">tmp</span>
+
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
@@ -276,75 +299,159 @@
 
     <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">clone_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">clone_rand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">tmp</span>
-
-    <span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="k">def</span> <span class="nf">get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="application">
-<h2>Application<a class="headerlink" href="#application" title="Permalink to this headline">¶</a></h2>
-<p>In the next step we write our first application. In our case we use Dahlquist test equation. Every application must inherit from the class ‘Application’ from the PyMGRIT core. The superclass takes care of generating the time interval. Our application must contain the following information:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Variable: <cite>vector_template</cite> : Selected as data structure for each event</p></li>
-<li><p>Variable: <cite>vector_t_start</cite> : Same data structure. Set the initial conditions here</p></li>
-<li><p>Function: <cite>step</cite> : Time integrator</p></li>
-</ul>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#Import superclass Application</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.application</span> <span class="kn">import</span> <span class="n">Application</span>
-
-<span class="k">class</span> <span class="nc">Dahlquist</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+<div class="section" id="application-class">
+<h2>Application class<a class="headerlink" href="#application-class" title="Permalink to this headline">¶</a></h2>
+<p>In the next step we write the application class that contains information about the problem we want to solve.
+Every application class must inherit from PyMGRIT’s core <cite>Application</cite> class.</p>
+<p>For our test problem, we import PyMGRIT’s core <cite>Application</cite> class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit.core.application</span> <span class="kn">import</span> <span class="n">Application</span>
+</pre></div>
+</div>
+<p>Then, we define the class <cite>Dahlquist</cite> containing the member variable <cite>vector_template</cite>
+that defines the data structure for any user-defined time point as well as the member variable <cite>vector_t_start</cite>
+that holds the initial condition at time <cite>t_start</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Dahlquist</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Solves  u&#39; = lambda u,</span>
-<span class="sd">    with lambda=-1 and y(0) = 1</span>
+<span class="sd">    Application for Dahlquist&#39;s test equation,</span>
+<span class="sd">       u&#39; = lambda u,  u(0) = 1,</span>
+<span class="sd">    with lambda = -1</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Dahlquist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c1"># Setting the class which is used for each time point (mandatory)</span>
+        <span class="c1"># Set the data structure for any user-defined time point</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vector_template</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="c1"># Setting the initial condition (mandatory)</span>
+        <span class="c1"># Set the initial condition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector_t_start</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note: The time interval of the problem is defined in the superclass <cite>Application</cite>.
+This PyMGRIT core class contains the following member variables:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>t_start</cite> : start time (left bound of time interval)</p></li>
+<li><p><cite>t_stop</cite> : end time (right bound of time interval)</p></li>
+<li><p><cite>nt</cite> : number of time points</p></li>
+</ul>
+</div></blockquote>
+<p>Furthermore, we must define the time integration routine as the member function <cite>step</cite> that evolves a vector <cite>u_start</cite> from time <cite>t_start</cite> to time <cite>t_stop</cite>.
+For our test problem, we take a backward Euler step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_start</span><span class="p">:</span> <span class="n">VectorDahlquist</span><span class="p">,</span> <span class="n">t_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorDahlquist</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">t_stop</span> <span class="o">-</span> <span class="n">t_start</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_start</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="id1">
+<h3>Summary<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The application class must inherit from PyMGRIT’s core <cite>Application</cite> class.</p>
+<p>The application class contains information about the problem we want to solve.</p>
+<p>The application class must contain the following member variables and member functions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Variable <cite>vector_template</cite> : Data structure for any user-defined time point</p></li>
+<li><p>Variable <cite>vector_t_start</cite> : Holds the initial condition (same data structur as <cite>vector_template</cite>)</p></li>
+<li><p>Function <cite>step</cite> : Time integration routine</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import superclass Application</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.application</span> <span class="kn">import</span> <span class="n">Application</span>
+
+<span class="k">class</span> <span class="nc">Dahlquist</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Application for Dahlquist&#39;s test equation,</span>
+<span class="sd">       u&#39; = lambda u,  u(0) = 1,</span>
+<span class="sd">    with lambda = -1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Dahlquist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Set the data structure for any user-defined time point</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector_template</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Set the initial condition</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vector_t_start</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
+    <span class="c1"># Time integration routine</span>
     <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_start</span><span class="p">:</span> <span class="n">VectorDahlquist</span><span class="p">,</span> <span class="n">t_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorDahlquist</span><span class="p">:</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">t_stop</span> <span class="o">-</span> <span class="n">t_start</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_start</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</div>
 <div class="section" id="solving-the-problem">
 <h2>Solving the problem<a class="headerlink" href="#solving-the-problem" title="Permalink to this headline">¶</a></h2>
-<p>The last step is to create an object of the application. Using the application object and the function ‘simple_setup_problem’ from the PyMGRIT core a multilevel structure is created. This is passed to the MGRIT algorithm and solved.:</p>
+<p>The last step is to set up an MGRIT solver for the test problem.</p>
+<p>First, import PyMGRIT:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>Create Dahlquist’s test problem for the time interval [0, 5] with 101 equidistant time points (100 time points + 1 time point for the initial time t = 0)  as an object of our application class <cite>Dahlquist</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dahlquist</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Construct a multigrid hierarchy for the test problem <cite>dahlquist</cite> using PyMGRIT’s core function <cite>simple_setup_problem</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dahlquist_multilevel_structure</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This tells PyMGRIT to set up a hierarchy with two temporal grid levels using the test problem <cite>dahlquist</cite> and a temporal coarsening factor of two, i.e., on the fine grid, the number of time points is 101, and on the coarse grid, 51 (=100/2+1) time points are used.</p>
+<p>Set up the MGRIT solver for the test problem using <cite>dahlquist_multilevel_structure</cite> and set the solver tolerance to 1e-10:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, solve the test problem using the <cite>solve()</cite> routine of the solver <cite>mgrit</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>which gives:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Start</span> <span class="n">setup</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Setup</span> <span class="n">took</span> <span class="mf">0.009920358657836914</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Start</span> <span class="n">solve</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">1</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">7.186185937031941e-05</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="o">-</span>                       <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.01379704475402832</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">2</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">1.2461067076355103e-06</span> <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.017340307063501627</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.007235527038574219</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">3</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">2.1015566145245807e-08</span> <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.016864981158092696</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.005523681640625</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">4</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">3.144127445017594e-10</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.014960945726074891</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.004599332809448242</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">5</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">3.975214076032893e-12</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.01264329816633959</span>     <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.0043201446533203125</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Solve</span> <span class="n">took</span> <span class="mf">0.042092084884643555</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Run</span> <span class="n">parameter</span> <span class="n">overview</span>
+<span class="n">interval</span>                  <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
+<span class="n">number</span> <span class="n">points</span>             <span class="p">:</span> <span class="mi">101</span> <span class="n">points</span>
+<span class="nb">max</span> <span class="n">dt</span>                    <span class="p">:</span> <span class="mf">0.05000000000000071</span>
+<span class="n">level</span>                     <span class="p">:</span> <span class="mi">2</span>
+<span class="n">coarsening</span>                <span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">cf_iter</span>                   <span class="p">:</span> <span class="mi">1</span>
+<span class="n">nested</span> <span class="n">iteration</span>          <span class="p">:</span> <span class="kc">True</span>
+<span class="n">cycle</span> <span class="nb">type</span>                <span class="p">:</span> <span class="n">V</span>
+<span class="n">stopping</span> <span class="n">tolerance</span>        <span class="p">:</span> <span class="mf">1e-10</span>
+<span class="n">communicator</span> <span class="n">size</span> <span class="n">time</span>    <span class="p">:</span> <span class="mi">1</span>
+<span class="n">communicator</span> <span class="n">size</span> <span class="n">space</span>   <span class="p">:</span> <span class="o">-</span><span class="mi">99</span>
+</pre></div>
+</div>
+<div class="section" id="id2">
+<h3>Summary<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import PyMGRIT</span>
+<span class="kn">from</span> <span class="nn">pymgrit</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="c1"># Creating the finest level problem</span>
+<span class="c1"># Create Dahlquist&#39;s test problem with 101 time steps in the interval [0, 5]</span>
 <span class="n">dahlquist</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
 
-<span class="c1"># Setup the multilevel structure by using the simple_setup_problem function</span>
-<span class="n">dahlquist_multilevel_structure</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># Construct a two-level multigrid hierarchy for the test problem using a coarsening factor of 2</span>
+<span class="n">dahlquist_multilevel_structure</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="c1"># Setup of the MGRIT algorithm with the multilevel structure</span>
-<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span>
+<span class="c1"># Set up the MGRIT solver for the test problem and set the solver tolerance to 1e-10</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
 
-<span class="c1"># Solve</span>
+<span class="c1"># Solve the test problem</span>
 <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
+</div>
 </div>
 </div>
 </div>
