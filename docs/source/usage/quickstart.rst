@@ -4,7 +4,7 @@ Quickstart
 
 PyMGRIT is easy to use! In the following, we generate a discrete Dahlquist test problem and solve the resulting linear system using a two-level MGRIT algorithm.
 
-Look at the Application :doc:`Dahlquist <applications/dahlquist>` for more information about this test problem.
+Look at the Application :doc:`Dahlquist <../applications/dahlquist>` for more information about this test problem.
 
 First, import PyMGRIT::
 
@@ -53,7 +53,7 @@ Program output::
     communicator size space   : -99
 
 
--------
+
 Summary
 -------
 The following code generates a discrete Dahlquist test problem and solves the resulting linear system using the MGRIT algorithm with two time levels::
