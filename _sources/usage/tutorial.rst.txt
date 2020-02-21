@@ -9,13 +9,13 @@ This tutorial demonstrates basic usage of the PyMGRIT package. Our goal is solvi
 
 discretized by Backward Euler. To accomplish this, this tutorial will go through the following tasks:
 
-#. Writing the `vector structure`_ for all time-dependent information
+#. Writing the `vector class`_ for all time-dependent information
 #. Writing the `application`_ class holding any time-independent data
 #. `Solving the problem`_
 
------------------
-Vector structure
------------------
+------------
+Vector class
+------------
 
 The first step is to write a data structure that contains the solution of a single point in time. The data structure must inherit from PyMGRIT's core `Vector` class.
 
@@ -35,9 +35,11 @@ Then, we define the class `VectorDahlquist` containing a scalar member variable 
             super(VectorDahlquist, self).__init__()
             self.value = value
 
-Furthermore, we must define the following seven member functions: , `set_values`, `get_values`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, and `norm`.
+Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, and `norm`.
 
-The function `set_values` receives data values and overwrites the values of the vector data and `get_values` returns the vector data. For our class `VectorDahlquist`, we define the following member functions::
+The function `set_values` receives data values and overwrites the values of the vector data and `get_values` returns the vector data. For our class `VectorDahlquist`, we define the following member functions:
+
+.. code-block::
 
         def set_values(self, value):
             self.value = value
@@ -78,15 +80,15 @@ Member variables hold all data of a single time point.
 
 The following member functions must be defined:
 
+    - `set_values`: Setting vector data
+    - `get_values`: Getting vector data
+    - `clone_zero`: Initialization of vector data with zeros
+    - `clone_rand`: Initialization of vector data with random values
     - `__add__`: Addition of two vector objects
     - `__sub__`: Subtraction of two vector objects
     - `norm`: Norm of a vector object (for measuring convergence)
-    - `clone_zero`: Initialization of vector data with zeros
-    - `clone_rand`: Initialization of vector data with random values
-    - `set_values`: Setting vector data
-    - `get_values`: Getting vector data
 
-::
+.. code-block::
 
     import numpy as np
     from pymgrit.core.vector import Vector
@@ -161,9 +163,9 @@ In the next step we write our first application. In our case we use Dahlquist te
             tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
             return VectorDahlquist(tmp)
 
------------------
+-------------------
 Solving the problem
------------------
+-------------------
 
 The last step is to create an object of the application. Using the application object and the function 'simple_setup_problem' from the PyMGRIT core a multilevel structure is created. This is passed to the MGRIT algorithm and solved.::
 

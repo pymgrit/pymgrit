@@ -86,7 +86,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#vector-structure">Vector structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#vector-class">Vector class</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
 </ul>
 </li>
@@ -179,12 +179,12 @@
 \[u' = \lambda u \;\;\text{ in } (0, 5] \text{ with }\; u(0) = 1,\]</div>
 <p>discretized by Backward Euler. To accomplish this, this tutorial will go through the following tasks:</p>
 <ol class="arabic simple">
-<li><p>Writing the <a class="reference internal" href="#vector-structure">vector structure</a> for all time-dependent information</p></li>
+<li><p>Writing the <a class="reference internal" href="#vector-class">vector class</a> for all time-dependent information</p></li>
 <li><p>Writing the <a class="reference internal" href="#application">application</a> class holding any time-independent data</p></li>
 <li><p><a class="reference internal" href="#solving-the-problem">Solving the problem</a></p></li>
 </ol>
-<div class="section" id="vector-structure">
-<h2>Vector structure<a class="headerlink" href="#vector-structure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="vector-class">
+<h2>Vector class<a class="headerlink" href="#vector-class" title="Permalink to this headline">¶</a></h2>
 <p>The first step is to write a data structure that contains the solution of a single point in time. The data structure must inherit from PyMGRIT’s core <cite>Vector</cite> class.</p>
 <p>For our test problem, we import PyMGRIT’s core <cite>Vector</cite> class (and numpy for later use):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -202,7 +202,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
-<p>Furthermore, we must define the following seven member functions: , <cite>set_values</cite>, <cite>get_values</cite>, <cite>clone_zero</cite>, <cite>clone_rand</cite>, <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite>.</p>
+<p>Furthermore, we must define the following seven member functions: <cite>set_values</cite>, <cite>get_values</cite>, <cite>clone_zero</cite>, <cite>clone_rand</cite>, <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite>.</p>
 <p>The function <cite>set_values</cite> receives data values and overwrites the values of the vector data and <cite>get_values</cite> returns the vector data. For our class <cite>VectorDahlquist</cite>, we define the following member functions:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
@@ -243,13 +243,13 @@
 <p>The following member functions must be defined:</p>
 <blockquote>
 <div><ul class="simple">
+<li><p><cite>set_values</cite>: Setting vector data</p></li>
+<li><p><cite>get_values</cite>: Getting vector data</p></li>
+<li><p><cite>clone_zero</cite>: Initialization of vector data with zeros</p></li>
+<li><p><cite>clone_rand</cite>: Initialization of vector data with random values</p></li>
 <li><p><cite>__add__</cite>: Addition of two vector objects</p></li>
 <li><p><cite>__sub__</cite>: Subtraction of two vector objects</p></li>
 <li><p><cite>norm</cite>: Norm of a vector object (for measuring convergence)</p></li>
-<li><p><cite>clone_zero</cite>: Initialization of vector data with zeros</p></li>
-<li><p><cite>clone_rand</cite>: Initialization of vector data with random values</p></li>
-<li><p><cite>set_values</cite>: Setting vector data</p></li>
-<li><p><cite>get_values</cite>: Getting vector data</p></li>
 </ul>
 </div></blockquote>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
