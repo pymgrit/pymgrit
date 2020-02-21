@@ -25,6 +25,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -85,9 +86,12 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#vector-structure">Vector structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vector-structure">Vector structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#application">Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#solve-the-problem">Solve the problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#solving-the-problem">Solving the problem</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
@@ -170,24 +174,82 @@
             
   <div class="section" id="tutorial">
 <h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
-<p>In the following tutorial you will write your first own application and use the MGRIT algorithm to solve the time dependent problem. To accomplish this, this tutorial will go through the following tasks:</p>
+<p>This tutorial demonstrates basic usage of the PyMGRIT package. Our goal is solving Dahlquist’s test problem,</p>
+<div class="math notranslate nohighlight">
+\[u' = \lambda u \;\;\text{ in } (0, 5] \text{ with }\; u(0) = 1,\]</div>
+<p>discretized by Backward Euler. To accomplish this, this tutorial will go through the following tasks:</p>
 <ol class="arabic simple">
-<li><p>Write your first <a class="reference internal" href="#vector-structure">vector structure</a></p></li>
-<li><p>Write your first <a class="reference internal" href="#application">application</a></p></li>
-<li><p><a class="reference internal" href="#solve-the-problem">Solve the problem</a></p></li>
+<li><p>Writing the <a class="reference internal" href="#vector-structure">vector structure</a> for all time-dependent information</p></li>
+<li><p>Writing the <a class="reference internal" href="#application">application</a> class holding any time-independent data</p></li>
+<li><p><a class="reference internal" href="#solving-the-problem">Solving the problem</a></p></li>
 </ol>
 <div class="section" id="vector-structure">
 <h2>Vector structure<a class="headerlink" href="#vector-structure" title="Permalink to this headline">¶</a></h2>
-<p>The first step is to write a data structure that contains the solution of a point in time. The data structure must inherit from the ‘Vector’ class, which is at the core of PyMGRIT. Our class receives a size as an integer and then generates a numpy array of that size containing the solutions. Furthermore the following functions must be defined:</p>
+<p>The first step is to write a data structure that contains the solution of a single point in time. The data structure must inherit from PyMGRIT’s core <cite>Vector</cite> class.</p>
+<p>For our test problem, we import PyMGRIT’s core <cite>Vector</cite> class (and numpy for later use):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.vector</span> <span class="kn">import</span> <span class="n">Vector</span>
+</pre></div>
+</div>
+<p>Then, we define the class <cite>VectorDahlquist</cite> containing a scalar member variable <cite>value</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">VectorDahlquist</span><span class="p">(</span><span class="n">Vector</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vector for Dahlquist&#39;s test equation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">VectorDahlquist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>Furthermore, we must define the following seven member functions: , <cite>set_values</cite>, <cite>get_values</cite>, <cite>clone_zero</cite>, <cite>clone_rand</cite>, <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite>.</p>
+<p>The function <cite>set_values</cite> receives data values and overwrites the values of the vector data and <cite>get_values</cite> returns the vector data. For our class <cite>VectorDahlquist</cite>, we define the following member functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+<span class="k">def</span> <span class="nf">get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+</pre></div>
+</div>
+<p>The function <cite>clone_zero</cite> returns a vector object initialized with zeros; <cite>clone_rand</cite> similarly returns a vector object initialized with random data. For our class <cite>VectorDahlquist</cite>, these member functions are defined as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">clone_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">clone_rand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">tmp</span>
+</pre></div>
+</div>
+<p>The functions <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite> define the addition and subtraction of two vector objects or the norm of a vector object, respectively. For our class <cite>VectorDahlquist</cite>, we define these member functions as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">tmp</span>
+
+<span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">tmp</span>
+
+<span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
+<p>The vector class must inherit from PyMGRIT’s core <cite>Vector</cite> class.</p>
+<p>Member variables hold all data of a single time point.</p>
+<p>The following member functions must be defined:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><cite>__add__</cite>: For the addition of two objects of our class</p></li>
-<li><p><cite>__sub__</cite>: For the substraction of two objects of our class</p></li>
-<li><p><cite>norm</cite>: Some norm for measuring the convergence</p></li>
-<li><p><cite>clone_zero</cite>: Initialization of the data with zeros</p></li>
-<li><p><cite>clone_rand</cite>: Initialization of the data with random values</p></li>
-<li><p><cite>set_values</cite>: Sets the solution</p></li>
-<li><p><cite>get_values</cite>: Gets the solution</p></li>
+<li><p><cite>__add__</cite>: Addition of two vector objects</p></li>
+<li><p><cite>__sub__</cite>: Subtraction of two vector objects</p></li>
+<li><p><cite>norm</cite>: Norm of a vector object (for measuring convergence)</p></li>
+<li><p><cite>clone_zero</cite>: Initialization of vector data with zeros</p></li>
+<li><p><cite>clone_rand</cite>: Initialization of vector data with random values</p></li>
+<li><p><cite>set_values</cite>: Setting vector data</p></li>
+<li><p><cite>get_values</cite>: Getting vector data</p></li>
 </ul>
 </div></blockquote>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -195,7 +257,7 @@
 
 <span class="k">class</span> <span class="nc">VectorDahlquist</span><span class="p">(</span><span class="n">Vector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Vector for the dahlquist test equation</span>
+<span class="sd">    Vector for Dahlquist&#39;s test equation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -229,6 +291,7 @@
     <span class="k">def</span> <span class="nf">get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="application">
@@ -265,8 +328,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="solve-the-problem">
-<h2>Solve the problem<a class="headerlink" href="#solve-the-problem" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="solving-the-problem">
+<h2>Solving the problem<a class="headerlink" href="#solving-the-problem" title="Permalink to this headline">¶</a></h2>
 <p>The last step is to create an object of the application. Using the application object and the function ‘simple_setup_problem’ from the PyMGRIT core a multilevel structure is created. This is passed to the MGRIT algorithm and solved.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit</span> <span class="kn">import</span> <span class="o">*</span>
 
