@@ -102,28 +102,29 @@ To store the solutions an output function must be written, which is passed to th
     # Define output function that writes the solution to a file
     def output_fcn(self):
         #Set path to solution
-        path = 'results/' + 'dahlquist' + '/' + str(self.solve_iter)
+        path = 'results/' + 'dahlquist'
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
         # Save solution to file.
         np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Add time information for distinguish procs
-        [self.u[0][i].get_values() for i in self.index_local[0]])   # Save each time step per processors
+                [self.u[0][i].get_values() for i in self.index_local[0]])   # Save each time step per processors
 
-        # Creating the finest level problem
-        dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
+    # Creating the finest level problem
+    dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
 
-        # Setup the multilevel structure by using the simple_setup_problem function
-        dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
+    # Setup the multilevel structure by using the simple_setup_problem function
+    dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
 
-        # Setup of the MGRIT algorithm with the multilevel structure
-        mgrit = Mgrit(problem=dahlquist_multilevel_structure, output_fcn=output_fcn)
+    # Setup of the MGRIT algorithm with the multilevel structure
+    mgrit = Mgrit(problem=dahlquist_multilevel_structure, output_fcn=output_fcn)
 
-        # Solve
-        mgrit.solve()
+    # Solve
+    info = mgrit.solve()
 
-        # Plot solution if one processor was used
-        res = np.load(##path_to_solution##)
-        plt.plot(res)
+    # Plot solution if one processor was used
+    res = np.load('results/dahlquist/0.0:5.0.npy')
+    plt.plot(res)
+    plt.show()
 
 --------------------------
 Define multigrid structure
