@@ -1,6 +1,6 @@
 import pathlib
 import numpy as np
-from matplotlib.pyplot import plt
+import matplotlib.pyplot as plt
 
 from pymgrit.dahlquist.dahlquist import Dahlquist
 from pymgrit.core.simple_setup_problem import simple_setup_problem
@@ -11,7 +11,7 @@ def main():
     # Define output function that writes the solution to a file
     def output_fcn(self):
         #Set path to solution
-        path = 'results/' + 'dahlquist' + '/' + str(self.solve_iter)
+        path = 'results/' + 'dahlquist'
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
         # Save solution to file.
@@ -28,7 +28,12 @@ def main():
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, output_fcn=output_fcn)
 
     # Solve
-    mgrit.solve()
+    info = mgrit.solve()
+
+    # Plot solution if one processor was used
+    res = np.load('results/dahlquist/0.0:5.0.npy')
+    plt.plot(res)
+    plt.show()
 
 
 if __name__ == '__main__':
