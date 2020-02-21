@@ -2,25 +2,89 @@
 Tutorial
 **********
 
-In the following tutorial you will write your first own application and use the MGRIT algorithm to solve the time dependent problem. To accomplish this, this tutorial will go through the following tasks:
+This tutorial demonstrates basic usage of the PyMGRIT package. Our goal is solving Dahlquist's test problem,
 
-#. Write your first `vector structure`_
-#. Write your first `application`_
-#. `Solve the problem`_
+.. math::
+    u' = \lambda u \;\;\text{ in } (0, 5] \text{ with }\; u(0) = 1,
+
+discretized by Backward Euler. To accomplish this, this tutorial will go through the following tasks:
+
+#. Writing the `vector structure`_ for all time-dependent information
+#. Writing the `application`_ class holding any time-independent data
+#. `Solving the problem`_
 
 -----------------
 Vector structure
 -----------------
 
-The first step is to write a data structure that contains the solution of a point in time. The data structure must inherit from the 'Vector' class, which is at the core of PyMGRIT. Our class receives a size as an integer and then generates a numpy array of that size containing the solutions. Furthermore the following functions must be defined:
+The first step is to write a data structure that contains the solution of a single point in time. The data structure must inherit from PyMGRIT's core `Vector` class.
 
-    - `__add__`: For the addition of two objects of our class
-    - `__sub__`: For the substraction of two objects of our class
-    - `norm`: Some norm for measuring the convergence
-    - `clone_zero`: Initialization of the data with zeros
-    - `clone_rand`: Initialization of the data with random values
-    - `set_values`: Sets the solution
-    - `get_values`: Gets the solution
+For our test problem, we import PyMGRIT's core `Vector` class (and numpy for later use)::
+
+    import numpy as np
+    from pymgrit.core.vector import Vector
+
+Then, we define the class `VectorDahlquist` containing a scalar member variable `value`::
+
+    class VectorDahlquist(Vector):
+        """
+        Vector for Dahlquist's test equation
+        """
+
+        def __init__(self, value):
+            super(VectorDahlquist, self).__init__()
+            self.value = value
+
+Furthermore, we must define the following seven member functions: , `set_values`, `get_values`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, and `norm`.
+
+The function `set_values` receives data values and overwrites the values of the vector data and `get_values` returns the vector data. For our class `VectorDahlquist`, we define the following member functions::
+
+        def set_values(self, value):
+            self.value = value
+
+        def get_values(self):
+            return self.value
+
+The function `clone_zero` returns a vector object initialized with zeros; `clone_rand` similarly returns a vector object initialized with random data. For our class `VectorDahlquist`, these member functions are defined as follows::
+
+        def clone_zero(self):
+            return VectorDahlquist(0)
+
+        def clone_rand(self):
+            tmp = VectorDahlquist(0)
+            tmp.set_values(np.random.rand(1)[0])
+            return tmp
+
+The functions `__add__`, `__sub__`, and `norm` define the addition and subtraction of two vector objects or the norm of a vector object, respectively. For our class `VectorDahlquist`, we define these member functions as follows::
+
+        def __add__(self, other):
+            tmp = VectorDahlquist(0)
+            tmp.set_values(self.get_values() + other.get_values())
+            return tmp
+
+        def __sub__(self, other):
+            tmp = VectorDahlquist(0)
+            tmp.set_values(self.get_values() - other.get_values())
+            return tmp
+
+        def norm(self):
+            return np.linalg.norm(self.value)
+
+Summary
+^^^^^^^
+The vector class must inherit from PyMGRIT's core `Vector` class.
+
+Member variables hold all data of a single time point.
+
+The following member functions must be defined:
+
+    - `__add__`: Addition of two vector objects
+    - `__sub__`: Subtraction of two vector objects
+    - `norm`: Norm of a vector object (for measuring convergence)
+    - `clone_zero`: Initialization of vector data with zeros
+    - `clone_rand`: Initialization of vector data with random values
+    - `set_values`: Setting vector data
+    - `get_values`: Getting vector data
 
 ::
 
@@ -29,7 +93,7 @@ The first step is to write a data structure that contains the solution of a poin
 
     class VectorDahlquist(Vector):
         """
-        Vector for the dahlquist test equation
+        Vector for Dahlquist's test equation
         """
 
         def __init__(self, value):
@@ -98,7 +162,7 @@ In the next step we write our first application. In our case we use Dahlquist te
             return VectorDahlquist(tmp)
 
 -----------------
-Solve the problem
+Solving the problem
 -----------------
 
 The last step is to create an object of the application. Using the application object and the function 'simple_setup_problem' from the PyMGRIT core a multilevel structure is created. This is passed to the MGRIT algorithm and solved.::
