@@ -24,14 +24,17 @@ Set up the MGRIT solver for the test problem using `dahlquist_multilevel_structu
 
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
 
+which gives::
+
+    INFO - 21-02-20 16:18:43 - Start setup
+    INFO - 21-02-20 16:18:43 - Setup took 0.009232759475708008 s
+
 Finally, solve the test problem using the `solve()` routine of the solver `mgrit`::
 
     mgrit.solve()
 
-Program output::
+producing the output::
 
-    INFO - 21-02-20 16:18:43 - Start setup
-    INFO - 21-02-20 16:18:43 - Setup took 0.009232759475708008 s
     INFO - 21-02-20 16:18:43 - Start solve
     INFO - 21-02-20 16:18:43 - iter 1  | con: 7.186185937031941e-05  | con-fac: -                       | runtime: 0.013237237930297852 s
     INFO - 21-02-20 16:18:43 - iter 2  | con: 1.2461067076355103e-06 | con-fac: 0.017340307063501627    | runtime: 0.010195493698120117 s
