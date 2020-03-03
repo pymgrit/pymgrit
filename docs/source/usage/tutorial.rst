@@ -237,14 +237,17 @@ Set up the MGRIT solver for the test problem using `dahlquist_multilevel_structu
 
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
 
+which produces the output::
+
+    INFO - 03-02-20 11:19:03 - Start setup
+    INFO - 03-02-20 11:19:03 - Setup took 0.009920358657836914 s
+
 Finally, solve the test problem using the `solve()` routine of the solver `mgrit`::
 
     mgrit.solve()
 
 which gives::
 
-    INFO - 03-02-20 11:19:03 - Start setup
-    INFO - 03-02-20 11:19:03 - Setup took 0.009920358657836914 s
     INFO - 03-02-20 11:19:03 - Start solve
     INFO - 03-02-20 11:19:03 - iter 1  | con: 7.186185937031941e-05  | con-fac: -                       | runtime: 0.01379704475402832 s
     INFO - 03-02-20 11:19:03 - iter 2  | con: 1.2461067076355103e-06 | con-fac: 0.017340307063501627    | runtime: 0.007235527038574219 s

@@ -1,3 +1,9 @@
+"""
+Use PyMGRIT's routines simple_setup_problem() and Mgrit() to
+generate a multigrid hierarchy and MGRIT solver and run the
+solver routine mgrit.solve().
+"""
+
 from pymgrit.dahlquist.dahlquist import Dahlquist
 from pymgrit.core.simple_setup_problem import simple_setup_problem
 from pymgrit.core.mgrit import Mgrit
