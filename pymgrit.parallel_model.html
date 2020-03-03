@@ -167,14 +167,97 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pymgrit-parallel-model-mgrit-parallel-model-module">
-<h2>pymgrit.parallel_model.mgrit_parallel_model module<a class="headerlink" href="#pymgrit-parallel-model-mgrit-parallel-model-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.parallel_model.mgrit_parallel_model">
+<span id="pymgrit-parallel-model-mgrit-parallel-model-module"></span><h2>pymgrit.parallel_model.mgrit_parallel_model module<a class="headerlink" href="#module-pymgrit.parallel_model.mgrit_parallel_model" title="Permalink to this headline">¶</a></h2>
+<p>MGRIT for the parallel model, just one iteration</p>
+<dl class="class">
+<dt id="pymgrit.parallel_model.mgrit_parallel_model.MgritParallelModel">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.parallel_model.mgrit_parallel_model.</code><code class="sig-name descname">MgritParallelModel</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.parallel_model.mgrit_parallel_model.MgritParallelModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.mgrit.Mgrit" title="pymgrit.core.mgrit.Mgrit"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.mgrit.Mgrit</span></code></a></p>
+<p>MGRIT optimized for the GETDP induction machine</p>
+<dl class="method">
+<dt id="pymgrit.parallel_model.mgrit_parallel_model.MgritParallelModel.convergence_criteria">
+<code class="sig-name descname">convergence_criteria</code><span class="sig-paren">(</span><em class="sig-param">iteration: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.parallel_model.mgrit_parallel_model.MgritParallelModel.convergence_criteria" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop after one iteration
+:param iteration: Iteration number</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.parallel_model.mgrit_parallel_model.MgritParallelModel.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param">lvl</em>, <em class="sig-param">cycle_type</em>, <em class="sig-param">iteration</em>, <em class="sig-param">first_f</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.parallel_model.mgrit_parallel_model.MgritParallelModel.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs one iteration</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="pymgrit-parallel-model-parallel-model-module">
-<h2>pymgrit.parallel_model.parallel_model module<a class="headerlink" href="#pymgrit-parallel-model-parallel-model-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.parallel_model.parallel_model">
+<span id="pymgrit-parallel-model-parallel-model-module"></span><h2>pymgrit.parallel_model.parallel_model module<a class="headerlink" href="#module-pymgrit.parallel_model.parallel_model" title="Permalink to this headline">¶</a></h2>
+<p>Parallel Model</p>
+<dl class="class">
+<dt id="pymgrit.parallel_model.parallel_model.ParallelModel">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.parallel_model.parallel_model.</code><code class="sig-name descname">ParallelModel</code><span class="sig-paren">(</span><em class="sig-param">sleep</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.parallel_model.parallel_model.ParallelModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>Problem for test the parallel model.</p>
+<dl class="method">
+<dt id="pymgrit.parallel_model.parallel_model.ParallelModel.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.parallel_model.parallel_model.VectorParallelModel</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.parallel_model.parallel_model.VectorParallelModel<a class="headerlink" href="#pymgrit.parallel_model.parallel_model.ParallelModel.step" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – </p></li>
+<li><p><strong>t_start</strong> – </p></li>
+<li><p><strong>t_stop</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.parallel_model.parallel_model.VectorParallelModel">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.parallel_model.parallel_model.</code><code class="sig-name descname">VectorParallelModel</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.parallel_model.parallel_model.VectorParallelModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
+<p>Vector for the parallel model</p>
+<dl class="method">
+<dt id="pymgrit.parallel_model.parallel_model.VectorParallelModel.clone_rand">
+<code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.parallel_model.parallel_model.VectorParallelModel.clone_rand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the solution construct with random values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.parallel_model.parallel_model.VectorParallelModel.clone_zero">
+<code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.parallel_model.parallel_model.VectorParallelModel.clone_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the solution construct with all zeros.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.parallel_model.parallel_model.VectorParallelModel.get_values">
+<code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.parallel_model.parallel_model.VectorParallelModel.get_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.parallel_model.parallel_model.VectorParallelModel.norm">
+<code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.parallel_model.parallel_model.VectorParallelModel.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Norm of the solution construct</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.parallel_model.parallel_model.VectorParallelModel.set_values">
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.parallel_model.parallel_model.VectorParallelModel.set_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the values</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit.parallel_model">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit.parallel_model" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
