@@ -20,7 +20,7 @@ def main():
     # Set up the MGRIT solver for the test problem
     mgrit = Mgrit(problem=dahlquist_multilevel_structure,       # Problem structure
                   transfer=None,                                # Spatial grid transfer. Automatically set if None.
-                  it = 10,                                      # Maximum number of iterations
+                  it=10,                                        # Maximum number of iterations
                   tol=1e-10,                                    # Stopping tolerance
                   nested_iteration=True,                        # Use nested iterations
                   cf_iter=1,                                    # Number of FC relaxations
