@@ -28,7 +28,7 @@ def main():
                                                                 # 'V' -> V-cycles
                                                                 # 'F' -> F-cycles
                   comm_time=MPI.COMM_WORLD,                     # Time communicator
-                  comm_space = MPI.COMM_NULL,                   # Space communicator
+                  comm_space=MPI.COMM_NULL,                     # Space communicator
                   logging_lvl=20,                               # Logging level:
                                                                 # 00 - 10: Debug -> Runtime of all components
                                                                 # 11 - 20: Info  -> Info per iteration + summary
