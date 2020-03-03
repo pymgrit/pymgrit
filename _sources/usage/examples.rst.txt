@@ -14,7 +14,7 @@ Table of Contents
     - `Simple solve`_
     - `Solver parameters`_
     - `Output function`_
-    - `Define multigrid structure`_
+    - `Multigrid structure`_
     - `Spatial transfer operator`_
     - `Space & time parallelism`_
 
@@ -27,10 +27,13 @@ example_dahlquist.py_
 
 .. _example_dahlquist.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py
 
-This example demonstrates basic usage of PyMGRIT for solving Dahlquist's test problem with a two-level MGRIT solver,
-using PyMGRIT's routines `simple_setup_problem()`, `Mgrit()`, and `mgrit.solve()`. Look at :doc:`Quickstart <quickstart>` for a step-by-step description of this example.
+This example demonstrates basic usage of the PyMGRIT package for solving a simple test problem with a two-level MGRIT solver,
+using PyMGRIT's core routines `simple_setup_problem()`, `Mgrit()`, and `mgrit.solve()`.
+Note: This example is also considered in :doc:`Quickstart <quickstart>`.
 
-To use `mgrit.solve()`, you need a discrete problem, a multilevel hierarchy for this problem, and an MGRIT solver.
+For a given test problem, we can construct a time-multigrid hierarchy by calling `simple_setup_problem()`.
+
+To use `mgrit.solve()` we then only need to set up an MGRIT solver with this time-multigrid hierarchy.
 
 ::
 
@@ -110,7 +113,7 @@ of PyMGRIT's core routine `Mgrit()`.
                                                                 # 'V' -> V-cycles
                                                                 # 'F' -> F-cycles
                   comm_time=MPI.COMM_WORLD,                     # Time communicator
-                  comm_space = MPI.COMM_NULL,                   # Space communicator
+                  comm_space=MPI.COMM_NULL,                     # Space communicator
                   logging_lvl=20,                               # Logging level:
                                                                 # 00 - 10: Debug -> Runtime of all components
                                                                 # 11 - 20: Info  -> Info per iteration + summary
@@ -167,9 +170,9 @@ To store the solutions an output function must be written, which is passed to th
     plt.plot(res)
     plt.show()
 
---------------------------
-Define multigrid structure
---------------------------
+-------------------
+Multigrid structure
+-------------------
 
 There are several ways to create a multi-level structure that can be solved by the MGRIT algorithm:
 

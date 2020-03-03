@@ -91,7 +91,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#simple-solve">Simple solve</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#solver-parameters">Solver parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#output-function">Output function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#define-multigrid-structure">Define multigrid structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multigrid-structure">Multigrid structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#spatial-transfer-operator">Spatial transfer operator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#space-time-parallelism">Space &amp; time parallelism</a></li>
 </ul>
@@ -184,7 +184,7 @@ The source code for these and more examples is available in the <a class="refere
 <li><p><a class="reference internal" href="#simple-solve">Simple solve</a></p></li>
 <li><p><a class="reference internal" href="#solver-parameters">Solver parameters</a></p></li>
 <li><p><a class="reference internal" href="#output-function">Output function</a></p></li>
-<li><p><a class="reference internal" href="#define-multigrid-structure">Define multigrid structure</a></p></li>
+<li><p><a class="reference internal" href="#multigrid-structure">Multigrid structure</a></p></li>
 <li><p><a class="reference internal" href="#spatial-transfer-operator">Spatial transfer operator</a></p></li>
 <li><p><a class="reference internal" href="#space-time-parallelism">Space &amp; time parallelism</a></p></li>
 </ul>
@@ -193,9 +193,11 @@ The source code for these and more examples is available in the <a class="refere
 <div class="section" id="simple-solve">
 <h2>Simple solve<a class="headerlink" href="#simple-solve" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py">example_dahlquist.py</a></p>
-<p>This example demonstrates basic usage of PyMGRIT for solving Dahlquist’s test problem with a two-level MGRIT solver,
-using PyMGRIT’s routines <cite>simple_setup_problem()</cite>, <cite>Mgrit()</cite>, and <cite>mgrit.solve()</cite>. Look at <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a> for a step-by-step description of this example.</p>
-<p>To use <cite>mgrit.solve()</cite>, you need a discrete problem, a multilevel hierarchy for this problem, and an MGRIT solver.</p>
+<p>This example demonstrates basic usage of the PyMGRIT package for solving a simple test problem with a two-level MGRIT solver,
+using PyMGRIT’s core routines <cite>simple_setup_problem()</cite>, <cite>Mgrit()</cite>, and <cite>mgrit.solve()</cite>.
+Note: This example is also considered in <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a>.</p>
+<p>For a given test problem, we can construct a time-multigrid hierarchy by calling <cite>simple_setup_problem()</cite>.</p>
+<p>To use <cite>mgrit.solve()</cite> we then only need to set up an MGRIT solver with this time-multigrid hierarchy.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
@@ -266,7 +268,7 @@ of PyMGRIT’s core routine <cite>Mgrit()</cite>.</p>
                                                             <span class="c1"># &#39;V&#39; -&gt; V-cycles</span>
                                                             <span class="c1"># &#39;F&#39; -&gt; F-cycles</span>
               <span class="n">comm_time</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="p">,</span>                     <span class="c1"># Time communicator</span>
-              <span class="n">comm_space</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_NULL</span><span class="p">,</span>                   <span class="c1"># Space communicator</span>
+              <span class="n">comm_space</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_NULL</span><span class="p">,</span>                     <span class="c1"># Space communicator</span>
               <span class="n">logging_lvl</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>                               <span class="c1"># Logging level:</span>
                                                             <span class="c1"># 00 - 10: Debug -&gt; Runtime of all components</span>
                                                             <span class="c1"># 11 - 20: Info  -&gt; Info per iteration + summary</span>
@@ -322,8 +324,8 @@ of PyMGRIT’s core routine <cite>Mgrit()</cite>.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="define-multigrid-structure">
-<h2>Define multigrid structure<a class="headerlink" href="#define-multigrid-structure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="multigrid-structure">
+<h2>Multigrid structure<a class="headerlink" href="#multigrid-structure" title="Permalink to this headline">¶</a></h2>
 <p>There are several ways to create a multi-level structure that can be solved by the MGRIT algorithm:</p>
 <ul class="simple">
 <li><p>Using the simple setup function</p></li>
