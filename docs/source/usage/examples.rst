@@ -2,7 +2,8 @@
 Examples
 **********
 
-Short usage examples for PyMGRIT. The source code for these and more examples can is available in the examples_ folder.
+This page contains short examples that demonstrate basic and advanced usage of PyMGRIT.
+The source code for these and more examples is available in the examples_ folder.
 
 .. _examples: https://github.com/pymgrit/pymgrit/tree/master/examples
 
@@ -21,6 +22,10 @@ Table of Contents
 ------------
 Simple solve
 ------------
+
+example_dahlquist.py_
+
+.. _example_dahlquist.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example.dahlquist.py
 
 ::
 
