@@ -3,7 +3,8 @@ from setuptools import setup, find_packages
 install_requires = [
     'numpy>=1.17.0',
     'scipy>=1.3.0',
-    'mpi4py>=3.0'
+    'mpi4py>=3.0',
+    'matplotlib>=3.1.3'
 ]
 
 extras_requires = {
