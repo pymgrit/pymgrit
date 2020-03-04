@@ -249,11 +249,11 @@ Finally, solve the test problem using the `solve()` routine of the solver `mgrit
 which gives::
 
     INFO - 03-02-20 11:19:03 - Start solve
-    INFO - 03-02-20 11:19:03 - iter 1  | con: 7.186185937031941e-05  | con-fac: -                       | runtime: 0.01379704475402832 s
-    INFO - 03-02-20 11:19:03 - iter 2  | con: 1.2461067076355103e-06 | con-fac: 0.017340307063501627    | runtime: 0.007235527038574219 s
-    INFO - 03-02-20 11:19:03 - iter 3  | con: 2.1015566145245807e-08 | con-fac: 0.016864981158092696    | runtime: 0.005523681640625 s
-    INFO - 03-02-20 11:19:03 - iter 4  | con: 3.144127445017594e-10  | con-fac: 0.014960945726074891    | runtime: 0.004599332809448242 s
-    INFO - 03-02-20 11:19:03 - iter 5  | con: 3.975214076032893e-12  | con-fac: 0.01264329816633959     | runtime: 0.0043201446533203125 s
+    INFO - 03-02-20 11:19:03 - iter 1  | conv: 7.186185937031941e-05  | conv factor: -                       | runtime: 0.01379704475402832 s
+    INFO - 03-02-20 11:19:03 - iter 2  | conv: 1.2461067076355103e-06 | conv factor: 0.017340307063501627    | runtime: 0.007235527038574219 s
+    INFO - 03-02-20 11:19:03 - iter 3  | conv: 2.1015566145245807e-08 | conv factor: 0.016864981158092696    | runtime: 0.005523681640625 s
+    INFO - 03-02-20 11:19:03 - iter 4  | conv: 3.144127445017594e-10  | conv factor: 0.014960945726074891    | runtime: 0.004599332809448242 s
+    INFO - 03-02-20 11:19:03 - iter 5  | conv: 3.975214076032893e-12  | conv factor: 0.01264329816633959     | runtime: 0.0043201446533203125 s
     INFO - 03-02-20 11:19:03 - Solve took 0.042092084884643555 s
     INFO - 03-02-20 11:19:03 - Run parameter overview
     interval                  : [0.0, 5.0]

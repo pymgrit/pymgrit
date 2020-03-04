@@ -456,7 +456,7 @@ class Mgrit:
             if lvl > 0:
                 self.iteration(lvl=lvl, cycle_type='V', iteration=0, first_f=True)
 
-    def ouput_run_informations(self) -> None:
+    def ouput_run_information(self) -> None:
         """
         Outputs run information
         """
@@ -523,13 +523,13 @@ class Mgrit:
 
             if iteration == 0:
                 self.log_info('{0: <7}'.format(f"iter {iteration + 1}") +
-                              '{0: <30}'.format(f" | con: {self.conv[iteration + 1]}") +
-                              '{0: <35}'.format(f" | con-fac: -") +
+                              '{0: <32}'.format(f" | conv: {self.conv[iteration + 1]}") +
+                              '{0: <37}'.format(f" | conv factor: -") +
                               '{0: <35}'.format(f" | runtime: {time_it_stop - time_it_start} s"))
             else:
                 self.log_info('{0: <7}'.format(f"iter {iteration + 1}") +
-                              '{0: <30}'.format(f" | con: {self.conv[iteration + 1]}") +
-                              '{0: <35}'.format(f" | con-fac: {self.conv[iteration + 1] / self.conv[iteration]}") +
+                              '{0: <32}'.format(f" | conv: {self.conv[iteration + 1]}") +
+                              '{0: <37}'.format(f" | conv factor: {self.conv[iteration + 1] / self.conv[iteration]}") +
                               '{0: <35}'.format(f" | runtime: {time_it_stop - time_it_start} s"))
 
             if self.output_fcn is not None and self.output_lvl == 2:
@@ -545,7 +545,7 @@ class Mgrit:
         if self.output_fcn is not None and self.output_lvl == 1:
             self.output_fcn(self)
 
-        self.ouput_run_informations()
+        self.ouput_run_information()
         return {'conv': self.conv[np.where(self.conv != 0)], 'time_setup': self.runtime_setup,
                 'time_solve': self.runtime_solve}
 

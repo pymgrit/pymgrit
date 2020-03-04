@@ -32,7 +32,6 @@ using PyMGRIT's core routines `simple_setup_problem()`, `Mgrit()`, and `mgrit.so
 Note: This example is also considered in :doc:`Quickstart <quickstart>`.
 
 For a given test problem, we can construct a time-multigrid hierarchy by calling `simple_setup_problem()`.
-
 To use `mgrit.solve()` we then only need to set up an MGRIT solver with this time-multigrid hierarchy.
 
 ::
@@ -58,11 +57,11 @@ produces the output::
     INFO - 03-02-20 11:19:03 - Start setup
     INFO - 03-02-20 11:19:03 - Setup took 0.009920358657836914 s
     INFO - 03-02-20 11:19:03 - Start solve
-    INFO - 03-02-20 11:19:03 - iter 1  | con: 7.186185937031941e-05  | con-fac: -                       | runtime: 0.01379704475402832 s
-    INFO - 03-02-20 11:19:03 - iter 2  | con: 1.2461067076355103e-06 | con-fac: 0.017340307063501627    | runtime: 0.007235527038574219 s
-    INFO - 03-02-20 11:19:03 - iter 3  | con: 2.1015566145245807e-08 | con-fac: 0.016864981158092696    | runtime: 0.005523681640625 s
-    INFO - 03-02-20 11:19:03 - iter 4  | con: 3.144127445017594e-10  | con-fac: 0.014960945726074891    | runtime: 0.004599332809448242 s
-    INFO - 03-02-20 11:19:03 - iter 5  | con: 3.975214076032893e-12  | con-fac: 0.01264329816633959     | runtime: 0.0043201446533203125 s
+    INFO - 03-02-20 11:19:03 - iter 1  | conv: 7.186185937031941e-05  | conv factor: -                       | runtime: 0.01379704475402832 s
+    INFO - 03-02-20 11:19:03 - iter 2  | conv: 1.2461067076355103e-06 | conv factor: 0.017340307063501627    | runtime: 0.007235527038574219 s
+    INFO - 03-02-20 11:19:03 - iter 3  | conv: 2.1015566145245807e-08 | conv factor: 0.016864981158092696    | runtime: 0.005523681640625 s
+    INFO - 03-02-20 11:19:03 - iter 4  | conv: 3.144127445017594e-10  | conv factor: 0.014960945726074891    | runtime: 0.004599332809448242 s
+    INFO - 03-02-20 11:19:03 - iter 5  | conv: 3.975214076032893e-12  | conv factor: 0.01264329816633959     | runtime: 0.0043201446533203125 s
     INFO - 03-02-20 11:19:03 - Solve took 0.042092084884643555 s
     INFO - 03-02-20 11:19:03 - Run parameter overview
     interval                  : [0.0, 5.0]
@@ -108,7 +107,7 @@ of PyMGRIT's core routine `Mgrit()`.
                   it=10,                                        # Maximum number of iterations
                   tol=1e-10,                                    # Stopping tolerance
                   nested_iteration=True,                        # Use nested iterations
-                  cf_iter=1,                                    # Number of FC relaxations
+                  cf_iter=1,                                    # Number of CF relaxations
                   cycle_type='V',                               # multigrid cycling type:
                                                                 # 'V' -> V-cycles
                                                                 # 'F' -> F-cycles
@@ -133,41 +132,49 @@ of PyMGRIT's core routine `Mgrit()`.
 Output function
 ---------------
 
+example_output_fcn.py_
+
+.. _example_output_fcn.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py
+
 To store the solutions an output function must be written, which is passed to the MGRIT algorithm. The output function is called in the algorithm after each iteration, at the end or not at all, depending on the setting (see example parameter). The output function is called on each processor. In the example the solution is written to a file via the numpy function save.
 
 ::
 
     import pathlib
-    import matplotlib.pyplot as plt
-    from pymgrit.dahlquist.dahlquist import Dahlquist
-    from pymgrit.core.simple_setup_problem import simple_setup_problem
-    from pymgrit.core.mgrit import Mgrit
+import numpy as np
+import matplotlib.pyplot as plt
 
+from pymgrit.dahlquist.dahlquist import Dahlquist
+from pymgrit.core.simple_setup_problem import simple_setup_problem
+from pymgrit.core.mgrit import Mgrit
+
+
+def main():
     # Define output function that writes the solution to a file
     def output_fcn(self):
-        #Set path to solution
+        # Set path to solution
         path = 'results/' + 'dahlquist'
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-        # Save solution to file.
-        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Add time information for distinguish procs
-                [self.u[0][i].get_values() for i in self.index_local[0]])   # Save each time step per processors
+        # Save solution to file; here, we just have a single solution value at each time point
+        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Local time interval for distinguishing procs
+                [self.u[0][i].get_values() for i in self.index_local[0]])   # Save solution values at local time points
 
-    # Creating the finest level problem
+    # Create Dahlquist's test problem with 101 time steps in the interval [0, 5]
     dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
 
-    # Setup the multilevel structure by using the simple_setup_problem function
+    # Construct a two-level multigrid hierarchy for the test problem using a coarsening factor of 2
     dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
 
-    # Setup of the MGRIT algorithm with the multilevel structure
+    # Set up the MGRIT solver for the test problem and set the output function
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, output_fcn=output_fcn)
 
-    # Solve
+    # Solve the test problem
     info = mgrit.solve()
 
     # Plot solution if one processor was used
-    res = np.load('results/dahlquist/0.0:5.0.npy')
-    plt.plot(res)
+    sol = np.load('results/dahlquist/0.0:5.0.npy')
+    plt.plot(sol)
     plt.show()
 
 -------------------

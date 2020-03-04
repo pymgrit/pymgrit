@@ -23,7 +23,7 @@ def main():
                   it=10,                                        # Maximum number of iterations
                   tol=1e-10,                                    # Stopping tolerance
                   nested_iteration=True,                        # Use nested iterations
-                  cf_iter=1,                                    # Number of FC relaxations
+                  cf_iter=1,                                    # Number of CF relaxations
                   cycle_type='V',                               # multigrid cycling type:
                                                                 # 'V' -> V-cycles
                                                                 # 'F' -> F-cycles
