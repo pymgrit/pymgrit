@@ -12,6 +12,7 @@ discretized by Backward Euler. To accomplish this, this tutorial will go through
 #. Writing the `vector class`_ holding all time-dependent information
 #. Writing the `application class`_ holding any time-independent data
 #. `Solving the problem`_
+#. `Looking at results`_
 
 ------------
 Vector class
@@ -217,7 +218,7 @@ The application class must contain the following member variables and member fun
 Solving the problem
 -------------------
 
-The last step is to set up an MGRIT solver for the test problem.
+The third step is to set up an MGRIT solver for the test problem.
 
 First, import PyMGRIT::
 
@@ -244,7 +245,7 @@ which produces the output::
 
 Finally, solve the test problem using the `solve()` routine of the solver `mgrit`::
 
-    mgrit.solve()
+    info = mgrit.solve()
 
 which gives::
 
@@ -268,6 +269,12 @@ which gives::
     communicator size time    : 1
     communicator size space   : -99
 
+and returns the residual history, setup time, and solve time in dictionary `info` with the following key values:
+
+    - `conv` : residual history (2-norm of the residual at each iteration)
+    - `time_setup` : setup time [in seconds]
+    - `time_solve` : solve time [in seconds]
+
 
 Summary
 ^^^^^^^
@@ -286,4 +293,57 @@ Summary
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
 
     # Solve the test problem
-    mgrit.solve()
+    info = mgrit.solve()
+
+------------------
+Looking at results
+------------------
+
+The last step is to look at the results of our PyMGRIT run.
+
+In the default setting,
+
+* PyMGRIT's core routine *Mgrit()* prints out the setup time.
+* The *solve()* routine
+
+    * prints out the residual history, along with convergence factors and runtimes, and
+    * returns the residual history, setup time, and solve time.
+
+For our example, we can plot the residuals as follows: First, we import ``numpy`` and ``pyplot``::
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+Then, we get the residuals from the dictionary `info`::
+
+    res = info['conv']
+
+and plot the residuals::
+
+    iters = np.arange(1, res.size+1)
+    plt.semilogy(iters, res, 'o-')
+    plt.xticks(iters)
+    plt.xlabel('iter #')
+    plt.ylabel('residual norm')
+    plt.show()
+
+which gives
+
+.. figure:: ../figures/tutorial.png
+    :width: 400
+    :alt: residual history
+
+Summary
+^^^^^^^
+.. code-block::
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    res = info['conv']
+    iters = np.arange(1, res.size+1)
+    plt.semilogy(iters, res, 'o-')
+    plt.xticks(iters)
+    plt.xlabel('iter #')
+    plt.ylabel('residual norm')
+    plt.show()

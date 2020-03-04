@@ -21,7 +21,7 @@ def main():
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
 
     # Solve the test problem
-    return mgrit.solve()
+    info = mgrit.solve()
 
 if __name__ == '__main__':
     main()
