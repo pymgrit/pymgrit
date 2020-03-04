@@ -25,6 +25,7 @@ Usage
     usage/quickstart
     usage/tutorial
     usage/examples
+    usage/parallelism
 
 :doc:`usage/installation`
     Get PyMGRIT installed.
@@ -35,8 +36,11 @@ Usage
 :doc:`usage/tutorial`
     Write your first problem and solve it.
 
-:doc:`usage/installation`
+:doc:`usage/examples`
     Learn more by playing with a pre-made PyMGRIT project.
+
+:doc:`usage/parallelism`
+    Run parallel simulations.
 
 ------------
 Applications
