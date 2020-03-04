@@ -165,7 +165,7 @@ Note: The time interval of the problem is defined in the superclass `Application
 This PyMGRIT core class contains the following member variables:
 
     - `t_start` : start time (left bound of time interval)
-    - `t_stop` : end time (right bound of time interval)
+    - `t_end` : end time (right bound of time interval)
     - `nt` : number of time points
 
 Furthermore, we must define the time integration routine as the member function `step` that evolves a vector `u_start` from time `t_start` to time `t_stop`.
