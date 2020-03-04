@@ -194,7 +194,7 @@
 </pre></div>
 </div>
 <p>Finally, solve the test problem using the <cite>solve()</cite> routine of the solver <cite>mgrit</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>producing the output:</p>
@@ -219,9 +219,10 @@
 <span class="n">space</span> <span class="n">communicator</span> <span class="n">size</span>   <span class="p">:</span> <span class="o">-</span><span class="mi">99</span>
 </pre></div>
 </div>
+<p>and returning the residual history, setup time, and solve time in dictionary <cite>info</cite>.</p>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p>The following code generates a discrete Dahlquist test problem and solves the resulting linear system using the MGRIT algorithm with two time levels:</p>
+<p>The following code generates a discrete Dahlquist test problem and solves the resulting linear system using a two-level MGRIT algorithm:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import PyMGRIT</span>
 <span class="kn">from</span> <span class="nn">pymgrit</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -235,7 +236,7 @@
 <span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
 
 <span class="c1"># Solve the test problem</span>
-<span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

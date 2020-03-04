@@ -31,7 +31,7 @@ which gives::
 
 Finally, solve the test problem using the `solve()` routine of the solver `mgrit`::
 
-    mgrit.solve()
+    info = mgrit.solve()
 
 producing the output::
 
@@ -56,9 +56,11 @@ producing the output::
     space communicator size   : -99
 
 
+and returning the residual history, setup time, and solve time in dictionary `info`.
+
 Summary
 -------
-The following code generates a discrete Dahlquist test problem and solves the resulting linear system using the MGRIT algorithm with two time levels::
+The following code generates a discrete Dahlquist test problem and solves the resulting linear system using a two-level MGRIT algorithm::
 
     # Import PyMGRIT
     from pymgrit import *
@@ -73,4 +75,4 @@ The following code generates a discrete Dahlquist test problem and solves the re
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
 
     # Solve the test problem
-    mgrit.solve()
+    info = mgrit.solve()
