@@ -196,8 +196,8 @@ The source code for these and more examples is available in the <a class="refere
 <p>This example demonstrates basic usage of the PyMGRIT package for solving a simple test problem with a two-level MGRIT solver,
 using PyMGRIT’s core routines <cite>simple_setup_problem()</cite>, <cite>Mgrit()</cite>, and <cite>mgrit.solve()</cite>.
 Note: This example is also considered in <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a>.</p>
-<p>For a given test problem, we can construct a time-multigrid hierarchy by calling <cite>simple_setup_problem()</cite>.</p>
-<p>To use <cite>mgrit.solve()</cite> we then only need to set up an MGRIT solver with this time-multigrid hierarchy.</p>
+<p>For a given test problem, we can construct a time-multigrid hierarchy by calling <cite>simple_setup_problem()</cite>.
+To use <cite>mgrit.solve()</cite> we then only need to set up an MGRIT solver with this time-multigrid hierarchy.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
@@ -219,11 +219,11 @@ Note: This example is also considered in <a class="reference internal" href="qui
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Start</span> <span class="n">setup</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Setup</span> <span class="n">took</span> <span class="mf">0.009920358657836914</span> <span class="n">s</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Start</span> <span class="n">solve</span>
-<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">1</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">7.186185937031941e-05</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="o">-</span>                       <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.01379704475402832</span> <span class="n">s</span>
-<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">2</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">1.2461067076355103e-06</span> <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.017340307063501627</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.007235527038574219</span> <span class="n">s</span>
-<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">3</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">2.1015566145245807e-08</span> <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.016864981158092696</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.005523681640625</span> <span class="n">s</span>
-<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">4</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">3.144127445017594e-10</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.014960945726074891</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.004599332809448242</span> <span class="n">s</span>
-<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">5</span>  <span class="o">|</span> <span class="n">con</span><span class="p">:</span> <span class="mf">3.975214076032893e-12</span>  <span class="o">|</span> <span class="n">con</span><span class="o">-</span><span class="n">fac</span><span class="p">:</span> <span class="mf">0.01264329816633959</span>     <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.0043201446533203125</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">1</span>  <span class="o">|</span> <span class="n">conv</span><span class="p">:</span> <span class="mf">7.186185937031941e-05</span>  <span class="o">|</span> <span class="n">conv</span> <span class="n">factor</span><span class="p">:</span> <span class="o">-</span>                       <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.01379704475402832</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">2</span>  <span class="o">|</span> <span class="n">conv</span><span class="p">:</span> <span class="mf">1.2461067076355103e-06</span> <span class="o">|</span> <span class="n">conv</span> <span class="n">factor</span><span class="p">:</span> <span class="mf">0.017340307063501627</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.007235527038574219</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">3</span>  <span class="o">|</span> <span class="n">conv</span><span class="p">:</span> <span class="mf">2.1015566145245807e-08</span> <span class="o">|</span> <span class="n">conv</span> <span class="n">factor</span><span class="p">:</span> <span class="mf">0.016864981158092696</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.005523681640625</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">4</span>  <span class="o">|</span> <span class="n">conv</span><span class="p">:</span> <span class="mf">3.144127445017594e-10</span>  <span class="o">|</span> <span class="n">conv</span> <span class="n">factor</span><span class="p">:</span> <span class="mf">0.014960945726074891</span>    <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.004599332809448242</span> <span class="n">s</span>
+<span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">5</span>  <span class="o">|</span> <span class="n">conv</span><span class="p">:</span> <span class="mf">3.975214076032893e-12</span>  <span class="o">|</span> <span class="n">conv</span> <span class="n">factor</span><span class="p">:</span> <span class="mf">0.01264329816633959</span>     <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.0043201446533203125</span> <span class="n">s</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Solve</span> <span class="n">took</span> <span class="mf">0.042092084884643555</span> <span class="n">s</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Run</span> <span class="n">parameter</span> <span class="n">overview</span>
 <span class="n">interval</span>                  <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
@@ -263,7 +263,7 @@ of PyMGRIT’s core routine <cite>Mgrit()</cite>.</p>
               <span class="n">it</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>                                        <span class="c1"># Maximum number of iterations</span>
               <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>                                    <span class="c1"># Stopping tolerance</span>
               <span class="n">nested_iteration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                        <span class="c1"># Use nested iterations</span>
-              <span class="n">cf_iter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                                    <span class="c1"># Number of FC relaxations</span>
+              <span class="n">cf_iter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                                    <span class="c1"># Number of CF relaxations</span>
               <span class="n">cycle_type</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>                               <span class="c1"># multigrid cycling type:</span>
                                                             <span class="c1"># &#39;V&#39; -&gt; V-cycles</span>
                                                             <span class="c1"># &#39;F&#39; -&gt; F-cycles</span>
@@ -288,41 +288,44 @@ of PyMGRIT’s core routine <cite>Mgrit()</cite>.</p>
 </div>
 <div class="section" id="output-function">
 <h2>Output function<a class="headerlink" href="#output-function" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py">example_output_fcn.py</a></p>
 <p>To store the solutions an output function must be written, which is passed to the MGRIT algorithm. The output function is called in the algorithm after each iteration, at the end or not at all, depending on the setting (see example parameter). The output function is called on each processor. In the example the solution is written to a file via the numpy function save.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
-
-<span class="c1"># Define output function that writes the solution to a file</span>
-<span class="k">def</span> <span class="nf">output_fcn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="c1">#Set path to solution</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;results/&#39;</span> <span class="o">+</span> <span class="s1">&#39;dahlquist&#39;</span>
-    <span class="c1"># Create path if not existing</span>
-    <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="c1"># Save solution to file.</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>  <span class="c1"># Add time information for distinguish procs</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_local</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>   <span class="c1"># Save each time step per processors</span>
-
-<span class="c1"># Creating the finest level problem</span>
-<span class="n">dahlquist</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
-
-<span class="c1"># Setup the multilevel structure by using the simple_setup_problem function</span>
-<span class="n">dahlquist_multilevel_structure</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="c1"># Setup of the MGRIT algorithm with the multilevel structure</span>
-<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span> <span class="n">output_fcn</span><span class="o">=</span><span class="n">output_fcn</span><span class="p">)</span>
-
-<span class="c1"># Solve</span>
-<span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-
-<span class="c1"># Plot solution if one processor was used</span>
-<span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;results/dahlquist/0.0:5.0.npy&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>import numpy as np
+import matplotlib.pyplot as plt</p>
+<p>from pymgrit.dahlquist.dahlquist import Dahlquist
+from pymgrit.core.simple_setup_problem import simple_setup_problem
+from pymgrit.core.mgrit import Mgrit</p>
+<dl>
+<dt>def main():</dt><dd><p># Define output function that writes the solution to a file
+def output_fcn(self):</p>
+<blockquote>
+<div><p># Set path to solution
+path = ‘results/’ + ‘dahlquist’
+# Create path if not existing
+pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+# Save solution to file; here, we just have a single solution value at each time point
+np.save(path + ‘/’ + str(self.t[0][0]) + ‘:’ + str(self.t[0][-1]),  # Local time interval for distinguishing procs</p>
+<blockquote>
+<div><p>[self.u[0][i].get_values() for i in self.index_local[0]])   # Save solution values at local time points</p>
+</div></blockquote>
+</div></blockquote>
+<p># Create Dahlquist’s test problem with 101 time steps in the interval [0, 5]
+dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)</p>
+<p># Construct a two-level multigrid hierarchy for the test problem using a coarsening factor of 2
+dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)</p>
+<p># Set up the MGRIT solver for the test problem and set the output function
+mgrit = Mgrit(problem=dahlquist_multilevel_structure, output_fcn=output_fcn)</p>
+<p># Solve the test problem
+info = mgrit.solve()</p>
+<p># Plot solution if one processor was used
+sol = np.load(‘results/dahlquist/0.0:5.0.npy’)
+plt.plot(sol)
+plt.show()</p>
+</dd>
+</dl>
 </div>
 <div class="section" id="multigrid-structure">
 <h2>Multigrid structure<a class="headerlink" href="#multigrid-structure" title="Permalink to this headline">¶</a></h2>
