@@ -11,17 +11,16 @@ The source code for these and more examples is available in the examples_ folder
 Table of Contents
 -----------------
 
-    - `Simple solve`_
+    - `Simple solve and PyMGRIT output`_
     - `Solver parameters`_
     - `Output function`_
     - `Multigrid structure`_
     - `Spatial transfer operator`_
-    - `Space & time parallelism`_
 
 
-------------
-Simple solve
-------------
+-------------------------------
+Simple solve and PyMGRIT output
+-------------------------------
 
 example_dahlquist.py_
 
@@ -50,7 +49,7 @@ To use `mgrit.solve()` we then only need to set up an MGRIT solver with this tim
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
 
     # Solve the test problem
-    mgrit.solve()
+    info = mgrit.solve()
 
 produces the output::
 
@@ -136,20 +135,24 @@ example_output_fcn.py_
 
 .. _example_output_fcn.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py
 
-To store the solutions an output function must be written, which is passed to the MGRIT algorithm. The output function is called in the algorithm after each iteration, at the end or not at all, depending on the setting (see example parameter). The output function is called on each processor. In the example the solution is written to a file via the numpy function save.
+In this example, we show how to save and plot the solution of Dahlquist's test problem.
+An output function is defined that saves the solution (here, a single solution value at each time point is written to an
+output file via the ``numpy`` function `save()`). This output function is passed to the MGRIT solver.
+Depending on the solver setting (see `Solver parameters`_), the output function is called after each iteration,
+at the end of the simulation, or not at all. Note that the output function is called on each processor.
+
 
 ::
 
     import pathlib
-import numpy as np
-import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib.pyplot as plt
 
-from pymgrit.dahlquist.dahlquist import Dahlquist
-from pymgrit.core.simple_setup_problem import simple_setup_problem
-from pymgrit.core.mgrit import Mgrit
+    from pymgrit.dahlquist.dahlquist import Dahlquist
+    from pymgrit.core.simple_setup_problem import simple_setup_problem
+    from pymgrit.core.mgrit import Mgrit
 
 
-def main():
     # Define output function that writes the solution to a file
     def output_fcn(self):
         # Set path to solution
@@ -172,9 +175,12 @@ def main():
     # Solve the test problem
     info = mgrit.solve()
 
-    # Plot solution if one processor was used
+    # Plot the solution
+    t = np.linspace(dahlquist.t_start, dahlquist.t_end, dahlquist.nt)
     sol = np.load('results/dahlquist/0.0:5.0.npy')
-    plt.plot(sol)
+    plt.plot(t, sol)
+    plt.xlabel('t')
+    plt.ylabel('u(t)')
     plt.show()
 
 -------------------
@@ -232,8 +238,3 @@ Spatial transfer operator
 
 TODO
 
-------------------------
-Space & time parallelism
-------------------------
-
-TODO
