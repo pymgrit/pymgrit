@@ -48,7 +48,7 @@ class VectorArenstorfOrbit(Vector):
         return self.value
 
     def plot(self):
-        plt.plot(self.value[0], self.value[1], color='red', marker='.')
+        plt.plot(self.value[0], self.value[1], color='red', marker='.', linestyle='-')
 
 def arenstorf(t, y):
     a = 0.012277471
@@ -103,6 +103,6 @@ class ArenstorfOrbit(Application):
                         t_span=np.array([t_start, t_stop]),
                         t_eval=np.array([t_start, t_stop]), method='RK45')
         ret = VectorArenstorfOrbit()
-        ret.set_values(res.y[:,-1])
+        ret.set_values(res.y[:, -1])
         return ret
 

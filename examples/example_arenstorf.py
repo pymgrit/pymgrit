@@ -1,3 +1,8 @@
+"""
+Apply two-level MGRIT with F-relaxation
+to compute an Arenstorf orbit, using RK4 time integration
+"""
+
 import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,18 +17,18 @@ def main():
         path = 'results/' + 'arenstorf' + '/' + str(self.solve_iter)
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-        # Save solution to file.
-        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Add time information for distinguish procs
-                [self.u[0][i] for i in self.index_local[0]])
+        # Save solution to file; here, we have four solution values at each time point.
+        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Local time interval
+                [self.u[0][i] for i in self.index_local[0]])                # Save solution values at local time points
 
-    # Creating the finest level problem
+    # Create two-level time-grid hierarchy for the ODE system describing Arenstorf orbits
     ahrenstorf_lvl_0 = ArenstorfOrbit(t_start=0, t_stop=17.06521656015796, nt=80001)
     ahrenstorf_lvl_1 = ArenstorfOrbit(t_interval=ahrenstorf_lvl_0.t[::320])
 
-    # Setup of the MGRIT algorithm with the multilevel structure
+    # Set up the MGRIT solver using the two-level hierarchy and set the output function
     mgrit = Mgrit(problem=[ahrenstorf_lvl_0, ahrenstorf_lvl_1], output_fcn=output_fcn, output_lvl=2, cf_iter=0)
 
-    # Solve
+    # Compute Arenstorf orbit
     infos = mgrit.solve()
 
     res = np.load('results/arenstorf/' + str(len(infos['conv'])) + '/0.0:17.06521656015796.npy', allow_pickle=True)
