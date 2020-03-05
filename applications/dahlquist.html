@@ -167,7 +167,21 @@
             
   <div class="section" id="dahlquist">
 <h1>Dahlquist<a class="headerlink" href="#dahlquist" title="Permalink to this headline">¶</a></h1>
-<p>TODO: Write short description</p>
+<ul class="simple">
+<li><p>source: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/dahlquist/dahlquist.py">dahlquist.py</a></p></li>
+<li><p>example code: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py">example_dahlquist.py</a></p></li>
+<li><p>scalar ODE</p></li>
+<li><p>discretization: backward Euler</p></li>
+</ul>
+<p>The simplest scalar ODE, made famous by Germund Dahlquist, is given by</p>
+<div class="math notranslate nohighlight">
+\[u' = \lambda u \;\;\text{ in } (t_0, t_{end}]\;\; \text{ with }\; u(t_0) = 1,\]</div>
+<p>and constant <span class="math notranslate nohighlight">\(\lambda &lt; 0\)</span>.
+The exact solution <span class="math notranslate nohighlight">\(u(t) = e^{\lambda(t-t_0)}u(t_0)\)</span> decays to zero as time increases.</p>
+<p>For <span class="math notranslate nohighlight">\(t_0 = 0, t_{end} = 5,\)</span> and <span class="math notranslate nohighlight">\(\lambda = -1\)</span>, for example, we obtain the following solution:</p>
+<div class="figure align-default">
+<img alt="dahlquist solution" src="../_images/dahlquist.png" />
+</div>
 </div>
 
 
