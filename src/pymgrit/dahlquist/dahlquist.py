@@ -48,7 +48,7 @@ class VectorDahlquist(Vector):
 class Dahlquist(Application):
     """
     Solves  u' = lambda u,
-    with lambda=-1 and y(0) = 1
+    with lambda = -1 and u(0) = 1
     """
 
     def __init__(self, *args, **kwargs):
@@ -57,5 +57,5 @@ class Dahlquist(Application):
         self.vector_t_start = VectorDahlquist(1)  # Setting the initial condition
 
     def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
-        tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
+        tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()  # Backward Euler
         return VectorDahlquist(tmp)
