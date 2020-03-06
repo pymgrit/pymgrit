@@ -180,7 +180,7 @@ at the end of the simulation, or not at all. Note that the output function is ca
     # Solve the test problem
     info = mgrit.solve()
 
-    # Plot the solution
+    # Plot the solution (Note: modifications necessary if more than one process is used for the simulation!)
     t = np.linspace(dahlquist.t_start, dahlquist.t_end, dahlquist.nt)
     sol = np.load('results/dahlquist/0.0:5.0.npy')
     plt.plot(t, sol)

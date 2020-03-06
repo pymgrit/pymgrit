@@ -329,7 +329,7 @@ at the end of the simulation, or not at all. Note that the output function is ca
 <span class="c1"># Solve the test problem</span>
 <span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
-<span class="c1"># Plot the solution</span>
+<span class="c1"># Plot the solution (Note: modifications necessary if more than one process is used for the simulation!)</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">dahlquist</span><span class="o">.</span><span class="n">t_start</span><span class="p">,</span> <span class="n">dahlquist</span><span class="o">.</span><span class="n">t_end</span><span class="p">,</span> <span class="n">dahlquist</span><span class="o">.</span><span class="n">nt</span><span class="p">)</span>
 <span class="n">sol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;results/dahlquist/0.0:5.0.npy&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">sol</span><span class="p">)</span>

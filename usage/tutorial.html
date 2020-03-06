@@ -195,6 +195,7 @@
 <li><p><a class="reference internal" href="#solving-the-problem">Solving the problem</a></p></li>
 <li><p><a class="reference internal" href="#looking-at-results">Looking at results</a></p></li>
 </ol>
+<p>implementation: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/dahlquist/dahlquist.py">dahlquist.py</a> (steps 1 and 2), <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py">example_dahlquist.py</a> (step 3)</p>
 <div class="section" id="vector-class">
 <h2>Vector class<a class="headerlink" href="#vector-class" title="Permalink to this headline">¶</a></h2>
 <p>The first step is to write a data structure that contains the solution of a single point in time. The data structure must inherit from PyMGRIT’s core <cite>Vector</cite> class.</p>
@@ -506,7 +507,7 @@ For our test problem, we take a backward Euler step:</p>
 </div>
 <p>which gives</p>
 <div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/tutorial.png"><img alt="residual history" src="../_images/tutorial.png" style="width: 400px;" /></a>
+<img alt="residual history" src="../_images/tutorial.png" />
 </div>
 <div class="section" id="id3">
 <h3>Summary<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
