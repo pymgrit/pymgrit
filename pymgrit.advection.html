@@ -174,7 +174,12 @@
 <dt id="pymgrit.advection.advection_1d.Advection1D">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.advection.advection_1d.</code><code class="sig-name descname">Advection1D</code><span class="sig-paren">(</span><em class="sig-param">c</em>, <em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection.advection_1d.Advection1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
-<p>Class containing the description of the advection problem.</p>
+<dl class="simple">
+<dt>Application class for the advection problem in 1D space,</dt><dd><p>u_t + c * u_t = 0,</p>
+</dd>
+</dl>
+<p>subject to periodic boundary conditions in space and
+initial condition u(x, 0) = exp(-x^2).</p>
 <dl class="method">
 <dt id="pymgrit.advection.advection_1d.Advection1D.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection.advection_1d.Advection1D.compute_matrix" title="Permalink to this definition">¶</a></dt>

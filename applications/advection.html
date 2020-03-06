@@ -167,7 +167,34 @@
             
   <div class="section" id="advection">
 <h1>Advection<a class="headerlink" href="#advection" title="Permalink to this headline">¶</a></h1>
-<p>TODO: Write short description</p>
+<ul>
+<li><p>source: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/advection/advection_1d.py">advection_1d.py</a></p></li>
+<li><p>example code: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_advection.py">example_advection.py</a></p></li>
+<li><p>scalar PDE with unknown function <span class="math notranslate nohighlight">\(u(x,t)\)</span> of two independent variables</p></li>
+<li><p>discretization:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>first-order upwind finite differences in space,</p></li>
+<li><p>backward Euler in time</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>The advection equation in 1D space is a partial differential equation that governs the motion of a scalar quantity, <span class="math notranslate nohighlight">\(u(x,t)\)</span>,
+subject to a known nonzero (constant) flow speed, <span class="math notranslate nohighlight">\(c\)</span>. The governing equation is given by</p>
+<div class="math notranslate nohighlight">
+\[u_t + cu_x = 0 \;\;\text{ in } \;[a, b]\times(t_0, t_{end}]\;\; \text{ with }\; u(x, t_0) = u_0(x),\]</div>
+<p>and subject to some boundary conditions in space.</p>
+<p>While parallel-in-time algorithms are known to work well for parabolic problems, most methods show instabilities
+or poor convergence for hyperbolic problems. The advection equation has proven to be a critical test problem and
+is therefore included in PyMGRIT. However, the discretization considered in PyMGRIT’s 1D advection application is highly diffusive and does not capture
+the exact solution.</p>
+<p>In <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_advection.py">example_advection.py</a>, advection subject to flow speed <span class="math notranslate nohighlight">\(c = 1\)</span>,
+in the domain <span class="math notranslate nohighlight">\([-1,1]\times[0,2]\)</span> is considered with periodic boundary conditions in space and
+subject to the initial condition <span class="math notranslate nohighlight">\(u(x,0) = e^{-x^2}\)</span>.</p>
+<div class="figure align-default">
+<img alt="initial condition and solution of 1D advection problem" src="../_images/advection.png" />
+</div>
 </div>
 
 
