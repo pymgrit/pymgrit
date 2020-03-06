@@ -167,7 +167,27 @@
             
   <div class="section" id="brusselator">
 <h1>Brusselator<a class="headerlink" href="#brusselator" title="Permalink to this headline">¶</a></h1>
-<p>TODO: Write short description</p>
+<ul class="simple">
+<li><p>source: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/brusselator/brusselator.py">brusselator.py</a></p></li>
+<li><p>example code: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_brusselator.py">example_brusselator.py</a></p></li>
+<li><p>system of two scalar first-order ODEs with two unknown functions</p></li>
+<li><p>discretization: RK4</p></li>
+</ul>
+<p>The Brusselator is a theoretical model for a chain of chemical reactions.
+It can be described by the following system of ODEs:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}x' &amp;= A + x^2y - (B + 1)x,\\
+y' &amp;= Bx - x^2y,\end{split}\]</div>
+<p>with positive concentrations <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span>. If <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> are constant and <span class="math notranslate nohighlight">\(B &gt; A^2 + 1\)</span>,
+the system will form a limit cycle.</p>
+<p>If <span class="math notranslate nohighlight">\(A = 1\)</span>, <span class="math notranslate nohighlight">\(B = 3\)</span>, and if the initial conditions are chosen to be</p>
+<div class="math notranslate nohighlight">
+\[x(0) = 0 \;\;\;\text{and} \;\;\; y(0) = 1,\]</div>
+<p>the solutions of the Brusselator system over the time interval [0, 20] using the classical fourth-order
+Runge-Kutta method can be visualized as</p>
+<div class="figure align-default">
+<img alt="solutions of the brusselator" src="applications/../figures/brusselator.png" />
+</div>
 </div>
 
 
