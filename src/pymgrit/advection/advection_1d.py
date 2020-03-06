@@ -17,6 +17,20 @@ class VectorAdvection1D(Vector):
         self.size = size
         self.values = np.zeros(size)
 
+    def set_values(self, values):
+        self.values = values
+
+    def get_values(self):
+        return self.values
+
+    def clone_zero(self):
+        return VectorAdvection1D(self.size)
+
+    def clone_rand(self):
+        tmp = VectorAdvection1D(self.size)
+        tmp.set_values(np.random.rand(self.size))
+        return tmp
+
     def __add__(self, other):
         tmp = VectorAdvection1D(self.size)
         tmp.set_values(self.get_values() + other.get_values())
@@ -30,38 +44,28 @@ class VectorAdvection1D(Vector):
     def norm(self):
         return np.linalg.norm(self.values)
 
-    def clone_zero(self):
-        return VectorAdvection1D(self.size)
-
-    def clone_rand(self):
-        tmp = VectorAdvection1D(self.size)
-        tmp.set_values(np.random.rand(self.size))
-        return tmp
-
-    def set_values(self, values):
-        self.values = values
-
-    def get_values(self):
-        return self.values
-
 
 class Advection1D(Application):
     """
-    Class containing the description of the advection problem.
+    Application class for the advection problem in 1D space,
+       u_t + c * u_t = 0,
+    subject to periodic boundary conditions in space and
+    initial condition u(x, 0) = exp(-x^2).
     """
 
     def __init__(self, c, x_start, x_end, nx, *args, **kwargs):
         super(Advection1D, self).__init__(*args, **kwargs)
 
-        self.c = c  # advection speed
+        self.c = c  # (constant) advection speed
 
         # spatial domain
         self.x_start = x_start  # lower interval bound of spatial domain
-        self.x_end = x_end  # upper interval bound of spatial domain
+        self.x_end = x_end      # upper interval bound of spatial domain
         self.x = np.linspace(self.x_start, self.x_end, nx)
         # periodic boundary conditions
         self.x = self.x[0:-1]
         self.nx = nx - 1
+        # spatial grid spacing
         self.dx = self.x[1] - self.x[0]
 
         self.identity = identity(self.nx, dtype='float', format='csr')
@@ -72,7 +76,6 @@ class Advection1D(Application):
         # set initial condition
         self.vector_template = VectorAdvection1D(self.nx)
         self.vector_t_start = VectorAdvection1D(self.nx)
-
         self.initialise()
 
     def compute_matrix(self):
@@ -101,21 +104,12 @@ class Advection1D(Application):
         """
         Initial condition
         """
-        # # low frequencies
-        # self.vector_t_start.set_values(2 * np.cos((np.pi/16)*self.x))
-
-        # high frequencies
-        self.vector_t_start.set_values(2 * np.cos((10 * np.pi / 16) * self.x))
-
-        # # linear combination of low and high frequencies
-        # self.vector_t_start.set_values(2 * np.cos((np.pi/8)*self.x) + 2 * np.cos((15 * np.pi / 16) * self.x))
-
         # Gaussian
-        # self.vector_t_start.set_values(np.exp(-self.x ** 2))
+        self.vector_t_start.set_values(np.exp(-self.x ** 2))
 
     def step(self, u_start: VectorAdvection1D, t_start: float, t_stop: float):
         tmp = u_start.get_values()
         tmp = spsolve((t_stop - t_start) * self.space_disc + self.identity, tmp)
-        ret = VectorAdvection1D(len(tmp))
-        ret.set_values(tmp)
-        return ret
+        u_stop = VectorAdvection1D(len(tmp))
+        u_stop.set_values(tmp)
+        return u_stop

@@ -1,5 +1,6 @@
 import pathlib
 import numpy as np
+import matplotlib.pyplot as plt
 
 from pymgrit.advection.advection_1d import Advection1D
 from pymgrit.core.mgrit import Mgrit
@@ -7,36 +8,47 @@ from pymgrit.core.mgrit import Mgrit
 
 def main():
     def output_fcn(self):
-        name = 'advection_equation'
-        pathlib.Path('results/' + name + '/' + str(self.solve_iter)).mkdir(parents=True, exist_ok=True)
-        u_vec = np.zeros((self.problem[0].nt, self.problem[0].nx))
-        for i in range(self.problem[0].nt):
-            u_vec[i] = self.u[0][i].get_values()
-        sol = {'u': [self.u[0][i].get_values() for i in self.index_local[0]], 'u_vec': u_vec, 't': self.problem[0].t,
-               'time': self.runtime_solve, 'conv': self.conv}
+        # Set path to solution
+        path = 'results/' + 'advection' + '/' + str(self.solve_iter)
+        # Create path if not existing
+        pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+        # Save solution to file; here, we have nx solution values at each time point.
+        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Local time interval
+                [self.u[0][i] for i in self.index_local[0]])                # Solution values at local time points
 
-        np.save('results/' + name + '/' + str(self.solve_iter) + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),
-                sol)
+    # Create two-level time-grid hierarchy for the advection equation
+    advection_lvl_0 = Advection1D(c=1, x_start=-1, x_end=1, nx=129, t_start=0, t_stop=2, nt=129)
+    advection_lvl_1 = Advection1D(c=1, x_start=-1, x_end=1, nx=129, t_start=0, t_stop=2, nt=65)
 
-    adv0 = Advection1D(c=1, x_start=-16, x_end=16, nx=65, t_start=0, t_stop=6.4, nt=65)
-    adv1 = Advection1D(c=1, x_start=-16, x_end=16, nx=65, t_start=0, t_stop=6.4, nt=33)
+    # # For time-stepping tests
+    # problem = [advection_lvl_0]
 
-    # # for time-stepping tests
-    # problem = [adv0]
-    # transfer = []
+    # For two-level tests
+    problem = [advection_lvl_0, advection_lvl_1]
 
-    # for 2-level tests
-    problem = [adv0, adv1]
+    # Set up two-level MGRIT solver with FCF-relaxation
+    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=False, output_fcn=output_fcn, output_lvl=2)
 
-    # # F-relax
-    # mgrit = solver.Mgrit(problem=problem, cf_iter=0, nested_iteration=False, it=10, tol=1e-50,
-    #                         output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
+    info = mgrit.solve()
 
-    # FCF-relax
-    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=False, it=10, tol=1e-50,
-                  output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
+    # plot residual history
+    plt.figure(1)
+    res = info['conv']
+    iters = np.arange(1, res.size + 1)
+    plt.semilogy(iters, res, 'o-')
+    plt.xticks(iters)
+    plt.xlabel('iter #')
+    plt.ylabel('residual norm')
 
-    mgrit.solve()
+    # plot initial condition and solution at final time t = 2
+    sol = np.load('results/advection/' + str(len(res)) + '/0.0:2.0.npy', allow_pickle=True)
+    x = advection_lvl_0.x
+    fig, ax = plt.subplots()
+    ax.plot(x, sol[0].get_values(), 'b:', label='initial condition u(x, 0)')
+    ax.plot(x, sol[-1].get_values(), 'r-', label='solution at final time u(x, 2)')
+    ax.legend(loc='lower center', shadow=False, fontsize='x-large')
+    plt.xlabel('x')
+    plt.show()
 
 
 if __name__ == '__main__':
