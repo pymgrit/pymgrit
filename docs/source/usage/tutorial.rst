@@ -14,6 +14,11 @@ discretized by Backward Euler. To accomplish this, this tutorial will go through
 #. `Solving the problem`_
 #. `Looking at results`_
 
+implementation: dahlquist.py_ (steps 1 and 2), example_dahlquist.py_ (step 3)
+
+.. _dahlquist.py: https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/dahlquist/dahlquist.py
+.. _example_dahlquist.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py
+
 ------------
 Vector class
 ------------
@@ -330,7 +335,6 @@ and plot the residuals::
 which gives
 
 .. figure:: ../figures/tutorial.png
-    :width: 400
     :alt: residual history
 
 Summary
