@@ -41,7 +41,7 @@ class VectorBrusselator(Vector):
         return np.linalg.norm(self.value)
 
     def plotSolution(self):
-        plt.plot(self.value[0], self.value[1], color='red', marker='o', linestyle='-')
+        plt.plot(self.value[0], self.value[1], color='red', marker='o')
 
 
 # define right-hand side of Brusselator system
