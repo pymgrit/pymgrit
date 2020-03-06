@@ -1,6 +1,7 @@
 from .advection.advection_1d import Advection1D
 from .arenstorf_orbit.arenstorf_orbit import ArenstorfOrbit
 from .core.application import Application
+from .brusselator.brusselator import Brusselator
 from .core.grid_transfer import GridTransfer
 from .core.grid_transfer_copy import GridTransferCopy
 from .core.mgrit import Mgrit
