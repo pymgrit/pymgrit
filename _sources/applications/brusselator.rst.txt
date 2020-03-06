@@ -24,13 +24,12 @@ It can be described by the following system of ODEs:
 with positive concentrations :math:`A` and :math:`B`. If :math:`A` and :math:`B` are constant and :math:`B > A^2 + 1`,
 the system will form a limit cycle.
 
-If :math:`A = 1`, :math:`B = 3`, and if the initial conditions are chosen to be
+In example_brusselator.py_, :math:`A = 1`, :math:`B = 3`, and the initial conditions are chosen to be
 
 .. math::
     x(0) = 0 \;\;\;\text{and} \;\;\; y(0) = 1,
 
-the solutions of the Brusselator system over the time interval [0, 20] using the classical fourth-order
-Runge-Kutta method can be visualized as
+which produces the output:
 
 .. figure:: ../figures/brusselator.png
-    :alt: solutions of the brusselator
+    :alt: solution of brusselator problem
