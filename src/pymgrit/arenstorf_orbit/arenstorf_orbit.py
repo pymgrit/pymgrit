@@ -13,7 +13,7 @@ from pymgrit.core.vector import Vector
 
 class VectorArenstorfOrbit(Vector):
     """
-    Vector for the arenstorf orbit
+    Vector for the Arenstorf orbit problem
     """
 
     def __init__(self):
@@ -78,6 +78,13 @@ def arenstorf2(y,t):
 
 class ArenstorfOrbit(Application):
     """
+    Application for Arenstorf orbit problem,
+       x'' = x + 2y' - b*(x + a)/D_1 - a*(x - b)/D_2,
+       y'' = y - 2x' - b*y/D_1 - a*y/D_2
+    with a = 0.012277471, b = 1 - a,
+        D_1 = ((x + a)^2 + y^2)^(3/2),  D_2 = ((x - a)^2 + y^2)^(3/2)
+    and ICs
+       x(0) = 0.994,  x'(0) = 0,  y(0) = 0,  y'(0) = -2.00158510637908
     """
 
     def __init__(self, *args, **kwargs):

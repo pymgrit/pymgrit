@@ -7,7 +7,6 @@ import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
 from pymgrit.arenstorf_orbit.arenstorf_orbit import ArenstorfOrbit
-from pymgrit.core.simple_setup_problem import simple_setup_problem
 from pymgrit.core.mgrit import Mgrit
 
 
@@ -32,12 +31,15 @@ def main():
     infos = mgrit.solve()
 
     res = np.load('results/arenstorf/' + str(len(infos['conv'])) + '/0.0:17.06521656015796.npy', allow_pickle=True)
+
+    # Plot MGRIT approximation of Arenstorf orbit
     plt.plot(0, 0, marker='o', color='black')
     plt.plot(1, 0, marker='o', color='black')
     plt.text(0.1, 0.1, u'Earth')
     plt.text(1.0, 0.1, u'Moon')
+    # Use member function of VectorArenstorf to plot orbit
     for i in range(0, len(res), 1000):
-        res[i].plot()  # Extra implemented function for arenstorf
+        res[i].plot()
     plt.show()
     print('a')
 
