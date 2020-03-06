@@ -154,14 +154,19 @@ at the end of the simulation, or not at all. Note that the output function is ca
 
 
     # Define output function that writes the solution to a file
-    def output_fcn(self):
+        def output_fcn(self):
         # Set path to solution
         path = 'results/' + 'dahlquist'
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-        # Save solution to file; here, we just have a single solution value at each time point
-        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Local time interval for distinguishing procs
-                [self.u[0][i].get_values() for i in self.index_local[0]])   # Save solution values at local time points
+
+        # Save solution to file; here, we just have a single solution value at each time point.
+        # Use local time interval to distinguish between processes:
+        #   - self.t[0]           : local fine-grid (level 0) time interval
+        #   - self.index_local[0] : indices of local fine-grid (level 0) time interval
+        #   - self.u[0]           : fine-grid (level 0) solution values
+        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Local time interval
+                [self.u[0][i].get_values() for i in self.index_local[0]])   # Solution values at local time points
 
     # Create Dahlquist's test problem with 101 time steps in the interval [0, 5]
     dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
