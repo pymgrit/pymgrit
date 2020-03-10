@@ -203,16 +203,746 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pymgrit.parallel_model.html">pymgrit.parallel_model package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#pymgrit-parallel-model-mgrit-parallel-model-module">pymgrit.parallel_model.mgrit_parallel_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#pymgrit-parallel-model-parallel-model-module">pymgrit.parallel_model.parallel_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#module-pymgrit.parallel_model.mgrit_parallel_model">pymgrit.parallel_model.mgrit_parallel_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#module-pymgrit.parallel_model.parallel_model">pymgrit.parallel_model.parallel_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#module-pymgrit.parallel_model">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pymgrit">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pymgrit.Advection1D">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Advection1D</code><span class="sig-paren">(</span><em class="sig-param">c</em>, <em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Advection1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<dl class="simple">
+<dt>Application class for the advection problem in 1D space,</dt><dd><p>u_t + c * u_t = 0,</p>
+</dd>
+</dl>
+<p>subject to periodic boundary conditions in space and
+initial condition u(x, 0) = exp(-x^2).</p>
+<dl class="method">
+<dt id="pymgrit.Advection1D.compute_matrix">
+<code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Advection1D.compute_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define spatial discretization matrix for advection problem.</p>
+<p>Discretization is first-order upwind in space.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Advection1D.initialise">
+<code class="sig-name descname">initialise</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Advection1D.initialise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial condition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Advection1D.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.advection.advection_1d.VectorAdvection1D</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Advection1D.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backward Euler</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Application">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Application</code><span class="sig-paren">(</span><em class="sig-param">t_start: float = None</em>, <em class="sig-param">t_stop: float = None</em>, <em class="sig-param">nt: int = None</em>, <em class="sig-param">t_interval: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Application" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract class for problems. Each problem has to be a child</p>
+<dl class="attribute">
+<dt id="pymgrit.Application.required_attributes">
+<code class="sig-name descname">required_attributes</code><em class="property"> = ['vector_template', 'vector_t_start']</em><a class="headerlink" href="#pymgrit.Application.required_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Application.step">
+<em class="property">abstract </em><code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: object</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; object<a class="headerlink" href="#pymgrit.Application.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time stepper for problem
+:param u_start: Start solution
+:param t_start: Start time point
+:param t_stop: End time point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Application.vector_t_start">
+<em class="property">property </em><code class="sig-name descname">vector_t_start</code><a class="headerlink" href="#pymgrit.Application.vector_t_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property u
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Application.vector_template">
+<em class="property">property </em><code class="sig-name descname">vector_template</code><a class="headerlink" href="#pymgrit.Application.vector_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property u
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.ArenstorfOrbit">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">ArenstorfOrbit</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.ArenstorfOrbit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<dl class="simple">
+<dt>Application for Arenstorf orbit problem,</dt><dd><p>x’’ = x + 2y’ - b*(x + a)/D_1 - a*(x - b)/D_2,
+y’’ = y - 2x’ - b*y/D_1 - a*y/D_2</p>
+</dd>
+<dt>with a = 0.012277471, b = 1 - a,</dt><dd><p>D_1 = ((x + a)^2 + y^2)^(3/2),  D_2 = ((x - a)^2 + y^2)^(3/2)</p>
+</dd>
+<dt>and ICs</dt><dd><p>x(0) = 0.994,  x’(0) = 0,  y(0) = 0,  y’(0) = -2.00158510637908</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="pymgrit.ArenstorfOrbit.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit<a class="headerlink" href="#pymgrit.ArenstorfOrbit.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time stepper for problem
+:param u_start: Start solution
+:param t_start: Start time point
+:param t_stop: End time point</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Brusselator">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Brusselator</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Brusselator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<dl class="simple">
+<dt>Application for Brusselator system,</dt><dd><p>x’ = A + x^2y - (B + 1)x,
+y’ = Bx - x^2y,</p>
+</dd>
+<dt>with A = 1, B = 3, and ICs</dt><dd><p>x(0) = 0,  y(0) = 1</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="pymgrit.Brusselator.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.brusselator.brusselator.VectorBrusselator</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.brusselator.brusselator.VectorBrusselator<a class="headerlink" href="#pymgrit.Brusselator.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time stepper for problem
+:param u_start: Start solution
+:param t_start: Start time point
+:param t_stop: End time point</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Dahlquist">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Dahlquist</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Dahlquist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>Solves  u’ = lambda u,
+with lambda = -1 and u(0) = 1</p>
+<dl class="method">
+<dt id="pymgrit.Dahlquist.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.dahlquist.dahlquist.VectorDahlquist</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.dahlquist.dahlquist.VectorDahlquist<a class="headerlink" href="#pymgrit.Dahlquist.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time stepper for problem
+:param u_start: Start solution
+:param t_start: Start time point
+:param t_stop: End time point</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.GridTransfer">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">GridTransfer</code><a class="headerlink" href="#pymgrit.GridTransfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract class for grid transfers. Each grid transfer has to be a child</p>
+<dl class="method">
+<dt id="pymgrit.GridTransfer.interpolation">
+<em class="property">abstract </em><code class="sig-name descname">interpolation</code><span class="sig-paren">(</span><em class="sig-param">u</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.GridTransfer.interpolation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spatial interpolation between two grids.
+Gets solutions of one grid and transforms it to another one
+:param u: Start solution</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.GridTransfer.restriction">
+<em class="property">abstract </em><code class="sig-name descname">restriction</code><span class="sig-paren">(</span><em class="sig-param">u</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.GridTransfer.restriction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spatial restriction between two grids.
+Gets solutions of one grid and transforms it to another one
+:param u: Start solution</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.GridTransferCopy">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">GridTransferCopy</code><a class="headerlink" href="#pymgrit.GridTransferCopy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.grid_transfer.GridTransfer" title="pymgrit.core.grid_transfer.GridTransfer"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.grid_transfer.GridTransfer</span></code></a></p>
+<p>Standard grid transfer. Copies values</p>
+<dl class="method">
+<dt id="pymgrit.GridTransferCopy.interpolation">
+<code class="sig-name descname">interpolation</code><span class="sig-paren">(</span><em class="sig-param">u</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.GridTransferCopy.interpolation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate u
+:rtype: object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.GridTransferCopy.restriction">
+<code class="sig-name descname">restriction</code><span class="sig-paren">(</span><em class="sig-param">u</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.GridTransferCopy.restriction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restrict u
+:rtype: object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Heat1D">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat1D</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">a</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>Heat equation 1-d example
+u_t - a*u_xx = b(x,t),  a &gt; 0, x in [0,1], t in [0,T]</p>
+<blockquote>
+<div><p>u(0,t)  = u(1,t) = 0,   t in [0,T]
+u(x,0)  = sin(pi*x),    x in [0,1]</p>
+</div></blockquote>
+<p>with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t))
+=&gt; solution u(x,t) = sin(pi*x)*cos(t)</p>
+<dl class="method">
+<dt id="pymgrit.Heat1D.compute_matrix">
+<code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D.compute_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Space discretization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1D.rhs">
+<code class="sig-name descname">rhs</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D.rhs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Right-hand-side</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1D.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.heat_1d.VectorHeat1D</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.heat_1d.VectorHeat1D<a class="headerlink" href="#pymgrit.Heat1D.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backward Euler in time
+At each time step i = 1, …, nt+1, we obtain the linear system
+| 1+2ar   -ar                     | |  u_{1,i}   |   |  u_{1,i-1}   |
+|  -ar   1+2ar  -ar               | |  u_{2,i}   |   |  u_{2,i-1}   |
+|         …   …    …        | |    …     | = |     …      |
+|               -ar   1+2ar  -ar  | | u_{nx-1,i} |   | u_{nx-1,i-1} |
+|                      -ar  1+2ar | |  u_{nx,i}  |   |  u_{nx,i-1}  |</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line-block">
+<div class="line">dt*b_{1,i}   |</div>
+<div class="line">dt*b_{2,i}   |</div>
+<div class="line-block">
+<div class="line">…       |</div>
+</div>
+</div>
+<div class="line">dt*b_{nx-1,i} |</div>
+<div class="line-block">
+<div class="line">dt*b_{nx,i}  |</div>
+</div>
+</div>
+</div></blockquote>
+<p>with r = (dt/dx^2), which we denote by
+Mu_i = u_{i-1} + dt*b_i.
+This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
+which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)
+:param u_start:
+:param t_start:
+:param t_stop:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1D.u_exact">
+<code class="sig-name descname">u_exact</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D.u_exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solution for one time point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1D.u_exact_complete">
+<code class="sig-name descname">u_exact_complete</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D.u_exact_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solution for all time points</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Heat1DBDF1">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat1DBDF1</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">dt</em>, <em class="sig-param">a</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>Heat equation 1-d example
+u_t - a*u_xx = b(x,t),  a &gt; 0, x in [0,1], t in [0,T]</p>
+<blockquote>
+<div><p>u(0,t)  = u(1,t) = 0,   t in [0,T]
+u(x,0)  = sin(pi*x),    x in [0,1]</p>
+</div></blockquote>
+<p>with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t))
+=&gt; solution u(x,t) = sin(pi*x)*cos(t)</p>
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF1.compute_matrix">
+<code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.compute_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Space discretization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF1.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Right-hand-side</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF1.heat_sparse">
+<em class="property">static </em><code class="sig-name descname">heat_sparse</code><span class="sig-paren">(</span><em class="sig-param">nx</em>, <em class="sig-param">fac</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.heat_sparse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Central FD in space</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF1.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts<a class="headerlink" href="#pymgrit.Heat1DBDF1.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backward Euler in time
+At each time step i = 1, …, nt+1, we obtain the linear system
+| 1+2ar   -ar                     | |  u_{1,i}   |   |  u_{1,i-1}   |
+|  -ar   1+2ar  -ar               | |  u_{2,i}   |   |  u_{2,i-1}   |
+|         …   …    …        | |    …     | = |     …      |
+|               -ar   1+2ar  -ar  | | u_{nx-1,i} |   | u_{nx-1,i-1} |
+|                      -ar  1+2ar | |  u_{nx,i}  |   |  u_{nx,i-1}  |</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line-block">
+<div class="line">dt*b_{1,i}   |</div>
+<div class="line">dt*b_{2,i}   |</div>
+<div class="line-block">
+<div class="line">…       |</div>
+</div>
+</div>
+<div class="line">dt*b_{nx-1,i} |</div>
+<div class="line-block">
+<div class="line">dt*b_{nx,i}  |</div>
+</div>
+</div>
+</div></blockquote>
+<p>with r = (dt/dx^2), which we denote by
+Mu_i = u_{i-1} + dt*b_i.
+This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
+which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF1.u_exact">
+<code class="sig-name descname">u_exact</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.u_exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solution for one time point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF1.u_exact_complete">
+<code class="sig-name descname">u_exact_complete</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.u_exact_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solution for all time points</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Heat1DBDF2">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat1DBDF2</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">dt</em>, <em class="sig-param">a</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>Heat equation 1-d example
+u_t - a*u_xx = b(x,t),  a &gt; 0, x in [0,1], t in [0,T]</p>
+<blockquote>
+<div><p>u(0,t)  = u(1,t) = 0,   t in [0,T]
+u(x,0)  = sin(pi*x),    x in [0,1]</p>
+</div></blockquote>
+<p>with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t))
+=&gt; solution u(x,t) = sin(pi*x)*cos(t)</p>
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF2.compute_matrix">
+<code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2.compute_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Space discretization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF2.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2.f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Right-hand-side</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF2.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts<a class="headerlink" href="#pymgrit.Heat1DBDF2.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>BDF2 in time</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF2.u_exact">
+<code class="sig-name descname">u_exact</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2.u_exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solution for one time point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat1DBDF2.u_exact_complete">
+<code class="sig-name descname">u_exact_complete</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2.u_exact_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solution for all time points</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Heat2D">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat2D</code><span class="sig-paren">(</span><em class="sig-param">lx</em>, <em class="sig-param">ly</em>, <em class="sig-param">nx</em>, <em class="sig-param">ny</em>, <em class="sig-param">a</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>Heat equation 2-d example</p>
+<dl class="method">
+<dt id="pymgrit.Heat2D.compute_matrix">
+<code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D.compute_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat2D.compute_rhs">
+<code class="sig-name descname">compute_rhs</code><span class="sig-paren">(</span><em class="sig-param">u_start</em>, <em class="sig-param">t_start</em>, <em class="sig-param">t_stop</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D.compute_rhs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat2D.f">
+<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D.f" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat2D.i">
+<code class="sig-name descname">i</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D.i" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat2D.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.heat_2d.VectorHeat2D</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.heat_2d.VectorHeat2D<a class="headerlink" href="#pymgrit.Heat2D.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward-difference in time
+:param u_start:
+:param t_start:
+:param t_stop:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Heat2D.u_exact">
+<code class="sig-name descname">u_exact</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D.u_exact" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Lorentz">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Lorentz</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Lorentz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<dl class="method">
+<dt id="pymgrit.Lorentz.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.lorentz.lorentz.VectorLorentz</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.lorentz.lorentz.VectorLorentz<a class="headerlink" href="#pymgrit.Lorentz.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time stepper for problem
+:param u_start: Start solution
+:param t_start: Start time point
+:param t_stop: End time point</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Mgrit">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Mgrit</code><span class="sig-paren">(</span><em class="sig-param">problem: List[pymgrit.core.application.Application], transfer: List[pymgrit.core.grid_transfer.GridTransfer] = None, it: int = 100, tol: float = 1e-07, nested_iteration: bool = True, cf_iter: int = 1, cycle_type: str = 'V', comm_time: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Intracomm object&gt;, comm_space: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Comm object&gt;, logging_lvl: int = 20, output_fcn=None, output_lvl=1, random_init_guess: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Mgrit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Set up an MGRIT solver, given an array of problems and an array of grid transfers</p>
+<p>The problems are assumed to have a  of constant dimension and the spacetime
+matrix stencil solved is [-Phi  I].</p>
+<dl class="method">
+<dt id="pymgrit.Mgrit.c_exchange">
+<code class="sig-name descname">c_exchange</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.c_exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point exchange if the first point is a F-points. Typically, after an C-point update
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.c_relax">
+<code class="sig-name descname">c_relax</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.c_relax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perfoms a C relaxation
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.convergence_criteria">
+<code class="sig-name descname">convergence_criteria</code><span class="sig-paren">(</span><em class="sig-param">iteration: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.convergence_criteria" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute pace-time residual
+solve A(u) = g with</p>
+<blockquote>
+<div><blockquote>
+<div><div class="line-block">
+<div class="line">I                |</div>
+</div>
+</div></blockquote>
+<dl>
+<dt>A = | -Phi   I           |</dt><dd><div class="line-block">
+<div class="line">…   …    |</div>
+<div class="line-block">
+<div class="line">-Phi  I |</div>
+</div>
+</div>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>where Phi propagates u_{i-1} from t = t_{i-1} to t = t_i:</dt><dd><p>u_i = Phi(u_{i-1}) (including forcing from RHS of PDE)</p>
+</dd>
+<dt>and with</dt><dd><p>g = (u_0 0 … 0)^T</p>
+</dd>
+<dt>The residual can be computed by</dt><dd><p>r_i = Phi(u_{i-1}) - u_i, i = 1, …. nt,
+r_0 = 0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.create_u">
+<code class="sig-name descname">create_u</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.create_u" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the solution vector.
+:param lvl:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.error_correction">
+<code class="sig-name descname">error_correction</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.error_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the coarse grid error approximation
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.f_exchange">
+<code class="sig-name descname">f_exchange</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.f_exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Point exchange if the first point is a C-points. Typically, after an F-point update
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.f_relax">
+<code class="sig-name descname">f_relax</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.f_relax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a F-relaxation
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.fas_residual">
+<code class="sig-name descname">fas_residual</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.fas_residual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inject the fine grid approximation and its residual to the coarse grid
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.forward_solve">
+<code class="sig-name descname">forward_solve</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.forward_solve" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Solve the problem via time stepping on coarsest grid</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param lvl</dt>
+<dd class="field-odd"><p>the corresponding MGRIT level</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.get_c_point">
+<code class="sig-name descname">get_c_point</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; pymgrit.core.application.Application<a class="headerlink" href="#pymgrit.Mgrit.get_c_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exchange of the first/last C-point between two processes
+:param lvl: the corresponding MGRIT level</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em>, <em class="sig-param">cycle_type: str</em>, <em class="sig-param">iteration: int</em>, <em class="sig-param">first_f: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs one MGRIT iteration
+:return:
+:param lvl: the corresponding MGRIT level
+:param cycle_type:
+:param iteration:
+:param first_f:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.log_info">
+<code class="sig-name descname">log_info</code><span class="sig-paren">(</span><em class="sig-param">message: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.log_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the message to the logger. Only one processor
+:param message:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.nested_iteration">
+<code class="sig-name descname">nested_iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.nested_iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate initial approximation by the computation and interpolation of approximations on coarser grids</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.ouput_run_information">
+<code class="sig-name descname">ouput_run_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.ouput_run_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs run information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.setup_comm_info">
+<code class="sig-name descname">setup_comm_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.setup_comm_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes which process holds the previous and next point for each lvl and process</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.setup_points">
+<code class="sig-name descname">setup_points</code><span class="sig-paren">(</span><em class="sig-param">lvl: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.setup_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes grid information per process
+:param lvl: the corresponding MGRIT level
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#pymgrit.Mgrit.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function for solving the problem. Performs MGRIT iterations until a stopping criteria
+is reached or the maximum number of iterations
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.split_into">
+<em class="property">static </em><code class="sig-name descname">split_into</code><span class="sig-paren">(</span><em class="sig-param">number_points: int</em>, <em class="sig-param">procs: int</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.Mgrit.split_into" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split points
+:param number_points:
+:param procs:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Mgrit.split_points">
+<code class="sig-name descname">split_points</code><span class="sig-paren">(</span><em class="sig-param">length: int</em>, <em class="sig-param">size: int</em>, <em class="sig-param">rank: int</em><span class="sig-paren">)</span> &#x2192; Tuple[int, int]<a class="headerlink" href="#pymgrit.Mgrit.split_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split points evenly in size parts and compute the first point and block size of the process interval
+:param length: Number of points
+:param size: Number of processes
+:param rank: Rank
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.MgritParallelModel">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">MgritParallelModel</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.MgritParallelModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.mgrit.Mgrit" title="pymgrit.core.mgrit.Mgrit"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.mgrit.Mgrit</span></code></a></p>
+<p>MGRIT optimized for the GETDP induction machine</p>
+<dl class="method">
+<dt id="pymgrit.MgritParallelModel.convergence_criteria">
+<code class="sig-name descname">convergence_criteria</code><span class="sig-paren">(</span><em class="sig-param">iteration: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.MgritParallelModel.convergence_criteria" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop after one iteration
+:param iteration: Iteration number</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.MgritParallelModel.iteration">
+<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param">lvl</em>, <em class="sig-param">cycle_type</em>, <em class="sig-param">iteration</em>, <em class="sig-param">first_f</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.MgritParallelModel.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs one iteration</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.ParallelModel">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">ParallelModel</code><span class="sig-paren">(</span><em class="sig-param">sleep</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.ParallelModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<p>Problem for test the parallel model.</p>
+<dl class="method">
+<dt id="pymgrit.ParallelModel.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.parallel_model.parallel_model.VectorParallelModel</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.parallel_model.parallel_model.VectorParallelModel<a class="headerlink" href="#pymgrit.ParallelModel.step" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – </p></li>
+<li><p><strong>t_start</strong> – </p></li>
+<li><p><strong>t_stop</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.Vector">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Vector</code><a class="headerlink" href="#pymgrit.Vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract class for one solution point. Each solution data structure has to be a child</p>
+<dl class="method">
+<dt id="pymgrit.Vector.clone_rand">
+<em class="property">abstract </em><code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.clone_rand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the solution construct with random values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Vector.clone_zero">
+<em class="property">abstract </em><code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.clone_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the solution construct with all zeros.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Vector.get_values">
+<em class="property">abstract </em><code class="sig-name descname">get_values</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.get_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Vector.norm">
+<em class="property">abstract </em><code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Norm of the solution construct</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Vector.set_values">
+<em class="property">abstract </em><code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.set_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the values</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pymgrit.VectorHeat1D2Pts">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">VectorHeat1D2Pts</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.VectorHeat1D2Pts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
+<p>Solution vector for two points</p>
+<dl class="method">
+<dt id="pymgrit.VectorHeat1D2Pts.clone_rand">
+<code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.VectorHeat1D2Pts.clone_rand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial solution vector with random values
+:rtype: object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.VectorHeat1D2Pts.clone_zero">
+<code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.VectorHeat1D2Pts.clone_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial solution vector with all zeros
+:rtype: object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.VectorHeat1D2Pts.get_values">
+<code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.VectorHeat1D2Pts.get_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.VectorHeat1D2Pts.norm">
+<code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.VectorHeat1D2Pts.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Norm
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.VectorHeat1D2Pts.set_values">
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">first_time_point</em>, <em class="sig-param">second_time_point</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.VectorHeat1D2Pts.set_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the values</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pymgrit.simple_setup_problem">
+<code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">simple_setup_problem</code><span class="sig-paren">(</span><em class="sig-param">problem: pymgrit.core.application.Application</em>, <em class="sig-param">level: int</em>, <em class="sig-param">coarsening: int</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.simple_setup_problem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
