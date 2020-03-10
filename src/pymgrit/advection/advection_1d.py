@@ -80,10 +80,9 @@ class Advection1D(Application):
 
     def compute_matrix(self):
         """
-        Define discretization matrix for advection problem.
+        Define spatial discretization matrix for advection problem.
 
-        Discretization is first-order upwind in space and
-        backward Euler in time.
+        Discretization is first-order upwind in space.
         """
 
         fac = self.c / self.dx
@@ -108,6 +107,9 @@ class Advection1D(Application):
         self.vector_t_start.set_values(np.exp(-self.x ** 2))
 
     def step(self, u_start: VectorAdvection1D, t_start: float, t_stop: float):
+        """
+        Backward Euler
+        """
         tmp = u_start.get_values()
         tmp = spsolve((t_stop - t_start) * self.space_disc + self.identity, tmp)
         u_stop = VectorAdvection1D(len(tmp))

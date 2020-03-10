@@ -1,3 +1,8 @@
+"""
+Apply two-level MGRIT with FCF-relaxation
+to solve the 1D advection equation
+"""
+
 import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
