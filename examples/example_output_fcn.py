@@ -24,7 +24,7 @@ def main():
         #   - self.t[0]           : local fine-grid (level 0) time interval
         #   - self.index_local[0] : indices of local fine-grid (level 0) time interval
         #   - self.u[0]           : fine-grid (level 0) solution values
-        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Local time interval
+        np.save(path + '/dahlquist',  # Local time interval
                 [self.u[0][i].get_values() for i in self.index_local[0]])   # Solution values at local time points
 
     # Create Dahlquist's test problem with 101 time steps in the interval [0, 5]
@@ -41,7 +41,7 @@ def main():
 
     # Plot the solution (Note: modifications necessary if more than one process is used for the simulation!)
     t = np.linspace(dahlquist.t_start, dahlquist.t_end, dahlquist.nt)
-    sol = np.load('results/dahlquist/0.0:5.0.npy')
+    sol = np.load('results/dahlquist/dahlquist.npy')
     plt.plot(t, sol)
     plt.xlabel('t')
     plt.ylabel('u(t)')

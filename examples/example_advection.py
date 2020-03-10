@@ -18,8 +18,8 @@ def main():
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
         # Save solution to file; here, we have nx solution values at each time point.
-        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Local time interval
-                [self.u[0][i] for i in self.index_local[0]])                # Solution values at local time points
+        np.save(path + '/advection',
+                [self.u[0][i] for i in self.index_local[0]])  # Solution values at local time points
 
     # Create two-level time-grid hierarchy for the advection equation
     advection_lvl_0 = Advection1D(c=1, x_start=-1, x_end=1, nx=129, t_start=0, t_stop=2, nt=129)
@@ -46,7 +46,7 @@ def main():
     plt.ylabel('residual norm')
 
     # plot initial condition and solution at final time t = 2
-    sol = np.load('results/advection/' + str(len(res)) + '/0.0:2.0.npy', allow_pickle=True)
+    sol = np.load('results/advection/' + str(len(res)) + '/advection.npy', allow_pickle=True)
     x = advection_lvl_0.x
     fig, ax = plt.subplots()
     ax.plot(x, sol[0].get_values(), 'b:', label='initial condition u(x, 0)')

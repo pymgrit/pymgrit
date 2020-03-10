@@ -7,14 +7,6 @@ from pymgrit.heat.heat_1d_2pts_bdf2 import Heat1DBDF2
 
 
 def main():
-    def output_fcn(self):
-        name = 'heat_equation_bdf2'
-        pathlib.Path('results/' + name).mkdir(parents=True, exist_ok=True)
-        sol = {'u': [self.u[0][i] for i in self.index_local[0]], 'time': self.runtime_solve, 'conv': self.conv,
-               't': self.problem[0].t, 'time_setup': self.runtime_setup}
-
-        np.save('results/' + name + '/' + str(self.t[0][0]) + '-' + str(self.t[0][-1]), sol)
-
     t_stop = 2
     nt = 512
     dt = t_stop / nt
