@@ -112,7 +112,8 @@ of PyMGRIT's core routine `Mgrit()`.
                   transfer=None,                                # Spatial grid transfer. Automatically set if None.
                   max_iter=10,                                  # Maximum number of iterations (default: 100)
                   tol=1e-10,                                    # Stopping tolerance (default: 1e-7)
-                  nested_iteration=True,                        # Use (True) or do not use (False) nested iterations (default: True)
+                  nested_iteration=True,                        # Use (True) or do not use (False) nested iterations
+                                                                # (default: True)
                   cf_iter=1,                                    # Number of CF relaxations (default: 1)
                   cycle_type='V',                               # multigrid cycling type (default: 'V'):
                                                                 # 'V' -> V-cycles
@@ -123,7 +124,8 @@ of PyMGRIT's core routine `Mgrit()`.
                                                                 # 10: Debug -> Runtime of all components
                                                                 # 20: Info  -> Info per iteration + summary
                                                                 # 30: None  -> No information
-                  output_fcn=None,                              # Function for saving solution values to file (default: None)
+                  output_fcn=None,                              # Function for saving solution values to file
+                                                                # (default: None)
                   output_lvl=1,                                 # Output level (default: 1):
                                                                 # 0 -> output_fcn is never called
                                                                 # 1 -> output_fcn is called at the end of the simulation

@@ -1,5 +1,5 @@
 """
-Solver parameters
+MGRIT solver parameters
 """
 
 from mpi4py import MPI
@@ -22,7 +22,8 @@ def main():
                   transfer=None,                                # Spatial grid transfer. Automatically set if None.
                   max_iter=10,                                  # Maximum number of iterations (default: 100)
                   tol=1e-10,                                    # Stopping tolerance (default: 1e-7)
-                  nested_iteration=True,                        # Use (True) or do not use (False) nested iterations (default: True)
+                  nested_iteration=True,                        # Use (True) or do not use (False) nested iterations
+                                                                # (default: True)
                   cf_iter=1,                                    # Number of CF relaxations (default: 1)
                   cycle_type='V',                               # multigrid cycling type (default: 'V'):
                                                                 # 'V' -> V-cycles
@@ -33,7 +34,8 @@ def main():
                                                                 # 10: Debug -> Runtime of all components
                                                                 # 20: Info  -> Info per iteration + summary
                                                                 # 30: None  -> No information
-                  output_fcn=None,                              # Function for saving solution values to file (default: None)
+                  output_fcn=None,                              # Function for saving solution values to file
+                                                                # (default: None)
                   output_lvl=1,                                 # Output level (default: 1):
                                                                 # 0 -> output_fcn is never called
                                                                 # 1 -> output_fcn is called at the end of the simulation
