@@ -35,13 +35,7 @@ def main():
     info = mgrit.solve()
 
     # Plot residual history
-    plt.figure(1)
     res = info['conv']
-    iters = np.arange(1, res.size + 1)
-    plt.semilogy(iters, res, 'o-')
-    plt.xticks(iters)
-    plt.xlabel('iter #')
-    plt.ylabel('residual norm')
 
     # Plot initial condition and MGRIT approximation of the solution at the final time t = 2
     sol = np.load('results/advection/' + str(len(res)) + '/advection.npy', allow_pickle=True)
