@@ -1,5 +1,5 @@
 """
-Heat equation 1-d example
+Vector and application class for the 1D heat equation
 """
 
 import numpy as np
@@ -13,7 +13,7 @@ from pymgrit.core.vector import Vector
 
 class VectorHeat1D(Vector):
     """
-    Vector for the 1D heat equation
+    Vector class for the 1D heat equation
     """
 
     def __init__(self, size):
@@ -51,25 +51,29 @@ class VectorHeat1D(Vector):
 
 class Heat1D(Application):
     """
-    Heat equation 1-d example
-    u_t - a*u_xx = b(x,t),  a > 0, x in [0,1], t in [0,T]
-         u(0,t)  = u(1,t) = 0,   t in [0,T]
+    Application class for the heat equation in 1D space,
+        u_t - a*u_xx = b(x,t),  a > 0, x in [0,1], t in [0,T],
+    with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t)),
+    homogeneous Dirichlet BCs in space,
+         u(0,t)  = u(1,t) = 0,   t in [0,T],
+    and subject to the initial condition
          u(x,0)  = sin(pi*x),    x in [0,1]
-    with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t))
-    => solution u(x,t) = sin(pi*x)*cos(t)
+
+    => exact solution u(x,t) = sin(pi*x)*cos(t)
     """
 
     def __init__(self, x_start, x_end, nx, a, *args, **kwargs):
         super(Heat1D, self).__init__(*args, **kwargs)
         self.x_start = x_start  # lower interval bound of spatial domain
         self.x_end = x_end  # upper interval bound of spatial domain
-        self.x = np.linspace(self.x_start, self.x_end, nx)  # Spatial domain
-        self.x = self.x[1:-1]  # homogeneous BCs
-        self.nx = nx - 2  # homogeneous BCs
+        self.x = np.linspace(self.x_start, self.x_end, nx)  # spatial domain
+        self.x = self.x[1:-1]  # homogeneous Dirichlet BCs
+        self.nx = nx - 2  # update number of spatial unknowns due to BCs
         self.a = a  # diffusion coefficient
-        self.dx = self.x[1] - self.x[0]
+        self.dx = self.x[1] - self.x[0]  # spatial grid spacing
         self.identity = identity(self.nx, dtype='float', format='csr')
 
+        # set spatial discretization matrix
         self.space_disc = self.compute_matrix()
 
         self.vector_template = VectorHeat1D(self.nx)
@@ -78,7 +82,9 @@ class Heat1D(Application):
 
     def compute_matrix(self):
         """
-        Space discretization
+        Define spatial discretization matrix for 1D heat equation
+
+        Second-order central finite differences in space.
         """
 
         fac = self.a / self.dx ** 2
@@ -96,13 +102,19 @@ class Heat1D(Application):
 
     def u_exact(self, x, t):
         """
-        Solution for one time point
+        Exact solution of 1D heat equation example problem at a given space-time point (x,t)
+        :param x: spatial grid point
+        :param t: time point
+        :return: exact solution of 1D heat equation example problem at point (x,t)
         """
         return np.sin(np.pi * x) * np.cos(t)
 
     def rhs(self, x, t):
         """
-        Right-hand-side
+        Right-hand side of 1D heat equation example problem at a given space-time point (x,t)
+        :param x: spatial grid point
+        :param t: time point
+        :return: right-hand side of 1D heat equation example problem at point (x,t)
         """
         return - np.sin(np.pi * x) * (np.sin(t) - 1 * np.pi ** 2 * np.cos(t))
 
@@ -117,27 +129,25 @@ class Heat1D(Application):
 
     def step(self, u_start: VectorHeat1D, t_start: float, t_stop: float) -> VectorHeat1D:
         """
-        Backward Euler in time
-        At each time step i = 1, ..., nt+1, we obtain the linear system
-        | 1+2ar   -ar                     | |  u_{1,i}   |   |  u_{1,i-1}   |
-        |  -ar   1+2ar  -ar               | |  u_{2,i}   |   |  u_{2,i-1}   |
-        |         ...   ...    ...        | |    ...     | = |     ...      |
-        |               -ar   1+2ar  -ar  | | u_{nx-1,i} |   | u_{nx-1,i-1} |
-        |                      -ar  1+2ar | |  u_{nx,i}  |   |  u_{nx,i-1}  |
+        Time integration routine for 1D heat equation example problem:
+            Backward Euler in time
 
-                                                             |  dt*b_{1,i}   |
-                                                             |  dt*b_{2,i}   |
-                                                             |     ...       |
-                                                             | dt*b_{nx-1,i} |
-                                                             |  dt*b_{nx,i}  |
+        At each time step i = 1, ..., nt+1, we obtain the linear system
+        | 1+2ar   -ar                     | |  u_{1,i}   |   |  u_{1,i-1}   |   |  dt*b_{1,i}   |
+        |  -ar   1+2ar  -ar               | |  u_{2,i}   |   |  u_{2,i-1}   |   |  dt*b_{2,i}   |
+        |         ...   ...    ...        | |    ...     | = |     ...      | + |     ...       |
+        |               -ar   1+2ar  -ar  | | u_{nx-1,i} |   | u_{nx-1,i-1} |   | dt*b_{nx-1,i} |
+        |                      -ar  1+2ar | |  u_{nx,i}  |   |  u_{nx,i-1}  |   |  dt*b_{nx,i}  |
+
         with r = (dt/dx^2), which we denote by
-        Mu_i = u_{i-1} + dt*b_i.
+            Mu_i = u_{i-1} + dt*b_i.
         This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
         which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)
-        :param u_start:
-        :param t_start:
-        :param t_stop:
-        :return:
+
+        :param u_start: approximate solution for the input time t_start
+        :param t_start: time associated with the input approximate solution u_start
+        :param t_stop: time to evolve the input approximate solution to
+        :return: approximate solution at input time t_stop
         """
         tmp = u_start.get_values()
         tmp = spsolve((t_stop - t_start) * self.space_disc + self.identity,

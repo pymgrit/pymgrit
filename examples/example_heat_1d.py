@@ -1,3 +1,8 @@
+"""
+Apply four-level MGRIT F-cycles with FCF-relaxation to solve the 1D heat equation,
+save the MGRIT approximation of the solution at the end of the simulation
+"""
+
 import pathlib
 import numpy as np
 
