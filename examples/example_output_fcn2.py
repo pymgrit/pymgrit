@@ -31,17 +31,16 @@ def main():
     # Solve Brusselator system
     info = mgrit.solve()
 
+    # Plot the results after each iteration
     iterations_needed = len(info['conv']) + 1
     cols = 2
     rows = iterations_needed // cols + iterations_needed % cols
     position = range(1, iterations_needed + 1)
-
-    fig = plt.figure(1, figsize=[10,10])
-    # Plot the solution (Note: modifications necessary if more than one process is used for the simulation!)
+    fig = plt.figure(1, figsize=[10, 10])
     for i in range(iterations_needed):
         res = np.load('results/brusselator/' + str(i) + '/brusselator.npy', allow_pickle=True)
         ax = fig.add_subplot(rows, cols, position[i])
-        ax.scatter(res[:,0], res[:,1])
+        ax.scatter(res[:, 0], res[:, 1])
     plt.show()
 
 

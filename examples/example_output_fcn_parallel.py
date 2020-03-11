@@ -34,17 +34,18 @@ def main():
     # Solve Brusselator system
     info = mgrit.solve()
 
+    # Plot the results after each iteration
     iterations_needed = len(info['conv']) + 1
     cols = 2
     rows = iterations_needed // cols + iterations_needed % cols
     position = range(1, iterations_needed + 1)
     rank = MPI.COMM_WORLD.Get_rank()
-
     if rank == 0:
         fig = plt.figure(1, figsize=[10, 10])
         for i in range(iterations_needed):
             files = []
-            path = 'results/brusselator_parallel/'+str(i)+'/'
+            path = 'results/brusselator_parallel/' + str(i) + '/'
+            # Construct solution from multiple files
             for filename in os.listdir(path):
                 files.append([int(filename[filename.find('-') + 1: -4]), np.load(path + filename, allow_pickle=True)])
             files.sort(key=lambda tup: tup[0])
@@ -52,6 +53,7 @@ def main():
             ax = fig.add_subplot(rows, cols, position[i])
             ax.scatter(res[:, 0], res[:, 1])
         plt.show()
+
 
 if __name__ == '__main__':
     main()
