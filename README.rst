@@ -42,7 +42,7 @@ Look at the Quickstart_ or the Examples_.
 What is MGRIT?
 ---------------
 
-TODO
+To be done.
 
 PyMGRIT Features
 ----------------
