@@ -95,6 +95,11 @@ class Brusselator(Application):
            1   |   0      0      1
          ------+----------------------------
                | 1 / 6  1 / 3  1 / 3  1 / 6
+
+        :param u_start: approximate solution for the input time t_start
+        :param t_start: time associated with the input approximate solution u_start
+        :param t_stop: time to evolve the input approximate solution to
+        :return: approximate solution at input time t_stop
         """
 
         dt = t_stop - t_start

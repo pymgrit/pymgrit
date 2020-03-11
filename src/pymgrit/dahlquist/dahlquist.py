@@ -62,6 +62,11 @@ class Dahlquist(Application):
         """
         Time integration routine for Dahlquist's test problem:
             Backward Euler
+
+        :param u_start: approximate solution for the input time t_start
+        :param t_start: time associated with the input approximate solution u_start
+        :param t_stop: time to evolve the input approximate solution to
+        :return: approximate solution at input time t_stop
         """
         tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
         return VectorDahlquist(tmp)

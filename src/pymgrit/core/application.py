@@ -84,8 +84,9 @@ class Application(object, metaclass=MetaApplication):
     @abstractmethod
     def step(self, u_start: object, t_start: float, t_stop: float) -> object:
         """
-        Time stepper for problem
-        :param u_start: Start solution
-        :param t_start: Start time point
-        :param t_stop: End time point
+        Time stepping routine for application problem
+        :param u_start: approximate solution for the input time t_start
+        :param t_start: time associated with the input approximate solution u_start
+        :param t_stop: time to evolve the input approximate solution to
+        :return: approximate solution at input time t_stop
         """

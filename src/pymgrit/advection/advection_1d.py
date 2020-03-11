@@ -74,7 +74,7 @@ class Advection1D(Application):
 
         self.identity = identity(self.nx, dtype='float', format='csr')
 
-        # set discretization matrix
+        # set spatial discretization matrix
         self.space_disc = self.compute_matrix()
 
         # set initial condition
@@ -114,6 +114,11 @@ class Advection1D(Application):
         """
         Time integration routine for 1D advection problem:
             Backward Euler
+
+        :param u_start: approximate solution for the input time t_start
+        :param t_start: time associated with the input approximate solution u_start
+        :param t_stop: time to evolve the input approximate solution to
+        :return: approximate solution at input time t_stop
         """
         tmp = u_start.get_values()
         tmp = spsolve((t_stop - t_start) * self.space_disc + self.identity, tmp)
