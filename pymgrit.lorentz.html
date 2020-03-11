@@ -178,10 +178,11 @@
 <dl class="method">
 <dt id="pymgrit.lorentz.lorentz.Lorentz.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.lorentz.lorentz.VectorLorentz</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.lorentz.lorentz.VectorLorentz<a class="headerlink" href="#pymgrit.lorentz.lorentz.Lorentz.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Time stepper for problem
-:param u_start: Start solution
-:param t_start: Start time point
-:param t_stop: End time point</p>
+<dd><p>Time stepping routine for application problem
+:param u_start: approximate solution for the input time t_start
+:param t_start: time associated with the input approximate solution u_start
+:param t_stop: time to evolve the input approximate solution to
+:return: approximate solution at input time t_stop</p>
 </dd></dl>
 
 </dd></dl>

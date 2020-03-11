@@ -246,6 +246,18 @@ initial condition u(x, 0) = exp(-x^2).</p>
 <dt>Time integration routine for 1D advection problem:</dt><dd><p>Backward Euler</p>
 </dd>
 </dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – approximate solution for the input time t_start</p></li>
+<li><p><strong>t_start</strong> – time associated with the input approximate solution u_start</p></li>
+<li><p><strong>t_stop</strong> – time to evolve the input approximate solution to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>approximate solution at input time t_stop</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -263,10 +275,11 @@ initial condition u(x, 0) = exp(-x^2).</p>
 <dl class="method">
 <dt id="pymgrit.Application.step">
 <em class="property">abstract </em><code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: object</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; object<a class="headerlink" href="#pymgrit.Application.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Time stepper for problem
-:param u_start: Start solution
-:param t_start: Start time point
-:param t_stop: End time point</p>
+<dd><p>Time stepping routine for application problem
+:param u_start: approximate solution for the input time t_start
+:param t_start: time associated with the input approximate solution u_start
+:param t_stop: time to evolve the input approximate solution to
+:return: approximate solution at input time t_stop</p>
 </dd></dl>
 
 <dl class="method">
@@ -301,10 +314,11 @@ y’’ = y - 2x’ - b*y/D_1 - a*y/D_2</p>
 <dl class="method">
 <dt id="pymgrit.ArenstorfOrbit.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit<a class="headerlink" href="#pymgrit.ArenstorfOrbit.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Time stepper for problem
-:param u_start: Start solution
-:param t_start: Start time point
-:param t_stop: End time point</p>
+<dd><p>Time stepping routine for application problem
+:param u_start: approximate solution for the input time t_start
+:param t_start: time associated with the input approximate solution u_start
+:param t_stop: time to evolve the input approximate solution to
+:return: approximate solution at input time t_stop</p>
 </dd></dl>
 
 </dd></dl>
@@ -340,6 +354,18 @@ y’ = Bx - x^2y,</p>
 </dd>
 </dl>
 </div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – approximate solution for the input time t_start</p></li>
+<li><p><strong>t_start</strong> – time associated with the input approximate solution u_start</p></li>
+<li><p><strong>t_stop</strong> – time to evolve the input approximate solution to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>approximate solution at input time t_stop</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -358,6 +384,18 @@ y’ = Bx - x^2y,</p>
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.dahlquist.dahlquist.VectorDahlquist</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.dahlquist.dahlquist.VectorDahlquist<a class="headerlink" href="#pymgrit.Dahlquist.step" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Time integration routine for Dahlquist’s test problem:</dt><dd><p>Backward Euler</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – approximate solution for the input time t_start</p></li>
+<li><p><strong>t_start</strong> – time associated with the input approximate solution u_start</p></li>
+<li><p><strong>t_stop</strong> – time to evolve the input approximate solution to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>approximate solution at input time t_stop</p>
 </dd>
 </dl>
 </dd></dl>
@@ -649,10 +687,11 @@ u(x,0)  = sin(pi*x),    x in [0,1]</p>
 <dl class="method">
 <dt id="pymgrit.Lorentz.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.lorentz.lorentz.VectorLorentz</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.lorentz.lorentz.VectorLorentz<a class="headerlink" href="#pymgrit.Lorentz.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Time stepper for problem
-:param u_start: Start solution
-:param t_start: Start time point
-:param t_stop: End time point</p>
+<dd><p>Time stepping routine for application problem
+:param u_start: approximate solution for the input time t_start
+:param t_start: time associated with the input approximate solution u_start
+:param t_stop: time to evolve the input approximate solution to
+:return: approximate solution at input time t_stop</p>
 </dd></dl>
 
 </dd></dl>
