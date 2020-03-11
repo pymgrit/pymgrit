@@ -81,14 +81,16 @@ class Brusselator(Application):
         self.a = 1
         self.b = 3
 
-    # Time integration routine: RK4
-    #   0   |
-    # 1 / 2 | 1 / 2
-    # 1 / 2 |   0    1 / 2
-    #   1   |   0      0      1
-    # ------+----------------------------
-    #       | 1 / 6  1 / 3  1 / 3  1 / 6
     def step(self, u_start: VectorBrusselator, t_start: float, t_stop: float) -> VectorBrusselator:
+        # Time integration routine: RK4
+        #
+        #   0   |
+        # 1 / 2 | 1 / 2
+        # 1 / 2 |   0    1 / 2
+        #   1   |   0      0      1
+        # ------+----------------------------
+        #       | 1 / 6  1 / 3  1 / 3  1 / 6
+
         dt = t_stop - t_start
 
         k1 = brusselator(t_start, u_start.get_values())

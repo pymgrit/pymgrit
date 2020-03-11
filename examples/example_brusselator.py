@@ -1,6 +1,6 @@
 """
 Apply two-level MGRIT with FCF-relaxation
-to solve Brusselator system, using RK4 time integration
+to solve Brusselator system
 """
 
 import pathlib
@@ -31,10 +31,12 @@ def main():
     # Solve Brusselator system
     infos = mgrit.solve()
 
-    res = np.load('results/brusselator/' + str(len(infos['conv'])) + '/brusselator.npy', allow_pickle=True)
+    sol = np.load('results/brusselator/' + str(len(infos['conv'])) + '/brusselator.npy', allow_pickle=True)
     # Plot solution using member function of class VectorBrusselator
-    for i in range(0, len(res)):
-        res[i].plotSolution()
+    for i in range(0, len(sol)):
+        sol[i].plotSolution()
+    plt.xlabel('x')
+    plt.ylabel('y')
     plt.show()
 
 
