@@ -1,5 +1,6 @@
 """
-Scalar ODE example
+Scalar ODE example:
+Vector and application class for Dahlquist's test problem
 """
 
 import numpy as np
@@ -10,7 +11,7 @@ from pymgrit.core.vector import Vector
 
 class VectorDahlquist(Vector):
     """
-    Vector for the dahlquist test equation
+    Vector class for the Dahlquist test equation
     """
 
     def __init__(self, value):
@@ -47,15 +48,20 @@ class VectorDahlquist(Vector):
 
 class Dahlquist(Application):
     """
-    Solves  u' = lambda u,
-    with lambda = -1 and u(0) = 1
+    Application class for Dahlquist's test problem,
+        u' = lambda u,
+    with lambda = -1 and IC u(0) = 1
     """
 
     def __init__(self, *args, **kwargs):
         super(Dahlquist, self).__init__(*args, **kwargs)
-        self.vector_template = VectorDahlquist(0)  # Setting the class which is used for each time point
-        self.vector_t_start = VectorDahlquist(1)  # Setting the initial condition
+        self.vector_template = VectorDahlquist(0)  # Set the class to be used for each time point
+        self.vector_t_start = VectorDahlquist(1)   # Set the initial condition
 
     def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
-        tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()  # Backward Euler
+        """
+        Time integration routine for Dahlquist's test problem:
+            Backward Euler
+        """
+        tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
         return VectorDahlquist(tmp)
