@@ -19,7 +19,7 @@ from pymgrit.core.grid_transfer_copy import GridTransferCopy
 
 class Mgrit:
     """
-    Set up an MGRIT solver, given an array of problems and an array of grid transfers
+    Set up an MGRIT solver, given an array of problems (and an array of grid transfers)
 
     The problems are assumed to have a  of constant dimension and the spacetime
     matrix stencil solved is [-Phi  I].
@@ -33,15 +33,15 @@ class Mgrit:
         """
         Initialize space-time matrix.
         Phi_args is for any random parameters you may think of later
+        :param problem: List of problems (one for each MGRIT level)
+        :param transfer: List of spatial transfer operators (one for each MGRIT level)
+        :param max_iter: Maximum number of iterations
+        :param tol: stopping criterion
         :param output_fcn: Function to save results to file.
         :param output_lvl: Output level, possible values 0, 1, 2:
                0 -> output_fcn is never called
                1 -> output_fcn is called when solve stops
                2 -> output_fcn is called after each MGRIT iteration
-        :param problem: List of problems per MGRIT level
-        :param transfer: List of transfer operators per MGRIT level
-        :param max_iter: Maximum number of iterations
-        :param tol: stopping criterion
         :param nested_iteration: With or without nested iteration
         :param cf_iter: Number of CF iteration in MGRIT iteration
         :param cycle_type: 'F' or 'V' cycle

@@ -22,7 +22,7 @@ def main():
     heat4 = Heat1D(x_start=0, x_end=2, nx=1001, a=1, t_start=0, t_stop=2, nt=5)
 
     problem = [heat0, heat1, heat2, heat3, heat4]
-    mgrit = Mgrit(problem=problem, cf_iter=1, cycle_type='F', nested_iteration=False, it=10,
+    mgrit = Mgrit(problem=problem, cf_iter=1, cycle_type='F', nested_iteration=False, max_iter=10,
                   output_fcn=output_fcn, output_lvl=2, logging_lvl=20, random_init_guess=False)
 
     return mgrit.solve()

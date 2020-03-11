@@ -26,7 +26,7 @@ def main():
     heat4 = ParallelModel(sleep=sleep, t_start=0, t_stop=2, nt=2 ** 1 + 1)
 
     problem = [heat0, heat1, heat2, heat3, heat4]
-    mgrit = MgritParallelModel(problem=problem, cf_iter=1, cycle_type='V', nested_iteration=False, it=1,
+    mgrit = MgritParallelModel(problem=problem, cf_iter=1, cycle_type='V', nested_iteration=False, max_iter=1,
                                output_fcn=output_fcn, output_lvl=2, logging_lvl=20)
 
     mgrit.solve()
