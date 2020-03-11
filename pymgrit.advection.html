@@ -170,6 +170,7 @@
 </div>
 <div class="section" id="module-pymgrit.advection.advection_1d">
 <span id="pymgrit-advection-advection-1d-module"></span><h2>pymgrit.advection.advection_1d module<a class="headerlink" href="#module-pymgrit.advection.advection_1d" title="Permalink to this headline">¶</a></h2>
+<p>Vector and application class for the 1D advection problem</p>
 <dl class="class">
 <dt id="pymgrit.advection.advection_1d.Advection1D">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.advection.advection_1d.</code><code class="sig-name descname">Advection1D</code><span class="sig-paren">(</span><em class="sig-param">c</em>, <em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection.advection_1d.Advection1D" title="Permalink to this definition">¶</a></dt>
@@ -190,13 +191,19 @@ initial condition u(x, 0) = exp(-x^2).</p>
 <dl class="method">
 <dt id="pymgrit.advection.advection_1d.Advection1D.initialise">
 <code class="sig-name descname">initialise</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection.advection_1d.Advection1D.initialise" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initial condition</p>
+<dd><dl class="simple">
+<dt>Set the initial condition of the 1D advection problem</dt><dd><p>u(x,0) = exp(-x^2)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.advection.advection_1d.Advection1D.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.advection.advection_1d.VectorAdvection1D</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection.advection_1d.Advection1D.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Backward Euler</p>
+<dd><dl class="simple">
+<dt>Time integration routine for 1D advection problem:</dt><dd><p>Backward Euler</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -205,7 +212,7 @@ initial condition u(x, 0) = exp(-x^2).</p>
 <dt id="pymgrit.advection.advection_1d.VectorAdvection1D">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.advection.advection_1d.</code><code class="sig-name descname">VectorAdvection1D</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection.advection_1d.VectorAdvection1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
-<p>Vector for the 1D advection equation</p>
+<p>Vector class for the 1D advection problem</p>
 <dl class="method">
 <dt id="pymgrit.advection.advection_1d.VectorAdvection1D.clone_rand">
 <code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.advection.advection_1d.VectorAdvection1D.clone_rand" title="Permalink to this definition">¶</a></dt>
