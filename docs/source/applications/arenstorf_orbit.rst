@@ -9,9 +9,7 @@ Arenstorf orbit
 * system of two scalar second-order ODEs with two unknown functions
   solved as system of four scalar first-order ODEs
 
-* discretizations:
-
-    * RK45 from ``scipy.integrate``
+* discretizations: RK45 from ``scipy.integrate``
 
 .. _example_arenstorf.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_arenstorf.py
 

@@ -1,3 +1,7 @@
+"""
+Vector and application class for the 1D advection problem
+"""
+
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
@@ -9,7 +13,7 @@ from pymgrit.core.vector import Vector
 
 class VectorAdvection1D(Vector):
     """
-    Vector for the 1D advection equation
+    Vector class for the 1D advection problem
     """
 
     def __init__(self, size):
@@ -101,14 +105,15 @@ class Advection1D(Application):
 
     def initialise(self):
         """
-        Initial condition
+        Set the initial condition of the 1D advection problem
+            u(x,0) = exp(-x^2)
         """
-        # Gaussian
         self.vector_t_start.set_values(np.exp(-self.x ** 2))
 
     def step(self, u_start: VectorAdvection1D, t_start: float, t_stop: float):
         """
-        Backward Euler
+        Time integration routine for 1D advection problem:
+            Backward Euler
         """
         tmp = u_start.get_values()
         tmp = spsolve((t_stop - t_start) * self.space_disc + self.identity, tmp)

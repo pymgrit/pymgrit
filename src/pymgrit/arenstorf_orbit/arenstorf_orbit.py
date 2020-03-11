@@ -1,5 +1,5 @@
 """
-Arenstorf orbit
+Vector and application class for the Arenstorf orbit problem
 """
 
 import numpy as np
@@ -48,7 +48,7 @@ class VectorArenstorfOrbit(Vector):
         return self.value
 
     def plot(self):
-        plt.plot(self.value[0], self.value[1], color='red', marker='.', linestyle='-')
+        plt.plot(self.value[0], self.value[1], color='red', marker='.')
 
 def arenstorf(t, y):
     a = 0.012277471
