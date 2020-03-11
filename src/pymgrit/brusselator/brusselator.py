@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from pymgrit.core.vector import Vector
 from pymgrit.core.application import Application
 
+
 class VectorBrusselator(Vector):
     """
     Vector class for Brusselator system
@@ -44,7 +45,7 @@ class VectorBrusselator(Vector):
     def norm(self):
         return np.linalg.norm(self.value)
 
-    def plotSolution(self):
+    def plot_solution(self):
         plt.plot(self.value[0], self.value[1], color='red', marker='o')
 
 
@@ -58,8 +59,8 @@ def brusselator(t, y):
     a = 1
     b = 3
     f = np.array([
-        a + (y[0]**2) * y[1] - (b+1) * y[0],
-        b * y[0] - (y[0]**2) * y[1]
+        a + (y[0] ** 2) * y[1] - (b + 1) * y[0],
+        b * y[0] - (y[0] ** 2) * y[1]
     ], dtype=float)
     return f
 
@@ -105,11 +106,11 @@ class Brusselator(Application):
         dt = t_stop - t_start
 
         k1 = brusselator(t_start, u_start.get_values())
-        k2 = brusselator(t_start + dt/2, u_start.get_values() + dt/2 * k1)
-        k3 = brusselator(t_start + dt/2, u_start.get_values() + dt/2 * k2)
+        k2 = brusselator(t_start + dt / 2, u_start.get_values() + dt / 2 * k1)
+        k3 = brusselator(t_start + dt / 2, u_start.get_values() + dt / 2 * k2)
         k4 = brusselator(t_start + dt, u_start.get_values() + dt * k3)
 
-        u = u_start.get_values() + dt/6 * (k1 + 2*k2 + 2*k3 + k4)
+        u = u_start.get_values() + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
         u_stop = VectorBrusselator()
         u_stop.set_values(u)
         return u_stop
