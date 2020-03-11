@@ -40,7 +40,7 @@ def test_heat_equation_run():
     heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1,t_start=0, t_stop=2, nt=17)
     heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1,t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
-    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, it=2, random_init_guess=False)
+    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2, random_init_guess=False)
     res = mgrit.solve()
     result_conv = np.array([0.00267692, 0.00018053])
     np.testing.assert_almost_equal(result_conv, res['conv'])
@@ -54,7 +54,7 @@ def test_setup_points():
     heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1,t_start=0, t_stop=2, nt=17)
     heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1,t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
-    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, it=2)
+    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2)
     size = 7
     cpts = []
     comm_front = []
@@ -178,7 +178,7 @@ def test_setup_comm_info():
     heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, t_start=0, t_stop=2, nt=17)
     heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
-    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, it=2)
+    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2)
     size = 7
     send_to = []
     get_from = []
