@@ -55,7 +55,6 @@ Applications
     applications/arenstorf_orbit
     applications/heat_equation
     applications/advection
-    applications/firedrake_diffusion_2d
 
 :doc:`applications/dahlquist`
     Dahlquist test equation
@@ -71,6 +70,20 @@ Applications
 
 :doc:`applications/advection`
     Advection problem
+
+------------
+Coupling
+------------
+
+.. toctree::
+    :caption: Coupling
+    :hidden:
+
+    coupling/firedrake
+
+:doc:`coupling/firedrake`
+    Coupling with Firedrake
+
 
 ----
 Help
