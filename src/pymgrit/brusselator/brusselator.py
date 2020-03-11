@@ -1,3 +1,7 @@
+"""
+Vector and application class for the 1D Brusselator system
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -6,7 +10,7 @@ from pymgrit.core.application import Application
 
 class VectorBrusselator(Vector):
     """
-    Vector for Brusselator system
+    Vector class for Brusselator system
     """
 
     def __init__(self):
@@ -44,9 +48,9 @@ class VectorBrusselator(Vector):
         plt.plot(self.value[0], self.value[1], color='red', marker='o')
 
 
-# define right-hand side of Brusselator system
 def brusselator(t, y):
     """
+    Right-hand side of Brusselator system
     :param t: time associated with the input approximate solution y
     :param y: approximate solution for the input time t
     :return: ODE right-hand side of Brusselator system
@@ -62,7 +66,7 @@ def brusselator(t, y):
 
 class Brusselator(Application):
     """
-    Application for Brusselator system,
+    Application class for Brusselator system,
        x' = A + x^2y - (B + 1)x,
        y' = Bx - x^2y,
     with A = 1, B = 3, and ICs
@@ -82,14 +86,16 @@ class Brusselator(Application):
         self.b = 3
 
     def step(self, u_start: VectorBrusselator, t_start: float, t_stop: float) -> VectorBrusselator:
-        # Time integration routine: RK4
-        #
-        #   0   |
-        # 1 / 2 | 1 / 2
-        # 1 / 2 |   0    1 / 2
-        #   1   |   0      0      1
-        # ------+----------------------------
-        #       | 1 / 6  1 / 3  1 / 3  1 / 6
+        """
+        Time integration routine for Brusselator system: RK4
+
+           0   |
+         1 / 2 | 1 / 2
+         1 / 2 |   0    1 / 2
+           1   |   0      0      1
+         ------+----------------------------
+               | 1 / 6  1 / 3  1 / 3  1 / 6
+        """
 
         dt = t_stop - t_start
 

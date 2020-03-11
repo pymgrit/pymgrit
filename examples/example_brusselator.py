@@ -1,6 +1,7 @@
 """
-Apply two-level MGRIT with FCF-relaxation
-to solve Brusselator system
+Apply two-level MGRIT with FCF-relaxation to solve Brusselator system,
+save the MGRIT approximation of the solution at the end of the simulation,
+plot the MGRIT approximation
 """
 
 import pathlib
@@ -14,7 +15,7 @@ from pymgrit.core.mgrit import Mgrit
 def main():
     def output_fcn(self):
         # Set path to solution
-        path = 'results/' + 'brusselator' + '/' + str(self.solve_iter)
+        path = 'results/' + 'brusselator'
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
         # Save solution to file; here, we have two solution values at each time point.
@@ -26,12 +27,14 @@ def main():
     brusselator_lvl_1 = Brusselator(t_interval=brusselator_lvl_0.t[::20])
 
     # Set up the MGRIT solver using the two-level hierarchy and set the output function
-    mgrit = Mgrit(problem=[brusselator_lvl_0, brusselator_lvl_1], output_fcn=output_fcn, output_lvl=2, cf_iter=1)
+    mgrit = Mgrit(problem=[brusselator_lvl_0, brusselator_lvl_1], cf_iter=1, output_fcn=output_fcn)
 
     # Solve Brusselator system
     infos = mgrit.solve()
 
-    sol = np.load('results/brusselator/' + str(len(infos['conv'])) + '/brusselator.npy', allow_pickle=True)
+    # Load MGRIT approximation of solution
+    sol = np.load('results/brusselator/brusselator.npy', allow_pickle=True)
+
     # Plot solution using member function of class VectorBrusselator
     for i in range(0, len(sol)):
         sol[i].plotSolution()
