@@ -314,7 +314,7 @@ y’’ = y - 2x’ - b*y/D_1 - a*y/D_2</p>
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Brusselator</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Brusselator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
-<dt>Application for Brusselator system,</dt><dd><p>x’ = A + x^2y - (B + 1)x,
+<dt>Application class for Brusselator system,</dt><dd><p>x’ = A + x^2y - (B + 1)x,
 y’ = Bx - x^2y,</p>
 </dd>
 <dt>with A = 1, B = 3, and ICs</dt><dd><p>x(0) = 0,  y(0) = 1</p>
@@ -323,10 +323,23 @@ y’ = Bx - x^2y,</p>
 <dl class="method">
 <dt id="pymgrit.Brusselator.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.brusselator.brusselator.VectorBrusselator</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.brusselator.brusselator.VectorBrusselator<a class="headerlink" href="#pymgrit.Brusselator.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Time stepper for problem
-:param u_start: Start solution
-:param t_start: Start time point
-:param t_stop: End time point</p>
+<dd><p>Time integration routine for Brusselator system: RK4</p>
+<blockquote>
+<div><blockquote>
+<div><p>0   |</p>
+</div></blockquote>
+<p>1 / 2 | 1 / 2
+1 / 2 |   0    1 / 2</p>
+<blockquote>
+<div><p>1   |   0      0      1</p>
+</div></blockquote>
+<dl>
+<dt>——+—————————-</dt><dd><div class="line-block">
+<div class="line">1 / 6  1 / 3  1 / 3  1 / 6</div>
+</div>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 </dd></dl>
