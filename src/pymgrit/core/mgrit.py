@@ -36,20 +36,22 @@ class Mgrit:
         :param problem: List of problems (one for each MGRIT level)
         :param transfer: List of spatial transfer operators (one for each MGRIT level)
         :param max_iter: Maximum number of iterations
-        :param tol: stopping criterion
-        :param output_fcn: Function to save results to file.
-        :param output_lvl: Output level, possible values 0, 1, 2:
-               0 -> output_fcn is never called
-               1 -> output_fcn is called when solve stops
-               2 -> output_fcn is called after each MGRIT iteration
-        :param nested_iteration: With or without nested iteration
-        :param cf_iter: Number of CF iteration in MGRIT iteration
+        :param tol: stopping tolerance
+        :param nested_iteration: With (True) or without (False) nested iterations
+        :param cf_iter: Number of CF relaxations in each MGRIT iteration
         :param cycle_type: 'F' or 'V' cycle
         :param comm_time: Time communicator
         :param comm_space: Space communicator
         :param logging_lvl: Logging level:
-               Value <= 10: Debug logging level -> Runtime of all components
-               10 > Value <= 20: Info logging level -> Information per MGRIT iteration, summary at the end
+               Value = 10: Debug logging level -> Runtime of all components
+               Value = 20: Info logging level  -> Information per MGRIT iteration + summary at the end
+               Value = 30: No logging level    -> No information
+        :param output_fcn: Function for saving solution values to file
+        :param output_lvl: Output level, possible values 0, 1, 2:
+               0 -> output_fcn is never called
+               1 -> output_fcn is called at the end of the simulation
+               2 -> output_fcn is called after each MGRIT iteration
+        :param random_init_guess: Use (True) or do not use (False) random initial guess
         """
         logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S',
                             level=logging_lvl, stream=sys.stdout)
@@ -463,7 +465,7 @@ class Mgrit:
         msg = ['Run parameter overview \n',
                '{0: <25}'.format(f'time interval') + ' : ' + '[' + str(self.problem[0].t[0]) + ', ' + str(
                    self.problem[0].t[-1]) + ']',
-               '{0: <25}'.format(f'number of time points ') + ' : ' + str(len(self.problem[0].t)) + ' points',
+               '{0: <25}'.format(f'number of time points ') + ' : ' + str(len(self.problem[0].t)),
                '{0: <25}'.format(f'max dt ') + ' : ' + str(
                    np.max(self.problem[0].t[1:] - self.problem[0].t[:-1])),
                '{0: <25}'.format(f'number of levels') + ' : ' + str(self.lvl_max),
