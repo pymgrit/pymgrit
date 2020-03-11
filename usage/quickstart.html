@@ -207,8 +207,9 @@
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">21</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">16</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">43</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">5</span>  <span class="o">|</span> <span class="n">conv</span><span class="p">:</span> <span class="mf">3.975214076032893e-12</span>  <span class="o">|</span> <span class="n">conv</span> <span class="n">factor</span><span class="p">:</span> <span class="mf">0.01264329816633959</span>     <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.006150722503662109</span> <span class="n">s</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">21</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">16</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">43</span> <span class="o">-</span> <span class="n">Solve</span> <span class="n">took</span> <span class="mf">0.05394101142883301</span> <span class="n">s</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">21</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">16</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">43</span> <span class="o">-</span> <span class="n">Run</span> <span class="n">parameter</span> <span class="n">overview</span>
+
 <span class="n">time</span> <span class="n">interval</span>             <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
-<span class="n">number</span> <span class="n">of</span> <span class="n">time</span> <span class="n">points</span>     <span class="p">:</span> <span class="mi">101</span> <span class="n">points</span>
+<span class="n">number</span> <span class="n">of</span> <span class="n">time</span> <span class="n">points</span>     <span class="p">:</span> <span class="mi">101</span>
 <span class="nb">max</span> <span class="n">dt</span>                    <span class="p">:</span> <span class="mf">0.05000000000000071</span>
 <span class="n">number</span> <span class="n">of</span> <span class="n">levels</span>          <span class="p">:</span> <span class="mi">2</span>
 <span class="n">coarsening</span> <span class="n">factors</span>        <span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -220,7 +221,8 @@
 <span class="n">space</span> <span class="n">communicator</span> <span class="n">size</span>   <span class="p">:</span> <span class="o">-</span><span class="mi">99</span>
 </pre></div>
 </div>
-<p>and returning the residual history, setup time, and solve time in dictionary <cite>info</cite>.</p>
+<p>and returning the residual history, setup time, and solve time in dictionary <cite>info</cite> with key values
+<cite>conv</cite>, <cite>time_setup</cite>, and <cite>time_solve</cite>, respectively.</p>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>The following code generates a discrete Dahlquist test problem and solves the resulting linear system using a two-level MGRIT algorithm:</p>
