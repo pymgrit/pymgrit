@@ -1,5 +1,7 @@
 """
-Access and plot the solution
+Save and plot the final MGRIT approximation of the solution
+
+Note: This example assumes a sequential run of the simulation.
 """
 
 import pathlib
@@ -20,11 +22,11 @@ def main():
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
         # Save solution to file; here, we just have a single solution value at each time point.
-        # Use local time interval to distinguish between processes:
+        # Useful member variables of MGRIT solver:
         #   - self.t[0]           : local fine-grid (level 0) time interval
         #   - self.index_local[0] : indices of local fine-grid (level 0) time interval
         #   - self.u[0]           : fine-grid (level 0) solution values
-        np.save(path + '/dahlquist',  # Local time interval
+        np.save(path + '/dahlquist',
                 [self.u[0][i].get_values() for i in self.index_local[0]])   # Solution values at local time points
 
     # Create Dahlquist's test problem with 101 time steps in the interval [0, 5]

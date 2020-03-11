@@ -76,6 +76,12 @@ produces the output::
     time communicator size    : 1
     space communicator size   : -99
 
+and returns the residual history, setup time, and solve time in dictionary `info` with the following key values:
+
+    - `conv` : residual history (2-norm of the residual at each iteration)
+    - `time_setup` : setup time [in seconds]
+    - `time_solve` : solve time [in seconds]
+
 -----------------
 Solver parameters
 -----------------
@@ -129,19 +135,26 @@ of PyMGRIT's core routine `Mgrit()`.
     # Solve the test problem
     mgrit.solve()
 
+
 ---------------
 Output function
 ---------------
 
-example_output_fcn.py_
+example_output_fcn.py_ and example_output_fcn2.py_
 
 .. _example_output_fcn.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py
+.. _example_output_fcn2.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn2.py
 
-In this example, we show how to save and plot the solution of Dahlquist's test problem.
+In this example, we show how to save and plot the MGRIT approximation of the solution of Dahlquist's test problem.
 An output function is defined that saves the solution (here, a single solution value at each time point is written to an
 output file via the ``numpy`` function `save()`). This output function is passed to the MGRIT solver.
-Depending on the solver setting (see `Solver parameters`_), the output function is called after each iteration,
-at the end of the simulation, or not at all. Note that the output function is called on each processor.
+Depending on the solver setting (see ``output_lvl`` in `Solver parameters`_), the output function
+
+* is never called,
+
+* is called at the end of the simulation (example_output_fcn.py_), or
+
+* is called after each iteration (example_output_fcn2.py_).
 
 
 ::
@@ -156,18 +169,18 @@ at the end of the simulation, or not at all. Note that the output function is ca
 
 
     # Define output function that writes the solution to a file
-        def output_fcn(self):
+    def output_fcn(self):
         # Set path to solution
         path = 'results/' + 'dahlquist'
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
         # Save solution to file; here, we just have a single solution value at each time point.
-        # Use local time interval to distinguish between processes:
+        # Useful member variables of MGRIT solver:
         #   - self.t[0]           : local fine-grid (level 0) time interval
         #   - self.index_local[0] : indices of local fine-grid (level 0) time interval
         #   - self.u[0]           : fine-grid (level 0) solution values
-        np.save(path + '/' + str(self.t[0][0]) + ':' + str(self.t[0][-1]),  # Local time interval
+        np.save(path + '/dahlquist',
                 [self.u[0][i].get_values() for i in self.index_local[0]])   # Solution values at local time points
 
     # Create Dahlquist's test problem with 101 time steps in the interval [0, 5]
@@ -184,7 +197,7 @@ at the end of the simulation, or not at all. Note that the output function is ca
 
     # Plot the solution (Note: modifications necessary if more than one process is used for the simulation!)
     t = np.linspace(dahlquist.t_start, dahlquist.t_end, dahlquist.nt)
-    sol = np.load('results/dahlquist/0.0:5.0.npy')
+    sol = np.load('results/dahlquist/dahlquist.npy')
     plt.plot(t, sol)
     plt.xlabel('t')
     plt.ylabel('u(t)')
