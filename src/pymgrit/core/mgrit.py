@@ -26,7 +26,7 @@ class Mgrit:
     """
 
     def __init__(self, problem: List[Application], transfer: List[GridTransfer] = None,
-                 it: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
+                 max_iter: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
                  cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
                  logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1,
                  random_init_guess: bool = False) -> None:
@@ -40,8 +40,8 @@ class Mgrit:
                2 -> output_fcn is called after each MGRIT iteration
         :param problem: List of problems per MGRIT level
         :param transfer: List of transfer operators per MGRIT level
-        :param it: Max number of iteration
-        :param tol: stopping criteria
+        :param max_iter: Maximum number of iterations
+        :param tol: stopping criterion
         :param nested_iteration: With or without nested iteration
         :param cf_iter: Number of CF iteration in MGRIT iteration
         :param cycle_type: 'F' or 'V' cycle
@@ -105,9 +105,9 @@ class Mgrit:
         self.g = []  # List of fas right-hand-sides
         self.t = []  # List of time intervals per process per MGRIT level
         self.m = []  # List of coarsening factors
-        self.iter_max = it  # Maximal number of iterations
+        self.iter_max = max_iter  # Maximal number of iterations
         self.tol = tol  # Convergence tolerance
-        self.conv = np.zeros(it + 1)  # Convergence information after each iteration
+        self.conv = np.zeros(max_iter + 1)  # Convergence information after each iteration
         self.runtime_solve = 0  # Solve runtime
         self.runtime_setup = 0  # Setup runtime
         self.cf_iter = cf_iter  # Count of C-, F- relaxations
