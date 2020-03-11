@@ -63,17 +63,18 @@ produces the output::
     INFO - 03-02-20 11:19:03 - iter 5  | conv: 3.975214076032893e-12  | conv factor: 0.01264329816633959     | runtime: 0.0043201446533203125 s
     INFO - 03-02-20 11:19:03 - Solve took 0.042092084884643555 s
     INFO - 03-02-20 11:19:03 - Run parameter overview
-    interval                  : [0.0, 5.0]
-    number points             : 101 points
+
+    time interval             : [0.0, 5.0]
+    number of time points     : 101
     max dt                    : 0.05000000000000071
-    level                     : 2
-    coarsening                : [2]
+    number of levels          : 2
+    coarsening factors        : [2]
     cf_iter                   : 1
     nested iteration          : True
     cycle type                : V
     stopping tolerance        : 1e-10
-    communicator size time    : 1
-    communicator size space   : -99
+    time communicator size    : 1
+    space communicator size   : -99
 
 -----------------
 Solver parameters
