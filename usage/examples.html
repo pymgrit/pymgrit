@@ -259,25 +259,26 @@ of PyMGRIT’s core routine <cite>Mgrit()</cite>.</p>
 <span class="c1"># Set up the MGRIT solver for the test problem</span>
 <span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span>       <span class="c1"># Problem structure</span>
               <span class="n">transfer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                                <span class="c1"># Spatial grid transfer. Automatically set if None.</span>
-              <span class="n">it</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>                                        <span class="c1"># Maximum number of iterations</span>
-              <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>                                    <span class="c1"># Stopping tolerance</span>
-              <span class="n">nested_iteration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                        <span class="c1"># Use nested iterations</span>
-              <span class="n">cf_iter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                                    <span class="c1"># Number of CF relaxations</span>
-              <span class="n">cycle_type</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>                               <span class="c1"># multigrid cycling type:</span>
+              <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>                                  <span class="c1"># Maximum number of iterations (default: 100)</span>
+              <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>                                    <span class="c1"># Stopping tolerance (default: 1e-7)</span>
+              <span class="n">nested_iteration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                        <span class="c1"># Use (True) or do not use (False) nested iterations (default: True)</span>
+              <span class="n">cf_iter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                                    <span class="c1"># Number of CF relaxations (default: 1)</span>
+              <span class="n">cycle_type</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>                               <span class="c1"># multigrid cycling type (default: &#39;V&#39;):</span>
                                                             <span class="c1"># &#39;V&#39; -&gt; V-cycles</span>
                                                             <span class="c1"># &#39;F&#39; -&gt; F-cycles</span>
-              <span class="n">comm_time</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="p">,</span>                     <span class="c1"># Time communicator</span>
-              <span class="n">comm_space</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_NULL</span><span class="p">,</span>                     <span class="c1"># Space communicator</span>
-              <span class="n">logging_lvl</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>                               <span class="c1"># Logging level:</span>
-                                                            <span class="c1"># 00 - 10: Debug -&gt; Runtime of all components</span>
-                                                            <span class="c1"># 11 - 20: Info  -&gt; Info per iteration + summary</span>
-                                                            <span class="c1"># 31 - 50: None  -&gt; No information</span>
-              <span class="n">output_fcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                              <span class="c1"># Save solutions to file</span>
-              <span class="n">output_lvl</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                                 <span class="c1"># Output level:</span>
+              <span class="n">comm_time</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="p">,</span>                     <span class="c1"># Time communicator (default: MPI.COMM_WORLD)</span>
+              <span class="n">comm_space</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_NULL</span><span class="p">,</span>                     <span class="c1"># Space communicator (default: MPI.COMM_NULL)</span>
+              <span class="n">logging_lvl</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>                               <span class="c1"># Logging level (default: 20):</span>
+                                                            <span class="c1"># 10: Debug -&gt; Runtime of all components</span>
+                                                            <span class="c1"># 20: Info  -&gt; Info per iteration + summary</span>
+                                                            <span class="c1"># 30: None  -&gt; No information</span>
+              <span class="n">output_fcn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                              <span class="c1"># Function for saving solution values to file (default: None)</span>
+              <span class="n">output_lvl</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                                 <span class="c1"># Output level (default: 1):</span>
                                                             <span class="c1"># 0 -&gt; output_fcn is never called</span>
                                                             <span class="c1"># 1 -&gt; output_fcn is called at the end of the simulation</span>
                                                             <span class="c1"># 2 -&gt; output_fcn is called after each MGRIT iteration</span>
-              <span class="n">random_init_guess</span><span class="o">=</span><span class="kc">False</span>                       <span class="c1"># Use random initial guess for all unknowns</span>
+              <span class="n">random_init_guess</span><span class="o">=</span><span class="kc">False</span>                       <span class="c1"># Use (True) or do not use (False) random initial guess</span>
+                                                            <span class="c1"># for all unknowns (default: False)</span>
               <span class="p">)</span>
 
 <span class="c1"># Solve the test problem</span>
