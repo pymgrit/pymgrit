@@ -1,21 +1,47 @@
 Welcome to PyMGRIT's documentation!
 ===================================
 
+PyMGRIT is a library for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python
+
+-----
+MGRIT
+-----
+
+Description
+
+--------
+Overview
+--------
+
+* Get PyMGRIT :doc:`installed <usage/installation>`
+* :doc:`usage/quickstart`
+* :doc:`Implement <usage/tutorial>` a simple problem in PyMGRIT
+* Learn about :doc:`PyMGRIT's features <usage/examples>`
+* Run :doc:`parallel simulations <usage/parallelism>`
+
 ------------
 Getting help
 ------------
 
-    - Try the :doc:`FAQ <help/faq>`.
-    - Looking for specific information? Try the :ref:`genindex` or :ref:`modindex`. TODO genindex
-    - Report bugs with PyMGRIT in our `issue tracker`_.
+* Try the :doc:`FAQ <help/faq>`.
+* Looking for specific information? Try the :ref:`genindex` or :ref:`modindex`.
+* Report bugs with PyMGRIT in our `issue tracker`_.
 
 .. _issue tracker: https://github.com/pymgrit/pymgrit/issues
 
-TODO: What is pymgrit?
+------
+Citing
+------
 
------
-Usage
------
+::
+
+    @MISC{PyMGRIT,
+      author = "Hahne, J. and Friedhoff, S.",
+      title = "{PyMGRIT}: Multigrid-Reduction-in-Time in {Python} v1.0",
+      year = "2020",
+      url = "https://github.com/pymgrit/pymgrit",
+      note = "Release 1.0"
+      }
 
 .. toctree::
     :caption: Usage
@@ -27,25 +53,6 @@ Usage
     usage/examples
     usage/parallelism
 
-:doc:`usage/installation`
-    Get PyMGRIT installed.
-
-:doc:`usage/quickstart`
-    Write your first PyMGRIT program.
-
-:doc:`usage/tutorial`
-    Write your first problem and solve it.
-
-:doc:`usage/examples`
-    Learn more by playing with a pre-made PyMGRIT project.
-
-:doc:`usage/parallelism`
-    Run parallel simulations.
-
-------------
-Applications
-------------
-
 .. toctree::
     :caption: Applications
     :hidden:
@@ -56,24 +63,6 @@ Applications
     applications/heat_equation
     applications/advection
 
-:doc:`applications/dahlquist`
-    Dahlquist test equation
-
-:doc:`applications/brusselator`
-    Brusselator
-
-:doc:`applications/arenstorf_orbit`
-    Arenstorf_orbit
-
-:doc:`applications/heat_equation`
-    Heat equation
-
-:doc:`applications/advection`
-    Advection problem
-
-------------
-Coupling
-------------
 
 .. toctree::
     :caption: Coupling
@@ -81,22 +70,8 @@ Coupling
 
     coupling/firedrake
 
-:doc:`coupling/firedrake`
-    Coupling with Firedrake
-
-
-----
-Help
-----
-
 .. toctree::
     :caption: Help
     :hidden:
 
     help/faq
-
-:doc:`help/faq`
-    Get answers to most frequently asked questions.
-
-
-:ref:`modindex`
