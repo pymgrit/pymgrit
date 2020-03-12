@@ -87,15 +87,14 @@
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multigrid-hierarchy">Multigrid hierarchy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#solver-parameters">Solver parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#output-function">Output function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#spatial-transfer-operator">Spatial transfer operator</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="parallelism.html">Parallelism</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced usage</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Applications</span></p>
 <ul>
@@ -178,20 +177,16 @@
             
   <div class="section" id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
-<p>This page contains short examples that demonstrate basic and advanced usage of PyMGRIT.
+<p>This page contains short examples that demonstrate basic usage of PyMGRIT.
 The source code for these and more examples is available in the <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples">examples</a> folder.</p>
-<div class="section" id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="#basic-usage">Basic usage</a></p></li>
 <li><p><a class="reference internal" href="#multigrid-hierarchy">Multigrid hierarchy</a></p></li>
 <li><p><a class="reference internal" href="#solver-parameters">Solver parameters</a></p></li>
 <li><p><a class="reference internal" href="#output-function">Output function</a></p></li>
-<li><p><a class="reference internal" href="#spatial-transfer-operator">Spatial transfer operator</a></p></li>
 </ul>
 </div></blockquote>
-</div>
 <div class="section" id="basic-usage">
 <h2>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py">example_dahlquist.py</a></p>
@@ -402,210 +397,6 @@ Depending on the solver setting (see <cite>output_lvl</cite> in <a class="refere
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;u(t)&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="spatial-transfer-operator">
-<h2>Spatial transfer operator<a class="headerlink" href="#spatial-transfer-operator" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_spatial_coarsening.py">example_spatial_coarsening.py</a></p>
-<p>This example shows how the transfer parameter of the MGRIT solver can be used to perform an additional spatial
-coarsening on the different levels. We use the 1D heat equation (see <a class="reference internal" href="../applications/heat_equation.html"><span class="doc">Heat Equation</span></a>).</p>
-<p>The first step is to import all necessary PyMGRIT classes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">pymgrit.heat.heat_1d</span> <span class="kn">import</span> <span class="n">Heat1D</span>  <span class="c1"># 1D Heat equation problem</span>
-<span class="kn">from</span> <span class="nn">pymgrit.heat.heat_1d</span> <span class="kn">import</span> <span class="n">VectorHeat1D</span>  <span class="c1"># 1D Heat equation vector class</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>  <span class="c1"># MGRIT solver</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.grid_transfer</span> <span class="kn">import</span> <span class="n">GridTransfer</span>  <span class="c1"># Parent grid transfer class</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.grid_transfer_copy</span> <span class="kn">import</span> <span class="n">GridTransferCopy</span>  <span class="c1"># Copy transfer class</span>
-</pre></div>
-</div>
-<p>Then, we define the class GridTransferHeat for the 1D heat equation:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GridTransferHeat</span><span class="p">(</span><span class="n">GridTransfer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Grid Transfer for the Heat Equation.</span>
-<span class="sd">    Interpolation: Linear interpolation</span>
-<span class="sd">    Restriction: Full weighted</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Constructor.</span>
-<span class="sd">        :rtype: object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GridTransferHeat</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>The grid transfer class must contain two member functions: <cite>restriction</cite> and <cite>interpolation</cite>.</p>
-<p>The function restriction receives a VectorHeat1D object and returns another VectorHeat1D object, that contains
-the restricted solution vector:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">restriction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">VectorHeat1D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorHeat1D</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Restrict u using full weighting.</span>
-
-<span class="sd">    Note: The 1d heat equation example is with homogeneous Dirichlet BCs in space.</span>
-<span class="sd">          The Heat1D vector class stores only the non boundary points.</span>
-<span class="sd">    :param u: VectorHeat1D</span>
-<span class="sd">    :rtype: VectorHeat1D</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get the non boundary points</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
-
-    <span class="c1"># Create array</span>
-    <span class="n">ret_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
-
-    <span class="c1"># Full weighting</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ret_array</span><span class="p">)):</span>
-        <span class="n">ret_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">sol</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">sol</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">4</span>
-
-    <span class="c1"># Create and return a VectorHeat1D object</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">VectorHeat1D</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ret_array</span><span class="p">))</span>
-    <span class="n">ret</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">ret_array</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span>
-</pre></div>
-</div>
-<p>The function interpolation works in the same way:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">interpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">VectorHeat1D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorHeat1D</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Interpolate u using linear interpolation</span>
-
-<span class="sd">    Note: The 1d heat equation example is with homogeneous Dirichlet BCs in space.</span>
-<span class="sd">          The Heat1D vector class stores only the non boundary points.</span>
-<span class="sd">    :param u: VectorHeat1D</span>
-<span class="sd">    :rtype: VectorHeat1D</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get the non boundary points</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
-
-    <span class="c1"># Create array</span>
-    <span class="n">ret_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-
-    <span class="c1"># Linear interpolation</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sol</span><span class="p">)):</span>
-        <span class="n">ret_array</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sol</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">ret_array</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sol</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">ret_array</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sol</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-    <span class="c1"># Create and return a VectorHeat1D object</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">VectorHeat1D</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ret_array</span><span class="p">))</span>
-    <span class="n">ret</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">ret_array</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span>
-</pre></div>
-</div>
-<p>Now, we construct our multilevel scheme building each level. In this example, we use four-level MGRIT. The finest level
-has 17 points in space, the second level 9, the third level 5 and the fourth level also 5.</p>
-<p>Note: In this example, it is not possible to use the PyMGRIT’s core function simple_setup_problem, since each level
-has different spatial sizes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">heat0</span> <span class="o">=</span> <span class="n">Heat1D</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">7</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">heat1</span> <span class="o">=</span> <span class="n">Heat1D</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_interval</span><span class="o">=</span><span class="n">heat0</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">heat2</span> <span class="o">=</span> <span class="n">Heat1D</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_interval</span><span class="o">=</span><span class="n">heat1</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">heat3</span> <span class="o">=</span> <span class="n">Heat1D</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_interval</span><span class="o">=</span><span class="n">heat2</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
-
-<span class="n">problem</span> <span class="o">=</span> <span class="p">[</span><span class="n">heat0</span><span class="p">,</span> <span class="n">heat1</span><span class="p">,</span> <span class="n">heat2</span><span class="p">,</span> <span class="n">heat3</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>Then, we have to define the transfer operator per grid level. The transfer operator is a list of lengths (#level -1) and
-specifies the transfer operator used per level. For the transfer between the first and the second level,
-an object of the class GridTransferHeat() is needed to transfer the solution between the different space grids with
-different sizes. The same is necessary for the transfer between the second and third level. Since the third and fourth
-level have the same size in space, the GridTransferCopy class from PyMGRIT’s core is used. Set up the MGRIT solver with
-the problem and the transfer operators and solve the problem:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">transfer</span> <span class="o">=</span> <span class="p">[</span><span class="n">GridTransferHeat</span><span class="p">(),</span> <span class="n">GridTransferHeat</span><span class="p">(),</span> <span class="n">GridTransferCopy</span><span class="p">()]</span>
-<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">,</span> <span class="n">transfer</span><span class="o">=</span><span class="n">transfer</span><span class="p">)</span>
-<span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Complete code:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">pymgrit.heat.heat_1d</span> <span class="kn">import</span> <span class="n">Heat1D</span>  <span class="c1"># 1D Heat equation problem</span>
-<span class="kn">from</span> <span class="nn">pymgrit.heat.heat_1d</span> <span class="kn">import</span> <span class="n">VectorHeat1D</span>  <span class="c1"># 1D Heat equation vector class</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>  <span class="c1"># MGRIT solver</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.grid_transfer</span> <span class="kn">import</span> <span class="n">GridTransfer</span>  <span class="c1"># Parent grid transfer class</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.grid_transfer_copy</span> <span class="kn">import</span> <span class="n">GridTransferCopy</span>  <span class="c1"># Copy transfer class</span>
-
-<span class="k">class</span> <span class="nc">GridTransferHeat</span><span class="p">(</span><span class="n">GridTransfer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Grid Transfer for the Heat Equation.</span>
-<span class="sd">    Interpolation: Linear interpolation</span>
-<span class="sd">    Restriction: Full weighted</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Constructor.</span>
-<span class="sd">        :rtype: object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GridTransferHeat</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-    <span class="c1"># Specify restriction operator</span>
-    <span class="k">def</span> <span class="nf">restriction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">VectorHeat1D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorHeat1D</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Restrict u using full weighting.</span>
-
-<span class="sd">        Note: The 1d heat equation example is with homogeneous Dirichlet BCs in space.</span>
-<span class="sd">              The Heat1D vector class stores only the non boundary points.</span>
-<span class="sd">        :param u: VectorHeat1D</span>
-<span class="sd">        :rtype: VectorHeat1D</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Get the non boundary points</span>
-        <span class="n">sol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
-
-        <span class="c1"># Create array</span>
-        <span class="n">ret_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
-
-        <span class="c1"># Full weighting</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ret_array</span><span class="p">)):</span>
-            <span class="n">ret_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">sol</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">sol</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">4</span>
-
-        <span class="c1"># Create and return a VectorHeat1D object</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">VectorHeat1D</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ret_array</span><span class="p">))</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">ret_array</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="c1"># Specify interpolation operator</span>
-    <span class="k">def</span> <span class="nf">interpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">VectorHeat1D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorHeat1D</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Interpolate u using linear interpolation</span>
-
-<span class="sd">        Note: The 1d heat equation example is with homogeneous Dirichlet BCs in space.</span>
-<span class="sd">              The Heat1D vector class stores only the non boundary points.</span>
-<span class="sd">        :param u: VectorHeat1D</span>
-<span class="sd">        :rtype: VectorHeat1D</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Get the non boundary points</span>
-        <span class="n">sol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
-
-        <span class="c1"># Create array</span>
-        <span class="n">ret_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-
-        <span class="c1"># Linear interpolation</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sol</span><span class="p">)):</span>
-            <span class="n">ret_array</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sol</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">ret_array</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sol</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">ret_array</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sol</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-        <span class="c1"># Create and return a VectorHeat1D object</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">VectorHeat1D</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ret_array</span><span class="p">))</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">ret_array</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ret</span>
-
-<span class="n">heat0</span> <span class="o">=</span> <span class="n">Heat1D</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">7</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">heat1</span> <span class="o">=</span> <span class="n">Heat1D</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_interval</span><span class="o">=</span><span class="n">heat0</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">heat2</span> <span class="o">=</span> <span class="n">Heat1D</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_interval</span><span class="o">=</span><span class="n">heat1</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">heat3</span> <span class="o">=</span> <span class="n">Heat1D</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">t_interval</span><span class="o">=</span><span class="n">heat2</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
-
-<span class="n">problem</span> <span class="o">=</span> <span class="p">[</span><span class="n">heat0</span><span class="p">,</span> <span class="n">heat1</span><span class="p">,</span> <span class="n">heat2</span><span class="p">,</span> <span class="n">heat3</span><span class="p">]</span>
-
-<span class="c1"># Specify a list of grid transfer operators of length (#level - 1)</span>
-<span class="c1"># Using the new class GridTransferHeat to apply spatial coarsening on the first two levels</span>
-<span class="c1"># Using the PyMGRIT&#39;s core class GridTransferCopy on the last level (no spatial coarsening)</span>
-<span class="n">transfer</span> <span class="o">=</span> <span class="p">[</span><span class="n">GridTransferHeat</span><span class="p">(),</span> <span class="n">GridTransferHeat</span><span class="p">(),</span> <span class="n">GridTransferCopy</span><span class="p">()]</span>
-
-<span class="c1"># Setup MGRIT solver with problem and transfer</span>
-<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">,</span> <span class="n">transfer</span><span class="o">=</span><span class="n">transfer</span><span class="p">)</span>
-
-<span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
