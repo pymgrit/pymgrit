@@ -1,5 +1,5 @@
 """
-Access and plot the solution
+Save and plot the MGRIT approximation of the solution after each iteration
 """
 
 import pathlib
@@ -15,11 +15,16 @@ from pymgrit.core.mgrit import Mgrit
 
 def main():
     def output_fcn(self):
-        # Set path to solution
+        # Set path to solution; here, we include the iteration number in the path name
         path = 'results/' + 'brusselator_parallel' + '/' + str(self.solve_iter)
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+
         # Save solution to file; here, we have two solution values at each time point.
+        # Useful member variables of MGRIT solver:
+        #   - self.t[0]           : local fine-grid (level 0) time interval
+        #   - self.index_local[0] : indices of local fine-grid (level 0) time interval
+        #   - self.u[0]           : fine-grid (level 0) solution values
         np.save(path + '/brusselator-' + str(self.comm_time_rank),
                 [self.u[0][i].get_values() for i in self.index_local[0]])  # Solution values at local time points
 
@@ -34,7 +39,7 @@ def main():
     # Solve Brusselator system
     info = mgrit.solve()
 
-    # Plot the results after each iteration
+    # Plot the MGRIT approximation of the solution after each iteration
     iterations_needed = len(info['conv']) + 1
     cols = 2
     rows = iterations_needed // cols + iterations_needed % cols
@@ -49,9 +54,12 @@ def main():
             for filename in os.listdir(path):
                 files.append([int(filename[filename.find('-') + 1: -4]), np.load(path + filename, allow_pickle=True)])
             files.sort(key=lambda tup: tup[0])
-            res = np.vstack([l.pop(1) for l in files])
+            sol = np.vstack([l.pop(1) for l in files])
             ax = fig.add_subplot(rows, cols, position[i])
-            ax.scatter(res[:, 0], res[:, 1])
+            # Plot the two solution values at each time point
+            ax.scatter(sol[:, 0], sol[:, 1])
+            ax.set(xlabel='x', ylabel='y')
+        fig.tight_layout(pad=2.0)
         plt.show()
 
 
