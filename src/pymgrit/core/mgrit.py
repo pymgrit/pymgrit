@@ -462,20 +462,20 @@ class Mgrit:
         """
         Outputs run information
         """
-        msg = ['Run parameter overview \n',
-               '{0: <25}'.format(f'time interval') + ' : ' + '[' + str(self.problem[0].t[0]) + ', ' + str(
+        msg = ['Run parameter overview',
+               '  ' + '{0: <25}'.format(f'time interval') + ' : ' + '[' + str(self.problem[0].t[0]) + ', ' + str(
                    self.problem[0].t[-1]) + ']',
-               '{0: <25}'.format(f'number of time points ') + ' : ' + str(len(self.problem[0].t)),
-               '{0: <25}'.format(f'max dt ') + ' : ' + str(
+               '  ' + '{0: <25}'.format(f'number of time points ') + ' : ' + str(len(self.problem[0].t)),
+               '  ' + '{0: <25}'.format(f'max dt ') + ' : ' + str(
                    np.max(self.problem[0].t[1:] - self.problem[0].t[:-1])),
-               '{0: <25}'.format(f'number of levels') + ' : ' + str(self.lvl_max),
-               '{0: <25}'.format(f'coarsening factors') + ' : ' + str(self.m[:-1]),
-               '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter),
-               '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it),
-               '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type),
-               '{0: <25}'.format(f'stopping tolerance') + ' : ' + str(self.tol),
-               '{0: <25}'.format(f'time communicator size') + ' : ' + str(self.comm_time_size),
-               '{0: <25}'.format(f'space communicator size') + ' : ' + str(self.comm_space_size)]
+               '  ' + '{0: <25}'.format(f'number of levels') + ' : ' + str(self.lvl_max),
+               '  ' + '{0: <25}'.format(f'coarsening factors') + ' : ' + str(self.m[:-1]),
+               '  ' + '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter),
+               '  ' + '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it),
+               '  ' + '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type),
+               '  ' + '{0: <25}'.format(f'stopping tolerance') + ' : ' + str(self.tol),
+               '  ' + '{0: <25}'.format(f'time communicator size') + ' : ' + str(self.comm_time_size),
+               '  ' + '{0: <25}'.format(f'space communicator size') + ' : ' + str(self.comm_space_size)]
         self.log_info(message='\n'.join(msg))
 
     def f_exchange(self, lvl: int) -> None:

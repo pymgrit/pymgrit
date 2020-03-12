@@ -14,16 +14,35 @@ Installation
 
 PyMGRIT requires ``mpicc`` (from ``openmpi`` or ``mpich``)
 
-    >>> pip install pymgrit
+    >>> pip3 install pymgrit
 
 or
 
-    >>> python setup.py install
+    >>> pip3 install .
 
 Introduction
 ------------
 
 PyMGRIT is a library for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python
+
+PyMGRIT is currently developed by `Jens Hahne`_ and `Stephanie Friedhoff`_.
+
+.. _Jens Hahne: https://www.hpc.uni-wuppertal.de/en/scientific-computing-and-high-performance-computing/members/jens-hahne.html
+
+.. _Stephanie Friedhoff: https://www.hpc.uni-wuppertal.de/en/scientific-computing-and-high-performance-computing/members/dr-stephanie-friedhoff.html
+
+Citing
+------
+
+::
+
+    @MISC{PyMGRIT,
+      author = "Hahne, J. and Friedhoff, S.",
+      title = "{PyMGRIT}: Multigrid-Reduction-in-Time in {Python} v1.0",
+      year = "2020",
+      url = "https://github.com/pymgrit/pymgrit",
+      note = "Release 1.0"
+      }
 
 Getting Help
 ------------
@@ -34,9 +53,10 @@ Create an issue_.
 
 .. _issue: https://github.com/pymgrit/pymgrit/issues
 
-Look at the Quickstart_ or the Examples_.
+Look at the Quickstart_, Tutorial_ or the Examples_.
 
 .. _Examples: https://pymgrit.github.io/pymgrit/usage/examples.html
+.. _Tutorial: https://pymgrit.github.io/pymgrit/usage/tutorial.html
 .. _Quickstart: https://pymgrit.github.io/pymgrit/usage/quickstart.html
 
 What is MGRIT?
@@ -47,49 +67,62 @@ To be done.
 PyMGRIT Features
 ----------------
 
-    - Classical Multigrid-Reduction-in-Time (MGRIT)
-    - Additional coarsening in space
+PyMGRIT features:
+
+    * Classical Multigrid-Reduction-in-Time (MGRIT) for solving evolutionary systems of equations
+
+        * non-intrusive approach
+        * multiple cycling strategies, relaxation schemes, coarsening strategies
+    * Time parallelism
+    * Specific to space-time problems:
+
+        * Space & time parallelism
+        * Additional coarsening in space
 
 Example Usage
 ----------------
 
-PyMGRIT is easy to use! The following code constructs a 1-d heat equation example and solves the resulting space-time
-system of equations with MGRIT::
+PyMGRIT is easy to use! The following code generates a discrete Dahlquist test problem and solves the resulting linear
+system using a two-level MGRIT algorithm.::
 
-    import pymgrit
-    heat_lvl_0 = pymgrit.HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=65)
-    heat_lvl_1 = pymgrit.HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=17)
-    heat_lvl_2 = pymgrit.HeatEquation(x_start=0, x_end=2, nx=1001, d=1, t_start=0, t_stop=2, nt=5)
-    problem = [heat_lvl_0, heat_lvl_1, heat_lvl_2]
-    mgrit = pymgrit.Mgrit(problem=problem, tol=1e-10)
-    sol = mgrit.solve()
+    # Import PyMGRIT
+    from pymgrit import *
+
+    # Create Dahlquist's test problem with 101 time steps in the interval [0, 5]
+    dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
+
+    # Construct a two-level multigrid hierarchy for the test problem using a coarsening factor of 2
+    dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
+
+    # Set up the MGRIT solver for the test problem and set the solver tolerance to 1e-10
+    mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
+
+    # Solve the test problem
+    info = mgrit.solve()
 
 Program output::
 
-    INFO - 23-01-20 11:48:53 - Start setup
-    INFO - 23-01-20 11:48:53 - Setup took 0.1085507869720459 s
-    INFO - 23-01-20 11:48:54 - Start solve
-    INFO - 23-01-20 11:48:54 - iter 1  | con: 0.010531208413419799   | con-fac: -                       | runtime: 0.21976184844970703 s
-    INFO - 23-01-20 11:48:55 - iter 2  | con: 0.0006683816775940518  | con-fac: 0.06346676006737657     | runtime: 0.15288186073303223 s
-    INFO - 23-01-20 11:48:55 - iter 3  | con: 4.0050232837502924e-05 | con-fac: 0.05992120098454857     | runtime: 0.12258291244506836 s
-    INFO - 23-01-20 11:48:55 - iter 4  | con: 2.0920119846420314e-06 | con-fac: 0.052234702183381       | runtime: 0.13314509391784668 s
-    INFO - 23-01-20 11:48:55 - iter 5  | con: 8.482152793325008e-08  | con-fac: 0.040545431171496886    | runtime: 0.13439655303955078 s
-    INFO - 23-01-20 11:48:55 - iter 6  | con: 2.120708067856101e-09  | con-fac: 0.025002002669946982    | runtime: 0.12366461753845215 s
-    INFO - 23-01-20 11:48:55 - iter 7  | con: 2.003907620345022e-11  | con-fac: 0.009449238444077046    | runtime: 0.15373992919921875 s
-    INFO - 23-01-20 11:48:55 - Solve took 1.1199557781219482 s
-    INFO - 23-01-20 11:48:55 - Run parameter overview
-
-    interval                  : [0.0, 2.0]
-    number points             : 65 points
-    max dt                    : 0.03125
-    level                     : 3
-    coarsening                : [4, 4]
-    cf_iter                   : 1
-    nested iteration          : True
-    cycle type                : V
-    stopping tolerance        : 1e-10
-    communicator size time    : 1
-    communicator size space   : -99
+    INFO - 21-02-20 16:18:43 - Start setup
+    INFO - 21-02-20 16:18:43 - Setup took 0.009232759475708008 s
+    INFO - 21-02-20 16:18:43 - Start solve
+    INFO - 21-02-20 16:18:43 - iter 1  | conv: 7.186185937031941e-05  | conv factor: -                       | runtime: 0.013237237930297852 s
+    INFO - 21-02-20 16:18:43 - iter 2  | conv: 1.2461067076355103e-06 | conv factor: 0.017340307063501627    | runtime: 0.010195493698120117 s
+    INFO - 21-02-20 16:18:43 - iter 3  | conv: 2.1015566145245807e-08 | conv factor: 0.016864981158092696    | runtime: 0.008922338485717773 s
+    INFO - 21-02-20 16:18:43 - iter 4  | conv: 3.144127445017594e-10  | conv factor: 0.014960945726074891    | runtime: 0.0062139034271240234 s
+    INFO - 21-02-20 16:18:43 - iter 5  | conv: 3.975214076032893e-12  | conv factor: 0.01264329816633959     | runtime: 0.006150722503662109 s
+    INFO - 21-02-20 16:18:43 - Solve took 0.05394101142883301 s
+    INFO - 21-02-20 16:18:43 - Run parameter overview
+      time interval             : [0.0, 5.0]
+      number of time points     : 101
+      max dt                    : 0.05000000000000071
+      number of levels          : 2
+      coarsening factors        : [2]
+      cf_iter                   : 1
+      nested iteration          : True
+      cycle type                : V
+      stopping tolerance        : 1e-10
+      time communicator size    : 1
+      space communicator size   : -99
 
 
 
