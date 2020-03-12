@@ -88,10 +88,10 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#simple-solve-and-pymgrit-output">Simple solve and PyMGRIT output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multigrid-hierarchy">Multigrid hierarchy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#solver-parameters">Solver parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#output-function">Output function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#multigrid-hierarchy">Multigrid hierarchy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#spatial-transfer-operator">Spatial transfer operator</a></li>
 </ul>
 </li>
@@ -184,16 +184,16 @@ The source code for these and more examples is available in the <a class="refere
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="#simple-solve-and-pymgrit-output">Simple solve and PyMGRIT output</a></p></li>
+<li><p><a class="reference internal" href="#basic-usage">Basic usage</a></p></li>
+<li><p><a class="reference internal" href="#multigrid-hierarchy">Multigrid hierarchy</a></p></li>
 <li><p><a class="reference internal" href="#solver-parameters">Solver parameters</a></p></li>
 <li><p><a class="reference internal" href="#output-function">Output function</a></p></li>
-<li><p><a class="reference internal" href="#multigrid-hierarchy">Multigrid hierarchy</a></p></li>
 <li><p><a class="reference internal" href="#spatial-transfer-operator">Spatial transfer operator</a></p></li>
 </ul>
 </div></blockquote>
 </div>
-<div class="section" id="simple-solve-and-pymgrit-output">
-<h2>Simple solve and PyMGRIT output<a class="headerlink" href="#simple-solve-and-pymgrit-output" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="basic-usage">
+<h2>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py">example_dahlquist.py</a></p>
 <p>This example demonstrates basic usage of the PyMGRIT package for solving a simple test problem with a two-level MGRIT solver,
 using PyMGRIT’s core routines <cite>simple_setup_problem()</cite>, <cite>Mgrit()</cite>, and <cite>mgrit.solve()</cite>.
@@ -250,6 +250,53 @@ To use <cite>mgrit.solve()</cite> we then only need to set up an MGRIT solver wi
 <li><p><cite>time_solve</cite> : solve time [in seconds]</p></li>
 </ul>
 </div></blockquote>
+</div>
+<div class="section" id="multigrid-hierarchy">
+<h2>Multigrid hierarchy<a class="headerlink" href="#multigrid-hierarchy" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_multilevel_structure.py">example_multilevel_structure.py</a></p>
+<p>There are several ways to create a time-multigrid hierarchy for a problem:</p>
+<ol class="arabic simple">
+<li><p>Using PyMGRIT’s core function <cite>simple_setup_problem()</cite></p></li>
+<li><p>Defining <cite>nt</cite> evenly spaced numbers over a specified interval <cite>[t_start, t_stop]</cite> for each grid level</p></li>
+<li><p>Specifying time intervals for each grid level</p></li>
+<li><p>Mixing options 2 and 3</p></li>
+</ol>
+<p>Note: Option 1 is only implemented to support an easy start. We recommend to build the hierarchy manually by using one
+of the options 2-4.</p>
+<p>The following example shows the four different options and builds MGRIT solvers using the resulting four multilevel objects:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
+
+<span class="c1"># Option 1: Use PyMGRIT&#39;s core function simple_setup_problem()</span>
+<span class="n">dahlquist_multilevel_structure_1</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">),</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                                                        <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+<span class="c1"># Option 2: Build each level using t_start, t_end, and nt</span>
+<span class="n">dahlquist_lvl_0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">51</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_2</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
+<span class="n">dahlquist_multilevel_structure_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">dahlquist_lvl_0</span><span class="p">,</span> <span class="n">dahlquist_lvl_1</span><span class="p">,</span> <span class="n">dahlquist_lvl_2</span><span class="p">]</span>
+<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+<span class="c1"># Option 3: Specify time intervals for each grid level</span>
+<span class="n">t_interval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># Takes every second point from t_interval</span>
+<span class="n">dahlquist_lvl_2</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">[::</span><span class="mi">4</span><span class="p">])</span>  <span class="c1"># Takes every fourth point from t_interval</span>
+<span class="n">dahlquist_multilevel_structure_3</span> <span class="o">=</span> <span class="p">[</span><span class="n">dahlquist_lvl_0</span><span class="p">,</span> <span class="n">dahlquist_lvl_1</span><span class="p">,</span> <span class="n">dahlquist_lvl_2</span><span class="p">]</span>
+<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_3</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+<span class="c1"># Option 4: Mix options 2 and 3</span>
+<span class="n">dahlquist_lvl_0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
+<span class="n">dahlquist_lvl_1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">dahlquist_lvl_0</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># Using t from the upper level.</span>
+<span class="n">dahlquist_lvl_2</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
+<span class="n">dahlquist_multilevel_structure_4</span> <span class="o">=</span> <span class="p">[</span><span class="n">dahlquist_lvl_0</span><span class="p">,</span> <span class="n">dahlquist_lvl_1</span><span class="p">,</span> <span class="n">dahlquist_lvl_2</span><span class="p">]</span>
+<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_4</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="solver-parameters">
 <h2>Solver parameters<a class="headerlink" href="#solver-parameters" title="Permalink to this headline">¶</a></h2>
@@ -355,51 +402,6 @@ Depending on the solver setting (see <cite>output_lvl</cite> in <a class="refere
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;u(t)&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="multigrid-hierarchy">
-<h2>Multigrid hierarchy<a class="headerlink" href="#multigrid-hierarchy" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_multilevel_structure.py">example_multilevel_structure.py</a></p>
-<p>There are several ways to create a time-multigrid hierarchy for a problem:</p>
-<ol class="arabic simple">
-<li><p>Using PyMGRIT’s core function <cite>simple_setup_problem()</cite></p></li>
-<li><p>Defining <cite>nt</cite> evenly spaced numbers over a specified interval <cite>[t_start, t_stop]</cite> for each grid level</p></li>
-<li><p>Specifying time intervals for each grid level</p></li>
-<li><p>Mixing options 2 and 3</p></li>
-</ol>
-<p>The following example shows the four different options and builds MGRIT solvers using the resulting four multilevel objects:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
-
-<span class="c1"># Option 1: Use PyMGRIT&#39;s core function simple_setup_problem()</span>
-<span class="n">dahlquist_multilevel_structure_1</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">),</span> <span class="n">level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                                                        <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-
-<span class="c1"># Option 2: Build each level using t_start, t_end, and nt</span>
-<span class="n">dahlquist_lvl_0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
-<span class="n">dahlquist_lvl_1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">51</span><span class="p">)</span>
-<span class="n">dahlquist_lvl_2</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
-<span class="n">dahlquist_multilevel_structure_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">dahlquist_lvl_0</span><span class="p">,</span> <span class="n">dahlquist_lvl_1</span><span class="p">,</span> <span class="n">dahlquist_lvl_2</span><span class="p">]</span>
-<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-
-<span class="c1"># Option 3: Specify time intervals for each grid level</span>
-<span class="n">t_interval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
-<span class="n">dahlquist_lvl_0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">)</span>
-<span class="n">dahlquist_lvl_1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># Takes every second point from t_interval</span>
-<span class="n">dahlquist_lvl_2</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">[::</span><span class="mi">4</span><span class="p">])</span>  <span class="c1"># Takes every fourth point from t_interval</span>
-<span class="n">dahlquist_multilevel_structure_3</span> <span class="o">=</span> <span class="p">[</span><span class="n">dahlquist_lvl_0</span><span class="p">,</span> <span class="n">dahlquist_lvl_1</span><span class="p">,</span> <span class="n">dahlquist_lvl_2</span><span class="p">]</span>
-<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_3</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-
-<span class="c1"># Option 4: Mix options 2 and 3</span>
-<span class="n">dahlquist_lvl_0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
-<span class="n">dahlquist_lvl_1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">dahlquist_lvl_0</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># Using t from the upper level.</span>
-<span class="n">dahlquist_lvl_2</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">26</span><span class="p">)</span>
-<span class="n">dahlquist_multilevel_structure_4</span> <span class="o">=</span> <span class="p">[</span><span class="n">dahlquist_lvl_0</span><span class="p">,</span> <span class="n">dahlquist_lvl_1</span><span class="p">,</span> <span class="n">dahlquist_lvl_2</span><span class="p">]</span>
-<span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure_4</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

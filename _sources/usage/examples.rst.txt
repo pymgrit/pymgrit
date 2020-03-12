@@ -11,16 +11,16 @@ The source code for these and more examples is available in the examples_ folder
 Table of Contents
 -----------------
 
-    - `Simple solve and PyMGRIT output`_
+    - `Basic usage`_
+    - `Multigrid hierarchy`_
     - `Solver parameters`_
     - `Output function`_
-    - `Multigrid hierarchy`_
     - `Spatial transfer operator`_
 
 
--------------------------------
-Simple solve and PyMGRIT output
--------------------------------
+-----------
+Basic usage
+-----------
 
 example_dahlquist.py_
 
@@ -81,6 +81,60 @@ and returns the residual history, setup time, and solve time in dictionary `info
     - `conv` : residual history (2-norm of the residual at each iteration)
     - `time_setup` : setup time [in seconds]
     - `time_solve` : solve time [in seconds]
+
+-------------------
+Multigrid hierarchy
+-------------------
+
+example_multilevel_structure.py_
+
+.. _example_multilevel_structure.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_multilevel_structure.py
+
+There are several ways to create a time-multigrid hierarchy for a problem:
+
+#. Using PyMGRIT's core function `simple_setup_problem()`
+#. Defining `nt` evenly spaced numbers over a specified interval `[t_start, t_stop]` for each grid level
+#. Specifying time intervals for each grid level
+#. Mixing options 2 and 3
+
+Note: Option 1 is only implemented to support an easy start. We recommend to build the hierarchy manually by using one
+of the options 2-4.
+
+The following example shows the four different options and builds MGRIT solvers using the resulting four multilevel objects:
+
+::
+
+    import numpy as np
+    from pymgrit.dahlquist.dahlquist import Dahlquist
+    from pymgrit.core.simple_setup_problem import simple_setup_problem
+    from pymgrit.core.mgrit import Mgrit
+
+    # Option 1: Use PyMGRIT's core function simple_setup_problem()
+    dahlquist_multilevel_structure_1 = simple_setup_problem(problem=Dahlquist(t_start=0, t_stop=5, nt=101), level=3,
+                                                            coarsening=2)
+    Mgrit(problem=dahlquist_multilevel_structure_1, tol=1e-10).solve()
+
+    # Option 2: Build each level using t_start, t_end, and nt
+    dahlquist_lvl_0 = Dahlquist(t_start=0, t_stop=5, nt=101)
+    dahlquist_lvl_1 = Dahlquist(t_start=0, t_stop=5, nt=51)
+    dahlquist_lvl_2 = Dahlquist(t_start=0, t_stop=5, nt=26)
+    dahlquist_multilevel_structure_2 = [dahlquist_lvl_0, dahlquist_lvl_1, dahlquist_lvl_2]
+    Mgrit(problem=dahlquist_multilevel_structure_2, tol=1e-10).solve()
+
+    # Option 3: Specify time intervals for each grid level
+    t_interval = np.linspace(0, 5, 101)
+    dahlquist_lvl_0 = Dahlquist(t_interval=t_interval)
+    dahlquist_lvl_1 = Dahlquist(t_interval=t_interval[::2])  # Takes every second point from t_interval
+    dahlquist_lvl_2 = Dahlquist(t_interval=t_interval[::4])  # Takes every fourth point from t_interval
+    dahlquist_multilevel_structure_3 = [dahlquist_lvl_0, dahlquist_lvl_1, dahlquist_lvl_2]
+    Mgrit(problem=dahlquist_multilevel_structure_3, tol=1e-10).solve()
+
+    # Option 4: Mix options 2 and 3
+    dahlquist_lvl_0 = Dahlquist(t_start=0, t_stop=5, nt=101)
+    dahlquist_lvl_1 = Dahlquist(t_interval=dahlquist_lvl_0.t[::2])  # Using t from the upper level.
+    dahlquist_lvl_2 = Dahlquist(t_start=0, t_stop=5, nt=26)
+    dahlquist_multilevel_structure_4 = [dahlquist_lvl_0, dahlquist_lvl_1, dahlquist_lvl_2]
+    Mgrit(problem=dahlquist_multilevel_structure_4, tol=1e-10).solve()
 
 -----------------
 Solver parameters
@@ -204,57 +258,6 @@ Depending on the solver setting (see `output_lvl` in `Solver parameters`_), the 
     plt.xlabel('t')
     plt.ylabel('u(t)')
     plt.show()
-
--------------------
-Multigrid hierarchy
--------------------
-
-example_multilevel_structure.py_
-
-.. _example_multilevel_structure.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_multilevel_structure.py
-
-There are several ways to create a time-multigrid hierarchy for a problem:
-
-#. Using PyMGRIT's core function `simple_setup_problem()`
-#. Defining `nt` evenly spaced numbers over a specified interval `[t_start, t_stop]` for each grid level
-#. Specifying time intervals for each grid level
-#. Mixing options 2 and 3
-
-The following example shows the four different options and builds MGRIT solvers using the resulting four multilevel objects:
-
-::
-
-    import numpy as np
-    from pymgrit.dahlquist.dahlquist import Dahlquist
-    from pymgrit.core.simple_setup_problem import simple_setup_problem
-    from pymgrit.core.mgrit import Mgrit
-
-    # Option 1: Use PyMGRIT's core function simple_setup_problem()
-    dahlquist_multilevel_structure_1 = simple_setup_problem(problem=Dahlquist(t_start=0, t_stop=5, nt=101), level=3,
-                                                            coarsening=2)
-    Mgrit(problem=dahlquist_multilevel_structure_1, tol=1e-10).solve()
-
-    # Option 2: Build each level using t_start, t_end, and nt
-    dahlquist_lvl_0 = Dahlquist(t_start=0, t_stop=5, nt=101)
-    dahlquist_lvl_1 = Dahlquist(t_start=0, t_stop=5, nt=51)
-    dahlquist_lvl_2 = Dahlquist(t_start=0, t_stop=5, nt=26)
-    dahlquist_multilevel_structure_2 = [dahlquist_lvl_0, dahlquist_lvl_1, dahlquist_lvl_2]
-    Mgrit(problem=dahlquist_multilevel_structure_2, tol=1e-10).solve()
-
-    # Option 3: Specify time intervals for each grid level
-    t_interval = np.linspace(0, 5, 101)
-    dahlquist_lvl_0 = Dahlquist(t_interval=t_interval)
-    dahlquist_lvl_1 = Dahlquist(t_interval=t_interval[::2])  # Takes every second point from t_interval
-    dahlquist_lvl_2 = Dahlquist(t_interval=t_interval[::4])  # Takes every fourth point from t_interval
-    dahlquist_multilevel_structure_3 = [dahlquist_lvl_0, dahlquist_lvl_1, dahlquist_lvl_2]
-    Mgrit(problem=dahlquist_multilevel_structure_3, tol=1e-10).solve()
-
-    # Option 4: Mix options 2 and 3
-    dahlquist_lvl_0 = Dahlquist(t_start=0, t_stop=5, nt=101)
-    dahlquist_lvl_1 = Dahlquist(t_interval=dahlquist_lvl_0.t[::2])  # Using t from the upper level.
-    dahlquist_lvl_2 = Dahlquist(t_start=0, t_stop=5, nt=26)
-    dahlquist_multilevel_structure_4 = [dahlquist_lvl_0, dahlquist_lvl_1, dahlquist_lvl_2]
-    Mgrit(problem=dahlquist_multilevel_structure_4, tol=1e-10).solve()
 
 -------------------------
 Spatial transfer operator
