@@ -142,21 +142,21 @@ of PyMGRIT's core routine `Mgrit()`.
 Output function
 ---------------
 
-example_output_fcn.py_ and example_output_fcn2.py_
+example_output_fcn_serial.py_ and example_output_fcn.py_
 
+.. _example_output_fcn_serial.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn_serial.py
 .. _example_output_fcn.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py
-.. _example_output_fcn2.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn2.py
 
 In this example, we show how to save and plot the MGRIT approximation of the solution of Dahlquist's test problem.
 An output function is defined that saves the solution (here, a single solution value at each time point is written to an
 output file via the ``numpy`` function `save()`). This output function is passed to the MGRIT solver.
-Depending on the solver setting (see ``output_lvl`` in `Solver parameters`_), the output function
+Depending on the solver setting (see `output_lvl` in `Solver parameters`_), the output function
 
 * is never called,
 
-* is called at the end of the simulation (example_output_fcn.py_), or
+* is called at the end of the simulation (example_output_fcn_serial.py_), or
 
-* is called after each iteration (example_output_fcn2.py_).
+* is called after each iteration (example_output_fcn.py_).
 
 
 ::
