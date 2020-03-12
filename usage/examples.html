@@ -302,15 +302,15 @@ of PyMGRIT’s core routine <cite>Mgrit()</cite>.</p>
 </div>
 <div class="section" id="output-function">
 <h2>Output function<a class="headerlink" href="#output-function" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py">example_output_fcn.py</a> and <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn2.py">example_output_fcn2.py</a></p>
+<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn_serial.py">example_output_fcn_serial.py</a> and <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py">example_output_fcn.py</a></p>
 <p>In this example, we show how to save and plot the MGRIT approximation of the solution of Dahlquist’s test problem.
 An output function is defined that saves the solution (here, a single solution value at each time point is written to an
 output file via the <code class="docutils literal notranslate"><span class="pre">numpy</span></code> function <cite>save()</cite>). This output function is passed to the MGRIT solver.
-Depending on the solver setting (see <code class="docutils literal notranslate"><span class="pre">output_lvl</span></code> in <a class="reference internal" href="#solver-parameters">Solver parameters</a>), the output function</p>
+Depending on the solver setting (see <cite>output_lvl</cite> in <a class="reference internal" href="#solver-parameters">Solver parameters</a>), the output function</p>
 <ul class="simple">
 <li><p>is never called,</p></li>
-<li><p>is called at the end of the simulation (<a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py">example_output_fcn.py</a>), or</p></li>
-<li><p>is called after each iteration (<a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn2.py">example_output_fcn2.py</a>).</p></li>
+<li><p>is called at the end of the simulation (<a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn_serial.py">example_output_fcn_serial.py</a>), or</p></li>
+<li><p>is called after each iteration (<a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py">example_output_fcn.py</a>).</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
