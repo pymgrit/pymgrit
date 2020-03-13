@@ -13,8 +13,5 @@ from .heat.heat_2d import Heat2D
 from .heat.heat_1d_2pts_bdf1 import Heat1DBDF1
 from .heat.heat_1d_2pts_bdf2 import Heat1DBDF2
 from .heat.vector_heat_1d_2pts import VectorHeat1D2Pts
-from .lorentz.lorentz import Lorentz
-from .parallel_model.mgrit_parallel_model import MgritParallelModel
-from .parallel_model.parallel_model import ParallelModel
 
 __all__ = [s for s in dir() if not s.startswith('_')]
