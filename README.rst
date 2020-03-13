@@ -71,15 +71,15 @@ PyMGRIT features:
 
 * Classical Multigrid-Reduction-in-Time (MGRIT) for solving evolutionary systems of equations
 
-    * non-intrusive approach
-    * multiple cycling strategies, relaxation schemes, coarsening strategies
+  * non-intrusive approach
+  * multiple cycling strategies, relaxation schemes, coarsening strategies
 
 * Time parallelism
 
 * Specific to space-time problems:
 
-    * Space & time parallelism
-    * Additional coarsening in space
+  * Space & time parallelism
+  * Additional coarsening in space
 
 Example Usage
 ----------------
