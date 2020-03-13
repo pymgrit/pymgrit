@@ -53,20 +53,38 @@ class Dahlquist(Application):
     with lambda = -1 and IC u(0) = 1
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, method='BE', *args, **kwargs):
         super(Dahlquist, self).__init__(*args, **kwargs)
         self.vector_template = VectorDahlquist(0)  # Set the class to be used for each time point
-        self.vector_t_start = VectorDahlquist(1)   # Set the initial condition
+        self.vector_t_start = VectorDahlquist(1)  # Set the initial condition
+        if method == 'BE' or method == 'FE' or method == 'TR' or method == 'MR':
+            self.method = method
+        else:
+            raise Exception(
+                'Unknown method. Choose BE (Backward Euler), FE (Forward Euler), TR (Trapezoidal rule) ' +
+                'or MR (implicit mid-point rule)')
 
     def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
         """
         Time integration routine for Dahlquist's test problem:
-            Backward Euler
+            BE: Backward Euler
+            FE: Forward Euler
+            TR: Trapezoidal rule
+            MR: implicit mid-point rule
 
         :param u_start: approximate solution for the input time t_start
         :param t_start: time associated with the input approximate solution u_start
         :param t_stop: time to evolve the input approximate solution to
         :return: approximate solution at input time t_stop
         """
-        tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
+        z = (t_stop - t_start) * -1
+        if self.method == 'BE':
+            tmp = 1 / (1 - z) * u_start.get_values()
+        elif self.method == 'FE':
+            tmp = (1 + z) * u_start.get_values()
+        elif self.method == 'TR':
+            tmp = (1 + z / 2) / (1 - z / 2) * u_start.get_values()
+        elif self.method == 'MR':
+            k1 = -1 / (1 - z / 2) * u_start.get_values()
+            tmp = u_start.get_values() + (t_stop - t_start) * k1
         return VectorDahlquist(tmp)
