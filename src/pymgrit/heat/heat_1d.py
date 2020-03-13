@@ -52,17 +52,10 @@ class VectorHeat1D(Vector):
 class Heat1D(Application):
     """
     Application class for the heat equation in 1D space,
-        u_t - a*u_xx = b(x,t),  a > 0, x in [0,1], t in [0,T],
-    with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t)),
-    homogeneous Dirichlet BCs in space,
-         u(0,t)  = u(1,t) = 0,   t in [0,T],
-    and subject to the initial condition
-         u(x,0)  = sin(pi*x),    x in [0,1]
-
-    => exact solution u(x,t) = sin(pi*x)*cos(t)
+        u_t - a*u_xx = b(x,t),  a > 0, x in [x_start,x_end], t in [0,T],
     """
 
-    def __init__(self, x_start, x_end, nx, a, *args, **kwargs):
+    def __init__(self, x_start, x_end, nx, a, u_exact, rhs, *args, **kwargs):
         super(Heat1D, self).__init__(*args, **kwargs)
         self.x_start = x_start  # lower interval bound of spatial domain
         self.x_end = x_end  # upper interval bound of spatial domain
@@ -72,6 +65,8 @@ class Heat1D(Application):
         self.a = a  # diffusion coefficient
         self.dx = self.x[1] - self.x[0]  # spatial grid spacing
         self.identity = identity(self.nx, dtype='float', format='csr')
+        self.u_exact = u_exact
+        self.rhs = rhs
 
         # set spatial discretization matrix
         self.space_disc = self.compute_matrix()
@@ -99,33 +94,6 @@ class Heat1D(Application):
             format='csr')
 
         return matrix
-
-    def u_exact(self, x, t):
-        """
-        Exact solution of 1D heat equation example problem at a given space-time point (x,t)
-        :param x: spatial grid point
-        :param t: time point
-        :return: exact solution of 1D heat equation example problem at point (x,t)
-        """
-        return np.sin(np.pi * x) * np.cos(t)
-
-    def rhs(self, x, t):
-        """
-        Right-hand side of 1D heat equation example problem at a given space-time point (x,t)
-        :param x: spatial grid point
-        :param t: time point
-        :return: right-hand side of 1D heat equation example problem at point (x,t)
-        """
-        return - np.sin(np.pi * x) * (np.sin(t) - 1 * np.pi ** 2 * np.cos(t))
-
-    def u_exact_complete(self, x, t):
-        """
-        Solution for all time points
-        """
-        ret = np.zeros((np.size(t), np.size(x)))
-        for i in range(np.size(t)):
-            ret[i] = self.u_exact(x, t[i])
-        return ret
 
     def step(self, u_start: VectorHeat1D, t_start: float, t_stop: float) -> VectorHeat1D:
         """
