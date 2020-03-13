@@ -455,36 +455,17 @@ Gets solutions of one grid and transforms it to another one
 
 <dl class="class">
 <dt id="pymgrit.Heat1D">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat1D</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">a</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat1D</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">a</em>, <em class="sig-param">u_exact</em>, <em class="sig-param">rhs</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
-<dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [0,1], t in [0,T],</p>
+<dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [x_start,x_end], t in [0,T],</p>
 </dd>
 </dl>
-<p>with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t)),
-homogeneous Dirichlet BCs in space,</p>
-<blockquote>
-<div><p>u(0,t)  = u(1,t) = 0,   t in [0,T],</p>
-</div></blockquote>
-<dl class="simple">
-<dt>and subject to the initial condition</dt><dd><p>u(x,0)  = sin(pi*x),    x in [0,1]</p>
-</dd>
-</dl>
-<p>=&gt; exact solution u(x,t) = sin(pi*x)*cos(t)</p>
 <dl class="method">
 <dt id="pymgrit.Heat1D.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D.compute_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define spatial discretization matrix for 1D heat equation</p>
 <p>Second-order central finite differences in space.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.Heat1D.rhs">
-<code class="sig-name descname">rhs</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D.rhs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Right-hand side of 1D heat equation example problem at a given space-time point (x,t)
-:param x: spatial grid point
-:param t: time point
-:return: right-hand side of 1D heat equation example problem at point (x,t)</p>
 </dd></dl>
 
 <dl class="method">
@@ -520,35 +501,16 @@ which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="pymgrit.Heat1D.u_exact">
-<code class="sig-name descname">u_exact</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D.u_exact" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exact solution of 1D heat equation example problem at a given space-time point (x,t)
-:param x: spatial grid point
-:param t: time point
-:return: exact solution of 1D heat equation example problem at point (x,t)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.Heat1D.u_exact_complete">
-<code class="sig-name descname">u_exact_complete</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1D.u_exact_complete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solution for all time points</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
 <dt id="pymgrit.Heat1DBDF1">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat1DBDF1</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">dt</em>, <em class="sig-param">a</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat1DBDF1</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">dt</em>, <em class="sig-param">a</em>, <em class="sig-param">u_exact</em>, <em class="sig-param">rhs</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
-<p>Heat equation 1-d example
-u_t - a*u_xx = b(x,t),  a &gt; 0, x in [0,1], t in [0,T]</p>
-<blockquote>
-<div><p>u(0,t)  = u(1,t) = 0,   t in [0,T]
-u(x,0)  = sin(pi*x),    x in [0,1]</p>
-</div></blockquote>
-<p>with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t))
-=&gt; solution u(x,t) = sin(pi*x)*cos(t)</p>
+<dl class="simple">
+<dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [x_start,x_end], t in [0,T],</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="pymgrit.Heat1DBDF1.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.compute_matrix" title="Permalink to this definition">¶</a></dt>
@@ -556,74 +518,48 @@ u(x,0)  = sin(pi*x),    x in [0,1]</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pymgrit.Heat1DBDF1.f">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.f" title="Permalink to this definition">¶</a></dt>
-<dd><p>Right-hand-side</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.Heat1DBDF1.heat_sparse">
-<em class="property">static </em><code class="sig-name descname">heat_sparse</code><span class="sig-paren">(</span><em class="sig-param">nx</em>, <em class="sig-param">fac</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.heat_sparse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Central FD in space</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="pymgrit.Heat1DBDF1.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts<a class="headerlink" href="#pymgrit.Heat1DBDF1.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Backward Euler in time
-At each time step i = 1, …, nt+1, we obtain the linear system
-| 1+2ar   -ar                     | |  u_{1,i}   |   |  u_{1,i-1}   |
-|  -ar   1+2ar  -ar               | |  u_{2,i}   |   |  u_{2,i-1}   |
-|         …   …    …        | |    …     | = |     …      |
-|               -ar   1+2ar  -ar  | | u_{nx-1,i} |   | u_{nx-1,i-1} |
-|                      -ar  1+2ar | |  u_{nx,i}  |   |  u_{nx,i-1}  |</p>
-<blockquote>
-<div><div class="line-block">
-<div class="line-block">
-<div class="line">dt*b_{1,i}   |</div>
-<div class="line">dt*b_{2,i}   |</div>
-<div class="line-block">
-<div class="line">…       |</div>
-</div>
-</div>
-<div class="line">dt*b_{nx-1,i} |</div>
-<div class="line-block">
-<div class="line">dt*b_{nx,i}  |</div>
-</div>
-</div>
-</div></blockquote>
-<p>with r = (dt/dx^2), which we denote by
-Mu_i = u_{i-1} + dt*b_i.
-This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
+<dd><dl class="simple">
+<dt>Time integration routine for 1D heat equation example problem:</dt><dd><p>Backward Euler in time</p>
+</dd>
+</dl>
+<p>At each time step i = 1, …, nt+1, we obtain the linear system
+| 1+2ar   -ar                     | |  u_{1,i}   |   |  u_{1,i-1}   |   |  dt*b_{1,i}   |
+|  -ar   1+2ar  -ar               | |  u_{2,i}   |   |  u_{2,i-1}   |   |  dt*b_{2,i}   |
+|         …   …    …        | |    …     | = |     …      | + |     …       |
+|               -ar   1+2ar  -ar  | | u_{nx-1,i} |   | u_{nx-1,i-1} |   | dt*b_{nx-1,i} |
+|                      -ar  1+2ar | |  u_{nx,i}  |   |  u_{nx,i-1}  |   |  dt*b_{nx,i}  |</p>
+<dl class="simple">
+<dt>with r = (dt/dx^2), which we denote by</dt><dd><p>Mu_i = u_{i-1} + dt*b_i.</p>
+</dd>
+</dl>
+<p>This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
 which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.Heat1DBDF1.u_exact">
-<code class="sig-name descname">u_exact</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.u_exact" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solution for one time point</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.Heat1DBDF1.u_exact_complete">
-<code class="sig-name descname">u_exact_complete</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF1.u_exact_complete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solution for all time points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – approximate solution for the input time t_start</p></li>
+<li><p><strong>t_start</strong> – time associated with the input approximate solution u_start</p></li>
+<li><p><strong>t_stop</strong> – time to evolve the input approximate solution to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>approximate solution at input time t_stop</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="pymgrit.Heat1DBDF2">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat1DBDF2</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">dt</em>, <em class="sig-param">a</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat1DBDF2</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">dt</em>, <em class="sig-param">a</em>, <em class="sig-param">u_exact</em>, <em class="sig-param">rhs</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
-<p>Heat equation 1-d example
-u_t - a*u_xx = b(x,t),  a &gt; 0, x in [0,1], t in [0,T]</p>
-<blockquote>
-<div><p>u(0,t)  = u(1,t) = 0,   t in [0,T]
-u(x,0)  = sin(pi*x),    x in [0,1]</p>
-</div></blockquote>
-<p>with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t))
-=&gt; solution u(x,t) = sin(pi*x)*cos(t)</p>
+<dl class="simple">
+<dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [x_start,x_end], t in [0,T],</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="pymgrit.Heat1DBDF2.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2.compute_matrix" title="Permalink to this definition">¶</a></dt>
@@ -631,27 +567,9 @@ u(x,0)  = sin(pi*x),    x in [0,1]</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pymgrit.Heat1DBDF2.f">
-<code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2.f" title="Permalink to this definition">¶</a></dt>
-<dd><p>Right-hand-side</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="pymgrit.Heat1DBDF2.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts<a class="headerlink" href="#pymgrit.Heat1DBDF2.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>BDF2 in time</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.Heat1DBDF2.u_exact">
-<code class="sig-name descname">u_exact</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2.u_exact" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solution for one time point</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.Heat1DBDF2.u_exact_complete">
-<code class="sig-name descname">u_exact_complete</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat1DBDF2.u_exact_complete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Solution for all time points</p>
+<dd><p>BDF2</p>
 </dd></dl>
 
 </dd></dl>
