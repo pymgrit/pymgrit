@@ -207,9 +207,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pymgrit.parallel_model.html">pymgrit.parallel_model package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#module-pymgrit.parallel_model.mgrit_parallel_model">pymgrit.parallel_model.mgrit_parallel_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#module-pymgrit.parallel_model.parallel_model">pymgrit.parallel_model.parallel_model module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#module-pymgrit.parallel_model">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#pymgrit-parallel-model-mgrit-parallel-model-module">pymgrit.parallel_model.mgrit_parallel_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#pymgrit-parallel-model-parallel-model-module">pymgrit.parallel_model.parallel_model module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pymgrit.parallel_model.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -696,22 +696,6 @@ u(x,0)  = sin(pi*x),    x in [0,1]</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="pymgrit.Lorentz">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Lorentz</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Lorentz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
-<dl class="method">
-<dt id="pymgrit.Lorentz.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.lorentz.lorentz.VectorLorentz</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.lorentz.lorentz.VectorLorentz<a class="headerlink" href="#pymgrit.Lorentz.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Time stepping routine for application problem
-:param u_start: approximate solution for the input time t_start
-:param t_start: time associated with the input approximate solution u_start
-:param t_stop: time to evolve the input approximate solution to
-:return: approximate solution at input time t_stop</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="pymgrit.Mgrit">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Mgrit</code><span class="sig-paren">(</span><em class="sig-param">problem: List[pymgrit.core.application.Application], transfer: List[pymgrit.core.grid_transfer.GridTransfer] = None, max_iter: int = 100, tol: float = 1e-07, nested_iteration: bool = True, cf_iter: int = 1, cycle_type: str = 'V', comm_time: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Intracomm object&gt;, comm_space: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Comm object&gt;, logging_lvl: int = 20, output_fcn=None, output_lvl=1, random_init_guess: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Mgrit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -889,50 +873,6 @@ is reached or the maximum number of iterations
 :param size: Number of processes
 :param rank: Rank
 :return:</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pymgrit.MgritParallelModel">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">MgritParallelModel</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.MgritParallelModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.mgrit.Mgrit" title="pymgrit.core.mgrit.Mgrit"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.mgrit.Mgrit</span></code></a></p>
-<p>MGRIT optimized for the GETDP induction machine</p>
-<dl class="method">
-<dt id="pymgrit.MgritParallelModel.convergence_criteria">
-<code class="sig-name descname">convergence_criteria</code><span class="sig-paren">(</span><em class="sig-param">iteration: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.MgritParallelModel.convergence_criteria" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stop after one iteration
-:param iteration: Iteration number</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymgrit.MgritParallelModel.iteration">
-<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param">lvl</em>, <em class="sig-param">cycle_type</em>, <em class="sig-param">iteration</em>, <em class="sig-param">first_f</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.MgritParallelModel.iteration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs one iteration</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pymgrit.ParallelModel">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">ParallelModel</code><span class="sig-paren">(</span><em class="sig-param">sleep</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.ParallelModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
-<p>Problem for test the parallel model.</p>
-<dl class="method">
-<dt id="pymgrit.ParallelModel.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.parallel_model.parallel_model.VectorParallelModel</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.parallel_model.parallel_model.VectorParallelModel<a class="headerlink" href="#pymgrit.ParallelModel.step" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>u_start</strong> – </p></li>
-<li><p><strong>t_start</strong> – </p></li>
-<li><p><strong>t_stop</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
