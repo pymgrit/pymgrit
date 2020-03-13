@@ -16,7 +16,7 @@ from pymgrit.core.mgrit import Mgrit
 def main():
     def output_fcn(self):
         # Set path to solution; here, we include the iteration number in the path name
-        path = 'results/' + 'brusselator_parallel' + '/' + str(self.solve_iter)
+        path = 'results/' + 'brusselator' + '/' + str(self.solve_iter)
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
@@ -33,8 +33,7 @@ def main():
     brusselator_lvl_1 = Brusselator(t_interval=brusselator_lvl_0.t[::20])
 
     # Set up the MGRIT solver using the two-level hierarchy and set the output function
-    mgrit = Mgrit(problem=[brusselator_lvl_0, brusselator_lvl_1], output_fcn=output_fcn, output_lvl=2, cf_iter=0,
-                  nested_iteration=False)
+    mgrit = Mgrit(problem=[brusselator_lvl_0, brusselator_lvl_1], output_fcn=output_fcn, output_lvl=2, cf_iter=0)
 
     # Solve Brusselator system
     info = mgrit.solve()
@@ -49,7 +48,7 @@ def main():
         fig = plt.figure(1, figsize=[10, 10])
         for i in range(iterations_needed):
             files = []
-            path = 'results/brusselator_parallel/' + str(i) + '/'
+            path = 'results/brusselator/' + str(i) + '/'
             # Construct solution from multiple files
             for filename in os.listdir(path):
                 files.append([int(filename[filename.find('-') + 1: -4]), np.load(path + filename, allow_pickle=True)])
