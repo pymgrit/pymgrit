@@ -223,18 +223,17 @@ To use <cite>mgrit.solve()</cite> we then only need to set up an MGRIT solver wi
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">5</span>  <span class="o">|</span> <span class="n">conv</span><span class="p">:</span> <span class="mf">3.975214076032893e-12</span>  <span class="o">|</span> <span class="n">conv</span> <span class="n">factor</span><span class="p">:</span> <span class="mf">0.01264329816633959</span>     <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.0043201446533203125</span> <span class="n">s</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Solve</span> <span class="n">took</span> <span class="mf">0.042092084884643555</span> <span class="n">s</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Run</span> <span class="n">parameter</span> <span class="n">overview</span>
-
-<span class="n">time</span> <span class="n">interval</span>             <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
-<span class="n">number</span> <span class="n">of</span> <span class="n">time</span> <span class="n">points</span>     <span class="p">:</span> <span class="mi">101</span>
-<span class="nb">max</span> <span class="n">dt</span>                    <span class="p">:</span> <span class="mf">0.05000000000000071</span>
-<span class="n">number</span> <span class="n">of</span> <span class="n">levels</span>          <span class="p">:</span> <span class="mi">2</span>
-<span class="n">coarsening</span> <span class="n">factors</span>        <span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-<span class="n">cf_iter</span>                   <span class="p">:</span> <span class="mi">1</span>
-<span class="n">nested</span> <span class="n">iteration</span>          <span class="p">:</span> <span class="kc">True</span>
-<span class="n">cycle</span> <span class="nb">type</span>                <span class="p">:</span> <span class="n">V</span>
-<span class="n">stopping</span> <span class="n">tolerance</span>        <span class="p">:</span> <span class="mf">1e-10</span>
-<span class="n">time</span> <span class="n">communicator</span> <span class="n">size</span>    <span class="p">:</span> <span class="mi">1</span>
-<span class="n">space</span> <span class="n">communicator</span> <span class="n">size</span>   <span class="p">:</span> <span class="o">-</span><span class="mi">99</span>
+  <span class="n">time</span> <span class="n">interval</span>             <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
+  <span class="n">number</span> <span class="n">of</span> <span class="n">time</span> <span class="n">points</span>     <span class="p">:</span> <span class="mi">101</span>
+  <span class="nb">max</span> <span class="n">dt</span>                    <span class="p">:</span> <span class="mf">0.05000000000000071</span>
+  <span class="n">number</span> <span class="n">of</span> <span class="n">levels</span>          <span class="p">:</span> <span class="mi">2</span>
+  <span class="n">coarsening</span> <span class="n">factors</span>        <span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+  <span class="n">cf_iter</span>                   <span class="p">:</span> <span class="mi">1</span>
+  <span class="n">nested</span> <span class="n">iteration</span>          <span class="p">:</span> <span class="kc">True</span>
+  <span class="n">cycle</span> <span class="nb">type</span>                <span class="p">:</span> <span class="n">V</span>
+  <span class="n">stopping</span> <span class="n">tolerance</span>        <span class="p">:</span> <span class="mf">1e-10</span>
+  <span class="n">time</span> <span class="n">communicator</span> <span class="n">size</span>    <span class="p">:</span> <span class="mi">1</span>
+  <span class="n">space</span> <span class="n">communicator</span> <span class="n">size</span>   <span class="p">:</span> <span class="o">-</span><span class="mi">99</span>
 </pre></div>
 </div>
 <p>and returns the residual history, setup time, and solve time in dictionary <cite>info</cite> with the following key values:</p>

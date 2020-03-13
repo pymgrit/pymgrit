@@ -262,17 +262,17 @@ which gives::
     INFO - 03-02-20 11:19:03 - iter 5  | conv: 3.975214076032893e-12  | conv factor: 0.01264329816633959     | runtime: 0.0043201446533203125 s
     INFO - 03-02-20 11:19:03 - Solve took 0.042092084884643555 s
     INFO - 03-02-20 11:19:03 - Run parameter overview
-    interval                  : [0.0, 5.0]
-    number points             : 101 points
-    max dt                    : 0.05000000000000071
-    level                     : 2
-    coarsening                : [2]
-    cf_iter                   : 1
-    nested iteration          : True
-    cycle type                : V
-    stopping tolerance        : 1e-10
-    communicator size time    : 1
-    communicator size space   : -99
+      interval                  : [0.0, 5.0]
+      number points             : 101 points
+      max dt                    : 0.05000000000000071
+      level                     : 2
+      coarsening                : [2]
+      cf_iter                   : 1
+      nested iteration          : True
+      cycle type                : V
+      stopping tolerance        : 1e-10
+      communicator size time    : 1
+      communicator size space   : -99
 
 and returns the residual history, setup time, and solve time in dictionary `info` with the following key values:
 
@@ -343,6 +343,13 @@ Summary
 
     import numpy as np
     import matplotlib.pyplot as plt
+
+    from pymgrit import *
+
+    dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
+    dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
+    mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
+    info = mgrit.solve()
 
     res = info['conv']
     iters = np.arange(1, res.size+1)

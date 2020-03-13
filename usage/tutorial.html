@@ -435,17 +435,17 @@ For our test problem, we take a backward Euler step:</p>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="nb">iter</span> <span class="mi">5</span>  <span class="o">|</span> <span class="n">conv</span><span class="p">:</span> <span class="mf">3.975214076032893e-12</span>  <span class="o">|</span> <span class="n">conv</span> <span class="n">factor</span><span class="p">:</span> <span class="mf">0.01264329816633959</span>     <span class="o">|</span> <span class="n">runtime</span><span class="p">:</span> <span class="mf">0.0043201446533203125</span> <span class="n">s</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Solve</span> <span class="n">took</span> <span class="mf">0.042092084884643555</span> <span class="n">s</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="mi">03</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">20</span> <span class="mi">11</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span> <span class="n">Run</span> <span class="n">parameter</span> <span class="n">overview</span>
-<span class="n">interval</span>                  <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
-<span class="n">number</span> <span class="n">points</span>             <span class="p">:</span> <span class="mi">101</span> <span class="n">points</span>
-<span class="nb">max</span> <span class="n">dt</span>                    <span class="p">:</span> <span class="mf">0.05000000000000071</span>
-<span class="n">level</span>                     <span class="p">:</span> <span class="mi">2</span>
-<span class="n">coarsening</span>                <span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-<span class="n">cf_iter</span>                   <span class="p">:</span> <span class="mi">1</span>
-<span class="n">nested</span> <span class="n">iteration</span>          <span class="p">:</span> <span class="kc">True</span>
-<span class="n">cycle</span> <span class="nb">type</span>                <span class="p">:</span> <span class="n">V</span>
-<span class="n">stopping</span> <span class="n">tolerance</span>        <span class="p">:</span> <span class="mf">1e-10</span>
-<span class="n">communicator</span> <span class="n">size</span> <span class="n">time</span>    <span class="p">:</span> <span class="mi">1</span>
-<span class="n">communicator</span> <span class="n">size</span> <span class="n">space</span>   <span class="p">:</span> <span class="o">-</span><span class="mi">99</span>
+  <span class="n">interval</span>                  <span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
+  <span class="n">number</span> <span class="n">points</span>             <span class="p">:</span> <span class="mi">101</span> <span class="n">points</span>
+  <span class="nb">max</span> <span class="n">dt</span>                    <span class="p">:</span> <span class="mf">0.05000000000000071</span>
+  <span class="n">level</span>                     <span class="p">:</span> <span class="mi">2</span>
+  <span class="n">coarsening</span>                <span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+  <span class="n">cf_iter</span>                   <span class="p">:</span> <span class="mi">1</span>
+  <span class="n">nested</span> <span class="n">iteration</span>          <span class="p">:</span> <span class="kc">True</span>
+  <span class="n">cycle</span> <span class="nb">type</span>                <span class="p">:</span> <span class="n">V</span>
+  <span class="n">stopping</span> <span class="n">tolerance</span>        <span class="p">:</span> <span class="mf">1e-10</span>
+  <span class="n">communicator</span> <span class="n">size</span> <span class="n">time</span>    <span class="p">:</span> <span class="mi">1</span>
+  <span class="n">communicator</span> <span class="n">size</span> <span class="n">space</span>   <span class="p">:</span> <span class="o">-</span><span class="mi">99</span>
 </pre></div>
 </div>
 <p>and returns the residual history, setup time, and solve time in dictionary <cite>info</cite> with the following key values:</p>
@@ -517,6 +517,13 @@ For our test problem, we take a backward Euler step:</p>
 <h3>Summary<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">pymgrit</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">dahlquist</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">)</span>
+<span class="n">dahlquist_multilevel_structure</span> <span class="o">=</span> <span class="n">simple_setup_problem</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">coarsening</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">dahlquist_multilevel_structure</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
 <span class="n">res</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;conv&#39;</span><span class="p">]</span>
 <span class="n">iters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">size</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>

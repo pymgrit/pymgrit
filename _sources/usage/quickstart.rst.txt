@@ -43,18 +43,17 @@ producing the output::
     INFO - 21-02-20 16:18:43 - iter 5  | conv: 3.975214076032893e-12  | conv factor: 0.01264329816633959     | runtime: 0.006150722503662109 s
     INFO - 21-02-20 16:18:43 - Solve took 0.05394101142883301 s
     INFO - 21-02-20 16:18:43 - Run parameter overview
-
-    time interval             : [0.0, 5.0]
-    number of time points     : 101
-    max dt                    : 0.05000000000000071
-    number of levels          : 2
-    coarsening factors        : [2]
-    cf_iter                   : 1
-    nested iteration          : True
-    cycle type                : V
-    stopping tolerance        : 1e-10
-    time communicator size    : 1
-    space communicator size   : -99
+      time interval             : [0.0, 5.0]
+      number of time points     : 101
+      max dt                    : 0.05000000000000071
+      number of levels          : 2
+      coarsening factors        : [2]
+      cf_iter                   : 1
+      nested iteration          : True
+      cycle type                : V
+      stopping tolerance        : 1e-10
+      time communicator size    : 1
+      space communicator size   : -99
 
 
 and returning the residual history, setup time, and solve time in dictionary `info` with key values
