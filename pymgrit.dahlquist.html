@@ -178,7 +178,7 @@
 Vector and application class for Dahlquist’s test problem</p>
 <dl class="class">
 <dt id="pymgrit.dahlquist.dahlquist.Dahlquist">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.dahlquist.dahlquist.</code><code class="sig-name descname">Dahlquist</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.Dahlquist" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.dahlquist.dahlquist.</code><code class="sig-name descname">Dahlquist</code><span class="sig-paren">(</span><em class="sig-param">method='BE'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.Dahlquist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
 <dt>Application class for Dahlquist’s test problem,</dt><dd><p>u’ = lambda u,</p>
@@ -189,7 +189,10 @@ Vector and application class for Dahlquist’s test problem</p>
 <dt id="pymgrit.dahlquist.dahlquist.Dahlquist.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.dahlquist.dahlquist.VectorDahlquist</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.dahlquist.dahlquist.VectorDahlquist<a class="headerlink" href="#pymgrit.dahlquist.dahlquist.Dahlquist.step" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
-<dt>Time integration routine for Dahlquist’s test problem:</dt><dd><p>Backward Euler</p>
+<dt>Time integration routine for Dahlquist’s test problem:</dt><dd><p>BE: Backward Euler
+FE: Forward Euler
+TR: Trapezoidal rule
+MR: implicit mid-point rule</p>
 </dd>
 </dl>
 <dl class="field-list simple">
