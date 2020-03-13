@@ -20,11 +20,12 @@ def main():
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
-        # Save solution to file; here, we have two solution values at each time point.
+        # Save solution to file.
         # Useful member variables of MGRIT solver:
         #   - self.t[0]           : local fine-grid (level 0) time interval
         #   - self.index_local[0] : indices of local fine-grid (level 0) time interval
         #   - self.u[0]           : fine-grid (level 0) solution values
+        #   - self.comm_time_rank : Time communicator rank
         np.save(path + '/brusselator-' + str(self.comm_time_rank),
                 [self.u[0][i].get_values() for i in self.index_local[0]])  # Solution values at local time points
 
@@ -39,12 +40,11 @@ def main():
     info = mgrit.solve()
 
     # Plot the MGRIT approximation of the solution after each iteration
-    iterations_needed = len(info['conv']) + 1
-    cols = 2
-    rows = iterations_needed // cols + iterations_needed % cols
-    position = range(1, iterations_needed + 1)
-    rank = MPI.COMM_WORLD.Get_rank()
-    if rank == 0:
+    if MPI.COMM_WORLD.Get_rank() == 0:
+        iterations_needed = len(info['conv']) + 1
+        cols = 2
+        rows = iterations_needed // cols + iterations_needed % cols
+        position = range(1, iterations_needed + 1)
         fig = plt.figure(1, figsize=[10, 10])
         for i in range(iterations_needed):
             files = []
