@@ -88,8 +88,11 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Parallelism</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#time-parallelism">Time parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-parallelism">Time parallelism</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#output-function">Output function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scaling-results">Scaling results</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#space-time-parallelism">Space &amp; time parallelism</a></li>
 </ul>
 </li>
@@ -176,22 +179,84 @@
             
   <div class="section" id="parallelism">
 <h1>Parallelism<a class="headerlink" href="#parallelism" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<p>This page contains short examples that demonstrate the parallel usage of PyMGRIT.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="#time-parallelism">Time parallelism</a></p></li>
 <li><p><a class="reference internal" href="#space-time-parallelism">Space &amp; time parallelism</a></p></li>
 </ul>
 </div></blockquote>
-</div>
 <div class="section" id="time-parallelism">
 <h2>Time parallelism<a class="headerlink" href="#time-parallelism" title="Permalink to this headline">¶</a></h2>
-<p>TODO</p>
+<p>Use <cite>mpirun</cite> to start an example in parallel:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">2</span> <span class="n">python3</span> <span class="n">example_dahlquist</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<div class="section" id="output-function">
+<h3>Output function<a class="headerlink" href="#output-function" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py">example_output_fcn.py</a></p>
+<p>In this example, we show how to use the output function for a parallel run and save the solution after each iteration.
+Each process calls the function, so the file of each process must be unique. We use the rank to distinguish the files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">output_fcn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Set path to solution; here, we include the iteration number in the path name</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;results/&#39;</span> <span class="o">+</span> <span class="s1">&#39;brusselator&#39;</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solve_iter</span><span class="p">)</span>
+    <span class="c1"># Create path if not existing</span>
+    <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Save solution to file.</span>
+    <span class="c1"># Useful member variables of MGRIT solver:</span>
+    <span class="c1">#   - self.t[0]           : local fine-grid (level 0) time interval</span>
+    <span class="c1">#   - self.index_local[0] : indices of local fine-grid (level 0) time interval</span>
+    <span class="c1">#   - self.u[0]           : fine-grid (level 0) solution values</span>
+    <span class="c1">#   - self.comm_time_rank : Time communicator rank</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/brusselator-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_time_rank</span><span class="p">),</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_local</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>Then, we solve the problem in the usual way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create two-level time-grid hierarchy for the Brusselator system</span>
+<span class="n">brusselator_lvl_0</span> <span class="o">=</span> <span class="n">Brusselator</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">641</span><span class="p">)</span>
+<span class="n">brusselator_lvl_1</span> <span class="o">=</span> <span class="n">Brusselator</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">brusselator_lvl_0</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">20</span><span class="p">])</span>
+
+<span class="c1"># Set up the MGRIT solver using the two-level hierarchy and set the output function</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="p">[</span><span class="n">brusselator_lvl_0</span><span class="p">,</span> <span class="n">brusselator_lvl_1</span><span class="p">],</span> <span class="n">output_fcn</span><span class="o">=</span><span class="n">output_fcn</span><span class="p">,</span> <span class="n">output_lvl</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cf_iter</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Solve Brusselator system</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The last step is to plot the solution for each iteration. Therefore, all files have to be loaded and the solution has to
+be assembled in the correct order. To determine the correct order we use the rank that is part of the file name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">iterations_needed</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;conv&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">iterations_needed</span> <span class="o">//</span> <span class="n">cols</span> <span class="o">+</span> <span class="n">iterations_needed</span> <span class="o">%</span> <span class="n">cols</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">iterations_needed</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations_needed</span><span class="p">):</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;results/brusselator/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+        <span class="c1"># Construct solution from multiple files</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="n">filename</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="o">-</span><span class="mi">4</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">filename</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)])</span>
+        <span class="n">files</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tup</span><span class="p">:</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">l</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">files</span><span class="p">])</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">position</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="c1"># Plot the two solution values at each time point</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">sol</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">sol</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="scaling-results">
+<h3>Scaling results<a class="headerlink" href="#scaling-results" title="Permalink to this headline">¶</a></h3>
+</div>
 </div>
 <div class="section" id="space-time-parallelism">
 <h2>Space &amp; time parallelism<a class="headerlink" href="#space-time-parallelism" title="Permalink to this headline">¶</a></h2>
-<p>TODO</p>
+<p>To be done.</p>
 </div>
 </div>
 
