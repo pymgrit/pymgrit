@@ -23,7 +23,8 @@ example_output_fcn.py_
 .. _example_output_fcn.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py
 
 In this example, we show how to use the output function for a parallel run and save the solution after each iteration.
-Each process calls the function, so the file of each process must be unique. We use the rank to distinguish the files::
+Each process calls the function, so the file of each process must be unique. We use the rank to distinguish the files.
+We save the solution and the time point in a list for each local point of one process.::
 
     def output_fcn(self):
         # Set path to solution; here, we include the iteration number in the path name
@@ -37,8 +38,8 @@ Each process calls the function, so the file of each process must be unique. We 
         #   - self.index_local[0] : indices of local fine-grid (level 0) time interval
         #   - self.u[0]           : fine-grid (level 0) solution values
         #   - self.comm_time_rank : Time communicator rank
-        np.save(path + '/brusselator-' + str(self.comm_time_rank),
-                [self.u[0][i].get_values() for i in self.index_local[0]])
+        np.save(path + '/brusselator-rank' + str(self.comm_time_rank),
+                [[[self.t[0][i], self.u[0][i]] for i in self.index_local[0]]])  # Solution and time at local time points
 
 Then, we solve the problem in the usual way::
 
@@ -53,25 +54,30 @@ Then, we solve the problem in the usual way::
     info = mgrit.solve()
 
 The last step is to plot the solution for each iteration. Therefore, all files have to be loaded and the solution has to
-be assembled in the correct order. To determine the correct order we use the rank that is part of the file name::
+be assembled in the correct order. To determine the correct order, we use corresponding time points::
 
+    # Plot the MGRIT approximation of the solution after each iteration
     if MPI.COMM_WORLD.Get_rank() == 0:
+        # Dynamic images
         iterations_needed = len(info['conv']) + 1
         cols = 2
         rows = iterations_needed // cols + iterations_needed % cols
         position = range(1, iterations_needed + 1)
         fig = plt.figure(1, figsize=[10, 10])
         for i in range(iterations_needed):
-            files = []
-            path = 'results/brusselator/' + str(i) + '/'
-            # Construct solution from multiple files
+            # Load each file and add the loaded values to sol
+            sol = []
+            path = 'results/brusselator/' + str(i)
             for filename in os.listdir(path):
-                files.append([int(filename[filename.find('-') + 1: -4]), np.load(path + filename, allow_pickle=True)])
-            files.sort(key=lambda tup: tup[0])
-            sol = np.vstack([l.pop(1) for l in files])
+                data = np.load(path + '/' + filename, allow_pickle=True).tolist()[0]
+                sol += data
+            # Sort the solution list by the time
+            sol.sort(key=lambda tup: tup[0])
+            # Get the solution values
+            values = np.array([i[1].get_values() for i in sol])
             ax = fig.add_subplot(rows, cols, position[i])
             # Plot the two solution values at each time point
-            ax.scatter(sol[:, 0], sol[:, 1])
+            ax.scatter(values[:, 0], values[:, 1])
             ax.set(xlabel='x', ylabel='y')
         fig.tight_layout(pad=2.0)
         plt.show()
