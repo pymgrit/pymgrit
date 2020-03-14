@@ -8,6 +8,7 @@ import pathlib
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import time
 
 from mpi4py import MPI
 
@@ -22,8 +23,9 @@ def main():
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
         # Save solution to file; here, we have four solution values at each time point.
-        np.save(path + '/arenstorf-' + str(self.comm_time_rank),
-                [self.u[0][i] for i in self.index_local[0]])  # Save solution values at local time points
+        # Save solution values and time at local time points
+        np.save(path + '/arenstorf-rank' + str(self.comm_time_rank),
+                [[[self.t[0][i], self.u[0][i]] for i in self.index_local[0]]])
 
     # Create two-level time-grid hierarchy for the ODE system describing Arenstorf orbits
     ahrenstorf_lvl_0 = ArenstorfOrbit(t_start=0, t_stop=17.06521656015796, nt=80001)
@@ -36,23 +38,22 @@ def main():
     info = mgrit.solve()
 
     if MPI.COMM_WORLD.Get_rank() == 0:
-        files = []
+        time.sleep(1)  # Wait for files
+        sol = []
         path = 'results/arenstorf/'
-        # Load MGRIT approximation of the solution
         for filename in os.listdir(path):
-            files.append(
-                [int(filename[filename.find('-') + 1: -4]), np.load(path + filename, allow_pickle=True).tolist()])
-        files.sort(key=lambda tup: tup[0])
-        sol = [l.pop(1) for l in files]
-        sol_flat = [item for sublist in sol for item in sublist]
+            data = np.load(path + filename, allow_pickle=True).tolist()[0]
+            sol += data
+        sol.sort(key=lambda tup: tup[0])
+
         # Plot MGRIT approximation of Arenstorf orbit
         plt.plot(0, 0, marker='o', color='black')
         plt.plot(1, 0, marker='o', color='black')
         plt.text(0.1, 0.1, u'Earth')
         plt.text(1.0, 0.1, u'Moon')
         # Use member function of VectorArenstorf to plot orbit
-        for i in range(0, len(sol_flat), 1000):
-            sol_flat[i].plot()
+        for i in range(0, len(sol), 1000):
+            sol[i][1].plot()
         plt.show()
 
 

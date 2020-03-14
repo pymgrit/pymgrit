@@ -26,8 +26,8 @@ def main():
         #   - self.index_local[0] : indices of local fine-grid (level 0) time interval
         #   - self.u[0]           : fine-grid (level 0) solution values
         #   - self.comm_time_rank : Time communicator rank
-        np.save(path + '/brusselator-' + str(self.comm_time_rank),
-                [self.u[0][i].get_values() for i in self.index_local[0]])  # Solution values at local time points
+        np.save(path + '/brusselator-rank' + str(self.comm_time_rank),
+                [[[self.t[0][i], self.u[0][i]] for i in self.index_local[0]]])  # Solution and time at local time points
 
     # Create two-level time-grid hierarchy for the Brusselator system
     brusselator_lvl_0 = Brusselator(t_start=0, t_stop=12, nt=641)
@@ -41,22 +41,26 @@ def main():
 
     # Plot the MGRIT approximation of the solution after each iteration
     if MPI.COMM_WORLD.Get_rank() == 0:
+        # Dynamic images
         iterations_needed = len(info['conv']) + 1
         cols = 2
         rows = iterations_needed // cols + iterations_needed % cols
         position = range(1, iterations_needed + 1)
         fig = plt.figure(1, figsize=[10, 10])
         for i in range(iterations_needed):
-            files = []
-            path = 'results/brusselator/' + str(i) + '/'
-            # Construct solution from multiple files
+            # Load each file and add the loaded values to sol
+            sol = []
+            path = 'results/brusselator/' + str(i)
             for filename in os.listdir(path):
-                files.append([int(filename[filename.find('-') + 1: -4]), np.load(path + filename, allow_pickle=True)])
-            files.sort(key=lambda tup: tup[0])
-            sol = np.vstack([l.pop(1) for l in files])
+                data = np.load(path + '/' + filename, allow_pickle=True).tolist()[0]
+                sol += data
+            # Sort the solution list by the time
+            sol.sort(key=lambda tup: tup[0])
+            # Get the solution values
+            values = np.array([i[1].get_values() for i in sol])
             ax = fig.add_subplot(rows, cols, position[i])
             # Plot the two solution values at each time point
-            ax.scatter(sol[:, 0], sol[:, 1])
+            ax.scatter(values[:, 0], values[:, 1])
             ax.set(xlabel='x', ylabel='y')
         fig.tight_layout(pad=2.0)
         plt.show()
