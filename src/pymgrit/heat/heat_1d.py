@@ -55,7 +55,7 @@ class Heat1D(Application):
         u_t - a*u_xx = b(x,t),  a > 0, x in [x_start,x_end], t in [0,T],
     """
 
-    def __init__(self, x_start, x_end, nx, a, u_exact, rhs, *args, **kwargs):
+    def __init__(self, x_start, x_end, nx, a, init_con_fnc=lambda x: x * 0, rhs=lambda x, t: x * 0, *args, **kwargs):
         super(Heat1D, self).__init__(*args, **kwargs)
         self.x_start = x_start  # lower interval bound of spatial domain
         self.x_end = x_end  # upper interval bound of spatial domain
@@ -64,8 +64,8 @@ class Heat1D(Application):
         self.nx = nx - 2  # update number of spatial unknowns due to BCs
         self.a = a  # diffusion coefficient
         self.dx = self.x[1] - self.x[0]  # spatial grid spacing
-        self.identity = identity(self.nx, dtype='float', format='csr')
-        self.u_exact = u_exact
+        self.identity = identity(self.nx, dtype='float', format='csr')  # Identity matrix
+        self.init_con_fnc = init_con_fnc
         self.rhs = rhs
 
         # set spatial discretization matrix
@@ -73,7 +73,7 @@ class Heat1D(Application):
 
         self.vector_template = VectorHeat1D(self.nx)
         self.vector_t_start = VectorHeat1D(self.nx)  # Create initial value solution
-        self.vector_t_start.set_values(self.u_exact(self.x, 0))  # Set initial value
+        self.vector_t_start.set_values(self.init_con_fnc(self.x))  # Set initial value
 
     def compute_matrix(self):
         """

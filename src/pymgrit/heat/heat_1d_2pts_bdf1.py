@@ -2,7 +2,7 @@ import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
 from scipy.sparse import identity
-
+from typing import Callable
 
 from pymgrit.core.application import Application
 from pymgrit.heat.vector_heat_1d_2pts import VectorHeat1D2Pts
@@ -14,7 +14,9 @@ class Heat1DBDF1(Application):
         u_t - a*u_xx = b(x,t),  a > 0, x in [x_start,x_end], t in [0,T],
     """
 
-    def __init__(self, x_start, x_end, nx, dt, a, u_exact, rhs, *args, **kwargs):
+    def __init__(self, x_start: float, x_end: float, nx: int, dt: float, a: float,
+                 init_con_fnc: Callable = lambda x: x * 0, rhs: Callable = lambda x, t: x * 0, *args,
+                 **kwargs):
         super(Heat1DBDF1, self).__init__(*args, **kwargs)
         self.x_start = x_start  # lower interval bound of spatial domain
         self.x_end = x_end  # upper interval bound of spatial domain
@@ -25,7 +27,7 @@ class Heat1DBDF1(Application):
         self.a = a  # diffusion coefficient
         self.dx = self.x[1] - self.x[0]
         self.identity = identity(self.nx, dtype='float', format='csr')
-        self.u_exact = u_exact
+        self.init_con_fnc = init_con_fnc
         self.rhs = rhs
 
         # set spatial discretization matrix
@@ -34,9 +36,9 @@ class Heat1DBDF1(Application):
         self.vector_template = VectorHeat1D2Pts(self.nx)  # Create initial value solution
         self.vector_t_start = VectorHeat1D2Pts(self.nx)
 
-        self.vector_t_start.set_values(first_time_point=self.u_exact(self.x, self.t[0]),
+        self.vector_t_start.set_values(first_time_point=self.init_con_fnc(self.x, self.t[0]),
                                        second_time_point=spsolve(self.dt * self.space_disc + self.identity,
-                                                                 self.u_exact(self.x, self.t[0]) +
+                                                                 self.init_con_fnc(self.x, self.t[0]) +
                                                                  self.rhs(self.x, self.t[0] + self.dt) *
                                                                  self.dt))
 

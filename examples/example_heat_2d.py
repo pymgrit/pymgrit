@@ -18,13 +18,20 @@ def main():
         np.save(path + '/heat_equation_2d-rank' + str(self.comm_time_rank),
                 [[[self.t[0][i], self.u[0][i]] for i in self.index_local[0]]])
 
-    heat0 = Heat2D(lx=0.75, ly=1.5, nx=125, ny=65, a=3.5, t_start=0, t_stop=5, nt=33)
-    heat1 = Heat2D(lx=0.75, ly=1.5, nx=125, ny=65, a=3.5, t_interval=heat0.t[::2])
-    heat2 = Heat2D(lx=0.75, ly=1.5, nx=125, ny=65, a=3.5, t_interval=heat1.t[::2])
+    lx = 0.75
+    ly = 1.5
+    a = 3.5
 
-    problem = [heat0, heat1, heat2]
-    mgrit = Mgrit(problem=problem, cf_iter=1, cycle_type='V', nested_iteration=False, max_iter=10,
-                  output_fcn=output_fcn, logging_lvl=20, random_init_guess=False)
+    def f(x, y, t):
+        return 5 * x * (lx - x) * y * (ly - y) + 10 * a * t * (y * (ly - y) + x * (lx - x))
+
+    heat0 = Heat2D(lx=lx, ly=ly, nx=55, ny=125, a=a, rhs=f, t_start=0, t_stop=1, nt=33)
+    heat1 = Heat2D(lx=lx, ly=ly, nx=55, ny=125, a=a, rhs=f, t_interval=heat0.t[::2])
+
+    mgrit = Mgrit(problem=[heat0, heat1], cycle_type='V', output_fcn=output_fcn)
+
+    def u_exact(x, y, t):
+        return 5 * t * x * (lx - x) * y * (ly - y)
 
     info = mgrit.solve()
 
@@ -38,8 +45,8 @@ def main():
 
         diff = 0
         for i in range(len(sol)):
-            u_e = heat0.u_exact(x=heat0.x[:, np.newaxis], y=heat0.y[np.newaxis, :], t=heat0.t[i])
-            diff += abs(sol[i][1].get_values() - u_e[1:-1, 1:-1]).max()
+            u_e = u_exact(x=heat0.x_2d, y=heat0.y_2d, t=heat0.t[i])
+            diff += abs(sol[i][1].get_values() - u_e).max()
         print("Difference between MGRIT solution and exact solution:", diff)
 
 
