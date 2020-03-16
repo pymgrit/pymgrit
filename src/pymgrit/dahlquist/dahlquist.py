@@ -54,6 +54,14 @@ class Dahlquist(Application):
     """
 
     def __init__(self, method='BE', *args, **kwargs):
+        """
+        Initialize Dahlquist application object
+        :param method: method for solving Dahlquist's equation:
+                       'BE' -> Backward Euler (default)
+                       'FE' -> Forwared Euler
+                       'TR' -> Trapezoidal rule
+                       'MR' -> Implicit Mid-point Rule
+        """
         super(Dahlquist, self).__init__(*args, **kwargs)
         self.vector_template = VectorDahlquist(0)  # Set the class to be used for each time point
         self.vector_t_start = VectorDahlquist(1)  # Set the initial condition
@@ -70,14 +78,14 @@ class Dahlquist(Application):
             BE: Backward Euler
             FE: Forward Euler
             TR: Trapezoidal rule
-            MR: implicit mid-point rule
+            MR: implicit Mid-point Rule
 
         :param u_start: approximate solution for the input time t_start
         :param t_start: time associated with the input approximate solution u_start
         :param t_stop: time to evolve the input approximate solution to
-        :return: approximate solution at input time t_stop
+        :return: approximate solution for the input time t_stop
         """
-        z = (t_stop - t_start) * -1
+        z = (t_stop - t_start) * -1  # Note: lambda = -1
         if self.method == 'BE':
             tmp = 1 / (1 - z) * u_start.get_values()
         elif self.method == 'FE':

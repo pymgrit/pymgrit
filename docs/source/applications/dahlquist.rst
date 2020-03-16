@@ -8,7 +8,12 @@ Dahlquist
 
 * scalar ODE
 
-* discretization: backward Euler
+* discretization:
+
+  * Backward Euler
+  * Forward Euler
+  * Trapezoidal rule
+  * Implicit mid-point rule
 
 .. _example_dahlquist.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py
 
