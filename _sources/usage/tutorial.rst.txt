@@ -153,7 +153,7 @@ that holds the initial condition at time `t_start`::
 
     class Dahlquist(Application):
         """
-        Application for Dahlquist's test equation,
+        Application class for Dahlquist's test equation,
            u' = lambda u,  u(0) = 1,
         with lambda = -1
         """
@@ -178,8 +178,9 @@ Furthermore, we must define the time integration routine as the member function 
 For our test problem, we take a backward Euler step::
 
     def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
-            tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
-            return VectorDahlquist(tmp)
+        z = (t_stop - t_start) * -1  # Note: lambda = -1
+        tmp = 1 / (1 - z) * u_start.get_values()
+        return VectorDahlquist(tmp)
 
 Summary
 ^^^^^^^
@@ -200,7 +201,7 @@ The application class must contain the following member variables and member fun
 
     class Dahlquist(Application):
         """
-        Application for Dahlquist's test equation,
+        Application class for Dahlquist's test equation,
            u' = lambda u,  u(0) = 1,
         with lambda = -1
         """
@@ -216,7 +217,8 @@ The application class must contain the following member variables and member fun
 
         # Time integration routine
         def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
-            tmp = 1 / (1 + t_stop - t_start) * u_start.get_values()
+            z = (t_stop - t_start) * -1  # Note: lambda = -1
+            tmp = 1 / (1 - z) * u_start.get_values()
             return VectorDahlquist(tmp)
 
 -------------------
@@ -346,11 +348,13 @@ Summary
 
     from pymgrit import *
 
+    # Create Dahlquist test problem and solve resulting linear system using a two-level MGRIT solver
     dahlquist = Dahlquist(t_start=0, t_stop=5, nt=101)
     dahlquist_multilevel_structure = simple_setup_problem(problem=dahlquist, level=2, coarsening=2)
     mgrit = Mgrit(problem=dahlquist_multilevel_structure, tol=1e-10)
     info = mgrit.solve()
 
+    # Plot the residual history
     res = info['conv']
     iters = np.arange(1, res.size+1)
     plt.semilogy(iters, res, 'o-')
