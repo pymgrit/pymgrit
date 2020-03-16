@@ -9,27 +9,46 @@
 .. |Publish Status| image:: https://github.com/pymgrit/pymgrit/workflows/Publish/badge.svg
    :target: https://github.com/pymgrit/pymgrit/actions?query=workflow%3APublish
 
-Installation
-------------
-
-PyMGRIT requires ``mpicc`` (from ``openmpi`` or ``mpich``)
-
-    >>> pip3 install pymgrit
-
-or
-
-    >>> pip3 install .
-
 Introduction
 ------------
 
-PyMGRIT is a library for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python
+PyMGRIT is a package for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python.
 
 PyMGRIT is currently developed by `Jens Hahne`_ and `Stephanie Friedhoff`_.
 
 .. _Jens Hahne: https://www.hpc.uni-wuppertal.de/en/scientific-computing-and-high-performance-computing/members/jens-hahne.html
 
 .. _Stephanie Friedhoff: https://www.hpc.uni-wuppertal.de/en/scientific-computing-and-high-performance-computing/members/dr-stephanie-friedhoff.html
+
+
+What is MGRIT?
+---------------
+
+The MGRIT algorithm is a reduction-based time-multigrid method for solving time-dependent problems. A *reduction-based*
+method attempts to reduce the solving of one problem to equivalently solving two smaller problems. Reduction-based
+multigrid methods are iterative solvers that consist of two parts: relaxation and coarse-grid correction, which are,
+in the spirit of reduction, designed to be complementary in reducing error associated with different degrees of
+freedom. Applying this idea in the time domain, MGRIT combines local time stepping on the discretized temporal domain,
+the fine grid, for a relaxation scheme, with time stepping on a coarse temporal mesh (or a hierarchy of coarse
+temporal meshes) that uses a larger time step for the coarse-grid correction.
+
+PyMGRIT Features
+----------------
+
+PyMGRIT features:
+
+* Classical Multigrid-Reduction-in-Time (MGRIT) for solving evolutionary systems of equations
+
+  * Non-intrusive approach
+  * Optimal time-multigrid algorithm
+  * A variety of cycling strategies, relaxation schemes, and coarsening strategies
+
+* Time parallelism
+
+* Specific to space-time problems
+
+  * Space & time parallelism
+  * Additional coarsening in space
 
 Citing
 ------
@@ -44,42 +63,16 @@ Citing
       note = "Release 1.0"
       }
 
-Getting Help
+Installation
 ------------
 
-For documentation see https://pymgrit.github.io/pymgrit/
+PyMGRIT requires ``mpicc`` (from ``openmpi`` or ``mpich``)
 
-Create an issue_.
+    >>> pip3 install pymgrit
 
-.. _issue: https://github.com/pymgrit/pymgrit/issues
+or
 
-Look at the Quickstart_, Tutorial_ or the Examples_.
-
-.. _Examples: https://pymgrit.github.io/pymgrit/usage/examples.html
-.. _Tutorial: https://pymgrit.github.io/pymgrit/usage/tutorial.html
-.. _Quickstart: https://pymgrit.github.io/pymgrit/usage/quickstart.html
-
-What is MGRIT?
----------------
-
-To be done.
-
-PyMGRIT Features
-----------------
-
-PyMGRIT features:
-
-* Classical Multigrid-Reduction-in-Time (MGRIT) for solving evolutionary systems of equations
-
-  * non-intrusive approach
-  * multiple cycling strategies, relaxation schemes, coarsening strategies
-
-* Time parallelism
-
-* Specific to space-time problems:
-
-  * Space & time parallelism
-  * Additional coarsening in space
+    >>> pip3 install .
 
 Example Usage
 ----------------
@@ -127,4 +120,18 @@ Program output::
       space communicator size   : -99
 
 
+Getting Help
+------------
+
+For documentation see https://pymgrit.github.io/pymgrit/
+
+Create an issue_.
+
+.. _issue: https://github.com/pymgrit/pymgrit/issues
+
+Look at the Quickstart_, Tutorial_ or the Examples_.
+
+.. _Examples: https://pymgrit.github.io/pymgrit/usage/examples.html
+.. _Tutorial: https://pymgrit.github.io/pymgrit/usage/tutorial.html
+.. _Quickstart: https://pymgrit.github.io/pymgrit/usage/quickstart.html
 
