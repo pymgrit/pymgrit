@@ -19,21 +19,21 @@ def rhs(x, t):
     return - np.sin(np.pi * x) * (np.sin(t) - 1 * np.pi ** 2 * np.cos(t))
 
 
-def u_exact(x, t):
+def init_con_fnc(x):
     """
     Exact solution of 1D heat equation example problem at a given space-time point (x,t)
     :param x: spatial grid point
-    :param t: time point
     :return: exact solution of 1D heat equation example problem at point (x,t)
     """
-    return np.sin(np.pi * x) * np.cos(t)
+    return np.sin(np.pi * x)
 
 
 def test_split_into():
     """
     Test the function split_into
     """
-    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=2 ** 2 + 1)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2,
+                   nt=2 ** 2 + 1)
     result = np.array([4, 3, 3])
     mgrit = Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
     np.testing.assert_equal(result, mgrit.split_into(10, 3))
@@ -43,7 +43,8 @@ def test_split_points():
     """
     Test the function split points
     """
-    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=2 ** 2 + 1)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2,
+                   nt=2 ** 2 + 1)
     result_proc0 = (4, 0)
     result_proc1 = (3, 4)
     result_proc2 = (3, 7)
@@ -57,9 +58,9 @@ def test_heat_equation_run():
     """
     Test one run for the heat equation
     """
-    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=65)
-    heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=17)
-    heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=5)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2, nt=65)
+    heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2, nt=17)
+    heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
     mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2, random_init_guess=False)
     res = mgrit.solve()
@@ -71,9 +72,9 @@ def test_setup_points():
     """
     Test for the function setup points
     """
-    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=65)
-    heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=17)
-    heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=5)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2, nt=65)
+    heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2, nt=17)
+    heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
     mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2)
     size = 7
@@ -195,9 +196,9 @@ def test_setup_comm_info():
     """
     Test for the function comm_info
     """
-    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=65)
-    heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=17)
-    heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, u_exact=u_exact, t_start=0, t_stop=2, nt=5)
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2, nt=65)
+    heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2, nt=17)
+    heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_con_fnc=init_con_fnc, t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
     mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2)
     size = 7
