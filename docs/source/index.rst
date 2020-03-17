@@ -7,13 +7,11 @@ PyMGRIT is a package for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Py
 MGRIT
 -----
 
-The MGRIT algorithm is a reduction-based time-multigrid method for solving time-dependent problems. A *reduction-based*
-method attempts to reduce the solving of one problem to equivalently solving two smaller problems. Reduction-based
-multigrid methods are iterative solvers that consist of two parts: relaxation and coarse-grid correction, which are,
-in the spirit of reduction, designed to be complementary in reducing error associated with different degrees of
-freedom. Applying this idea in the time domain, MGRIT combines local time stepping on the discretized temporal domain,
-the fine grid, for a relaxation scheme, with time stepping on a coarse temporal mesh (or a hierarchy of coarse
-temporal meshes) that uses a larger time step for the coarse-grid correction.
+The MGRIT algorithm is a reduction-based time-multigrid method for solving time-dependent problems. In contrast to
+solving sequentially for one time step after the other, the MGRIT algorithm is an iterative method that allows
+calculating multiple time steps simultaneously by using a time-grid hierarchy. The MGRIT method is a non-intrusive
+approach that essentially uses the same time integrator as a traditional time-stepping algorithm. Therefore, it is
+particularly well suited for introducing time parallelism in simulations using existing application codes.
 
 --------
 Overview
