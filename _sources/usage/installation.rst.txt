@@ -8,4 +8,7 @@ PyMGRIT requires ``mpicc`` (from ``openmpi`` or ``mpich``)
 
 or
 
+    >>> git clone https://github.com/pymgrit/pymgrit.git
+    >>> cd pymgrit
     >>> pip3 install .
+
