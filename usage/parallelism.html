@@ -188,7 +188,7 @@
 </div></blockquote>
 <div class="section" id="time-parallelism">
 <h2>Time parallelism<a class="headerlink" href="#time-parallelism" title="Permalink to this headline">¶</a></h2>
-<p>Use <cite>mpirun</cite> to start an example in parallel:</p>
+<p>Use <cite>mpirun</cite> to run an example in parallel:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">2</span> <span class="n">python3</span> <span class="n">example_dahlquist</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
@@ -197,7 +197,7 @@
 <p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py">example_output_fcn.py</a></p>
 <p>In this example, we show how to use the output function for a parallel run and save the solution after each iteration.
 Each process calls the function, so the file of each process must be unique. We use the rank to distinguish the files.
-We save the solution and the time point in a list for each local point of one process.:</p>
+We save the solution and the time point in a list for each local point of one process:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">output_fcn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="c1"># Set path to solution; here, we include the iteration number in the path name</span>
     <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;results/&#39;</span> <span class="o">+</span> <span class="s1">&#39;brusselator&#39;</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solve_iter</span><span class="p">)</span>
@@ -227,7 +227,7 @@ We save the solution and the time point in a list for each local point of one pr
 </pre></div>
 </div>
 <p>The last step is to plot the solution for each iteration. Therefore, all files have to be loaded and the solution has to
-be assembled in the correct order. To determine the correct order, we use corresponding time points:</p>
+be assembled in the correct order. To determine the correct order, we use the corresponding time points:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the MGRIT approximation of the solution after each iteration</span>
 <span class="k">if</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_rank</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
     <span class="c1"># Dynamic images</span>
