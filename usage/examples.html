@@ -194,8 +194,8 @@ The source code for these and more examples is available in the <a class="refere
 using PyMGRIT’s core routines <cite>simple_setup_problem()</cite>, <cite>Mgrit()</cite>, and <cite>mgrit.solve()</cite>.
 Note: This example is also considered in <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a>.</p>
 <p>For a given test problem, we can construct a time-multigrid hierarchy by calling <cite>simple_setup_problem()</cite>.
-To solve the problem, we then only need to set up an MGRIT solver <cite>mgrit with this time-multigrid hierarchy and use
-the solver routine `mgrit.solve()</cite> of the MGRIT solver.</p>
+To solve the problem, we then only need to set up an MGRIT solver <cite>mgrit</cite> with this time-multigrid hierarchy and use
+the solver routine <cite>mgrit.solve()</cite> of the MGRIT solver.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
