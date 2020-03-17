@@ -40,7 +40,7 @@ application class`_ implements the following time integration schemes:
 * Trapezoidal rule
 * Implicit mid-point rule
 
-that can be controlled by the member variable `method`.
+that can be controlled by the member variable `method`:
 
 ::
 
@@ -70,7 +70,7 @@ that can be controlled by the member variable `method`.
     return VectorDahlquist(tmp)
 
 The corresponding example (example_time_integrators.py_) creates a two-level hierarchy for Dahlquist's test problem, using the implicit mid-point
-rule on the fine grid (level 0) and backward Euler on the coarse grid (level 1).
+rule on the fine grid (level 0) and backward Euler on the coarse grid (level 1):
 
 ::
 
@@ -85,16 +85,21 @@ rule on the fine grid (level 0) and backward Euler on the coarse grid (level 1).
 
 **Example 2** Two application classes
 
-The second example (example_heat_1d_bdf2.py_) demonstrates how to solve the 1D heat equation problem using a three-level MGRIT solver with BDF2 on the
-fine grid (level 0) and BDF1 on the first and second coarse grids (levels 1 and 2).
+In the second example, we use two application classes for implementing two different
+time integration methods for the 1D heat equation example:
 
-* Application class 1 implements BDF2_ for the 1D heat equation example.
-* Application class 2 implements BDF1_ for the 1D heat equation example.
-* The `vector class`_ contains the solution at two consecutive time points.
+* Application class 1 implements BDF2_.
+* Application class 2 implements BDF1_.
+
+Note: The `vector class`_ used in both application classes contains the solution at two consecutive time points.
 
 .. _BDF2: https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf2.py
 .. _BDF1: https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf1.py
 .. _`vector class`: https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/vector_heat_1d_2pts.py
+
+The corresponding example (example_heat_1d_bdf2.py_) constructs a three-level multigrid hierarchy for the 1D heat
+equation example using the BDF2 application class on the fine grid (level 0) and the BDF1 application class on the
+first and second coarse grids (levels 1 and 2):
 
 ::
 
