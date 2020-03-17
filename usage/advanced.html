@@ -203,7 +203,7 @@ application class</a> implements the following time integration schemes:</p>
 <li><p>Trapezoidal rule</p></li>
 <li><p>Implicit mid-point rule</p></li>
 </ul>
-<p>that can be controlled by the member variable <cite>method</cite>.</p>
+<p>that can be controlled by the member variable <cite>method</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_start</span><span class="p">:</span> <span class="n">VectorDahlquist</span><span class="p">,</span> <span class="n">t_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorDahlquist</span><span class="p">:</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Time integration routine for Dahlquist&#39;s test problem:</span>
@@ -231,7 +231,7 @@ application class</a> implements the following time integration schemes:</p>
 </pre></div>
 </div>
 <p>The corresponding example (<a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py">example_time_integrators.py</a>) creates a two-level hierarchy for Dahlquist’s test problem, using the implicit mid-point
-rule on the fine grid (level 0) and backward Euler on the coarse grid (level 1).</p>
+rule on the fine grid (level 0) and backward Euler on the coarse grid (level 1):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create Dahlquist&#39;s test problem using implicit mid-point rule time integration</span>
 <span class="n">dahlquist_lvl0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;MR&#39;</span><span class="p">)</span>
 <span class="c1"># Create Dahlquist&#39;s test problem using backward Euler time integration</span>
@@ -243,13 +243,16 @@ rule on the fine grid (level 0) and backward Euler on the coarse grid (level 1).
 </pre></div>
 </div>
 <p><strong>Example 2</strong> Two application classes</p>
-<p>The second example (<a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">example_heat_1d_bdf2.py</a>) demonstrates how to solve the 1D heat equation problem using a three-level MGRIT solver with BDF2 on the
-fine grid (level 0) and BDF1 on the first and second coarse grids (levels 1 and 2).</p>
+<p>In the second example, we use two application classes for implementing two different
+time integration methods for the 1D heat equation example:</p>
 <ul class="simple">
-<li><p>Application class 1 implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf2.py">BDF2</a> for the 1D heat equation example.</p></li>
-<li><p>Application class 2 implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf1.py">BDF1</a> for the 1D heat equation example.</p></li>
-<li><p>The <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/vector_heat_1d_2pts.py">vector class</a> contains the solution at two consecutive time points.</p></li>
+<li><p>Application class 1 implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf2.py">BDF2</a>.</p></li>
+<li><p>Application class 2 implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf1.py">BDF1</a>.</p></li>
 </ul>
+<p>Note: The <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/vector_heat_1d_2pts.py">vector class</a> used in both application classes contains the solution at two consecutive time points.</p>
+<p>The corresponding example (<a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">example_heat_1d_bdf2.py</a>) constructs a three-level multigrid hierarchy for the 1D heat
+equation example using the BDF2 application class on the fine grid (level 0) and the BDF1 application class on the
+first and second coarse grids (levels 1 and 2):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rhs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Right-hand side of 1D heat equation example problem at a given space-time point (x,t)</span>
