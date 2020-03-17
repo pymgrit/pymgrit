@@ -176,7 +176,7 @@
             
   <div class="section" id="advanced-usage">
 <h1>Advanced usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h1>
-<p>This page contains short examples that demonstrate basic advanced of PyMGRIT.
+<p>This page contains short examples that demonstrate advanced usage of PyMGRIT.
 The source code for these and more examples is available in the <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples">examples</a> folder.</p>
 <blockquote>
 <div><ul class="simple">
@@ -188,17 +188,22 @@ The source code for these and more examples is available in the <a class="refere
 <div class="section" id="advanced-multigrid-hierarchy">
 <h2>Advanced multigrid hierarchy<a class="headerlink" href="#advanced-multigrid-hierarchy" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py">example_time_integrators.py</a> and <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">example_heat_1d_bdf2.py</a></p>
-<p>PyMGRIT allows different application classes and/or time integration schemes in the multigrid hierarchy. The <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py">first</a>
-examples shows how to implement different time integrator methods in an application class. The <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">second</a>
-examples shows how to use multiple application classes in the multigrid hierarchy.</p>
-<p>The step function can contain multiple integration methods, that can be choosen by a parameter. The <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/dahlquist/dahlquist.py">Dahlquist
-application class</a> implements the following time integration routines:</p>
+<p>PyMGRIT allows using different application classes and/or time integration schemes in the multigrid hierarchy.</p>
+<ul class="simple">
+<li><p>Example 1 shows how to implement different time integration methods in an application class.</p></li>
+<li><p>Example 2 shows how to use multiple application classes in the multigrid hierarchy.</p></li>
+</ul>
+<p><strong>Example 1</strong> One application class with different time integration methods</p>
+<p>The member function <cite>step()</cite> of an application class can carry out a time integration step based on different time
+integration methods. The <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/dahlquist/dahlquist.py">Dahlquist
+application class</a> implements the following time integration schemes:</p>
 <ul class="simple">
 <li><p>Backward Euler</p></li>
 <li><p>Forward Euler</p></li>
 <li><p>Trapezoidal rule</p></li>
-<li><p>implicit Mid-point rule</p></li>
+<li><p>Implicit mid-point rule</p></li>
 </ul>
+<p>that can be controlled by the member variable <cite>method</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_start</span><span class="p">:</span> <span class="n">VectorDahlquist</span><span class="p">,</span> <span class="n">t_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorDahlquist</span><span class="p">:</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Time integration routine for Dahlquist&#39;s test problem:</span>
@@ -225,23 +230,26 @@ application class</a> implements the following time integration routines:</p>
 <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The corresponding <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py">example</a> creates a two-level hierarchy in the usual way, using the Mid-point rule at the first level
-and backward Euler at the second level.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create Dahlquist&#39;s test problem choosing implicit mid-point rule as time stepper</span>
+<p>The corresponding example (<a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py">example_time_integrators.py</a>) creates a two-level hierarchy for Dahlquist’s test problem, using the implicit mid-point
+rule on the fine grid (level 0) and backward Euler on the coarse grid (level 1).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create Dahlquist&#39;s test problem using implicit mid-point rule time integration</span>
 <span class="n">dahlquist_lvl0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;MR&#39;</span><span class="p">)</span>
-<span class="c1"># Create Dahlquist&#39;s test problem choosing implicit backward euler as time stepper</span>
+<span class="c1"># Create Dahlquist&#39;s test problem using backward Euler time integration</span>
 <span class="n">dahlquist_lvl1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;BE&#39;</span><span class="p">)</span>
 
-<span class="c1"># Setup MGRIT and solve the problem</span>
+<span class="c1"># Setup an MGRIT solver and solve the problem</span>
 <span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="p">[</span><span class="n">dahlquist_lvl0</span><span class="p">,</span> <span class="n">dahlquist_lvl1</span><span class="p">])</span>
 <span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>In the second example, we use two application classes for generating different time integration routines on different
-levels. The first application class implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf2.py">BDF2</a> for the 1D heat equation example, while the second class
-implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf1.py">BDF1</a>. Both application classes share the same Vector structure for the solution of two time-points in one
-vector. The corresponding <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">file</a> builds a hierarchy of the levels with the BDF2 application class on the first level
-and the BDF1 application class on the second and third level.</p>
+<p><strong>Example 2</strong> Two application classes</p>
+<p>The second example (<a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">example_heat_1d_bdf2.py</a>) demonstrates how to solve the 1D heat equation problem using a three-level MGRIT solver with BDF2 on the
+fine grid (level 0) and BDF1 on the first and second coarse grids (levels 1 and 2).</p>
+<ul class="simple">
+<li><p>Application class 1 implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf2.py">BDF2</a> for the 1D heat equation example.</p></li>
+<li><p>Application class 2 implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf1.py">BDF1</a> for the 1D heat equation example.</p></li>
+<li><p>The <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/vector_heat_1d_2pts.py">vector class</a> contains the solution at two consecutive time points.</p></li>
+</ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rhs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Right-hand side of 1D heat equation example problem at a given space-time point (x,t)</span>
