@@ -11,7 +11,7 @@ This page contains short examples that demonstrate the parallel usage of PyMGRIT
 Time parallelism
 ----------------
 
-Use `mpirun` to start an example in parallel::
+Use `mpirun` to run an example in parallel::
 
     mpirun -np 2 python3 example_dahlquist.py
 
@@ -24,7 +24,7 @@ example_output_fcn.py_
 
 In this example, we show how to use the output function for a parallel run and save the solution after each iteration.
 Each process calls the function, so the file of each process must be unique. We use the rank to distinguish the files.
-We save the solution and the time point in a list for each local point of one process.::
+We save the solution and the time point in a list for each local point of one process::
 
     def output_fcn(self):
         # Set path to solution; here, we include the iteration number in the path name
@@ -54,7 +54,7 @@ Then, we solve the problem in the usual way::
     info = mgrit.solve()
 
 The last step is to plot the solution for each iteration. Therefore, all files have to be loaded and the solution has to
-be assembled in the correct order. To determine the correct order, we use corresponding time points::
+be assembled in the correct order. To determine the correct order, we use the corresponding time points::
 
     # Plot the MGRIT approximation of the solution after each iteration
     if MPI.COMM_WORLD.Get_rank() == 0:
