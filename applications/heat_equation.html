@@ -181,13 +181,11 @@
 <li><p>source: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_1d.py">heat_1d.py</a></p></li>
 <li><p>example code: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py">example_heat_1d.py</a></p></li>
 <li><p>scalar PDE with unknown function <span class="math notranslate nohighlight">\(u(x,t)\)</span> of two independent variables</p></li>
-<li><dl class="simple">
-<dt>discretization:</dt><dd><ul>
+<li><p>discretization:</p>
+<ul>
 <li><p>second-order central finite differences in space</p></li>
 <li><p>backward Euler in time</p></li>
 </ul>
-</dd>
-</dl>
 </li>
 </ul>
 <p>The heat equation in 1D space is a partial differential equation that governs the flow of heat in a homogeneous and
@@ -224,12 +222,12 @@ considered with homogeneous Dirichlet boundary conditions in space and subject t
 isotropic medium with <span class="math notranslate nohighlight">\(u(x, y, t)\)</span> being the temperature at the point <span class="math notranslate nohighlight">\(u(x,y)\)</span> at time t. The diffusion
 coefficient <span class="math notranslate nohighlight">\(a\)</span> affects the speed of the process. The governing equation is given by</p>
 <div class="math notranslate nohighlight">
-\[u_t - a*(u_{xx}+u_{yy}) = b(x,t) \;\; in \; [0,x_{end}]\times[0,y_{end}]\times(t_0,t_{end}] \;\text{ with }\;
-u(x, t_0) = u_0(x)\]</div>
+\[u_t - a*(u_{xx}+u_{yy}) = b(x,y,t) \;\; in \; [0,x_{end}]\times[0,y_{end}]\times(t_0,t_{end}] \;\text{ with }\;
+u(x,y, t_0) = u_0(x,y)\]</div>
 <p>and subject to some boundary conditions in space.</p>
 <p>In <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_2d.py">example_heat_2d.py</a>, the diffusion coefficient <span class="math notranslate nohighlight">\(a = 3.5\)</span> and right-hand-side
 <span class="math notranslate nohighlight">\(b(x,y,t)=5 * x * (x_{end} - x) * y * (y_{end} - y) + 10 * a * t * (y * (y_{end} - y) + x * (x_{end} - x))\)</span>,
-in the domain <span class="math notranslate nohighlight">\([0,75]\times[0,1.5]\times[0,2]\)</span> are considered with homogeneous Dirichlet boundary conditions in space
+in the domain <span class="math notranslate nohighlight">\([0,0.75]\times[0,1.5]\times[0,2]\)</span> are considered with homogeneous Dirichlet boundary conditions in space
 and subject to the initial condition <span class="math notranslate nohighlight">\(u(x, y, 0) = 0\)</span>.</p>
 </div>
 </div>

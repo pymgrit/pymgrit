@@ -13,8 +13,9 @@ Heat Equation
 * scalar PDE with unknown function :math:`u(x,t)` of two independent variables
 
 * discretization:
-    * second-order central finite differences in space
-    * backward Euler in time
+
+  * second-order central finite differences in space
+  * backward Euler in time
 
 .. _example_heat_1d.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py
 
@@ -62,12 +63,12 @@ isotropic medium with :math:`u(x, y, t)` being the temperature at the point :mat
 coefficient :math:`a` affects the speed of the process. The governing equation is given by
 
 .. math::
-    u_t - a*(u_{xx}+u_{yy}) = b(x,t) \;\; in \; [0,x_{end}]\times[0,y_{end}]\times(t_0,t_{end}] \;\text{ with }\;
-    u(x, t_0) = u_0(x)
+    u_t - a*(u_{xx}+u_{yy}) = b(x,y,t) \;\; in \; [0,x_{end}]\times[0,y_{end}]\times(t_0,t_{end}] \;\text{ with }\;
+    u(x,y, t_0) = u_0(x,y)
 
 and subject to some boundary conditions in space.
 
 In example_heat_2d.py_, the diffusion coefficient :math:`a = 3.5` and right-hand-side
 :math:`b(x,y,t)=5 * x * (x_{end} - x) * y * (y_{end} - y) + 10 * a * t * (y * (y_{end} - y) + x * (x_{end} - x))`,
-in the domain :math:`[0,75]\times[0,1.5]\times[0,2]` are considered with homogeneous Dirichlet boundary conditions in space
+in the domain :math:`[0,0.75]\times[0,1.5]\times[0,2]` are considered with homogeneous Dirichlet boundary conditions in space
 and subject to the initial condition :math:`u(x, y, 0) = 0`.
