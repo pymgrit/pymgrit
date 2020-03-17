@@ -1,7 +1,7 @@
 Welcome to PyMGRIT's documentation!
 ===================================
 
-PyMGRIT is package for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python.
+PyMGRIT is a package for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python.
 
 -----
 MGRIT
@@ -19,11 +19,11 @@ temporal meshes) that uses a larger time step for the coarse-grid correction.
 Overview
 --------
 
-* Get PyMGRIT :doc:`installed <usage/installation>`
+* Get PyMGRIT :doc:`installed <usage/installation>`.
 * :doc:`usage/quickstart`
-* :doc:`Implement <usage/tutorial>` a simple problem in PyMGRIT
-* Learn about :doc:`basic <usage/examples>` and :doc:`advanced <usage/advanced>` PyMGRIT features
-* Run :doc:`parallel simulations <usage/parallelism>`
+* :doc:`Implement <usage/tutorial>` a simple problem in PyMGRIT.
+* Learn about :doc:`basic <usage/examples>` and :doc:`advanced <usage/advanced>` PyMGRIT features.
+* Run :doc:`parallel simulations <usage/parallelism>`.
 
 
 ------------
