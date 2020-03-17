@@ -1,7 +1,9 @@
 Welcome to PyMGRIT's documentation!
 ===================================
 
-PyMGRIT is a package for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python.
+PyMGRIT_ is a package for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python.
+
+.. _PyMGRIT: https://github.com/pymgrit/pymgrit
 
 -----
 MGRIT
