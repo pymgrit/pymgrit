@@ -118,7 +118,7 @@ class Advection1D(Application):
         :param u_start: approximate solution for the input time t_start
         :param t_start: time associated with the input approximate solution u_start
         :param t_stop: time to evolve the input approximate solution to
-        :return: approximate solution at input time t_stop
+        :return: approximate solution for the input time t_stop
         """
         tmp = u_start.get_values()
         tmp = spsolve((t_stop - t_start) * self.space_disc + self.identity, tmp)

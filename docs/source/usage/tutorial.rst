@@ -34,7 +34,7 @@ Then, we define the class `VectorDahlquist` containing a scalar member variable 
 
     class VectorDahlquist(Vector):
         """
-        Vector for Dahlquist's test equation
+        Vector class for Dahlquist's test equation
         """
 
         def __init__(self, value):
@@ -64,7 +64,7 @@ The function `clone_zero` returns a vector object initialized with zeros; `clone
 
 The functions `__add__`, `__sub__`, and `norm` define the addition and subtraction of two vector objects and the norm of a vector object, respectively.
 For our class `VectorDahlquist`, adding or subtracting two vector objects means adding or subtracting the values of the member variable `value` by using the functions `get_values` and `set_values`.
-We define the norm of a vector object as the norm (from numpy) of the member variable `value`::
+We define the norm of a vector object as the norm (from ``numpy`) of the member variable `value`::
 
         def __add__(self, other):
             tmp = VectorDahlquist(0)
@@ -102,7 +102,7 @@ The following member functions must be defined:
 
     class VectorDahlquist(Vector):
         """
-        Vector for Dahlquist's test equation
+        Vector class for Dahlquist's test equation
         """
 
         def __init__(self, value):

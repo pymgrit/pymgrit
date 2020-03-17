@@ -26,7 +26,8 @@ using PyMGRIT's core routines `simple_setup_problem()`, `Mgrit()`, and `mgrit.so
 Note: This example is also considered in :doc:`Quickstart <quickstart>`.
 
 For a given test problem, we can construct a time-multigrid hierarchy by calling `simple_setup_problem()`.
-To use `mgrit.solve()` we then only need to set up an MGRIT solver with this time-multigrid hierarchy.
+To solve the problem, we then only need to set up an MGRIT solver `mgrit with this time-multigrid hierarchy and use
+the solver routine `mgrit.solve()` of the MGRIT solver.
 
 ::
 
@@ -94,7 +95,8 @@ There are several ways to create a time-multigrid hierarchy for a problem:
 Note: Option 1 is only implemented to support an easy start. We recommend to build the hierarchy manually by using one
 of the options 2-4.
 
-The following example shows the four different options and builds MGRIT solvers using the resulting four multilevel objects:
+The following example shows the four different options for creating the same three-level time-grid hierarchy and
+builds MGRIT solvers using the resulting four multilevel objects:
 
 ::
 
