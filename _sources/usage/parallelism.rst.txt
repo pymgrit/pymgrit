@@ -86,6 +86,23 @@ be assembled in the correct order. To determine the correct order, we use the co
 Scaling results
 ^^^^^^^^^^^^^^^
 
+In the following we present strong scaling results for applying a five-level MGRIT to solve a 2D heat equation example.
+The parallel results are performed using two to 128 processors for parallelization in time and compared to a serial
+time-stepping solution. Problem code::
+
+    heat0 = Heat2D(lx=0.75, ly=1.5, nx=51, ny=101, a=1, u_b_0x=1, t_start=0, t_stop=5, nt=2 ** 13 + 1)
+    heat1 = Heat2D(lx=0.75, ly=1.5, nx=51, ny=101, a=1, u_b_0x=1, t_interval=heat0.t[::8])
+    heat2 = Heat2D(lx=0.75, ly=1.5, nx=51, ny=101, a=1, u_b_0x=1, t_interval=heat1.t[::4])
+    heat3 = Heat2D(lx=0.75, ly=1.5, nx=51, ny=101, a=1, u_b_0x=1, t_interval=heat2.t[::4])
+    heat4 = Heat2D(lx=0.75, ly=1.5, nx=51, ny=101, a=1, u_b_0x=1, t_interval=heat3.t[::4])
+
+    mgrit = Mgrit(problem=[heat0, heat1, heat2, heat3, heat4]).solve()
+
+Total (setup + solve) runtimes:
+
+.. figure:: ../figures/strong_scaling.png
+    :alt: strong scaling results
+
 ------------------------
 Space & time parallelism
 ------------------------
