@@ -95,7 +95,11 @@
 <li class="toctree-l1"><a class="reference internal" href="dahlquist.html">Dahlquist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brusselator.html">Brusselator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="arenstorf_orbit.html">Arenstorf orbit</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Heat Equation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Heat Equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#d-heat-equation">1-D heat equation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">2-D heat equation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="advection.html">Advection</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Coupling</span></p>
@@ -171,7 +175,63 @@
             
   <div class="section" id="heat-equation">
 <h1>Heat Equation<a class="headerlink" href="#heat-equation" title="Permalink to this headline">¶</a></h1>
-<p>TODO: Write short description</p>
+<div class="section" id="d-heat-equation">
+<h2>1-D heat equation<a class="headerlink" href="#d-heat-equation" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>source: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_1d.py">heat_1d.py</a></p></li>
+<li><p>example code: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py">example_heat_1d.py</a></p></li>
+<li><p>scalar PDE with unknown function <span class="math notranslate nohighlight">\(u(x,t)\)</span> of two independent variables</p></li>
+<li><dl class="simple">
+<dt>discretization:</dt><dd><ul>
+<li><p>second-order central finite differences in space</p></li>
+<li><p>backward Euler in time</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The heat equation in 1D space is a partial differential equation that governs the flow of heat in a homogeneous and
+isotropic medium with <span class="math notranslate nohighlight">\(u(x,t)\)</span> being the temperature at the point <span class="math notranslate nohighlight">\(u(x)\)</span> at time t. The diffusion
+coefficient <span class="math notranslate nohighlight">\(a\)</span> affects the speed of the process. The governing equation is given by</p>
+<div class="math notranslate nohighlight">
+\[u_t - a*u_{xx} = b(x,t) \;\; in \; [x_{start},x_{end}]\times(t_0,t_{end}] \;\text{ with }\; u(x, t_0) = u_0(x)\]</div>
+<p>and subject to some boundary conditions in space.</p>
+<p>In <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py">example_heat_1d.py</a>, the diffusion coefficient <span class="math notranslate nohighlight">\(a = 1\)</span> and right-hand-side
+<span class="math notranslate nohighlight">\(b(x,t)=-\sin(\pi * x) * (\sin(t) - 1 * \pi^2 * \cos(t))\)</span>, in the domain <span class="math notranslate nohighlight">\([0,1]\times[0,2]\)</span> are
+considered with homogeneous Dirichlet boundary conditions in space and subject to the initial condition
+<span class="math notranslate nohighlight">\(u(x,0) = \sin(\pi * x)\)</span>.</p>
+</div>
+<div class="section" id="id1">
+<h2>2-D heat equation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>source: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_2d.py">heat_2d.py</a></p></li>
+<li><p>example code: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_2d.py">example_heat_2d.py</a></p></li>
+<li><p>scalar PDE with unknown function <span class="math notranslate nohighlight">\(u(x, y, t)\)</span> of three independent variables</p></li>
+<li><p>discretization:</p>
+<ul>
+<li><p>second-order central finite differences in space</p></li>
+<li><p>time integration routines:</p>
+<ul>
+<li><p>backward Euler</p></li>
+<li><p>forward Euler</p></li>
+<li><p>Crank-Nicolson</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>The heat equation in 2D space is a partial differential equation that governs the flow of heat in a homogeneous and
+isotropic medium with <span class="math notranslate nohighlight">\(u(x, y, t)\)</span> being the temperature at the point <span class="math notranslate nohighlight">\(u(x,y)\)</span> at time t. The diffusion
+coefficient <span class="math notranslate nohighlight">\(a\)</span> affects the speed of the process. The governing equation is given by</p>
+<div class="math notranslate nohighlight">
+\[u_t - a*(u_{xx}+u_{yy}) = b(x,t) \;\; in \; [0,x_{end}]\times[0,y_{end}]\times(t_0,t_{end}] \;\text{ with }\;
+u(x, t_0) = u_0(x)\]</div>
+<p>and subject to some boundary conditions in space.</p>
+<p>In <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_2d.py">example_heat_2d.py</a>, the diffusion coefficient <span class="math notranslate nohighlight">\(a = 3.5\)</span> and right-hand-side
+<span class="math notranslate nohighlight">\(b(x,y,t)=5 * x * (x_{end} - x) * y * (y_{end} - y) + 10 * a * t * (y * (y_{end} - y) + x * (x_{end} - x))\)</span>,
+in the domain <span class="math notranslate nohighlight">\([0,75]\times[0,1.5]\times[0,2]\)</span> are considered with homogeneous Dirichlet boundary conditions in space
+and subject to the initial condition <span class="math notranslate nohighlight">\(u(x, y, 0) = 0\)</span>.</p>
+</div>
 </div>
 
 
