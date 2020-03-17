@@ -484,6 +484,71 @@ the problem and the transfer operators and solve the problem:</p>
 </div>
 <div class="section" id="convergence-criteria">
 <h2>Convergence criteria<a class="headerlink" href="#convergence-criteria" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_example_convergence_criteria.py">example_convergence_criteria.py</a></p>
+<p>In this example, we use a customized version of PyMGRIT’s MGRIT algorithm to change the convergence criteria. The first
+step is to create a new class that inherits from the MGRIT class. Afterwards, we overwrite the convergence criteria
+function that is called by the algorithm after each iteration. The new convergence criteria is the maximum norm of the
+relative difference of two successive iterates at all C-points:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MgritCustomized</span><span class="p">(</span><span class="n">Mgrit</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Customized MGRIT with maximum norm of the relative</span>
+<span class="sd">    difference of two successive iterates as convergence criteria</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cumstomized MGRIT constructor</span>
+<span class="sd">        :param args:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Call parent constructor</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MgritCustomized</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># New member variable for saving the C-points values of the last iteration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_it</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Initialize the new member variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convergence_criteria</span><span class="p">(</span><span class="n">iteration</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">convergence_criteria</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stops if the maximum norm of the relative</span>
+<span class="sd">        difference of two successive iterates</span>
+<span class="sd">        at C-points is below the stopping tolerance.</span>
+<span class="sd">        :param iteration: Iteration number</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Create structure on the first function call</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_it</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_local_c</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_it</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_local_c</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_values</span><span class="p">())))</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_it</span><span class="p">)</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># If process has a C-point</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_local_c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Loop over all C-points of the process</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_local_c</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">new</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="c1"># Compute relative difference between two iterates</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">((</span><span class="n">new</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_it</span><span class="p">),</span> <span class="n">new</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_it</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="n">new</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">))))</span>
+
+        <span class="c1"># Communicate the local value</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comm_time</span><span class="o">.</span><span class="n">allgather</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="c1"># Maximum norm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">[</span><span class="n">iteration</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">tmp</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_it</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>At last, we can use the new MGRITCustomized class to solve our problem in the usual way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create two-level time-grid hierarchy for the ODE system describing Arenstorf orbits</span>
+<span class="n">ahrenstorf_lvl_0</span> <span class="o">=</span> <span class="n">ArenstorfOrbit</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mf">17.06521656015796</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">10001</span><span class="p">)</span>
+<span class="n">ahrenstorf_lvl_1</span> <span class="o">=</span> <span class="n">ArenstorfOrbit</span><span class="p">(</span><span class="n">t_interval</span><span class="o">=</span><span class="n">ahrenstorf_lvl_0</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">100</span><span class="p">])</span>
+
+<span class="c1"># Use the customized MGRIT algorithm to solve the problem.</span>
+<span class="c1"># Stopps if the maximum relative change in all four variables of arenstorf orbit is smaller than 1% for all C-points</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">MgritCustomized</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="p">[</span><span class="n">ahrenstorf_lvl_0</span><span class="p">,</span> <span class="n">ahrenstorf_lvl_1</span><span class="p">],</span> <span class="n">tol</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 </div>
 
