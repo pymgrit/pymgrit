@@ -187,6 +187,96 @@ The source code for these and more examples is available in the <a class="refere
 </div></blockquote>
 <div class="section" id="advanced-multigrid-hierarchy">
 <h2>Advanced multigrid hierarchy<a class="headerlink" href="#advanced-multigrid-hierarchy" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py">example_time_integrators.py</a> and <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">example_heat_1d_bdf2.py</a></p>
+<p>PyMGRIT allows different application classes and/or time integration schemes in the multigrid hierarchy. The <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py">first</a>
+examples shows how to implement different time integrator methods in an application class. The <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">second</a>
+examples shows how to use multiple application classes in the multigrid hierarchy.</p>
+<p>The step function can contain multiple integration methods, that can be choosen by a parameter. The <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/dahlquist/dahlquist.py">Dahlquist
+application class</a> implements the following time integration routines:</p>
+<ul class="simple">
+<li><p>Backward Euler</p></li>
+<li><p>Forward Euler</p></li>
+<li><p>Trapezoidal rule</p></li>
+<li><p>implicit Mid-point rule</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_start</span><span class="p">:</span> <span class="n">VectorDahlquist</span><span class="p">,</span> <span class="n">t_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorDahlquist</span><span class="p">:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Time integration routine for Dahlquist&#39;s test problem:</span>
+<span class="sd">    BE: Backward Euler</span>
+<span class="sd">    FE: Forward Euler</span>
+<span class="sd">    TR: Trapezoidal rule</span>
+<span class="sd">    MR: implicit Mid-point rule</span>
+
+<span class="sd">:param u_start: approximate solution for the input time t_start</span>
+<span class="sd">:param t_start: time associated with the input approximate solution u_start</span>
+<span class="sd">:param t_stop: time to evolve the input approximate solution to</span>
+<span class="sd">:return: approximate solution for the input time t_stop</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_stop</span> <span class="o">-</span> <span class="n">t_start</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># Note: lambda = -1</span>
+<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;BE&#39;</span><span class="p">:</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_start</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;FE&#39;</span><span class="p">:</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_start</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;TR&#39;</span><span class="p">:</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">z</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_start</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+<span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;MR&#39;</span><span class="p">:</span>
+    <span class="n">k1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">z</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_start</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">u_start</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="n">t_stop</span> <span class="o">-</span> <span class="n">t_start</span><span class="p">)</span> <span class="o">*</span> <span class="n">k1</span>
+<span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The corresponding <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py">example</a> creates a two-level hierarchy in the usual way, using the Mid-point rule at the first level
+and backward Euler at the second level.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create Dahlquist&#39;s test problem choosing implicit mid-point rule as time stepper</span>
+<span class="n">dahlquist_lvl0</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;MR&#39;</span><span class="p">)</span>
+<span class="c1"># Create Dahlquist&#39;s test problem choosing implicit backward euler as time stepper</span>
+<span class="n">dahlquist_lvl1</span> <span class="o">=</span> <span class="n">Dahlquist</span><span class="p">(</span><span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;BE&#39;</span><span class="p">)</span>
+
+<span class="c1"># Setup MGRIT and solve the problem</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="p">[</span><span class="n">dahlquist_lvl0</span><span class="p">,</span> <span class="n">dahlquist_lvl1</span><span class="p">])</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In the second example, we use two application classes for generating different time integration routines on different
+levels. The first application class implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf2.py">BDF2</a> for the 1D heat equation example, while the second class
+implements <a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf1.py">BDF1</a>. Both application classes share the same Vector structure for the solution of two time-points in one
+vector. The corresponding <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">file</a> builds a hierarchy of the levels with the BDF2 application class on the first level
+and the BDF1 application class on the second and third level.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rhs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Right-hand side of 1D heat equation example problem at a given space-time point (x,t)</span>
+<span class="sd">    :param x: spatial grid point</span>
+<span class="sd">    :param t: time point</span>
+<span class="sd">    :return: right-hand side of 1D heat equation example problem at point (x,t)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">init_con_fnc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exact solution of 1D heat equation example problem at a given space-time point (x,t)</span>
+<span class="sd">    :param x: spatial grid point</span>
+<span class="sd">    :param t: time point</span>
+<span class="sd">    :return: exact solution of 1D heat equation example problem at point (x,t)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="n">t_stop</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">nt</span> <span class="o">=</span> <span class="mi">512</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="n">t_stop</span> <span class="o">/</span> <span class="n">nt</span>
+<span class="n">t_interval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">nt</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">heat0</span> <span class="o">=</span> <span class="n">Heat1DBDF2</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">rhs</span><span class="p">,</span> <span class="n">init_con_fnc</span><span class="o">=</span><span class="n">init_con_fnc</span><span class="p">,</span>
+                   <span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">)</span>
+<span class="n">heat1</span> <span class="o">=</span> <span class="n">Heat1DBDF1</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">rhs</span><span class="p">,</span> <span class="n">init_con_fnc</span><span class="o">=</span><span class="n">init_con_fnc</span><span class="p">,</span>
+                   <span class="n">t_interval</span><span class="o">=</span><span class="n">heat0</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">heat2</span> <span class="o">=</span> <span class="n">Heat1DBDF1</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">rhs</span><span class="p">,</span> <span class="n">init_con_fnc</span><span class="o">=</span><span class="n">init_con_fnc</span><span class="p">,</span>
+                   <span class="n">t_interval</span><span class="o">=</span><span class="n">heat1</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="n">problem</span> <span class="o">=</span> <span class="p">[</span><span class="n">heat0</span><span class="p">,</span> <span class="n">heat1</span><span class="p">,</span> <span class="n">heat2</span><span class="p">]</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">)</span>
+<span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="spatial-coarsening">
 <h2>Spatial coarsening<a class="headerlink" href="#spatial-coarsening" title="Permalink to this headline">¶</a></h2>
