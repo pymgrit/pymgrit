@@ -1,5 +1,6 @@
 """
-
+Example to customize the MGRIT algorithm by a different
+convergence criteria.
 """
 
 import numpy as np
@@ -10,18 +11,21 @@ from pymgrit.arenstorf_orbit.arenstorf_orbit import ArenstorfOrbit
 
 class MgritCustomized(Mgrit):
     """
-    MGRIT optimized for the GETDP induction machine
+    Customized MGRIT with maximum norm of the relative
+    difference of two successive iterates as convergence criteria
     """
 
     def __init__(self, *args, **kwargs) -> None:
         """
-        MGRIT optimized for the GETDP induction machine
-        :param compute_f_after_convergence:
+        Cumstomized MGRIT constructor
         :param args:
         :param kwargs:
         """
+        # Call parent constructor
         super(MgritCustomized, self).__init__(*args, **kwargs)
+        # New member variable for saving the C-points values of the last iteration
         self.last_it = []
+        # Initialize the new member variable
         self.convergence_criteria(iteration=0)
 
     def convergence_criteria(self, iteration: int) -> None:
@@ -31,19 +35,26 @@ class MgritCustomized(Mgrit):
         at C-points is below the stopping tolerance.
         :param iteration: Iteration number
         """
+
+        # Create structure on the first function call
         if len(self.last_it) != len(self.index_local_c[0]):
             self.last_it = np.zeros((len(self.index_local_c[0]), len(self.u[0][0].get_values())))
         new = np.zeros_like(self.last_it)
         j = 0
         tmp = 0
+        # If process has a C-point
         if self.index_local_c[0].size > 0:
+            # Loop over all C-points of the process
             for i in np.nditer(self.index_local_c[0]):
                 new[j] = self.u[0][i].get_values()
                 j = j + 1
+            # Compute relative difference between two iterates
             tmp = 100 * np.max(
                 np.abs(np.abs(np.divide((new - self.last_it), new, out=np.zeros_like(self.last_it), where=new != 0))))
 
+        # Communicate the local value
         tmp = self.comm_time.allgather(tmp)
+        # Maximum norm
         self.conv[iteration] = np.max(np.abs(tmp))
         self.last_it = np.copy(new)
 
