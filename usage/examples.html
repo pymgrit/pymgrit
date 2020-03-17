@@ -194,7 +194,8 @@ The source code for these and more examples is available in the <a class="refere
 using PyMGRIT’s core routines <cite>simple_setup_problem()</cite>, <cite>Mgrit()</cite>, and <cite>mgrit.solve()</cite>.
 Note: This example is also considered in <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a>.</p>
 <p>For a given test problem, we can construct a time-multigrid hierarchy by calling <cite>simple_setup_problem()</cite>.
-To use <cite>mgrit.solve()</cite> we then only need to set up an MGRIT solver with this time-multigrid hierarchy.</p>
+To solve the problem, we then only need to set up an MGRIT solver <cite>mgrit with this time-multigrid hierarchy and use
+the solver routine `mgrit.solve()</cite> of the MGRIT solver.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
@@ -257,7 +258,8 @@ To use <cite>mgrit.solve()</cite> we then only need to set up an MGRIT solver wi
 </ol>
 <p>Note: Option 1 is only implemented to support an easy start. We recommend to build the hierarchy manually by using one
 of the options 2-4.</p>
-<p>The following example shows the four different options and builds MGRIT solvers using the resulting four multilevel objects:</p>
+<p>The following example shows the four different options for creating the same three-level time-grid hierarchy and
+builds MGRIT solvers using the resulting four multilevel objects:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">pymgrit.dahlquist.dahlquist</span> <span class="kn">import</span> <span class="n">Dahlquist</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.simple_setup_problem</span> <span class="kn">import</span> <span class="n">simple_setup_problem</span>

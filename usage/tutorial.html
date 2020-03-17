@@ -91,15 +91,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#application-class">Application class</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Summary</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#solving-the-problem">Solving the problem</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Summary</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#looking-at-results">Looking at results</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Summary</a></li>
 </ul>
 </li>
 </ul>
@@ -211,7 +211,7 @@
 <p>Then, we define the class <cite>VectorDahlquist</cite> containing a scalar member variable <cite>value</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">VectorDahlquist</span><span class="p">(</span><span class="n">Vector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Vector for Dahlquist&#39;s test equation</span>
+<span class="sd">    Vector class for Dahlquist&#39;s test equation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -241,7 +241,7 @@ For our class <cite>VectorDahlquist</cite>, the vector data is the scalar member
 </div>
 <p>The functions <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite> define the addition and subtraction of two vector objects and the norm of a vector object, respectively.
 For our class <cite>VectorDahlquist</cite>, adding or subtracting two vector objects means adding or subtracting the values of the member variable <cite>value</cite> by using the functions <cite>get_values</cite> and <cite>set_values</cite>.
-We define the norm of a vector object as the norm (from numpy) of the member variable <cite>value</cite>:</p>
+We define the norm of a vector object as the norm (from <a href="#id1"><span class="problematic" id="id2">``</span></a>numpy`) of the member variable <cite>value</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
@@ -277,7 +277,7 @@ We define the norm of a vector object as the norm (from numpy) of the member var
 
 <span class="k">class</span> <span class="nc">VectorDahlquist</span><span class="p">(</span><span class="n">Vector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Vector for Dahlquist&#39;s test equation</span>
+<span class="sd">    Vector class for Dahlquist&#39;s test equation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -359,8 +359,8 @@ For our test problem, we take a backward Euler step:</p>
     <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="id1">
-<h3>Summary<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Summary<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>The application class must inherit from PyMGRIT’s core <cite>Application</cite> class.</p>
 <p>The application class contains information about the problem we want to solve.</p>
 <p>The application class must contain the following member variables and member functions:</p>
@@ -458,8 +458,8 @@ For our test problem, we take a backward Euler step:</p>
 <li><p><cite>time_solve</cite> : solve time [in seconds]</p></li>
 </ul>
 </div></blockquote>
-<div class="section" id="id2">
-<h3>Summary<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Summary<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import PyMGRIT</span>
 <span class="kn">from</span> <span class="nn">pymgrit</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -515,8 +515,8 @@ For our test problem, we take a backward Euler step:</p>
 <div class="figure align-default">
 <img alt="residual history" src="../_images/tutorial.png" />
 </div>
-<div class="section" id="id3">
-<h3>Summary<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>Summary<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
