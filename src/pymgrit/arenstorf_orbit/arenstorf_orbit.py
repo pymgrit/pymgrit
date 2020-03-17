@@ -18,7 +18,10 @@ class VectorArenstorfOrbit(Vector):
 
     def __init__(self):
         super(VectorArenstorfOrbit, self).__init__()
-        self.value = np.zeros(4)
+        self.y0 = 0
+        self.y1 = 0
+        self.y2 = 0
+        self.y3 = 0
 
     def __add__(self, other):
         tmp = VectorArenstorfOrbit()
@@ -27,11 +30,12 @@ class VectorArenstorfOrbit(Vector):
 
     def __sub__(self, other):
         tmp = VectorArenstorfOrbit()
+        sub = self.get_values() - other.get_values()
         tmp.set_values(self.get_values() - other.get_values())
         return tmp
 
     def norm(self):
-        return np.linalg.norm(self.value)
+        return np.linalg.norm(np.array([self.y0, self.y1, self.y2, self.y3]))
 
     def clone_zero(self):
         return VectorArenstorfOrbit()
@@ -41,14 +45,18 @@ class VectorArenstorfOrbit(Vector):
         tmp.set_values(np.random.rand(4))
         return tmp
 
-    def set_values(self, value):
-        self.value = value
+    def set_values(self, values):
+        self.y0 = values[0]
+        self.y1 = values[1]
+        self.y2 = values[2]
+        self.y3 = values[3]
 
     def get_values(self):
-        return self.value
+        return np.array([self.y0, self.y1, self.y2, self.y3])
 
     def plot(self):
-        plt.plot(self.value[0], self.value[1], color='red', marker='.')
+        plt.plot(self.y0, self.y1, color='red', marker='.')
+
 
 def arenstorf(t, y):
     a = 0.012277471
@@ -63,7 +71,8 @@ def arenstorf(t, y):
     ], dtype=float)
     return yp
 
-def arenstorf2(y,t):
+
+def arenstorf2(y, t):
     a = 0.012277471
     b = 1 - a
     d1 = ((y[0] + a) ** 2 + y[1] ** 2) ** (3 / 2)
@@ -75,6 +84,7 @@ def arenstorf2(y,t):
         y[1] - 2 * y[2] - b * y[1] / d1 - a * y[1] / d2
     ], dtype=float)
     return yp
+
 
 class ArenstorfOrbit(Application):
     """
@@ -97,19 +107,9 @@ class ArenstorfOrbit(Application):
         self.b = 1 - self.a
 
     def step(self, u_start: VectorArenstorfOrbit, t_start: float, t_stop: float) -> VectorArenstorfOrbit:
-        # res = RK45(arenstorf, t0=t_start, max_step=t_stop - t_start, t_bound=t_stop, y0=u_start.get_values())
-        # res.step()
-        # ret = VectorArenstorfOrbit()
-        # ret.set_values(res.y)
-
-        # res = odeint(arenstorf2, u_start.get_values(), np.array([t_start,t_stop]))
-        # ret = VectorArenstorfOrbit()
-        # ret.set_values(res[-1])
-
         res = solve_ivp(fun=arenstorf, y0=u_start.get_values(),
                         t_span=np.array([t_start, t_stop]),
                         t_eval=np.array([t_start, t_stop]), method='RK45')
         ret = VectorArenstorfOrbit()
         ret.set_values(res.y[:, -1])
         return ret
-

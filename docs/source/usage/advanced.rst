@@ -16,6 +16,119 @@ The source code for these and more examples is available in the examples_ folder
 Advanced multigrid hierarchy
 ----------------------------
 
+example_time_integrators.py_ and example_heat_1d_bdf2.py_
+
+.. _example_time_integrators.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py
+.. _example_heat_1d_bdf2.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py
+
+
+PyMGRIT allows different application classes and/or time integration schemes in the multigrid hierarchy. The first_
+examples shows how to implement different time integrator methods in an application class. The second_
+examples shows how to use multiple application classes in the multigrid hierarchy.
+
+.. _first: https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py
+.. _second: https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py
+
+The step function can contain multiple integration methods, that can be choosen by a parameter. The `Dahlquist
+application class`_ implements the following time integration routines:
+
+.. _Dahlquist  application class: https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/dahlquist/dahlquist.py
+
+* Backward Euler
+* Forward Euler
+* Trapezoidal rule
+* implicit Mid-point rule
+
+::
+
+    def step(self, u_start: VectorDahlquist, t_start: float, t_stop: float) -> VectorDahlquist:
+    """
+    Time integration routine for Dahlquist's test problem:
+        BE: Backward Euler
+        FE: Forward Euler
+        TR: Trapezoidal rule
+        MR: implicit Mid-point rule
+
+    :param u_start: approximate solution for the input time t_start
+    :param t_start: time associated with the input approximate solution u_start
+    :param t_stop: time to evolve the input approximate solution to
+    :return: approximate solution for the input time t_stop
+    """
+    z = (t_stop - t_start) * -1  # Note: lambda = -1
+    if self.method == 'BE':
+        tmp = 1 / (1 - z) * u_start.get_values()
+    elif self.method == 'FE':
+        tmp = (1 + z) * u_start.get_values()
+    elif self.method == 'TR':
+        tmp = (1 + z / 2) / (1 - z / 2) * u_start.get_values()
+    elif self.method == 'MR':
+        k1 = -1 / (1 - z / 2) * u_start.get_values()
+        tmp = u_start.get_values() + (t_stop - t_start) * k1
+    return VectorDahlquist(tmp)
+
+The corresponding example_ creates a two-level hierarchy in the usual way, using the Mid-point rule at the first level
+and backward Euler at the second level.
+
+.. _example: https://github.com/pymgrit/pymgrit/tree/master/examples/example_time_integrators.py
+
+::
+
+    # Create Dahlquist's test problem choosing implicit mid-point rule as time stepper
+    dahlquist_lvl0 = Dahlquist(t_start=0, t_stop=5, nt=101, method='MR')
+    # Create Dahlquist's test problem choosing implicit backward euler as time stepper
+    dahlquist_lvl1 = Dahlquist(t_start=0, t_stop=5, nt=51, method='BE')
+
+    # Setup MGRIT and solve the problem
+    mgrit = Mgrit(problem=[dahlquist_lvl0, dahlquist_lvl1])
+    info = mgrit.solve()
+
+In the second example, we use two application classes for generating different time integration routines on different
+levels. The first application class implements BDF2_ for the 1D heat equation example, while the second class
+implements BDF1_. Both application classes share the same Vector structure for the solution of two time-points in one
+vector. The corresponding file_ builds a hierarchy of the levels with the BDF2 application class on the first level
+and the BDF1 application class on the second and third level.
+
+.. _BDF2: https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf2.py
+.. _BDF1: https://github.com/pymgrit/pymgrit/blob/master/src/pymgrit/heat/heat_1d_2pts_bdf1.py
+.. _file: https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py
+
+::
+
+    def rhs(x, t):
+        """
+        Right-hand side of 1D heat equation example problem at a given space-time point (x,t)
+        :param x: spatial grid point
+        :param t: time point
+        :return: right-hand side of 1D heat equation example problem at point (x,t)
+        """
+
+        return - np.sin(np.pi * x) * (np.sin(t) - 1 * np.pi ** 2 * np.cos(t))
+
+    def init_con_fnc(x, t):
+        """
+        Exact solution of 1D heat equation example problem at a given space-time point (x,t)
+        :param x: spatial grid point
+        :param t: time point
+        :return: exact solution of 1D heat equation example problem at point (x,t)
+        """
+        return np.sin(np.pi * x) * np.cos(t)
+
+    t_stop = 2
+    nt = 512
+    dt = t_stop / nt
+    t_interval = np.linspace(0, t_stop, int(nt / 2 + 1))
+    heat0 = Heat1DBDF2(x_start=0, x_end=1, nx=1001, a=1, dt=dt, rhs=rhs, init_con_fnc=init_con_fnc,
+                       t_interval=t_interval)
+    heat1 = Heat1DBDF1(x_start=0, x_end=1, nx=1001, a=1, dt=dt, rhs=rhs, init_con_fnc=init_con_fnc,
+                       t_interval=heat0.t[::2])
+    heat2 = Heat1DBDF1(x_start=0, x_end=1, nx=1001, a=1, dt=dt, rhs=rhs, init_con_fnc=init_con_fnc,
+                       t_interval=heat1.t[::2])
+
+    problem = [heat0, heat1, heat2]
+    mgrit = Mgrit(problem=problem)
+    mgrit.solve()
+
+
 ------------------
 Spatial coarsening
 ------------------
