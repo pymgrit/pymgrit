@@ -265,39 +265,44 @@ which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t
 </div>
 <div class="section" id="module-pymgrit.heat.heat_1d_2pts_bdf1">
 <span id="pymgrit-heat-heat-1d-2pts-bdf1-module"></span><h2>pymgrit.heat.heat_1d_2pts_bdf1 module<a class="headerlink" href="#module-pymgrit.heat.heat_1d_2pts_bdf1" title="Permalink to this headline">¶</a></h2>
+<p>Application class for 1D heat problem using BDF1 time integration</p>
+<p>Note: values at two consecutive time points are grouped as pairs</p>
 <dl class="class">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf1.</code><code class="sig-name descname">Heat1DBDF1</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">dt: float</em>, <em class="sig-param">a: float</em>, <em class="sig-param">init_con_fnc: Callable = &lt;function Heat1DBDF1.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs: Callable = &lt;function Heat1DBDF1.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf1.</code><code class="sig-name descname">Heat1DBDF1</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">dtau: float</em>, <em class="sig-param">a: float</em>, <em class="sig-param">init_cond: Callable = &lt;function Heat1DBDF1.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs: Callable = &lt;function Heat1DBDF1.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
 <dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [x_start,x_end], t in [0,T],</p>
 </dd>
 </dl>
+<p>with homogeneous Dirichlet boundary conditions in space</p>
 <dl class="method">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1.compute_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Space discretization</p>
+<dd><p>Define spatial discretization matrix for heat equation problem.</p>
+<dl class="simple">
+<dt>Discretization is centered finite differences with matrix stencil</dt><dd><p>(a / dx^2) * [-1  2  -1]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts<a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1.step" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
-<dt>Time integration routine for 1D heat equation example problem:</dt><dd><p>Backward Euler in time</p>
+<dt>Time integration routine for 1D heat equation example problem:</dt><dd><p>Backward Euler (BDF1)</p>
+</dd>
+<dt>One-step method</dt><dd><p>u_i = (I + dt*L)^{-1} * (u_{i-1} + dt*b_i),</p>
 </dd>
 </dl>
-<p>At each time step i = 1, …, nt+1, we obtain the linear system
-| 1+2ar   -ar                     | |  u_{1,i}   |   |  u_{1,i-1}   |   |  dt*b_{1,i}   |
-|  -ar   1+2ar  -ar               | |  u_{2,i}   |   |  u_{2,i-1}   |   |  dt*b_{2,i}   |
-|         …   …    …        | |    …     | = |     …      | + |     …       |
-|               -ar   1+2ar  -ar  | | u_{nx-1,i} |   | u_{nx-1,i-1} |   | dt*b_{nx-1,i} |
-|                      -ar  1+2ar | |  u_{nx,i}  |   |  u_{nx,i-1}  |   |  dt*b_{nx,i}  |</p>
+<p>where L = self.space_disc is the spatial discretization operator</p>
 <dl class="simple">
-<dt>with r = (dt/dx^2), which we denote by</dt><dd><p>Mu_i = u_{i-1} + dt*b_i.</p>
+<dt>Note: step takes two BDF1 steps</dt><dd><ul class="simple">
+<li><p>one step from (t_start + dtau) to t_stop</p></li>
+<li><p>one step from t_stop to (t_stop + dtau)</p></li>
+</ul>
 </dd>
 </dl>
-<p>This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
-which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -317,24 +322,59 @@ which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t
 </div>
 <div class="section" id="module-pymgrit.heat.heat_1d_2pts_bdf2">
 <span id="pymgrit-heat-heat-1d-2pts-bdf2-module"></span><h2>pymgrit.heat.heat_1d_2pts_bdf2 module<a class="headerlink" href="#module-pymgrit.heat.heat_1d_2pts_bdf2" title="Permalink to this headline">¶</a></h2>
+<p>Application class for 1D heat problem using BDF2 time integration</p>
+<p>Note: values at two consecutive time points are grouped as pairs</p>
 <dl class="class">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf2.</code><code class="sig-name descname">Heat1DBDF2</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">dt: float</em>, <em class="sig-param">a: float</em>, <em class="sig-param">init_con_fnc: Callable = &lt;function Heat1DBDF2.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs: Callable = &lt;function Heat1DBDF2.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf2.</code><code class="sig-name descname">Heat1DBDF2</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">dtau: float</em>, <em class="sig-param">a: float</em>, <em class="sig-param">init_cond: Callable = &lt;function Heat1DBDF2.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs: Callable = &lt;function Heat1DBDF2.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
-<dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [x_start,x_end], t in [0,T],</p>
+<dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [x_start, x_end], t in [t_start, t_end],</p>
 </dd>
 </dl>
+<p>with homogeneous Dirichlet boundary conditions in space</p>
 <dl class="method">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2.compute_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Space discretization</p>
+<dd><p>Define spatial discretization matrix for heat equation problem.</p>
+<dl class="simple">
+<dt>Discretization is centered finite differences with matrix stencil</dt><dd><p>(a / dx^2) * [-1  2  -1]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts<a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>BDF2</p>
+<dd><dl class="simple">
+<dt>Time integration routine for 1D heat equation:</dt><dd><p>BDF2</p>
+</dd>
+</dl>
+<p>Two-step method on variably spaced grid with spacing tau_i = t_i - t_{i-1}.
+In time-based stencil notation, we have at time point t_i</p>
+<blockquote>
+<div><p>[r_i^2/(tau_i*(1+r_i))*I,  -((1+r_i)/tau_i)*I,  (1+2r_i)/(tau_i*(1+r_i))*I + L,  0,  0],</p>
+</div></blockquote>
+<p>where L = self.space_disc is the spatial discretization operator and r_i = tau_i/tau_{i-1}</p>
+<dl class="simple">
+<dt>Note: For the pair associated with input time t_stop</dt><dd><ul class="simple">
+<li><p>update at t_stop involves values at t_start and (t_start + dtau)</p></li>
+<li><p>update at t_stop + dtau involves values at (t_start + dtau) and t_stop</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – approximate solution for the input time t_start</p></li>
+<li><p><strong>t_start</strong> – time associated with the input approximate solution u_start</p></li>
+<li><p><strong>t_stop</strong> – time to evolve the input approximate solution to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>approximate solution for the input time t_stop</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -432,23 +472,33 @@ Crank-Nicolson in time</p>
 </div>
 <div class="section" id="module-pymgrit.heat.vector_heat_1d_2pts">
 <span id="pymgrit-heat-vector-heat-1d-2pts-module"></span><h2>pymgrit.heat.vector_heat_1d_2pts module<a class="headerlink" href="#module-pymgrit.heat.vector_heat_1d_2pts" title="Permalink to this headline">¶</a></h2>
+<p>Vector class for 1D heat problem</p>
+<p>Note: values at two consecutive time points are grouped as pairs</p>
 <dl class="class">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.vector_heat_1d_2pts.</code><code class="sig-name descname">VectorHeat1D2Pts</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.vector_heat_1d_2pts.</code><code class="sig-name descname">VectorHeat1D2Pts</code><span class="sig-paren">(</span><em class="sig-param">size</em>, <em class="sig-param">dtau</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
-<p>Solution vector for two points</p>
+<p>Vector class for grouping values at two consecutive time points</p>
 <dl class="method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_rand">
 <code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_rand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initial solution vector with random values
-:rtype: object</p>
+<dd><p>Initialize vector object with random values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>vector object with random values</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_zero">
 <code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_zero" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initial solution vector with all zeros
-:rtype: object</p>
+<dd><p>Initialize vector object with zeros</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>vector object with zero values</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -460,13 +510,17 @@ Crank-Nicolson in time</p>
 <dl class="method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.norm">
 <code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Norm
-:return:</p>
+<dd><p>Norm of a vector object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>2-norm of vector object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.set_values">
-<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">first_time_point</em>, <em class="sig-param">second_time_point</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.set_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">first_time_point</em>, <em class="sig-param">second_time_point</em>, <em class="sig-param">dtau</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the values</p>
 </dd></dl>
 
