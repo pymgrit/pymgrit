@@ -68,9 +68,6 @@ class Heat1DBDF2(Application):
                        (dtau / 2) * (self.rhs(self.x, self.t[0]) + self.rhs(self.x, self.t[0] + dtau)))
         self.vector_t_start.set_values(first_time_point=tmp1, second_time_point=tmp2, dtau=dtau)
 
-        #self.vector_t_start.set_values(first_time_point=self.init_cond(self.x, self.t[0]),
-         #                              second_time_point=self.init_cond(self.x, self.t[0] + self.dt))
-
     def compute_matrix(self):
         """
         Define spatial discretization matrix for heat equation problem.
@@ -119,7 +116,7 @@ class Heat1DBDF2(Application):
         r_i = tau_i / tau_im1
         coeffm2 = (r_i ** 2) / (tau_i * (1 + r_i))
         coeffm1 = (1 + r_i) / tau_i
-        coeff = (1 + 2*r_i) / (tau_i * (1 + r_i))
+        coeff = (1 + 2 * r_i) / (tau_i * (1 + r_i))
         rhs = self.rhs(self.x, t_stop) - coeffm2 * first + coeffm1 * second
 
         tmp1 = spsolve(self.space_disc + coeff * self.identity, rhs)

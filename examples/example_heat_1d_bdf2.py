@@ -43,6 +43,7 @@ def main():
     def exact_sol(x, t):
         """
         Exact solution of 1D heat equation example problem at a given space-time point (x,t)
+        Note: Can be used for computing the error of the MGRIT approximation
 
         :param x: spatial grid point
         :param t: time point
@@ -54,12 +55,13 @@ def main():
     t_start = 0
     t_stop = 2
     nt = 512  # number of time points excluding t_start
-    dt = t_stop / nt
+    dt = t_stop / nt  # time-step size
 
     # Time points are grouped in pairs of two consecutive time points
     #   => (nt/2) + 1 pairs
-    # Note: Each pair is associated with the time value of its first point.
-    #       The second value of the last pair (associated with t_stop) is not used.
+    # Note: * Each pair is associated with the time value of its first point.
+    #       * The second value of the last pair (associated with t_stop) is not used.
+    #       * The spacing within each pair is the same (= dt) on all grid levels.
     t_interval = np.linspace(t_start, t_stop, int(nt / 2 + 1))
 
     heat0 = Heat1DBDF2(x_start=0, x_end=1, nx=1001, a=1, dtau=dt, rhs=rhs, init_cond=init_cond,
@@ -69,9 +71,10 @@ def main():
     heat2 = Heat1DBDF1(x_start=0, x_end=1, nx=1001, a=1, dtau=dt, rhs=rhs, init_cond=init_cond,
                        t_interval=heat1.t[::2])
 
+    # Setup three-level MGRIT solver and solve the problem
     problem = [heat0, heat1, heat2]
     mgrit = Mgrit(problem=problem)
-    mgrit.solve()
+    info = mgrit.solve()
 
 
 if __name__ == '__main__':

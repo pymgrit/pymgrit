@@ -67,12 +67,6 @@ class Heat1DBDF1(Application):
                        tmp1 + self.rhs(self.x, self.t[0] + dtau) * dtau)
         self.vector_t_start.set_values(first_time_point=tmp1, second_time_point=tmp2, dtau=dtau)
 
-        # self.vector_t_start.set_values(first_time_point=self.init_cond(self.x, self.t[0]),
-        #                                second_time_point=spsolve(self.dt * self.space_disc + self.identity,
-        #                                                          self.init_cond(self.x, self.t[0]) +
-        #                                                          self.rhs(self.x, self.t[0] + self.dt) *
-        #                                                          self.dt))
-
     def compute_matrix(self):
         """
         Define spatial discretization matrix for heat equation problem.
