@@ -66,7 +66,7 @@ class VectorHeat1D2Pts(Vector):
         """
         Initialize vector object with zeros
 
-        :rtype: vector object with zero values
+        :return: vector object with zero values
         """
         return VectorHeat1D2Pts(self.size, self.dtau)
 
@@ -74,16 +74,28 @@ class VectorHeat1D2Pts(Vector):
         """
         Initialize vector object with random values
 
-        :rtype: vector object with random values
+        :return: vector object with random values
         """
         tmp = VectorHeat1D2Pts(self.size, self.dtau)
         tmp.set_values(np.random.rand(self.size), np.random.rand(self.size), self.dtau)
         return tmp
 
     def get_values(self):
+        """
+        Get vector data
+
+        :return: tuple of values of member variables
+        """
         return self.values_first_time_point, self.values_second_time_point, self.dtau
 
     def set_values(self, first_time_point, second_time_point, dtau):
+        """
+        Set vector data
+
+        :param first_time_point: values for first time point
+        :param second_time_point: values for second time point
+        :param dtau: time-step size within pair
+        """
         self.values_first_time_point = first_time_point
         self.values_second_time_point = second_time_point
         self.dtau = dtau

@@ -19,9 +19,10 @@ from pymgrit.core.mgrit import Mgrit
 def main():
     def rhs(x, t):
         """
-        Right-hand side of 1D heat equation example problem at a given space-time point (x,t)
-        rhs : -np.sin(np.pi * x) * (np.sin(t) - 1 * np.pi ** 2 * np.cos(t))
-        exact solution: np.sin(np.pi * x) * np.cos(t)
+        Right-hand side of 1D heat equation example problem at a given space-time point (x,t),
+          -sin(pi*x)(sin(t) - a*pi^2*cos(t)),  a = 1
+
+        Note: exact solution is np.sin(np.pi * x) * np.cos(t)
         :param x: spatial grid point
         :param t: time point
         :return: right-hand side of 1D heat equation example problem at point (x,t)
@@ -29,24 +30,26 @@ def main():
 
         return - np.sin(np.pi * x) * (np.sin(t) - 1 * np.pi ** 2 * np.cos(t))
 
-    def init_con_fnc(x):
+    def init_cond(x):
         """
-        Exact solution of 1D heat equation example problem at a given space-time point (x,t)
+        Initial condition of 1D heat equation example,
+          u(x,0)  = sin(pi*x)
+
         :param x: spatial grid point
-        :return: Initial condition
+        :return: initial condition of 1D heat equation example problem
         """
         return np.sin(np.pi * x)
 
-    heat0 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_con_fnc=init_con_fnc, rhs=rhs, t_start=0, t_stop=2, nt=65)
-    heat1 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_con_fnc=init_con_fnc, rhs=rhs, t_start=0, t_stop=2, nt=33)
-    heat2 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_con_fnc=init_con_fnc, rhs=rhs, t_start=0, t_stop=2, nt=17)
-    heat3 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_con_fnc=init_con_fnc, rhs=rhs, t_start=0, t_stop=2, nt=9)
-    heat4 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_con_fnc=init_con_fnc, rhs=rhs, t_start=0, t_stop=2, nt=5)
+    heat0 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_cond=init_cond, rhs=rhs, t_start=0, t_stop=2, nt=65)
+    heat1 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_cond=init_cond, rhs=rhs, t_start=0, t_stop=2, nt=33)
+    heat2 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_cond=init_cond, rhs=rhs, t_start=0, t_stop=2, nt=17)
+    heat3 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_cond=init_cond, rhs=rhs, t_start=0, t_stop=2, nt=9)
+    heat4 = Heat1D(x_start=0, x_end=1, nx=1001, a=1, init_cond=init_cond, rhs=rhs, t_start=0, t_stop=2, nt=5)
 
+    # Setup five-level MGRIT solver and solve the problem
     problem = [heat0, heat1, heat2, heat3, heat4]
     mgrit = Mgrit(problem=problem, cf_iter=1, cycle_type='F', nested_iteration=False, max_iter=10,
                   logging_lvl=20, random_init_guess=False)
-
     info = mgrit.solve()
 
 
