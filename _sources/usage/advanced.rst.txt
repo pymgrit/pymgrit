@@ -159,10 +159,10 @@ example_spatial_coarsening.py_
 
 .. _example_spatial_coarsening.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_spatial_coarsening.py
 
-This example shows how the transfer parameter of the MGRIT solver can be used to perform an additional spatial
-coarsening on the different levels. We use the 1D heat equation (see :doc:`../applications/heat_equation`).
+This example demonstrates how to use the transfer parameter `transfer` of the MGRIT solver to apply spatial
+coarsening on different levels of the time-grid hierarchy for solving a 1D heat equation problem (see :doc:`../applications/heat_equation`).
 
-The first step is to import all necessary PyMGRIT classes::
+The first step is to import all necessary PyMGRIT classes (and ``numpy`` for later use)::
 
     import numpy as np
 
@@ -178,60 +178,60 @@ Then, we define the class GridTransferHeat for the 1D heat equation::
         """
         Grid Transfer for the Heat Equation.
         Interpolation: Linear interpolation
-        Restriction: Full weighted
+        Restriction: Full weighting
         """
 
         def __init__(self):
             """
             Constructor.
-            :rtype: object
+            :rtype: GridTransferHeat object
             """
             super(GridTransferHeat, self).__init__()
 
-The grid transfer class must contain two member functions: `restriction` and `interpolation`.
+The grid transfer class must contain the two member functions `restriction()` and `interpolation()`.
 
-The function restriction receives a VectorHeat1D object and returns another VectorHeat1D object, that contains
+The function `restriction()` receives a `VectorHeat1D` object and returns another `VectorHeat1D` object that contains
 the restricted solution vector::
 
     def restriction(self, u: VectorHeat1D) -> VectorHeat1D:
         """
-        Restrict u using full weighting.
+        Restrict input vector u using standard full weighting restriction.
 
-        Note: The 1d heat equation example is with homogeneous Dirichlet BCs in space.
-              The Heat1D vector class stores only the non boundary points.
-        :param u: VectorHeat1D
-        :rtype: VectorHeat1D
+        Note: In the 1d heat equation example, we consider homogeneous Dirichlet BCs in space.
+              The Heat1D vector class only stores interior points.
+        :param u: approximate solution vector
+        :return: input solution vector u restricted to a coarse grid
         """
-        # Get the non boundary points
+        # Get values at interior points
         sol = u.get_values()
 
-        # Create array
+        # Create array for restricted values
         ret_array = np.zeros(int((len(sol) - 1) / 2))
 
-        # Full weighting
+        # Full weighting restriction
         for i in range(len(ret_array)):
             ret_array[i] = sol[2 * i] * 1 / 4 + sol[2 * i + 1] * 1 / 2 + sol[2 * i + 2] * 1 / 4
 
-        # Create and return a VectorHeat1D object
+        # Create and return a VectorHeat1D object with the restricted values
         ret = VectorHeat1D(len(ret_array))
         ret.set_values(ret_array)
         return ret
 
-The function interpolation works in the same way::
+Similarly, we define the function `interpolation()` as follows::
 
     def interpolation(self, u: VectorHeat1D) -> VectorHeat1D:
         """
-        Interpolate u using linear interpolation
+        Interpolate input vector u using linear interpolation.
 
-        Note: The 1d heat equation example is with homogeneous Dirichlet BCs in space.
-              The Heat1D vector class stores only the non boundary points.
-        :param u: VectorHeat1D
-        :rtype: VectorHeat1D
+        Note: In the 1d heat equation example, we consider homogeneous Dirichlet BCs in space.
+              The Heat1D vector class only stores interior points.
+        :param u: approximate solution vector
+        :return: input solution vector u interpolated to a fine grid
         """
-        # Get the non boundary points
+        # Get values at interior points
         sol = u.get_values()
 
-        # Create array
+        # Create array for interpolated values
         ret_array = np.zeros(int(len(sol) * 2 + 1))
 
         # Linear interpolation
@@ -240,16 +240,20 @@ The function interpolation works in the same way::
             ret_array[i * 2 + 1] += sol[i]
             ret_array[i * 2 + 2] += 1 / 2 * sol[i]
 
-        # Create and return a VectorHeat1D object
+        # Create and return a VectorHeat1D object with interpolated values
         ret = VectorHeat1D(len(ret_array))
         ret.set_values(ret_array)
         return ret
 
-Now, we construct our multilevel scheme building each level. In this example, we use four-level MGRIT. The finest level
-has 17 points in space, the second level 9, the third level 5 and the fourth level also 5.
+Now, we construct a multigrid hierarchy for the 1d heat example. Here, we set up the following hierarchy:
 
-Note: In this example, it is not possible to use the PyMGRIT's core function simple_setup_problem, since each level
-has different spatial sizes::
+  * level 0: 129 time points, 17 points in space
+  * level 1: 65 time points, 9 points in space
+  * level 2: 33 time points, 5 points in space
+  * level 3: 17 time points, 5 points in space
+
+Note: In this example, it is not possible to use PyMGRIT's core function `simple_setup_problem()`, since the number of
+spatial grid points changes in the multigrid hiearchy::
 
     heat0 = Heat1D(x_start=0, x_end=2, nx=2 ** 4 + 1, a=1, t_start=0, t_stop=2, nt=2 ** 7 + 1)
     heat1 = Heat1D(x_start=0, x_end=2, nx=2 ** 3 + 1, a=1, t_interval=heat0.t[::2])
@@ -258,14 +262,16 @@ has different spatial sizes::
 
     problem = [heat0, heat1, heat2, heat3]
 
-Then, we have to define the transfer operator per grid level. The transfer operator is a list of lengths (#level -1) and
-specifies the transfer operator used per level. For the transfer between the first and the second level,
-an object of the class GridTransferHeat() is needed to transfer the solution between the different space grids with
-different sizes. The same is necessary for the transfer between the second and third level. Since the third and fourth
-level have the same size in space, the GridTransferCopy class from PyMGRIT's core is used. Set up the MGRIT solver with
-the problem and the transfer operators and solve the problem::
+Before we can set up the MGRIT solver, we have to define the grid transfer between all two consecutive levels in the
+multigrid hierarchy. These grid transfers are specified by a list of grid transfer objects of length (#levels -1).
+For our four-level example, this list is of length three with two objects of the new class `GridTransferHeat` for the
+transfer between levels 0 and 1 as well as between levels 1 and 2 and an object of PyMGRIT's core class
+`GridTransferCopy` for the transfer between levels 2 and 3::
 
     transfer = [GridTransferHeat(), GridTransferHeat(), GridTransferCopy()]
+
+Finally, we set up the MGRIT solver and solve the problem::
+
     mgrit = Mgrit(problem=problem, transfer=transfer)
     info = mgrit.solve()
 
@@ -280,59 +286,62 @@ Complete code::
     from pymgrit.core.grid_transfer import GridTransfer  # Parent grid transfer class
     from pymgrit.core.grid_transfer_copy import GridTransferCopy  # Copy transfer class
 
+
+    # Create class for the grid transfer between spatial grids.
+    # Note: The class must inherit from PyMGRIT's core GridTransfer class.
     class GridTransferHeat(GridTransfer):
         """
-        Grid Transfer for the Heat Equation.
+        Grid Transfer class for the Heat Equation.
         Interpolation: Linear interpolation
-        Restriction: Full weighted
+        Restriction: Full weighting
         """
 
         def __init__(self):
             """
             Constructor.
-            :rtype: object
+            :rtype: GridTransferHeat object
             """
             super(GridTransferHeat, self).__init__()
 
-        # Specify restriction operator
+        # Define restriction operator
         def restriction(self, u: VectorHeat1D) -> VectorHeat1D:
             """
-            Restrict u using full weighting.
+            Restrict input vector u using standard full weighting restriction.
 
-            Note: The 1d heat equation example is with homogeneous Dirichlet BCs in space.
-                  The Heat1D vector class stores only the non boundary points.
-            :param u: VectorHeat1D
-            :rtype: VectorHeat1D
+            Note: In the 1d heat equation example, we consider homogeneous Dirichlet BCs in space.
+                  The Heat1D vector class only stores interior points.
+            :param u: approximate solution vector
+            :return: input solution vector u restricted to a coarse grid
             """
-            # Get the non boundary points
+            # Get values at interior points
             sol = u.get_values()
 
-            # Create array
+            # Create array for restricted values
             ret_array = np.zeros(int((len(sol) - 1) / 2))
 
-            # Full weighting
+            # Full weighting restriction
             for i in range(len(ret_array)):
                 ret_array[i] = sol[2 * i] * 1 / 4 + sol[2 * i + 1] * 1 / 2 + sol[2 * i + 2] * 1 / 4
 
-            # Create and return a VectorHeat1D object
+            # Create and return a VectorHeat1D object with the restricted values
             ret = VectorHeat1D(len(ret_array))
             ret.set_values(ret_array)
             return ret
 
-        # Specify interpolation operator
+        # Define interpolation operator
         def interpolation(self, u: VectorHeat1D) -> VectorHeat1D:
             """
-            Interpolate u using linear interpolation
+            Interpolate input vector u using linear interpolation.
 
-            Note: The 1d heat equation example is with homogeneous Dirichlet BCs in space.
-                  The Heat1D vector class stores only the non boundary points.
-            :param u: VectorHeat1D
-            :rtype: VectorHeat1D
+            Note: In the 1d heat equation example, we consider homogeneous Dirichlet BCs in space.
+                  The Heat1D vector class only stores interior points.
+            :param u: approximate solution vector
+            :return: input solution vector u interpolated to a fine grid
             """
-            # Get the non boundary points
+            # Get values at interior points
             sol = u.get_values()
 
-            # Create array
+            # Create array for interpolated values
             ret_array = np.zeros(int(len(sol) * 2 + 1))
 
             # Linear interpolation
@@ -341,11 +350,15 @@ Complete code::
                 ret_array[i * 2 + 1] += sol[i]
                 ret_array[i * 2 + 2] += 1 / 2 * sol[i]
 
-            # Create and return a VectorHeat1D object
+            # Create and return a VectorHeat1D object with interpolated values
             ret = VectorHeat1D(len(ret_array))
             ret.set_values(ret_array)
             return ret
 
+
+    # Construct a four-level multigrid hierarchy for the 1d heat example
+    #   * use a coarsening factor of 2 in time on all levels
+    #   * apply spatial coarsening by a factor of 2 on the first two levels
     heat0 = Heat1D(x_start=0, x_end=2, nx=2 ** 4 + 1, a=1, t_start=0, t_stop=2, nt=2 ** 7 + 1)
     heat1 = Heat1D(x_start=0, x_end=2, nx=2 ** 3 + 1, a=1, t_interval=heat0.t[::2])
     heat2 = Heat1D(x_start=0, x_end=2, nx=2 ** 2 + 1, a=1, t_interval=heat1.t[::2])
@@ -353,12 +366,12 @@ Complete code::
 
     problem = [heat0, heat1, heat2, heat3]
 
-    # Specify a list of grid transfer operators of length (#level - 1)
-    # Using the new class GridTransferHeat to apply spatial coarsening on the first two levels
-    # Using the PyMGRIT's core class GridTransferCopy on the last level (no spatial coarsening)
+    # Specify a list of grid transfer operators of length (#levels - 1) for the transfer between two consecutive levels
+    #   * Use the new class GridTransferHeat to apply spatial coarsening for transfers between the first three levels
+    #   * Use PyMGRIT's core class GridTransferCopy for the transfer between the last two levels (no spatial coarsening)
     transfer = [GridTransferHeat(), GridTransferHeat(), GridTransferCopy()]
 
-    # Setup MGRIT solver with problem and transfer
+    # Setup four-level MGRIT solver and solve the problem
     mgrit = Mgrit(problem=problem, transfer=transfer)
 
     info = mgrit.solve()

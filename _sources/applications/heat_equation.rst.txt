@@ -6,7 +6,10 @@ Heat Equation
 1-D heat equation
 -----------------
 
-* source: heat_1d.py_ (basic) or vector_heat_1d_2pts.py_, heat_1d_2pts_bdf1.py_, heat_1d_2pts_bdf2.py_ (advanced)
+* source:
+
+  * heat_1d.py_ (basic)
+  * vector_heat_1d_2pts.py_, heat_1d_2pts_bdf1.py_, heat_1d_2pts_bdf2.py_ (advanced)
 
 * example codes: example_heat_1d.py_, example_heat_1d_bdf2.py_
 
