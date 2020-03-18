@@ -184,20 +184,24 @@
 <li><p>discretization:</p>
 <ul>
 <li><p>second-order central finite differences in space</p></li>
-<li><p>backward Euler in time</p></li>
+<li><p>time integration methods:</p>
+<ul>
+<li><p>backward Euler</p></li>
+<li><p>BDF2</p></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <p>The heat equation in 1D space is a partial differential equation that governs the flow of heat in a homogeneous and
-isotropic medium with <span class="math notranslate nohighlight">\(u(x,t)\)</span> being the temperature at the point <span class="math notranslate nohighlight">\(u(x)\)</span> at time t. The diffusion
-coefficient <span class="math notranslate nohighlight">\(a\)</span> affects the speed of the process. The governing equation is given by</p>
+isotropic medium with <span class="math notranslate nohighlight">\(u(x,t)\)</span> being the temperature at the point <span class="math notranslate nohighlight">\(x\)</span> at time t. Denoting the thermal
+conductivity by <span class="math notranslate nohighlight">\(a\)</span>, the governing equation is given by</p>
 <div class="math notranslate nohighlight">
-\[u_t - a*u_{xx} = b(x,t) \;\; in \; [x_{start},x_{end}]\times(t_0,t_{end}] \;\text{ with }\; u(x, t_0) = u_0(x)\]</div>
+\[u_t - au_{xx} = b(x,t) \;\; \text{ in } \; [x_{start},x_{end}]\times(t_0,t_{end}] \;\text{ with }\; u(x, t_0) = u_0(x)\]</div>
 <p>and subject to some boundary conditions in space.</p>
-<p>In <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py">example_heat_1d.py</a>, the diffusion coefficient <span class="math notranslate nohighlight">\(a = 1\)</span> and right-hand-side
-<span class="math notranslate nohighlight">\(b(x,t)=-\sin(\pi * x) * (\sin(t) - 1 * \pi^2 * \cos(t))\)</span>, in the domain <span class="math notranslate nohighlight">\([0,1]\times[0,2]\)</span> are
-considered with homogeneous Dirichlet boundary conditions in space and subject to the initial condition
-<span class="math notranslate nohighlight">\(u(x,0) = \sin(\pi * x)\)</span>.</p>
+<p>In <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py">example_heat_1d.py</a>, the heat equation in the domain <span class="math notranslate nohighlight">\([0,1]\times[0,2]\)</span> is considered with a thermal
+conductivity of <span class="math notranslate nohighlight">\(a = 1\)</span>, right-hand-side <span class="math notranslate nohighlight">\(b(x,t)=-\sin(\pi x) (\sin(t) - \pi^2 \cos(t))\)</span>, homogeneous
+Dirichlet boundary conditions in space, and subject to the initial condition <span class="math notranslate nohighlight">\(u(x,0) = \sin(\pi x)\)</span>.</p>
 </div>
 <div class="section" id="id1">
 <h2>2-D heat equation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
@@ -208,7 +212,7 @@ considered with homogeneous Dirichlet boundary conditions in space and subject t
 <li><p>discretization:</p>
 <ul>
 <li><p>second-order central finite differences in space</p></li>
-<li><p>time integration routines:</p>
+<li><p>time integration methods:</p>
 <ul>
 <li><p>backward Euler</p></li>
 <li><p>forward Euler</p></li>
@@ -219,16 +223,16 @@ considered with homogeneous Dirichlet boundary conditions in space and subject t
 </li>
 </ul>
 <p>The heat equation in 2D space is a partial differential equation that governs the flow of heat in a homogeneous and
-isotropic medium with <span class="math notranslate nohighlight">\(u(x, y, t)\)</span> being the temperature at the point <span class="math notranslate nohighlight">\(u(x,y)\)</span> at time t. The diffusion
-coefficient <span class="math notranslate nohighlight">\(a\)</span> affects the speed of the process. The governing equation is given by</p>
+isotropic medium with <span class="math notranslate nohighlight">\(u(x, y, t)\)</span> being the temperature at the point <span class="math notranslate nohighlight">\((x,y)\)</span> at time <span class="math notranslate nohighlight">\(t\)</span>.
+Denoting the thermal conductivity by <span class="math notranslate nohighlight">\(a\)</span>, the governing equation is given by</p>
 <div class="math notranslate nohighlight">
-\[u_t - a*(u_{xx}+u_{yy}) = b(x,y,t) \;\; in \; [0,x_{end}]\times[0,y_{end}]\times(t_0,t_{end}] \;\text{ with }\;
+\[u_t - a(u_{xx}+u_{yy}) = b(x,y,t) \;\; \text{ in } \; [0,x_{end}]\times[0,y_{end}]\times(t_0,t_{end}] \;\text{ with }\;
 u(x,y, t_0) = u_0(x,y)\]</div>
 <p>and subject to some boundary conditions in space.</p>
-<p>In <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_2d.py">example_heat_2d.py</a>, the diffusion coefficient <span class="math notranslate nohighlight">\(a = 3.5\)</span> and right-hand-side
-<span class="math notranslate nohighlight">\(b(x,y,t)=5 * x * (x_{end} - x) * y * (y_{end} - y) + 10 * a * t * (y * (y_{end} - y) + x * (x_{end} - x))\)</span>,
-in the domain <span class="math notranslate nohighlight">\([0,0.75]\times[0,1.5]\times[0,2]\)</span> are considered with homogeneous Dirichlet boundary conditions in space
-and subject to the initial condition <span class="math notranslate nohighlight">\(u(x, y, 0) = 0\)</span>.</p>
+<p>In <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_2d.py">example_heat_2d.py</a>, the heat equation in the domain <span class="math notranslate nohighlight">\([0,0.75]\times[0,1.5]\times[0,2]\)</span> is considered with a
+thermal conductivity of <span class="math notranslate nohighlight">\(a = 3.5\)</span>, right-hand-side
+<span class="math notranslate nohighlight">\(b(x,t) = 5x(x_{end}-x)y(y_{end}-y) + 10at(y(y_{end}-y) + x(x_{end} - x)\)</span>,
+homogeneous Dirichlet boundary conditions in space, and subject to the initial condition <span class="math notranslate nohighlight">\(u(x,y,0) = 0\)</span>.</p>
 </div>
 </div>
 
