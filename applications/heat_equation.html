@@ -178,13 +178,13 @@
 <div class="section" id="d-heat-equation">
 <h2>1-D heat equation<a class="headerlink" href="#d-heat-equation" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>source: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_1d.py">heat_1d.py</a></p></li>
-<li><p>example code: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py">example_heat_1d.py</a></p></li>
+<li><p>source: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_1d.py">heat_1d.py</a> (basic) or <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/vector_heat_1d_2pts.py">vector_heat_1d_2pts.py</a>, <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_1d_2pts_bdf1.py">heat_1d_2pts_bdf1.py</a>, <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_1d_2pts_bdf2.py">heat_1d_2pts_bdf2.py</a> (advanced)</p></li>
+<li><p>example codes: <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py">example_heat_1d.py</a>, <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">example_heat_1d_bdf2.py</a></p></li>
 <li><p>scalar PDE with unknown function <span class="math notranslate nohighlight">\(u(x,t)\)</span> of two independent variables</p></li>
 <li><p>discretization:</p>
 <ul>
 <li><p>second-order central finite differences in space</p></li>
-<li><p>time integration methods:</p>
+<li><p>time integration:</p>
 <ul>
 <li><p>backward Euler</p></li>
 <li><p>BDF2</p></li>
@@ -202,6 +202,7 @@ conductivity by <span class="math notranslate nohighlight">\(a\)</span>, the gov
 <p>In <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py">example_heat_1d.py</a>, the heat equation in the domain <span class="math notranslate nohighlight">\([0,1]\times[0,2]\)</span> is considered with a thermal
 conductivity of <span class="math notranslate nohighlight">\(a = 1\)</span>, right-hand-side <span class="math notranslate nohighlight">\(b(x,t)=-\sin(\pi x) (\sin(t) - \pi^2 \cos(t))\)</span>, homogeneous
 Dirichlet boundary conditions in space, and subject to the initial condition <span class="math notranslate nohighlight">\(u(x,0) = \sin(\pi x)\)</span>.</p>
+<p>Look at <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py">example_heat_1d_bdf2.py</a> for using a combination of BDF2 and backward Euler time integration.</p>
 </div>
 <div class="section" id="id1">
 <h2>2-D heat equation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
@@ -212,7 +213,7 @@ Dirichlet boundary conditions in space, and subject to the initial condition <sp
 <li><p>discretization:</p>
 <ul>
 <li><p>second-order central finite differences in space</p></li>
-<li><p>time integration methods:</p>
+<li><p>time integration:</p>
 <ul>
 <li><p>backward Euler</p></li>
 <li><p>forward Euler</p></li>
