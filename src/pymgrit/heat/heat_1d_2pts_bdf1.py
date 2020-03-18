@@ -1,3 +1,9 @@
+"""
+Application class for 1D heat problem using BDF1 time integration
+
+Note: values at two consecutive time points are grouped as pairs
+"""
+
 import numpy as np
 from scipy import sparse as sp
 from scipy.sparse.linalg import spsolve
@@ -12,39 +18,67 @@ class Heat1DBDF1(Application):
     """
     Application class for the heat equation in 1D space,
         u_t - a*u_xx = b(x,t),  a > 0, x in [x_start,x_end], t in [0,T],
+    with homogeneous Dirichlet boundary conditions in space
     """
 
-    def __init__(self, x_start: float, x_end: float, nx: int, dt: float, a: float,
-                 init_con_fnc: Callable = lambda x: x * 0, rhs: Callable = lambda x, t: x * 0, *args,
+    def __init__(self, x_start: float, x_end: float, nx: int, dtau: float, a: float,
+                 init_cond: Callable = lambda x: x * 0, rhs: Callable = lambda x, t: x * 0, *args,
                  **kwargs):
-        super(Heat1DBDF1, self).__init__(*args, **kwargs)
-        self.x_start = x_start  # lower interval bound of spatial domain
-        self.x_end = x_end  # upper interval bound of spatial domain
-        self.x = np.linspace(self.x_start, self.x_end, nx)  # Spatial domain
-        self.x = self.x[1:-1]  # homogeneous BCs
-        self.nx = nx - 2  # homogeneous BCs
-        self.dt = dt  # time-step size
-        self.a = a  # diffusion coefficient
-        self.dx = self.x[1] - self.x[0]
-        self.identity = identity(self.nx, dtype='float', format='csr')
-        self.init_con_fnc = init_con_fnc
-        self.rhs = rhs
+        """
+        Constructor.
 
-        # set spatial discretization matrix
+        :param x_start: left interval bound of spatial domain
+        :param x_end: right interval bound of spatial domain
+        :param nx: number of spatial degrees of freedom
+        :param dtau: time-step size within pair
+        :param a: thermal conductivity
+        :param init_cond: initial condition
+        :param rhs: right-hand side
+        """
+
+        super(Heat1DBDF1, self).__init__(*args, **kwargs)
+        # Spatial domain with homogeneous Dirichlet boundary conditions
+        self.x_start = x_start
+        self.x_end = x_end
+        self.x = np.linspace(self.x_start, self.x_end, nx)
+        self.x = self.x[1:-1]
+        self.nx = nx - 2
+        self.dx = self.x[1] - self.x[0]
+
+        # Thermal conductivity
+        self.a = a
+
+        # Set (spatial) identity matrix and spatial discretization matrix
+        self.identity = identity(self.nx, dtype='float', format='csr')
         self.space_disc = self.compute_matrix()
 
-        self.vector_template = VectorHeat1D2Pts(self.nx)  # Create initial value solution
-        self.vector_t_start = VectorHeat1D2Pts(self.nx)
+        # Set right-hand side routine
+        self.rhs = rhs
 
-        self.vector_t_start.set_values(first_time_point=self.init_con_fnc(self.x, self.t[0]),
-                                       second_time_point=spsolve(self.dt * self.space_disc + self.identity,
-                                                                 self.init_con_fnc(self.x, self.t[0]) +
-                                                                 self.rhs(self.x, self.t[0] + self.dt) *
-                                                                 self.dt))
+        # Set the data structure for any user-defined time-point pairs
+        self.vector_template = VectorHeat1D2Pts(self.nx, dtau)
+
+        # Set initial condition
+        self.init_cond = init_cond
+        self.vector_t_start = VectorHeat1D2Pts(self.nx, dtau)
+        tmp1 = self.init_cond(self.x)
+        # Take one BDF1 step to get value at time dtau
+        tmp2 = spsolve(dtau * self.space_disc + self.identity,
+                       tmp1 + self.rhs(self.x, self.t[0] + dtau) * dtau)
+        self.vector_t_start.set_values(first_time_point=tmp1, second_time_point=tmp2, dtau=dtau)
+
+        # self.vector_t_start.set_values(first_time_point=self.init_cond(self.x, self.t[0]),
+        #                                second_time_point=spsolve(self.dt * self.space_disc + self.identity,
+        #                                                          self.init_cond(self.x, self.t[0]) +
+        #                                                          self.rhs(self.x, self.t[0] + self.dt) *
+        #                                                          self.dt))
 
     def compute_matrix(self):
         """
-        Space discretization
+        Define spatial discretization matrix for heat equation problem.
+
+        Discretization is centered finite differences with matrix stencil
+           (a / dx^2) * [-1  2  -1]
         """
 
         fac = self.a / self.dx ** 2
@@ -63,32 +97,28 @@ class Heat1DBDF1(Application):
     def step(self, u_start: VectorHeat1D2Pts, t_start: float, t_stop: float) -> VectorHeat1D2Pts:
         """
         Time integration routine for 1D heat equation example problem:
-            Backward Euler in time
+            Backward Euler (BDF1)
 
-        At each time step i = 1, ..., nt+1, we obtain the linear system
-        | 1+2ar   -ar                     | |  u_{1,i}   |   |  u_{1,i-1}   |   |  dt*b_{1,i}   |
-        |  -ar   1+2ar  -ar               | |  u_{2,i}   |   |  u_{2,i-1}   |   |  dt*b_{2,i}   |
-        |         ...   ...    ...        | |    ...     | = |     ...      | + |     ...       |
-        |               -ar   1+2ar  -ar  | | u_{nx-1,i} |   | u_{nx-1,i-1} |   | dt*b_{nx-1,i} |
-        |                      -ar  1+2ar | |  u_{nx,i}  |   |  u_{nx,i-1}  |   |  dt*b_{nx,i}  |
+        One-step method
+           u_i = (I + dt*L)^{-1} * (u_{i-1} + dt*b_i),
+        where L = self.space_disc is the spatial discretization operator
 
-        with r = (dt/dx^2), which we denote by
-            Mu_i = u_{i-1} + dt*b_i.
-        This leads to the time-stepping problem u_i = M^{-1}(u_{i-1} + dt*b_i)
-        which is implemented as time integrator function Phi u_i = Phi(u_{i-1}, t_{i}, t_{i-1}, app)
+        Note: step takes two BDF1 steps
+          * one step from (t_start + dtau) to t_stop
+          * one step from t_stop to (t_stop + dtau)
 
         :param u_start: approximate solution for the input time t_start
         :param t_start: time associated with the input approximate solution u_start
         :param t_stop: time to evolve the input approximate solution to
         :return: approximate solution at input time t_stop
         """
-        first, second = u_start.get_values()
-        tmp1 = spsolve((t_stop - t_start - self.dt) * self.space_disc + self.identity,
-                       second + self.rhs(self.x, t_stop) * (t_stop - t_start - self.dt))
+        first, second, dtau = u_start.get_values()
+        tmp1 = spsolve((t_stop - t_start - dtau) * self.space_disc + self.identity,
+                       second + self.rhs(self.x, t_stop) * (t_stop - t_start - dtau))
 
-        tmp2 = spsolve(self.dt * self.space_disc + self.identity,
-                       tmp1 + self.rhs(self.x, t_stop + self.dt) * self.dt)
+        tmp2 = spsolve(dtau * self.space_disc + self.identity,
+                       tmp1 + self.rhs(self.x, t_stop + dtau) * dtau)
 
-        ret = VectorHeat1D2Pts(u_start.size)
-        ret.set_values(first_time_point=tmp1, second_time_point=tmp2)
+        ret = VectorHeat1D2Pts(u_start.size, u_start.dtau)
+        ret.set_values(first_time_point=tmp1, second_time_point=tmp2, dtau=dtau)
         return ret

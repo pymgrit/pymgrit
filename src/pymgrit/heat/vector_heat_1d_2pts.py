@@ -1,3 +1,9 @@
+"""
+Vector class for 1D heat problem
+
+Note: values at two consecutive time points are grouped as pairs
+"""
+
 import numpy as np
 
 from pymgrit.core.vector import Vector
@@ -5,69 +11,79 @@ from pymgrit.core.vector import Vector
 
 class VectorHeat1D2Pts(Vector):
     """
-    Solution vector for two points
+    Vector class for grouping values at two consecutive time points
     """
 
-    def __init__(self, size):
+    def __init__(self, size, dtau):
         """
-        Constructor. One solution vector contains two time points.
-        :param size:
+        Constructor.
+        One vector object contains values at two consecutive time points and spacing between these time points.
+
+        :param size: number of spatial degrees of freedom
+        :param dtau: time-step size within pair
         """
         super(VectorHeat1D2Pts, self).__init__()
         self.size = size
+        self.dtau = dtau
         self.values_first_time_point = np.zeros(size)
         self.values_second_time_point = np.zeros(size)
 
     def __add__(self, other):
         """
-        Addition
-        :param other:
-        :return:
+        Addition of two vector objects (self and other)
+
+        :param other: vector object to be added to self
+        :return: sum of vector object self and input object other
         """
-        tmp = VectorHeat1D2Pts(self.size)
-        first_self, second_self = self.get_values()
-        first_other, second_other = other.get_values()
-        tmp.set_values(first_self + first_other, second_self + second_other)
+        tmp = VectorHeat1D2Pts(self.size, self.dtau)
+        first_self, second_self, dtau_self = self.get_values()
+        first_other, second_other, dtau_other = other.get_values()
+        tmp.set_values(first_self + first_other, second_self + second_other, dtau_self)
         return tmp
 
     def __sub__(self, other):
         """
-        Subtraction
-        :param other:
-        :return:
+        Subtraction of two vector objects (self and other)
+
+        :param other: vector object to be subtracted from self
+        :return: difference of vector object self and input object other
         """
-        tmp = VectorHeat1D2Pts(self.size)
-        first_self, second_self = self.get_values()
-        first_other, second_other = other.get_values()
-        tmp.set_values(first_self - first_other, second_self - second_other)
+        tmp = VectorHeat1D2Pts(self.size, self.dtau)
+        first_self, second_self, dtau_self = self.get_values()
+        first_other, second_other, dtau_other = other.get_values()
+        tmp.set_values(first_self - first_other, second_self - second_other, dtau_self)
         return tmp
 
     def norm(self):
         """
-        Norm
-        :return:
+        Norm of a vector object
+
+        :return: 2-norm of vector object
         """
         return np.linalg.norm(np.append(self.values_first_time_point, self.values_second_time_point))
 
     def clone_zero(self):
         """
-        Initial solution vector with all zeros
-        :rtype: object
+        Initialize vector object with zeros
+
+        :rtype: vector object with zero values
         """
-        return VectorHeat1D2Pts(self.size)
+        return VectorHeat1D2Pts(self.size, self.dtau)
 
     def clone_rand(self):
         """
-        Initial solution vector with random values
-        :rtype: object
+        Initialize vector object with random values
+
+        :rtype: vector object with random values
         """
-        tmp = VectorHeat1D2Pts(self.size)
-        tmp.set_values(np.random.rand(self.size), np.random.rand(self.size))
+        tmp = VectorHeat1D2Pts(self.size, self.dtau)
+        tmp.set_values(np.random.rand(self.size), np.random.rand(self.size), self.dtau)
         return tmp
 
     def get_values(self):
-        return self.values_first_time_point, self.values_second_time_point
+        return self.values_first_time_point, self.values_second_time_point, self.dtau
 
-    def set_values(self, first_time_point, second_time_point):
+    def set_values(self, first_time_point, second_time_point, dtau):
         self.values_first_time_point = first_time_point
         self.values_second_time_point = second_time_point
+        self.dtau = dtau
