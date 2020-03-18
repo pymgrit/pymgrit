@@ -255,7 +255,9 @@ equation example using the BDF2 application class on the fine grid (level 0) and
 first and second coarse grids (levels 1 and 2):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rhs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Right-hand side of 1D heat equation example problem at a given space-time point (x,t)</span>
+<span class="sd">    Right-hand side of 1D heat equation example problem at a given space-time point (x,t),</span>
+<span class="sd">      -sin(pi*x)(sin(t) - a*pi^2*cos(t)),  a = 1</span>
+
 <span class="sd">    :param x: spatial grid point</span>
 <span class="sd">    :param t: time point</span>
 <span class="sd">    :return: right-hand side of 1D heat equation example problem at point (x,t)</span>
@@ -263,29 +265,40 @@ first and second coarse grids (levels 1 and 2):</p>
 
     <span class="k">return</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 
-<span class="k">def</span> <span class="nf">init_con_fnc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">init_cond</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Exact solution of 1D heat equation example problem at a given space-time point (x,t)</span>
-<span class="sd">    :param x: spatial grid point</span>
-<span class="sd">    :param t: time point</span>
-<span class="sd">    :return: exact solution of 1D heat equation example problem at point (x,t)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="sd">    Initial condition of 1D heat equation example,</span>
+<span class="sd">      u(x,0)  = sin(pi*x)</span>
 
+<span class="sd">    :param x: spatial grid point</span>
+<span class="sd">    :return: initial condition of 1D heat equation example problem</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># Time interval</span>
+<span class="n">t_start</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">t_stop</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">nt</span> <span class="o">=</span> <span class="mi">512</span>
-<span class="n">dt</span> <span class="o">=</span> <span class="n">t_stop</span> <span class="o">/</span> <span class="n">nt</span>
-<span class="n">t_interval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">nt</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">heat0</span> <span class="o">=</span> <span class="n">Heat1DBDF2</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">rhs</span><span class="p">,</span> <span class="n">init_con_fnc</span><span class="o">=</span><span class="n">init_con_fnc</span><span class="p">,</span>
+<span class="n">nt</span> <span class="o">=</span> <span class="mi">512</span>  <span class="c1"># number of time points excluding t_start</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="n">t_stop</span> <span class="o">/</span> <span class="n">nt</span>  <span class="c1"># time-step size</span>
+
+<span class="c1"># Time points are grouped in pairs of two consecutive time points</span>
+<span class="c1">#   =&gt; (nt/2) + 1 pairs</span>
+<span class="c1"># Note: * Each pair is associated with the time value of its first point.</span>
+<span class="c1">#       * The second value of the last pair (associated with t_stop) is not used.</span>
+<span class="c1">#       * The spacing within each pair is the same (= dt) on all grid levels.</span>
+<span class="n">t_interval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t_start</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">nt</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">heat0</span> <span class="o">=</span> <span class="n">Heat1DBDF2</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtau</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">rhs</span><span class="p">,</span> <span class="n">init_cond</span><span class="o">=</span><span class="n">init_cond</span><span class="p">,</span>
                    <span class="n">t_interval</span><span class="o">=</span><span class="n">t_interval</span><span class="p">)</span>
-<span class="n">heat1</span> <span class="o">=</span> <span class="n">Heat1DBDF1</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">rhs</span><span class="p">,</span> <span class="n">init_con_fnc</span><span class="o">=</span><span class="n">init_con_fnc</span><span class="p">,</span>
+<span class="n">heat1</span> <span class="o">=</span> <span class="n">Heat1DBDF1</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtau</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">rhs</span><span class="p">,</span> <span class="n">init_cond</span><span class="o">=</span><span class="n">init_cond</span><span class="p">,</span>
                    <span class="n">t_interval</span><span class="o">=</span><span class="n">heat0</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">heat2</span> <span class="o">=</span> <span class="n">Heat1DBDF1</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">rhs</span><span class="p">,</span> <span class="n">init_con_fnc</span><span class="o">=</span><span class="n">init_con_fnc</span><span class="p">,</span>
+<span class="n">heat2</span> <span class="o">=</span> <span class="n">Heat1DBDF1</span><span class="p">(</span><span class="n">x_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_end</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtau</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rhs</span><span class="o">=</span><span class="n">rhs</span><span class="p">,</span> <span class="n">init_cond</span><span class="o">=</span><span class="n">init_cond</span><span class="p">,</span>
                    <span class="n">t_interval</span><span class="o">=</span><span class="n">heat1</span><span class="o">.</span><span class="n">t</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>
 
+<span class="c1"># Setup three-level MGRIT solver and solve the problem</span>
 <span class="n">problem</span> <span class="o">=</span> <span class="p">[</span><span class="n">heat0</span><span class="p">,</span> <span class="n">heat1</span><span class="p">,</span> <span class="n">heat2</span><span class="p">]</span>
 <span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="n">problem</span><span class="p">)</span>
-<span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
