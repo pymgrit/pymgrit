@@ -6,23 +6,27 @@ Heat Equation
 1-D heat equation
 -----------------
 
-* source: heat_1d.py_
+* source: heat_1d.py_ (basic) or vector_heat_1d_2pts.py_, heat_1d_2pts_bdf1.py_, heat_1d_2pts_bdf2.py_ (advanced)
 
-* example code: example_heat_1d.py_
+* example codes: example_heat_1d.py_, example_heat_1d_bdf2.py_
 
 * scalar PDE with unknown function :math:`u(x,t)` of two independent variables
 
 * discretization:
 
   * second-order central finite differences in space
-  * time integration methods:
+  * time integration:
 
     * backward Euler
     * BDF2
 
 .. _example_heat_1d.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d.py
+.. _example_heat_1d_bdf2.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_heat_1d_bdf2.py
 
 .. _heat_1d.py: https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_1d.py
+.. _heat_1d_2pts_bdf1.py: https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_1d_2pts_bdf1.py
+.. _heat_1d_2pts_bdf2.py: https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/heat_1d_2pts_bdf2.py
+.. _vector_heat_1d_2pts.py: https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/heat/vector_heat_1d_2pts.py
 
 The heat equation in 1D space is a partial differential equation that governs the flow of heat in a homogeneous and
 isotropic medium with :math:`u(x,t)` being the temperature at the point :math:`x` at time t. Denoting the thermal
@@ -36,6 +40,8 @@ and subject to some boundary conditions in space.
 In example_heat_1d.py_, the heat equation in the domain :math:`[0,1]\times[0,2]` is considered with a thermal
 conductivity of :math:`a = 1`, right-hand-side :math:`b(x,t)=-\sin(\pi x) (\sin(t) - \pi^2 \cos(t))`, homogeneous
 Dirichlet boundary conditions in space, and subject to the initial condition :math:`u(x,0) = \sin(\pi x)`.
+
+Look at example_heat_1d_bdf2.py_ for using a combination of BDF2 and backward Euler time integration.
 
 
 -----------------
@@ -51,7 +57,7 @@ Dirichlet boundary conditions in space, and subject to the initial condition :ma
 * discretization:
 
   * second-order central finite differences in space
-  * time integration methods:
+  * time integration:
 
     * backward Euler
     * forward Euler
