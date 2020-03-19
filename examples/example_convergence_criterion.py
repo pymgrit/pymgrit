@@ -1,7 +1,7 @@
 """
-Customize MGRIT algorithm by using a user-defined stopping criterion.
+Customized MGRIT solver that uses a user-defined stopping criterion.
 
-Apply two-level MGRIT with FCF-relaxation to compute an Arenstorf orbit.
+Apply customized two-level MGRIT with FCF-relaxation to compute an Arenstorf orbit.
 """
 
 import numpy as np
@@ -14,7 +14,7 @@ class MgritCustomized(Mgrit):
     """
     Customized MGRIT class.
 
-    Use maximum norm of the relative difference of two successive
+    Use maximum norm of the relative difference at C-points of two successive
     iterates as convergence criterion.
     """
 
@@ -24,20 +24,21 @@ class MgritCustomized(Mgrit):
         """
         # Call parent constructor
         super(MgritCustomized, self).__init__(*args, **kwargs)
-        # New member variable for saving the C-points values of the last iteration
+        # New member variable for saving the C-point values of the last iteration
         self.last_it = []
         # Initialize the new member variable
         self.convergence_criterion(iteration=0)
 
     def convergence_criterion(self, iteration: int) -> None:
         """
-        Stops if the maximum norm of the relative
-        difference of two successive iterates
-        at C-points is below the stopping tolerance.
+        Stopping criterion based on achieving a maximum relative difference at C-points
+        of two successive iterates below the specified stopping tolerance.
+        Note: The stopping tolerance is specified when setting up the solver.
+
         :param iteration: Iteration number
         """
 
-        # Create structure on the first function call
+        # Create list in the first function call
         if len(self.last_it) != len(self.index_local_c[0]):
             self.last_it = np.zeros((len(self.index_local_c[0]), len(self.u[0][0].get_values())))
         new = np.zeros_like(self.last_it)
@@ -55,7 +56,7 @@ class MgritCustomized(Mgrit):
 
         # Communicate the local value
         tmp = self.comm_time.allgather(tmp)
-        # Maximum norm
+        # Take maximum norm
         self.conv[iteration] = np.max(np.abs(tmp))
         self.last_it = np.copy(new)
 
@@ -65,8 +66,10 @@ def main():
     ahrenstorf_lvl_0 = ArenstorfOrbit(t_start=0, t_stop=17.06521656015796, nt=10001)
     ahrenstorf_lvl_1 = ArenstorfOrbit(t_interval=ahrenstorf_lvl_0.t[::100])
 
-    # Use the customized MGRIT algorithm to solve the problem.
-    # Stopps if the maximum relative change in all four variables of arenstorf orbit is smaller than 1% for all C-points
+    # Set up customized MGRIT solver and solve the problem.
+    # Note: Setting the solver tolerance to 1 means that iterations stop
+    #       if the maximum relative change at C-points of all four variables of the ODE system
+    #       is smaller than 1%.
     info = MgritCustomized(problem=[ahrenstorf_lvl_0, ahrenstorf_lvl_1], tol=1).solve()
 
 
