@@ -13,7 +13,7 @@ Time parallelism
 
 Use `mpirun` to run an example in parallel::
 
-   >>> mpirun -np 2 python3 example_dahlquist.py
+   >>> mpiexec -np 2 python3 example_dahlquist.py
 
 Output function
 ^^^^^^^^^^^^^^^
