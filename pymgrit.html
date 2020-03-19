@@ -607,35 +607,58 @@ In time-based stencil notation, we have at time point t_i</p>
 
 <dl class="class">
 <dt id="pymgrit.Heat2D">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat2D</code><span class="sig-paren">(</span><em class="sig-param">lx: float</em>, <em class="sig-param">ly: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">ny: int</em>, <em class="sig-param">a: float</em>, <em class="sig-param">rhs: Callable = &lt;function Heat2D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">init_con_fcn: Callable = &lt;function Heat2D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">method: str = 'BE'</em>, <em class="sig-param">u_b_0x: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">u_b_0y: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">u_b_lx: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">u_b_ly: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Heat2D</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">y_start: float</em>, <em class="sig-param">y_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">ny: int</em>, <em class="sig-param">a: float</em>, <em class="sig-param">rhs: Callable = &lt;function Heat2D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">init_cond: Callable = &lt;function Heat2D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">method: str = 'BE'</em>, <em class="sig-param">bc_left: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">bc_right: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">bc_bottom: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">bc_top: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
-<p>Application class for the heat equation in 2D space
-Time discretization schemes:</p>
-<blockquote>
-<div><p>Forward Euler
-Backward Euler
-Crank-Nicolson</p>
-</div></blockquote>
+<dl class="simple">
+<dt>Application class for the heat equation in 2D space,</dt><dd><p>u_t - a(u_xx + u_yy) = b(x,y,t),  a &gt; 0,
+in [x_start, x_end] x [y_start, y_end] x (t_start, t_end],</p>
+</dd>
+</dl>
+<p>with homogeneous Dirichlet boundary conditions in space.</p>
 <dl class="method">
 <dt id="pymgrit.Heat2D.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D.compute_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define spatial discretization matrix for 2D heat equation
-Second-order central finite differences in space.</p>
+<dd><p>Define spatial discretization matrix for 2D heat equation</p>
+<dl class="simple">
+<dt>Second-order central finite differences with matrix stencil</dt><dd><p>[          -f_y          ]
+[-f_x  2(f_x + f_y)  -f_x]
+[          -f_y          ]</p>
+</dd>
+</dl>
+<p>with f_x = (a / dx^2) and f_y = (a / dy^2)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.Heat2D.compute_rhs">
 <code class="sig-name descname">compute_rhs</code><span class="sig-paren">(</span><em class="sig-param">u_start: numpy.ndarray</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Heat2D.compute_rhs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define right hand side corresponding to time discretization</p>
+<dd><p>Right-hand side of spatial system for implicit time integratio nmethods</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – approximate solution for the input time t_start</p></li>
+<li><p><strong>t_start</strong> – time associated with the input approximate solution u_start</p></li>
+<li><p><strong>t_stop</strong> – time to evolve the input approximate solution to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>right-hand side of spatial system at each time step in case of implicit time integration</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.Heat2D.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.heat_2d.VectorHeat2D</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.heat_2d.VectorHeat2D<a class="headerlink" href="#pymgrit.Heat2D.step" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
-<dt>Time integration routine for 2D heat equation example problem:</dt><dd><p>Backward Euler in time
-Forward Euler in time
-Crank-Nicolson in time</p>
+<dt>Time integration routine for 2D heat equation example problem:</dt><dd><p>Backward Euler (BE)
+Forward Euler (FE)
+Crank-Nicolson (CN)</p>
+</dd>
+<dt>One-step method</dt><dd><p>(u_i - u_{i-1})/dt + (theta*L*u_i + (1-theta)*L*u_{i-1} = theta*b_i + (1-theta)*b_{i-1},</p>
+</dd>
+<dt>where L = self.space_disc is the spatial discretization operator and</dt><dd><p>theta =  0  -&gt; FE
+theta = 1/2 -&gt; CN
+theta =  1  -&gt; BE</p>
 </dd>
 </dl>
 <dl class="field-list simple">

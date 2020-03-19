@@ -86,9 +86,33 @@ be assembled in the correct order. To determine the correct order, we use the co
 Scaling results
 ^^^^^^^^^^^^^^^
 
-In the following we present strong scaling results for applying a five-level MGRIT to solve a 2D heat equation example.
-The parallel results are performed using two to 128 processors for parallelization in time and compared to a serial
-time-stepping solution. Problem code::
+In the following we present strong scaling results for applying a five-level MGRIT V-cycle solver with FCF-relaxation
+and nested iterations to a 2D heat equation example. The problem setup is as follows:
+
+* Space-time domain: :math:`[0, 0.75] \times [0, 1.5] \times [0, 5]`
+
+* Thermal conductivity: :math:`a = 1`
+
+* Right-hand side: :math:`b(x,y,t) = 5x(x_{end}-x)y(y_{end}-y) + 10at(y(y_{end}-y) + x(x_{end} - x)`
+
+* Homogeneous Dirichlet boundary conditions in space
+
+* Initial condition: :math:`u(x,y,0) = 0`
+
+* Discretization:
+
+  * centered finite differences in space
+  * backward Euler in time
+  * discrete problem size: :math:`51 \times 101 \times 8193`
+
+* 5-level MGRIT V-cycles with FCF-relaxation and nested iterations
+
+* Coarsening strategy:
+
+  * factor-8 coarsening on finest level
+  * factor-4 coarsening on all coarse levels
+
+* Source code::
 
     heat0 = Heat2D(lx=0.75, ly=1.5, nx=51, ny=101, a=1, u_b_0x=1, t_start=0, t_stop=5, nt=2 ** 13 + 1)
     heat1 = Heat2D(lx=0.75, ly=1.5, nx=51, ny=101, a=1, u_b_0x=1, t_interval=heat0.t[::8])
@@ -97,6 +121,12 @@ time-stepping solution. Problem code::
     heat4 = Heat2D(lx=0.75, ly=1.5, nx=51, ny=101, a=1, u_b_0x=1, t_interval=heat3.t[::4])
 
     mgrit = Mgrit(problem=[heat0, heat1, heat2, heat3, heat4]).solve()
+
+* The parallel tests were performed on an Intel Xeon Phi Cluster consisting of 272 1.4 GHz Intel Xeon Phi processors.
+
+* Between two and 128 processors were used for parallelization in time
+
+* Runtimes are compared to sequential time-stepping
 
 Total (setup + solve) runtimes:
 
