@@ -300,7 +300,7 @@ class Mgrit:
                                                                          t_stop=self.t[lvl][i])
         logging.debug(f"C-relax on {self.comm_time_rank} took {time.time() - runtime_c} s")
 
-    def convergence_criteria(self, iteration: int) -> None:
+    def convergence_criterion(self, iteration: int) -> None:
         """
         compute pace-time residual
         solve A(u) = g with
@@ -521,7 +521,7 @@ class Mgrit:
             self.iteration(lvl=0, cycle_type=self.cycle_type, iteration=iteration, first_f=True)
             self.comm_time.barrier()
             time_it_stop = time.time()
-            self.convergence_criteria(iteration=iteration + 1)
+            self.convergence_criterion(iteration=iteration + 1)
 
             if iteration == 0:
                 self.log_info('{0: <7}'.format(f"iter {iteration + 1}") +

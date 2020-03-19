@@ -1,6 +1,7 @@
 """
-Example to customize the MGRIT algorithm by a different
-convergence criteria.
+Customize MGRIT algorithm by using a user-defined stopping criterion.
+
+Apply two-level MGRIT with FCF-relaxation to compute an Arenstorf orbit.
 """
 
 import numpy as np
@@ -11,24 +12,24 @@ from pymgrit.arenstorf_orbit.arenstorf_orbit import ArenstorfOrbit
 
 class MgritCustomized(Mgrit):
     """
-    Customized MGRIT with maximum norm of the relative
-    difference of two successive iterates as convergence criteria
+    Customized MGRIT class.
+
+    Use maximum norm of the relative difference of two successive
+    iterates as convergence criterion.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         """
-        Cumstomized MGRIT constructor
-        :param args:
-        :param kwargs:
+        Cumstomized MGRIT constructor.
         """
         # Call parent constructor
         super(MgritCustomized, self).__init__(*args, **kwargs)
         # New member variable for saving the C-points values of the last iteration
         self.last_it = []
         # Initialize the new member variable
-        self.convergence_criteria(iteration=0)
+        self.convergence_criterion(iteration=0)
 
-    def convergence_criteria(self, iteration: int) -> None:
+    def convergence_criterion(self, iteration: int) -> None:
         """
         Stops if the maximum norm of the relative
         difference of two successive iterates
