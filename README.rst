@@ -72,7 +72,7 @@ or
 
     >>> git clone https://github.com/pymgrit/pymgrit.git
     >>> cd pymgrit
-    >>> pip3 install
+    >>> pip3 install .
 
 Example Usage
 ----------------
