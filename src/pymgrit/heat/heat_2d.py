@@ -140,7 +140,7 @@ class Heat2D(Application):
         self.y_start = y_start
         self.y_end = y_end
         self.x = np.linspace(x_start, x_end, nx)
-        self.y = np.linspace(x_end, y_end, ny)
+        self.y = np.linspace(y_start, y_end, ny)
         self.x_2d = self.x[:, np.newaxis]
         self.y_2d = self.y[np.newaxis, :]
         self.nx = nx
@@ -203,7 +203,12 @@ class Heat2D(Application):
         # Set initial condition
         self.init_cond = init_cond
         self.vector_t_start = VectorHeat2D(self.nx, self.ny)
-        self.vector_t_start.set_values(self.init_cond(self.x_2d, self.y_2d))
+        init = self.init_cond(self.x_2d, self.y_2d)
+        init[:, 0] = self.bc_left(self.x)
+        init[:, -1] = self.bc_right(self.x)
+        init[-1, :] = self.bc_bottom(self.y)
+        init[0, :] = self.bc_top(self.y)
+        self.vector_t_start.set_values(init)
 
     def compute_matrix(self):
         """
@@ -220,27 +225,27 @@ class Heat2D(Application):
         n = self.nx * self.ny
 
         main = np.ones(n) * (2 * (fx + fy))
-        main[:self.nx] = main[-self.nx:] = 0
-        main[self.nx::self.nx] = main[2 * self.nx - 1::self.nx] = 0
+        main[:self.ny] = main[-self.ny:] = 0
+        main[self.ny::self.ny] = main[2 * self.ny - 1::self.ny] = 0
 
-        upper = np.ones(n - 1) * (-fx)
-        upper[:self.nx] = upper[-self.nx:] = 0
-        upper[self.nx::self.nx] = upper[2 * self.nx - 1:: self.nx] = 0
+        upper = np.ones(n - 1) * (-fy)
+        upper[:self.ny] = upper[-self.ny:] = 0
+        upper[self.ny::self.ny] = upper[2 * self.ny - 1:: self.ny] = 0
 
-        lower = np.ones(n - 1) * (-fx)
-        lower[:self.nx - 1] = lower[-self.nx:] = 0
-        lower[self.nx - 1::self.nx] = lower[2 * self.nx - 2:: self.nx] = 0
+        lower = np.ones(n - 1) * (-fy)
+        lower[:self.ny - 1] = lower[-self.ny:] = 0
+        lower[self.ny - 1::self.ny] = lower[2 * self.ny - 2:: self.ny] = 0
 
-        upper2 = np.ones(n - self.nx) * (-fy)
-        upper2[:self.nx] = 0
-        upper2[self.nx::self.nx] = upper2[2 * self.nx - 1:: self.nx] = 0
+        upper2 = np.ones(n - self.ny) * (-fx)
+        upper2[:self.ny] = 0
+        upper2[self.ny::self.ny] = upper2[2 * self.ny - 1:: self.ny] = 0
 
-        lower2 = np.ones(n - self.nx) * (-fy)
-        lower2[-self.nx:] = 0
-        lower2[::self.nx] = lower2[self.nx - 1::self.nx] = 0
+        lower2 = np.ones(n - self.ny) * (-fx)
+        lower2[-self.ny:] = 0
+        lower2[::self.ny] = lower2[self.ny - 1::self.ny] = 0
 
         matrix = diags(diagonals=[main, lower, upper, lower2, upper2],
-                       offsets=[0, -1, 1, -self.nx, self.nx],
+                       offsets=[0, -1, 1, -self.ny, self.ny],
                        shape=(n, n), format='csr')
         return matrix
 
@@ -257,10 +262,10 @@ class Heat2D(Application):
         # Set boundary conditions
         b = np.zeros((self.nx, self.ny))
 
-        b[0, :] = self.bc_left(self.y_2d)
-        b[-1, :] = self.bc_right(self.y_2d)
-        b[:, 0] = self.bc_bottom(self.x_2d)
-        b[:, -1] = self.bc_top(self.x_2d)
+        b[:, 0] = self.bc_left(self.x)
+        b[:, -1] = self.bc_right(self.x)
+        b[-1, :] = self.bc_bottom(self.y)
+        b[0, :] = self.bc_top(self.y)
 
         if self.theta == 1:
             # BE
@@ -269,7 +274,7 @@ class Heat2D(Application):
         else:
             # CN: theta = 1/2
             tmp = (self.identity - self.theta * (t_stop - t_start) * self.space_disc) * u_start.flatten()
-            b += tmp.reshape(self.ny, self.nx).T
+            b += tmp.reshape(self.nx, self.ny)
 
             # add RHS of PDE
             b[1:-1, 1:-1] += self.theta * (t_stop - t_start) * self.rhs(x=self.x_2d[1:-1], y=self.y_2d[:, 1:-1],
@@ -277,7 +282,7 @@ class Heat2D(Application):
                              (1 - self.theta) * (t_stop - t_start) * self.rhs(x=self.x_2d[1:-1], y=self.y_2d[:, 1:-1],
                                                                               t=t_start)
 
-        return b.T.flatten()
+        return b.flatten()
 
     def step(self, u_start: VectorHeat2D, t_start: float, t_stop: float) -> VectorHeat2D:
         """
@@ -304,24 +309,23 @@ class Heat2D(Application):
             new = np.zeros((self.nx, self.ny))
 
             # Set BCs
-            new[0, :] = self.bc_left(self.y_2d)
-            new[-1, :] = self.bc_right(self.y_2d)
-            new[:, 0] = self.bc_bottom(self.x_2d)
-            new[:, -1] = self.bc_top(self.x_2d)
+            new[:, 0] = self.bc_left(self.x)
+            new[:, -1] = self.bc_right(self.x)
+            new[-1, :] = self.bc_bottom(self.y)
+            new[0, :] = self.bc_top(self.y)
 
             tmp = (self.identity - (t_stop - t_start) * self.space_disc) * old.flatten()
-            new += tmp.reshape(self.nx, self.ny).T
+            new += tmp.reshape(self.nx, self.ny)
 
             # add RHS of PDE
             new[1:-1, 1:-1] += (t_stop - t_start) * self.rhs(x=self.x_2d[1:-1], y=self.y_2d[:, 1:-1], t=t_start)
 
-            new.T.flatten()
+            new.flatten()
 
         else:
             # set up and solve linear system
             rhs = self.compute_rhs(u_start=u_start.get_values(), t_start=t_start, t_stop=t_stop)
             new = spsolve((t_stop - t_start) * self.theta * self.space_disc + self.identity, rhs)
-
         ret = VectorHeat2D(self.nx, self.ny)
-        ret.set_values(new.reshape(self.ny, self.nx).T)
+        ret.set_values(new.reshape(self.nx, self.ny))
         return ret
