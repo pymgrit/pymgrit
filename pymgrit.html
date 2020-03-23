@@ -270,7 +270,8 @@ initial condition u(x, 0) = exp(-x^2).</p>
 <dt id="pymgrit.Application">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Application</code><span class="sig-paren">(</span><em class="sig-param">t_start: float = None</em>, <em class="sig-param">t_stop: float = None</em>, <em class="sig-param">nt: int = None</em>, <em class="sig-param">t_interval: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Application" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Abstract application class
+<p>Abstract application class for user-defined application classes.
+Every user-defined application class must inherit from this class.
 Required attributes:</p>
 <blockquote>
 <div><ul class="simple">
@@ -302,13 +303,13 @@ Required attributes:</p>
 <dl class="method">
 <dt id="pymgrit.Application.vector_t_start">
 <em class="property">property </em><code class="sig-name descname">vector_t_start</code><a class="headerlink" href="#pymgrit.Application.vector_t_start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Getter vector_t_start</p>
+<dd><p>Getter for attribute vector_t_start</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.Application.vector_template">
 <em class="property">property </em><code class="sig-name descname">vector_template</code><a class="headerlink" href="#pymgrit.Application.vector_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>Getter vector_template</p>
+<dd><p>Getter for attribute vector_template</p>
 </dd></dl>
 
 </dd></dl>
@@ -897,9 +898,9 @@ Performs MGRIT iterations until a stopping criteria is reached or the maximum nu
 <dt id="pymgrit.Vector">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.</code><code class="sig-name descname">Vector</code><a class="headerlink" href="#pymgrit.Vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>Abstract vector class for the solution of one point in time.
-Every vector class must inherit from this class.
-Contains the spatial solution of one point in time
+<p>Abstract vector class for user-defined vector classes that
+hold information of a single time point.
+Every user-defined vector class must inherit from this class.
 Required functions:</p>
 <blockquote>
 <div><ul class="simple">
@@ -915,31 +916,31 @@ Required functions:</p>
 <dl class="method">
 <dt id="pymgrit.Vector.clone_rand">
 <em class="property">abstract </em><code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.clone_rand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clones the solution vector with random values.</p>
+<dd><p>Initialize vector object with random values</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.Vector.clone_zero">
 <em class="property">abstract </em><code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.clone_zero" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clones the solution vector with all zeros.</p>
+<dd><p>Initialize vector object with zeros</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.Vector.get_values">
 <em class="property">abstract </em><code class="sig-name descname">get_values</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.get_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the values</p>
+<dd><p>Get vector data</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.Vector.norm">
 <em class="property">abstract </em><code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Norm of the solution vector</p>
+<dd><p>Norm of a vector object</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.Vector.set_values">
 <em class="property">abstract </em><code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.set_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the values</p>
+<dd><p>Set vector data</p>
 </dd></dl>
 
 </dd></dl>
