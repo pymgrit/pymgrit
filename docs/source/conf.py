@@ -20,11 +20,11 @@ sys.path.insert(0, os.path.abspath('../../src/pymgrit'))
 # -- Project information -----------------------------------------------------
 
 project = 'PyMGRIT'
-copyright = '2020, Jens Hahne'
-author = 'Jens Hahne'
+copyright = '2020, Jens Hahne and Stephanie Friedhoff'
+author = 'Jens Hahne and Stephanie Friedhoff'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.0'
+release = '1.0.0'
 
 
 # -- General configuration ---------------------------------------------------
