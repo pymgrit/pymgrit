@@ -1,0 +1,23 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Build and deploy
+      uses: JacksonMaxfield/github-pages-deploy-action-python@master
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BASE_BRANCH: master
+        BRANCH: gh-pages
+        FOLDER: docs/build/html
+        BUILD_SCRIPT: ./build_docs.sh
