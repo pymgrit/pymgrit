@@ -1,6 +1,6 @@
 """
-Abstract application class.
-Every application must inherit from this class.
+Abstract application class for user-defined application classes.
+Every user-defined application class must inherit from this class.
 Required attributes:
   - vector_template
   - vector_t_start
@@ -30,7 +30,8 @@ class MetaApplication(ABCMeta):
 
 class Application(object, metaclass=MetaApplication):
     """
-    Abstract application class
+    Abstract application class for user-defined application classes.
+    Every user-defined application class must inherit from this class.
     Required attributes:
       - vector_template
       - vector_t_start
@@ -42,10 +43,10 @@ class Application(object, metaclass=MetaApplication):
     def __init__(self, t_start: float = None, t_stop: float = None, nt: int = None,
                  t_interval: np.ndarray = None) -> None:
         """
-        Initialize the time information
-        :param t_start: Start point
-        :param t_stop: End point
-        :param nt: Number of time points.
+        Initialize time information
+        :param t_start: Start time (left bound of time interval)
+        :param t_stop: End time (right bound of time interval)
+        :param nt: Number of time points
         """
 
         if t_interval is None:
@@ -66,28 +67,28 @@ class Application(object, metaclass=MetaApplication):
     @property
     def vector_template(self) -> Vector:
         """
-        Getter vector_template
+        Getter for attribute vector_template
         """
         return self._vector_template
 
     @vector_template.setter
     def vector_template(self, value: Vector) -> None:
         """
-        Setter vector_template
+        Setter for attribute vector_template
         """
         self._vector_template = value
 
     @property
     def vector_t_start(self) -> Vector:
         """
-        Getter vector_t_start
+        Getter for attribute vector_t_start
         """
         return self._vector_t_start
 
     @vector_t_start.setter
     def vector_t_start(self, value: Vector) -> None:
         """
-        Getter vector_t_start
+        Setter for attribute vector_t_start
         """
         self._vector_t_start = value
 

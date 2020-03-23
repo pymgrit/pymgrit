@@ -1,7 +1,7 @@
 """
-Abstract vector class for the solution of one point in time.
-Every vector class must inherit from this class.
-Contains the spatial solution of one point in time
+Abstract vector class for user-defined vector classes that
+hold information of a single time point.
+Every user-defined vector class must inherit from this class.
 Required functions:
   - __add__
   - __sub__
@@ -17,9 +17,9 @@ from abc import ABC, abstractmethod
 
 class Vector(ABC):
     """
-    Abstract vector class for the solution of one point in time.
-    Every vector class must inherit from this class.
-    Contains the spatial solution of one point in time
+    Abstract vector class for user-defined vector classes that
+    hold information of a single time point.
+    Every user-defined vector class must inherit from this class.
     Required functions:
       - __add__
       - __sub__
@@ -36,43 +36,47 @@ class Vector(ABC):
     @abstractmethod
     def __add__(self, other: '__class__') -> '__class__':
         """
-        Addition
-        :param other:
+        Addition of two vector objects (self and other)
+
+        :param other: vector object to be added to self
+        :return: sum of vector object self and input vector object other
         """
 
     @abstractmethod
     def __sub__(self, other: '__class__') -> '__class__':
         """
-        Subtraction
-        :param other:
+        Subtraction of two vector objects (self and other)
+
+        :param other: vector object to be subtracted from self
+        :return: difference of vector object self and input vector object other
         """
 
     @abstractmethod
     def norm(self):
         """
-        Norm of the solution vector
+        Norm of a vector object
         """
 
     @abstractmethod
     def clone_rand(self):
         """
-        Clones the solution vector with random values.
+        Initialize vector object with random values
         """
 
     @abstractmethod
     def clone_zero(self):
         """
-        Clones the solution vector with all zeros.
+        Initialize vector object with zeros
         """
 
     @abstractmethod
     def set_values(self, *args, **kwargs):
         """
-        Sets the values
+        Set vector data
         """
 
     @abstractmethod
     def get_values(self, *args, **kwargs):
         """
-        Gets the values
+        Get vector data
         """
