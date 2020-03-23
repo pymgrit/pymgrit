@@ -253,48 +253,68 @@ Checks whether required attributes are set.</p>
 </div>
 <div class="section" id="module-pymgrit.core.grid_transfer">
 <span id="pymgrit-core-grid-transfer-module"></span><h2>pymgrit.core.grid_transfer module<a class="headerlink" href="#module-pymgrit.core.grid_transfer" title="Permalink to this headline">¶</a></h2>
-<p>Abstract grid transfer class.
-Every grid transfer class must inherit from this class.
-Transports the spatial solutions between the levels.
-Required functions:</p>
-<blockquote>
-<div><ul class="simple">
+<p>Abstract grid transfer class for user-defined grid transfer classes.
+Every user-defined grid transfer class must inherit from this class.
+Allows for additional spatial coarsening and refinement between time levels.</p>
+<dl class="simple">
+<dt>Required functions:</dt><dd><ul class="simple">
 <li><p>restriction</p></li>
 <li><p>interpolation</p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="class">
 <dt id="pymgrit.core.grid_transfer.GridTransfer">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.grid_transfer.</code><code class="sig-name descname">GridTransfer</code><a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>Abstract grid transfer class.
-Every grid transfer class must inherit from this class.
-Transports the spatial solutions between the levels.
-Required functions:</p>
-<blockquote>
-<div><ul class="simple">
+<p>Abstract grid transfer class for user-defined grid transfer classes.
+Every user-defined grid transfer class must inherit from this class.
+Allows for additional spatial coarsening and refinement between time levels.</p>
+<dl class="simple">
+<dt>Required functions:</dt><dd><ul class="simple">
 <li><p>restriction</p></li>
 <li><p>interpolation</p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="method">
 <dt id="pymgrit.core.grid_transfer.GridTransfer.interpolation">
 <em class="property">abstract </em><code class="sig-name descname">interpolation</code><span class="sig-paren">(</span><em class="sig-param">u: pymgrit.core.vector.Vector</em><span class="sig-paren">)</span> &#x2192; pymgrit.core.vector.Vector<a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer.interpolation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Receives the spatial solution from a point in time
-of one level and transforms it into the solution of
-the same point in time on the next higher level.
-:rtype: Vector
-:param u: Solution on coarser level</p>
+<dd><p>Spatial interpolation.
+Receives the spatial solution at a point in time
+of one level and interpolates it to the same point in
+time on the next finer level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>u</strong> – Approximate solution at a time point of one level</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Interpolated input vector u on next finer time grid</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pymgrit.html#pymgrit.Vector" title="pymgrit.Vector">Vector</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.core.grid_transfer.GridTransfer.restriction">
 <em class="property">abstract </em><code class="sig-name descname">restriction</code><span class="sig-paren">(</span><em class="sig-param">u: pymgrit.core.vector.Vector</em><span class="sig-paren">)</span> &#x2192; pymgrit.core.vector.Vector<a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer.restriction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Receives the spatial solution from a point in time
-of one level and transforms it into the solution of
-the same point in time on the next lower level.
-:rtype: Vector
-:param u: Solution on higher level</p>
+<dd><p>Spatial restriction.
+Receives the spatial solution at a point in time
+of one level and restricts it to the same point in time
+on the next coarser level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>u</strong> – Approximate solution at a time point of one level</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Restricted input vector u on next coarser time grid</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pymgrit.html#pymgrit.Vector" title="pymgrit.Vector">Vector</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -303,29 +323,50 @@ the same point in time on the next lower level.
 <div class="section" id="module-pymgrit.core.grid_transfer_copy">
 <span id="pymgrit-core-grid-transfer-copy-module"></span><h2>pymgrit.core.grid_transfer_copy module<a class="headerlink" href="#module-pymgrit.core.grid_transfer_copy" title="Permalink to this headline">¶</a></h2>
 <p>Standard grid transfer operator.
-Copies the spatial solutions from one level to another.</p>
+Copies the spatial solution from one level to another.</p>
 <dl class="class">
 <dt id="pymgrit.core.grid_transfer_copy.GridTransferCopy">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.grid_transfer_copy.</code><code class="sig-name descname">GridTransferCopy</code><a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pymgrit.core.grid_transfer.GridTransfer" title="pymgrit.core.grid_transfer.GridTransfer"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.grid_transfer.GridTransfer</span></code></a></p>
 <p>Standard grid transfer.
-Copies the spatial solutions from one level to another.</p>
+Copies the spatial solution from one level to another.
+This function is called for every time point.</p>
 <dl class="method">
 <dt id="pymgrit.core.grid_transfer_copy.GridTransferCopy.interpolation">
 <code class="sig-name descname">interpolation</code><span class="sig-paren">(</span><em class="sig-param">u: pymgrit.core.vector.Vector</em><span class="sig-paren">)</span> &#x2192; pymgrit.core.vector.Vector<a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy.interpolation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copies the spatial solutions from one point in time
-:param u: Solution of one point in time
-:return:  Solution of the same point in time on the next higher level
-:rtype: Vector</p>
+<dd><p>Copies the spatial solution at one point in time
+of one level and restricts it to the same point in time
+on the next finer level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>u</strong> – Approximate solution at a time point of one level</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Input vector u at the same time point on next finer time grid</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pymgrit.html#pymgrit.Vector" title="pymgrit.Vector">Vector</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymgrit.core.grid_transfer_copy.GridTransferCopy.restriction">
 <code class="sig-name descname">restriction</code><span class="sig-paren">(</span><em class="sig-param">u: pymgrit.core.vector.Vector</em><span class="sig-paren">)</span> &#x2192; pymgrit.core.vector.Vector<a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy.restriction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copies the spatial solutions from one point in time
-:param u: Solution of one point in time
-:return:  Solution of the same point in time on the next lower level
-:rtype: Vector</p>
+<dd><p>Copies the spatial solution at one point in time
+of one level and restricts it to the same point in time
+on the next coarser level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>u</strong> – Approximate solution at a time point of one level</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Input vector u at the same time point on next coarser time grid</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pymgrit.html#pymgrit.Vector" title="pymgrit.Vector">Vector</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
