@@ -23,7 +23,7 @@ def long_description():
 
 
 setup(name='pymgrit',
-      version='0.2.0',
+      version='1.0.0',
       description='Python implementation of the MGRIT algorithm',
       long_description=long_description(),
       long_description_content_type="text/x-rst",
