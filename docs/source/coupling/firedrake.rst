@@ -4,7 +4,7 @@ Firedrake
 
 Firedrake_ is an automated system for the solution of partial differential equations using the finite element method
 (FEM). In combination with PyMGRIT, Firedrake can set up and solve the spatial problem (in parallel), while PyMGRIT
-takes care of the parallelisation of the time dimension.
+takes care of the parallelization in the time dimension.
 
 .. _Firedrake: https://www.firedrakeproject.org/index.html
 
@@ -24,7 +24,7 @@ Please follow the following steps:
     >>> pip3 install pymgrit
 
 That's it, you can now enjoy the benefits of both tools. Remember to activate the virtual environment in the shell
-where you want to use the coupling of both tools.
+in which you want to use the coupling of both tools.
 
 .. _Download and install: https://www.firedrakeproject.org/download.html
 
@@ -36,9 +36,9 @@ Diffusion example
 
 .. _example_firedrake_diffusion_2d.py: https://github.com/pymgrit/pymgrit/blob/master/examples/firedrake/example_firedrake_diffusion_2d.py
 
-The following example shows how to set up and solve a 2D diffusion problem using PyMGRIT and Firedrake. The space
-problem is  solved (in parallel) using Firedrake and the time problem is handled by PyMGRIT. As usual for PyMGRIT the
-following is required:
+The following example shows how to set up and solve a 2D diffusion problem using PyMGRIT and Firedrake. The spatial
+problem is  solved (in parallel) using Firedrake and (backward Euler) time integration is handled by PyMGRIT.
+As usual, for PyMGRIT the following is required:
 
 * `Vector class`_
 * `Application class`_
@@ -53,39 +53,86 @@ Vector class
     class VectorDiffusion2D(Vector):
         """
         Vector class for the 2D diffusion equation
+
+        Note: Vector objects only hold the values of all spatial degrees of
+              freedom associated with a time point. Firedrake related data
+              is saved in an object of the Diffusion2D application class.
         """
 
         def __init__(self, size):
+            """
+            Constructor.
+
+            :param size: number of degrees of freedom in spatial domain
+            """
             super(VectorDiffusion2D, self).__init__()
             self.size = size
             self.values = np.zeros(size)
 
+        def set_values(self, values):
+            """
+            Set vector data
+
+            :param values: values for vector object
+            """
+            self.values = values
+
+        def get_values(self):
+            """
+            Get vector data
+
+            :return: values of vector object
+            """
+            return self.values
+
+        def clone_zero(self):
+            """
+            Initialize vector object with zeros
+
+            :rtype: vector object with zero values
+            """
+            return VectorDiffusion2D(self.size)
+
+        def clone_rand(self):
+            """
+            Initialize vector object with random values
+
+            :rtype: vector object with random values
+            """
+            tmp = VectorDiffusion2D(self.size)
+            tmp.set_values(np.random.rand(self.size))
+            return tmp
+
         def __add__(self, other):
+            """
+            Addition of two vector objects (self and other)
+
+            :param other: vector object to be added to self
+            :return: sum of vector object self and input object other
+            """
             tmp = VectorDiffusion2D(self.size)
             tmp.set_values(self.get_values() + other.get_values())
             return tmp
 
         def __sub__(self, other):
+            """
+            Subtraction of two vector objects (self and other)
+
+            :param other: vector object to be subtracted from self
+            :return: difference of vector object self and input object other
+            """
             tmp = VectorDiffusion2D(self.size)
             tmp.set_values(self.get_values() - other.get_values())
             return tmp
 
         def norm(self):
+            """
+            Norm of a vector object
+
+            :return: 2-norm of vector object
+            """
             return np.linalg.norm(self.values)
 
-        def clone_zero(self):
-            return VectorDiffusion2D(self.size)
-
-        def clone_rand(self):
-            tmp = VectorDiffusion2D(self.size)
-            tmp.set_values(np.random.rand(self.size))
-            return tmp
-
-        def set_values(self, values):
-            self.values = values
-
-        def get_values(self):
-            return self.values
 
 Application class
 ^^^^^^^^^^^^^^^^^
@@ -94,9 +141,10 @@ Application class
 
     class Diffusion2D(Application):
         """
-        Class containing the description of the diffusion problem.
+        Application class containing the description of the diffusion problem.
 
-        The domain is given by the parameter mesh
+        The spatial domain is a 10x10 square with
+        periodic boundary conditions in each direction.
 
         The initial condition is a Gaussian in the centre of the domain.
 
@@ -108,51 +156,51 @@ Application class
         def __init__(self, mesh: object, kappa: float, mu: float = 5., *args, **kwargs):
             """
             Constructor
-            :param mesh: domain
-            :param kappa: the diffusion coefficient
-            :param mu: the penalty weighting function
-            :param args:
-            :param kwargs:
+            :param mesh: spatial domain
+            :param kappa: diffusion coefficient
+            :param mu: penalty weighting function
             """
             super(Diffusion2D, self).__init__(*args, **kwargs)
 
+            # Spatial domain and function space
             self.mesh = mesh
             V = FunctionSpace(self.mesh, "DG", 1)
             self.function_space = V
 
-            # placeholder for timestep - will be updated in the update method
+            # Placeholder for time step - will be updated in the update method
             self.dt = Constant(0.)
 
-            # things we need for the form
+            # Things we need for the form
             gamma = TestFunction(V)
             phi = TrialFunction(V)
             self.f = Function(V)
             n = FacetNormal(mesh)
 
-            # set up the rhs and lhs of the equation
-            a = (
-                    inner(gamma, phi) * dx
+            # Set up the rhs and bilinear form of the equation
+            a = (inner(gamma, phi) * dx
                     + self.dt * (
-                            inner(grad(gamma), grad(phi) * kappa) * dx
-                            - inner(2 * avg(outer(phi, n)), avg(grad(gamma) * kappa)) * dS
-                            - inner(avg(grad(phi) * kappa), 2 * avg(outer(gamma, n))) * dS
-                            + mu * inner(2 * avg(outer(phi, n)), 2 * avg(outer(gamma, n) * kappa)) * dS
+                          inner(grad(gamma), grad(phi) * kappa) * dx
+                        - inner(2 * avg(outer(phi, n)), avg(grad(gamma) * kappa)) * dS
+                        - inner(avg(grad(phi) * kappa), 2 * avg(outer(gamma, n))) * dS
+                        + mu * inner(2 * avg(outer(phi, n)), 2 * avg(outer(gamma, n) * kappa)) * dS
                     )
-            )
-            L = inner(gamma, self.f) * dx
+                )
+            rhs = inner(gamma, self.f) * dx
 
-            # function to hold the solution
+            # Function to hold the solution
             self.soln = Function(V)
 
-            # setup problem and solver
-            prob = LinearVariationalProblem(a, L, self.soln)
+            # Setup problem and solver
+            prob = LinearVariationalProblem(a, rhs, self.soln)
             self.solver = NonlinearVariationalSolver(prob)
 
-            # set initial condition
+            # Set the data structure for any user-defined time point
             self.vector_template = VectorDiffusion2D(len(self.function_space))
+
+            # Set initial condition:
+            # Setting up a Gaussian blob in the centre of the domain.
             self.vector_t_start = VectorDiffusion2D(len(self.function_space))
 
-            # Setting up a Gaussian blob in the centre of the domain.
             x = SpatialCoordinate(self.mesh)
             initial_tracer = exp(-((x[0] - 5) ** 2 + (x[1] - 5) ** 2))
             tmp = Function(self.function_space)
@@ -161,19 +209,28 @@ Application class
 
         def step(self, u_start: VectorDiffusion2D, t_start: float, t_stop: float) -> VectorDiffusion2D:
             """
-            Performs one time step
+            Time integration routine for 2D diffusion problem:
+                Backward Euler
+
             :param u_start: approximate solution for the input time t_start
             :param t_start: time associated with the input approximate solution u_start
             :param t_stop: time to evolve the input approximate solution to
             :return: approximate solution at input time t_stop
             """
-            # compute backward Euler update
+            # Time-step size
             self.dt.assign(t_stop - t_start)
+
+            # Get data from VectorDiffusion2D object u_start
+            # and copy to Firedrake Function object tmp
             tmp = Function(self.function_space)
             for i in range(len(u_start.values)):
                 tmp.dat.data[i] = u_start.values[i]
             self.f.assign(tmp)
+
+            # Take Backward Euler step
             self.solver.solve()
+
+            # Copy data from Firedrake Function object to VectorDiffusion2D object
             ret = VectorDiffusion2D(len(self.function_space))
             ret.set_values(np.copy(self.soln.dat.data))
 
@@ -194,8 +251,9 @@ Example run
     comm_world = MPI.COMM_WORLD
     comm_x, comm_t = split_communicator(comm_world, 2)
 
+    # Define spatial domain
     # The domain is a 10x10 square with periodic boundary conditions in each direction.
-    n = 10
+    n = 20
     mesh = PeriodicSquareMesh(n, n, 10, comm=comm_x)
 
     # Set up the problem
@@ -203,6 +261,7 @@ Example run
     diffusion1 = Diffusion2D(mesh=mesh, kappa=0.1, t_start=0, t_stop=10, nt=17)
     diffusion2 = Diffusion2D(mesh=mesh, kappa=0.1, t_start=0, t_stop=10, nt=5)
 
-    # Solve the problem, passing the space and time communicator to the MGRIT algorithm
+    # Setup three-level MGRIT solver with the space and time communicators and
+    # solve the problem
     mgrit = Mgrit(problem=[diffusion0, diffusion1, diffusion2], comm_time=comm_t, comm_space=comm_x)
     info = mgrit.solve()
