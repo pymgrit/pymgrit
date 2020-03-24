@@ -6,15 +6,12 @@ Subpackages
 
 .. toctree::
 
-   pymgrit.advection_equation
-   pymgrit.cable_current_driven
-   pymgrit.cable_voltage_driven
+   pymgrit.advection
+   pymgrit.arenstorf_orbit
+   pymgrit.brusselator
    pymgrit.core
-   pymgrit.firedrake_heat_equation
-   pymgrit.heat_equation
-   pymgrit.heat_equation_bdf2
-   pymgrit.induction_machine
-   pymgrit.parallel_model
+   pymgrit.dahlquist
+   pymgrit.heat
 
 Module contents
 ---------------
