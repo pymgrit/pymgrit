@@ -175,34 +175,32 @@
 <div class="section" id="module-pymgrit.core.application">
 <span id="pymgrit-core-application-module"></span><h2>pymgrit.core.application module<a class="headerlink" href="#module-pymgrit.core.application" title="Permalink to this headline">¶</a></h2>
 <p>Abstract application class for user-defined application classes.
-Every user-defined application class must inherit from this class.
-Required attributes:</p>
+Every user-defined application class must inherit from this class.</p>
 <blockquote>
-<div><ul class="simple">
+<div><dl class="simple">
+<dt>Required attributes:</dt><dd><ul class="simple">
 <li><p>vector_template</p></li>
 <li><p>vector_t_start</p></li>
 </ul>
-</div></blockquote>
-<dl class="simple">
+</dd>
 <dt>Required functions:</dt><dd><ul class="simple">
 <li><p>step</p></li>
 </ul>
 </dd>
 </dl>
+</div></blockquote>
 <dl class="class">
 <dt id="pymgrit.core.application.Application">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.application.</code><code class="sig-name descname">Application</code><span class="sig-paren">(</span><em class="sig-param">t_start: float = None</em>, <em class="sig-param">t_stop: float = None</em>, <em class="sig-param">nt: int = None</em>, <em class="sig-param">t_interval: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.application.Application" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstract application class for user-defined application classes.
-Every user-defined application class must inherit from this class.
-Required attributes:</p>
-<blockquote>
-<div><ul class="simple">
+Every user-defined application class must inherit from this class.</p>
+<dl class="simple">
+<dt>Required attributes:</dt><dd><ul class="simple">
 <li><p>vector_template</p></li>
 <li><p>vector_t_start</p></li>
 </ul>
-</div></blockquote>
-<dl class="simple">
+</dd>
 <dt>Required functions:</dt><dd><ul class="simple">
 <li><p>step</p></li>
 </ul>
@@ -216,11 +214,19 @@ Required attributes:</p>
 <dl class="method">
 <dt id="pymgrit.core.application.Application.step">
 <em class="property">abstract </em><code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: object</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; object<a class="headerlink" href="#pymgrit.core.application.Application.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Time integration routine for the application
-:param u_start: approximate solution for the input time t_start
-:param t_start: time associated with the input approximate solution u_start
-:param t_stop: time to evolve the input approximate solution to
-:return: approximate solution at input time t_stop</p>
+<dd><p>Time integration routine for the application</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – approximate solution for the input time t_start</p></li>
+<li><p><strong>t_start</strong> – time associated with the input approximate solution u_start</p></li>
+<li><p><strong>t_stop</strong> – time to evolve the input approximate solution to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>approximate solution at input time t_stop</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -580,10 +586,9 @@ Performs MGRIT iterations until a stopping criteria is reached or the maximum nu
 <span id="pymgrit-core-vector-module"></span><h2>pymgrit.core.vector module<a class="headerlink" href="#module-pymgrit.core.vector" title="Permalink to this headline">¶</a></h2>
 <p>Abstract vector class for user-defined vector classes that
 hold information of a single time point.
-Every user-defined vector class must inherit from this class.
-Required functions:</p>
-<blockquote>
-<div><ul class="simple">
+Every user-defined vector class must inherit from this class.</p>
+<dl class="simple">
+<dt>Required functions:</dt><dd><ul class="simple">
 <li><p>__add__</p></li>
 <li><p>__sub__</p></li>
 <li><p>norm</p></li>
@@ -592,17 +597,17 @@ Required functions:</p>
 <li><p>set_values</p></li>
 <li><p>get_values</p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="class">
 <dt id="pymgrit.core.vector.Vector">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.vector.</code><code class="sig-name descname">Vector</code><a class="headerlink" href="#pymgrit.core.vector.Vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>Abstract vector class for user-defined vector classes that
 hold information of a single time point.
-Every user-defined vector class must inherit from this class.
-Required functions:</p>
-<blockquote>
-<div><ul class="simple">
+Every user-defined vector class must inherit from this class.</p>
+<dl class="simple">
+<dt>Required functions:</dt><dd><ul class="simple">
 <li><p>__add__</p></li>
 <li><p>__sub__</p></li>
 <li><p>norm</p></li>
@@ -611,7 +616,8 @@ Required functions:</p>
 <li><p>set_values</p></li>
 <li><p>get_values</p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="method">
 <dt id="pymgrit.core.vector.Vector.clone_rand">
 <em class="property">abstract </em><code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.clone_rand" title="Permalink to this definition">¶</a></dt>
