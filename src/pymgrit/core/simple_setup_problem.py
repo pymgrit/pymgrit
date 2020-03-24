@@ -1,7 +1,8 @@
 """
-Simple problem setup.
-Creates the desired MGRIT problem structure using the finest
-problem, the number of levels and the coarsening factor
+Simple setup of a time-multigrid hierarchy for a problem.
+
+Creates a time-multigrid hierarchy using the finest
+problem, the number of levels, and the coarsening factor.
 """
 
 import copy
@@ -13,19 +14,21 @@ from pymgrit.core.application import Application
 
 def simple_setup_problem(problem: Application, level: int, coarsening: int) -> List[Application]:
     """
-    Simple problem setup.
-    Creates the desired MGRIT problem structure using the finest
-    problem, the number of levels and the coarsening factor
-    :param problem: Finest grid problem
-    :param level: Number of levels
-    :param coarsening: Coarsening factor
-    :return: List of applications
+    Simple setup of a time-multigrid hierarchy for a problem.
+
+    Creates a time-multigrid hierarchy using the finest
+    problem, the number of levels, and the coarsening factor.
+
+    :param problem: Application problem on the finest grid
+    :param level: Number of time-grid levels
+    :param coarsening: Coarsening factor to be used for all levels
+    :return: List of application problems; one application problem per time-grid level
     """
     problem_structure = [problem]
 
     if len(problem.t[::coarsening * level]) == 1:
         warnings.warn(
-            "This choice leads to a coarsest grid with only one time-point, which is the initial point. "
+            "This choice leads to a coarsest grid with only one time point, which is the initial point. "
             "It is recommended to choose a structure with at least two points on the coarsest grid.")
 
     for i in range(level - 1):

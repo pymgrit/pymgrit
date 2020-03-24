@@ -2,6 +2,7 @@
 Abstract vector class for user-defined vector classes that
 hold information of a single time point.
 Every user-defined vector class must inherit from this class.
+
 Required functions:
   - __add__
   - __sub__
@@ -20,6 +21,7 @@ class Vector(ABC):
     Abstract vector class for user-defined vector classes that
     hold information of a single time point.
     Every user-defined vector class must inherit from this class.
+
     Required functions:
       - __add__
       - __sub__

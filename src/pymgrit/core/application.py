@@ -1,11 +1,12 @@
 """
 Abstract application class for user-defined application classes.
 Every user-defined application class must inherit from this class.
-Required attributes:
-  - vector_template
-  - vector_t_start
-Required functions:
-  - step
+
+  Required attributes:
+    - vector_template
+    - vector_t_start
+  Required functions:
+    - step
 """
 from abc import ABCMeta, abstractmethod
 import numpy as np
@@ -32,6 +33,7 @@ class Application(object, metaclass=MetaApplication):
     """
     Abstract application class for user-defined application classes.
     Every user-defined application class must inherit from this class.
+
     Required attributes:
       - vector_template
       - vector_t_start
@@ -44,6 +46,7 @@ class Application(object, metaclass=MetaApplication):
                  t_interval: np.ndarray = None) -> None:
         """
         Initialize time information
+
         :param t_start: Start time (left bound of time interval)
         :param t_stop: End time (right bound of time interval)
         :param nt: Number of time points
@@ -96,6 +99,7 @@ class Application(object, metaclass=MetaApplication):
     def step(self, u_start: object, t_start: float, t_stop: float) -> object:
         """
         Time integration routine for the application
+
         :param u_start: approximate solution for the input time t_start
         :param t_start: time associated with the input approximate solution u_start
         :param t_stop: time to evolve the input approximate solution to
