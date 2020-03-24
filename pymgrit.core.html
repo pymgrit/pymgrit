@@ -176,8 +176,7 @@
 <span id="pymgrit-core-application-module"></span><h2>pymgrit.core.application module<a class="headerlink" href="#module-pymgrit.core.application" title="Permalink to this headline">¶</a></h2>
 <p>Abstract application class for user-defined application classes.
 Every user-defined application class must inherit from this class.</p>
-<blockquote>
-<div><dl class="simple">
+<dl class="simple">
 <dt>Required attributes:</dt><dd><ul class="simple">
 <li><p>vector_template</p></li>
 <li><p>vector_t_start</p></li>
@@ -188,7 +187,6 @@ Every user-defined application class must inherit from this class.</p>
 </ul>
 </dd>
 </dl>
-</div></blockquote>
 <dl class="class">
 <dt id="pymgrit.core.application.Application">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.application.</code><code class="sig-name descname">Application</code><span class="sig-paren">(</span><em class="sig-param">t_start: float = None</em>, <em class="sig-param">t_stop: float = None</em>, <em class="sig-param">nt: int = None</em>, <em class="sig-param">t_interval: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.application.Application" title="Permalink to this definition">¶</a></dt>
@@ -575,10 +573,19 @@ Performs MGRIT iterations until a stopping criteria is reached or the maximum nu
 <dl class="function">
 <dt id="pymgrit.core.split.split_communicator">
 <code class="sig-prename descclassname">pymgrit.core.split.</code><code class="sig-name descname">split_communicator</code><span class="sig-paren">(</span><em class="sig-param">comm: mpi4py.MPI.Comm</em>, <em class="sig-param">splitting: int</em><span class="sig-paren">)</span> &#x2192; Tuple[mpi4py.MPI.Comm, mpi4py.MPI.Comm]<a class="headerlink" href="#pymgrit.core.split.split_communicator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates new communicators for space &amp; time parallelism
-:param comm: Communicator
-:param splitting: Splitting factor
-:return: Space and time communicator</p>
+<dd><p>Creates new communicators for space &amp; time parallelism by
+“splitting” the input communicator into two sub-communicators.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comm</strong> – Communicator to be used as the basis for new communicators</p></li>
+<li><p><strong>splitting</strong> – Splitting factor (number of processes for spatial parallelism)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Space and time communicator</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
