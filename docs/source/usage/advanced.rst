@@ -255,10 +255,17 @@ Now, we construct a multigrid hierarchy for the 1d heat example. Here, we set up
 Note: In this example, it is not possible to use PyMGRIT's core function `simple_setup_problem()`, since the number of
 spatial grid points changes in the multigrid hiearchy::
 
-    heat0 = Heat1D(x_start=0, x_end=2, nx=2 ** 4 + 1, a=1, t_start=0, t_stop=2, nt=2 ** 7 + 1)
-    heat1 = Heat1D(x_start=0, x_end=2, nx=2 ** 3 + 1, a=1, t_interval=heat0.t[::2])
-    heat2 = Heat1D(x_start=0, x_end=2, nx=2 ** 2 + 1, a=1, t_interval=heat1.t[::2])
-    heat3 = Heat1D(x_start=0, x_end=2, nx=2 ** 2 + 1, a=1, t_interval=heat2.t[::2])
+    def rhs(x, t):
+        return - np.sin(np.pi * x) * (np.sin(t) - 1 * np.pi ** 2 * np.cos(t))
+
+    def init_cond(x):
+        return np.sin(np.pi * x)
+
+    heat0 = Heat1D(x_start=0, x_end=2, nx=2 ** 4 + 1, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2,
+                   nt=2 ** 7 + 1)
+    heat1 = Heat1D(x_start=0, x_end=2, nx=2 ** 3 + 1, a=1, rhs=rhs, init_cond=init_cond, t_interval=heat0.t[::2])
+    heat2 = Heat1D(x_start=0, x_end=2, nx=2 ** 2 + 1, a=1, rhs=rhs, init_cond=init_cond, t_interval=heat1.t[::2])
+    heat3 = Heat1D(x_start=0, x_end=2, nx=2 ** 2 + 1, a=1, rhs=rhs, init_cond=init_cond, t_interval=heat2.t[::2])
 
     problem = [heat0, heat1, heat2, heat3]
 

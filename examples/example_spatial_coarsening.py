@@ -83,13 +83,37 @@ class GridTransferHeat(GridTransfer):
 
 
 def main():
+    def rhs(x, t):
+        """
+        Right-hand side of 1D heat equation example problem at a given space-time point (x,t),
+          -sin(pi*x)(sin(t) - a*pi^2*cos(t)),  a = 1
+
+        Note: exact solution is np.sin(np.pi * x) * np.cos(t)
+        :param x: spatial grid point
+        :param t: time point
+        :return: right-hand side of 1D heat equation example problem at point (x,t)
+        """
+
+        return - np.sin(np.pi * x) * (np.sin(t) - 1 * np.pi ** 2 * np.cos(t))
+
+    def init_cond(x):
+        """
+        Initial condition of 1D heat equation example,
+          u(x,0)  = sin(pi*x)
+
+        :param x: spatial grid point
+        :return: initial condition of 1D heat equation example problem
+        """
+        return np.sin(np.pi * x)
+
     # Construct a four-level multigrid hierarchy for the 1d heat example
     #   * use a coarsening factor of 2 in time on all levels
     #   * apply spatial coarsening by a factor of 2 on the first two levels
-    heat0 = Heat1D(x_start=0, x_end=2, nx=2 ** 4 + 1, a=1, t_start=0, t_stop=2, nt=2 ** 7 + 1)
-    heat1 = Heat1D(x_start=0, x_end=2, nx=2 ** 3 + 1, a=1, t_interval=heat0.t[::2])
-    heat2 = Heat1D(x_start=0, x_end=2, nx=2 ** 2 + 1, a=1, t_interval=heat1.t[::2])
-    heat3 = Heat1D(x_start=0, x_end=2, nx=2 ** 2 + 1, a=1, t_interval=heat2.t[::2])
+    heat0 = Heat1D(x_start=0, x_end=2, nx=2 ** 4 + 1, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2,
+                   nt=2 ** 7 + 1)
+    heat1 = Heat1D(x_start=0, x_end=2, nx=2 ** 3 + 1, a=1, rhs=rhs, init_cond=init_cond, t_interval=heat0.t[::2])
+    heat2 = Heat1D(x_start=0, x_end=2, nx=2 ** 2 + 1, a=1, rhs=rhs, init_cond=init_cond, t_interval=heat1.t[::2])
+    heat3 = Heat1D(x_start=0, x_end=2, nx=2 ** 2 + 1, a=1, rhs=rhs, init_cond=init_cond, t_interval=heat2.t[::2])
 
     problem = [heat0, heat1, heat2, heat3]
 

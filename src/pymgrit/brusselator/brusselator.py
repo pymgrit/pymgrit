@@ -45,6 +45,12 @@ class VectorBrusselator(Vector):
     def norm(self):
         return np.linalg.norm(self.value)
 
+    def pack(self):
+        return self.value
+
+    def unpack(self, value):
+        self.value = value
+
     def plot_solution(self):
         plt.plot(self.value[0], self.value[1], color='red', marker='o')
 

@@ -33,6 +33,12 @@ class VectorSimple(Vector):
     def get_values(self):
         pass
 
+    def pack(self):
+        pass
+
+    def unpack(self):
+        pass
+
 
 def test_grid_transfer_copy_constructor():
     """

@@ -48,6 +48,12 @@ class VectorAdvection1D(Vector):
     def norm(self):
         return np.linalg.norm(self.values)
 
+    def pack(self):
+        return self.values
+
+    def unpack(self, values):
+        self.values = values
+
 
 class Advection1D(Application):
     """

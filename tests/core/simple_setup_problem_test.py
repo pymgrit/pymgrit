@@ -34,6 +34,11 @@ class VectorSimple(Vector):
     def get_values(self):
         pass
 
+    def pack(self):
+        pass
+
+    def unpack(self):
+        pass
 
 class ApplicationSimple(Application):
     def __init__(self, *args, **kwargs):

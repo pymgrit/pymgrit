@@ -117,7 +117,7 @@ Program output::
       cycle type                : V
       stopping tolerance        : 1e-10
       time communicator size    : 1
-      space communicator size   : -99
+      space communicator size   : 1
 
 
 Getting Help

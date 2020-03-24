@@ -53,7 +53,7 @@ producing the output::
       cycle type                : V
       stopping tolerance        : 1e-10
       time communicator size    : 1
-      space communicator size   : -99
+      space communicator size   : 1
 
 
 and returning the residual history, setup time, and solve time in dictionary `info` with key values

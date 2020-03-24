@@ -45,6 +45,12 @@ class VectorDahlquist(Vector):
     def get_values(self):
         return self.value
 
+    def pack(self):
+        return self.value
+
+    def unpack(self, value):
+        self.value = value
+
 
 class Dahlquist(Application):
     """

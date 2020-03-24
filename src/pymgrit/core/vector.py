@@ -82,3 +82,15 @@ class Vector(ABC):
         """
         Get vector data
         """
+
+    @abstractmethod
+    def pack(self, *args, **kwargs):
+        """
+        Specifying communication data
+        """
+
+    @abstractmethod
+    def unpack(self, *args, **kwargs):
+        """
+        Unpacking communication data
+        """

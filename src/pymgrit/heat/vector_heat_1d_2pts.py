@@ -99,3 +99,20 @@ class VectorHeat1D2Pts(Vector):
         self.values_first_time_point = first_time_point
         self.values_second_time_point = second_time_point
         self.dtau = dtau
+
+    def pack(self):
+        """
+        Pack data
+
+        :return: values of vector object
+        """
+        return np.array([self.values_first_time_point, self.values_second_time_point])
+
+    def unpack(self, values):
+        """
+        Unpack and set data
+
+        :param values: values for vector object
+        """
+        self.values_first_time_point = values[0]
+        self.values_second_time_point = values[1]

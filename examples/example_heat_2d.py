@@ -14,6 +14,7 @@ and subject to the initial condition
 import pathlib
 import os
 import numpy as np
+import time
 
 from mpi4py import MPI
 
@@ -70,6 +71,7 @@ def main():
     info = mgrit.solve()
 
     if MPI.COMM_WORLD.Get_rank() == 0:
+        time.sleep(2)
         sol = []
         path = 'results/heat_equation_2d/'
         for filename in os.listdir(path):

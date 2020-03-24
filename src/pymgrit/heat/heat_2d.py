@@ -98,6 +98,22 @@ class VectorHeat2D(Vector):
         """
         return self.values
 
+    def pack(self):
+        """
+        Pack data
+
+        :return: values of vector object
+        """
+        return self.values
+
+    def unpack(self, values):
+        """
+        Unpack and set data
+
+        :param values: values for vector object
+        """
+        self.values = values
+
 
 class Heat2D(Application):
     """

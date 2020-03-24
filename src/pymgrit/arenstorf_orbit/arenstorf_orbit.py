@@ -53,6 +53,15 @@ class VectorArenstorfOrbit(Vector):
     def get_values(self):
         return np.array([self.y0, self.y1, self.y2, self.y3])
 
+    def pack(self):
+        return np.array([self.y0, self.y1, self.y2, self.y3])
+
+    def unpack(self, values):
+        self.y0 = values[0]
+        self.y1 = values[1]
+        self.y2 = values[2]
+        self.y3 = values[3]
+
     def plot(self):
         plt.plot(self.y0, self.y1, color='red', marker='.')
 

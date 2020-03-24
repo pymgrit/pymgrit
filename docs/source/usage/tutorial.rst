@@ -41,7 +41,7 @@ Then, we define the class `VectorDahlquist` containing a scalar member variable 
             super(VectorDahlquist, self).__init__()
             self.value = value
 
-Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, and `norm`.
+Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, `norm`, `pack` and `unpack`..
 
 The function `set_values` receives data values and overwrites the values of the vector data and `get_values` returns the vector data.
 For our class `VectorDahlquist`, the vector data is the scalar member variable `value`::
@@ -79,6 +79,10 @@ We define the norm of a vector object as the norm (from ``numpy`) of the member 
         def norm(self):
             return np.linalg.norm(self.value)
 
+The functions `pack` and `unpack` define define which data is communicated and how the data is unpacked after receiving.
+For our class `VectorDahlquist`, packing means to send only the member variable `value` and unpacking means to write the
+scalar value to the member variable `value`.
+
 Summary
 ^^^^^^^
 The vector class must inherit from PyMGRIT's core `Vector` class.
@@ -94,6 +98,8 @@ The following member functions must be defined:
     - `__add__` : Addition of two vector objects
     - `__sub__` : Subtraction of two vector objects
     - `norm` : Norm of a vector object (for measuring convergence)
+    - `pack` : Specifying communication data
+    - `unpack` : Unpacking communication data
 
 .. code-block::
 
@@ -135,6 +141,12 @@ The following member functions must be defined:
 
         def norm(self):
             return np.linalg.norm(self.value)
+
+        def pack(self):
+            return self.value
+
+        def unpack(self, value):
+            self.value = value
 
 -----------------
 Application class
@@ -274,7 +286,7 @@ which gives::
       cycle type                : V
       stopping tolerance        : 1e-10
       communicator size time    : 1
-      communicator size space   : -99
+      communicator size space   : 1
 
 and returns the residual history, setup time, and solve time in dictionary `info` with the following key values:
 
