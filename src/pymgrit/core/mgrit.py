@@ -61,6 +61,10 @@ class Mgrit:
         logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S',
                             level=logging_lvl, stream=sys.stdout)
 
+        # Set standard grid transfer operators if no transfer operators are given
+        if transfer is None:
+            transfer = [GridTransferCopy() for i in range(len(problem) - 1)]
+
         # Check input parameters
         if len(problem) != (len(transfer) + 1):
             raise Exception('There should be exactly one transfer operator for each level except the coarsest grid')
@@ -103,10 +107,6 @@ class Mgrit:
         self.comm_time.barrier()
         runtime_setup_start = time.time()
         self.log_info(f"Start setup")
-
-        # Set standard grid transfer operators if no transfer operators are given
-        if transfer is None:
-            transfer = [GridTransferCopy() for i in range(len(problem) - 1)]
 
         # Initialize MGRIT parameters
         self.problem = problem  # List of problems (one per MGRIT level)
