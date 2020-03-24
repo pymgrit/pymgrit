@@ -36,6 +36,14 @@ pymgrit.core.mgrit module
    :undoc-members:
    :show-inheritance:
 
+pymgrit.core.simple\_setup\_problem module
+------------------------------------------
+
+.. automodule:: pymgrit.core.simple_setup_problem
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pymgrit.core.split module
 -------------------------
 
@@ -48,14 +56,6 @@ pymgrit.core.vector module
 --------------------------
 
 .. automodule:: pymgrit.core.vector
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pymgrit.core.vector\_standard module
-------------------------------------
-
-.. automodule:: pymgrit.core.vector_standard
    :members:
    :undoc-members:
    :show-inheritance:

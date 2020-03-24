@@ -567,6 +567,32 @@ Performs MGRIT iterations until a stopping criteria is reached or the maximum nu
 </dd></dl>
 
 </div>
+<div class="section" id="module-pymgrit.core.simple_setup_problem">
+<span id="pymgrit-core-simple-setup-problem-module"></span><h2>pymgrit.core.simple_setup_problem module<a class="headerlink" href="#module-pymgrit.core.simple_setup_problem" title="Permalink to this headline">¶</a></h2>
+<p>Simple setup of a time-multigrid hierarchy for a problem.</p>
+<p>Creates a time-multigrid hierarchy using the finest
+problem, the number of levels, and the coarsening factor.</p>
+<dl class="function">
+<dt id="pymgrit.core.simple_setup_problem.simple_setup_problem">
+<code class="sig-prename descclassname">pymgrit.core.simple_setup_problem.</code><code class="sig-name descname">simple_setup_problem</code><span class="sig-paren">(</span><em class="sig-param">problem: pymgrit.core.application.Application</em>, <em class="sig-param">level: int</em>, <em class="sig-param">coarsening: int</em><span class="sig-paren">)</span> &#x2192; List[pymgrit.core.application.Application]<a class="headerlink" href="#pymgrit.core.simple_setup_problem.simple_setup_problem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple setup of a time-multigrid hierarchy for a problem.</p>
+<p>Creates a time-multigrid hierarchy using the finest
+problem, the number of levels, and the coarsening factor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>problem</strong> – Application problem on the finest grid</p></li>
+<li><p><strong>level</strong> – Number of time-grid levels</p></li>
+<li><p><strong>coarsening</strong> – Coarsening factor to be used for all levels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of application problems; one application problem per time-grid level</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-pymgrit.core.split">
 <span id="pymgrit-core-split-module"></span><h2>pymgrit.core.split module<a class="headerlink" href="#module-pymgrit.core.split" title="Permalink to this headline">¶</a></h2>
 <p>Creates new communicators for space &amp; time parallelism</p>
@@ -657,9 +683,6 @@ Every user-defined vector class must inherit from this class.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="pymgrit-core-vector-standard-module">
-<h2>pymgrit.core.vector_standard module<a class="headerlink" href="#pymgrit-core-vector-standard-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-pymgrit.core">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit.core" title="Permalink to this headline">¶</a></h2>
