@@ -1,5 +1,5 @@
 """
-MGRIT in FAS formulation
+MGRIT solver in FAS formulation
 """
 import time
 import logging
@@ -19,7 +19,12 @@ from pymgrit.core.grid_transfer_copy import GridTransferCopy
 
 class Mgrit:
     """
-    Sets up the MGRIT solver for a given problem structure
+    MGRIT solver class
+
+    Implementation of MGRIT FAS algorithm for solving
+    time-stepping problems of the form
+      u_i = Phi(u_{i-1}),
+    where Phi propagates u_{i-1} from t = t_{i-1} to t = t_i.
 
     It is assumed that the problems have a constant dimension
     and the solved space-time matrix stencil is [-Phi I].
@@ -31,10 +36,10 @@ class Mgrit:
                  logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1,
                  random_init_guess: bool = False) -> None:
         """
-        Initialize space-time matrix.
-        Phi_args is for any random parameters you may think of later
+        Initialize MGRIT solver.
+
         :param problem: List of problems (one for each MGRIT level)
-        :param transfer: List of spatial transfer operators (one for each MGRIT level)
+        :param transfer: List of spatial transfer operators (one for each pair of consecutive MGRIT levels)
         :param max_iter: Maximum number of iterations
         :param tol: stopping tolerance
         :param nested_iteration: With (True) or without (False) nested iterations
@@ -56,9 +61,7 @@ class Mgrit:
         logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S',
                             level=logging_lvl, stream=sys.stdout)
 
-        if transfer is None:
-            transfer = [GridTransferCopy() for i in range(len(problem) - 1)]
-
+        # Check input parameters
         if len(problem) != (len(transfer) + 1):
             raise Exception('There should be exactly one transfer operator for each level except the coarsest grid')
 
@@ -86,6 +89,7 @@ class Mgrit:
         if self.comm_time_size > len(problem[0].t):
             raise Exception('More processors than time points. Not useful and not implemented yet')
 
+        # Check if spatial parallelism is used
         if self.comm_space != MPI.COMM_NULL:
             self.spatial_parallel = True
             self.comm_space_rank = self.comm_space.Get_rank()
@@ -95,54 +99,62 @@ class Mgrit:
             self.comm_space_rank = -99
             self.comm_space_size = -99
 
+        # Start timer for setup time
         self.comm_time.barrier()
         runtime_setup_start = time.time()
         self.log_info(f"Start setup")
 
-        self.problem = problem  # List of problems per MGRIT level
-        self.lvl_max = len(problem)  # Max level for MGRIT
-        self.step = []  # List of time steppers per MGRIT level
-        self.u = []  # List of solutions per MGRIT level
-        self.v = []  # List of approximate solutions per MGRIT level
-        self.g = []  # List of fas right-hand-sides
-        self.t = []  # List of time intervals per process per MGRIT level
+        # Set standard grid transfer operators if no transfer operators are given
+        if transfer is None:
+            transfer = [GridTransferCopy() for i in range(len(problem) - 1)]
+
+        # Initialize MGRIT parameters
+        self.problem = problem  # List of problems (one per MGRIT level)
+        self.lvl_max = len(problem)  # Max number of MGRIT levels
+        self.step = []  # List of time integration routines (one per MGRIT level)
+        self.u = []  # List of solutions (one per MGRIT level)
+        self.v = []  # List of restricted unknowns (one per MGRIT level)
+        self.g = []  # List of FAS right-hand sides (one per MGRIT level)
+        self.t = []  # List of local time intervals (one per MGRIT level)
         self.m = []  # List of coarsening factors
-        self.iter_max = max_iter  # Maximal number of iterations
+        self.restriction = []  # List of restriction operators (one per MGRIT level - except for coarsest)
+        self.interpolation = []  # List of interpolation operators (one per MGRIT level - except for coarsest)
         self.tol = tol  # Convergence tolerance
         self.conv = np.zeros(max_iter + 1)  # Convergence information after each iteration
+        self.cf_iter = cf_iter  # Number of CF-relaxations
+        self.cycle_type = cycle_type  # Cycle type, F or V
+        self.random_init_guess = random_init_guess  # Random initial guess
+        self.iter_max = max_iter  # Maximum number of iterations
+        self.solve_iter = 0  # MGRIT iteration number; for output
+        self.nes_it = nested_iteration  # Local nested iteration value
         self.runtime_solve = 0  # Solve runtime
         self.runtime_setup = 0  # Setup runtime
-        self.cf_iter = cf_iter  # Count of C-, F- relaxations
-        self.cycle_type = cycle_type  # Cycle type, F or V
-        self.restriction = []  # List of restrictions per MGRIT level
-        self.interpolation = []  # List of interpolations per MGRIT level
-        self.int_start = 0  # First time points of process interval
-        self.int_stop = 0  # Last time points of process interval
-        self.g_coarsest = []  # Fas residual for the time stepping on coarsest grid
-        self.u_coarsest = []  # Solution for the time stepping on coarsest grid
-        self.cpts = []  # C-points per process and level corresponding to complete time interval
-        self.comm_front = []  # Communication inside F-relax per MGRIT level
-        self.comm_back = []  # Communication inside F-relax per MGRIT level
+        self.int_start = 0  # Index of first time point of local time interval
+        self.int_stop = 0  # Index of last time points of local time interval
+        self.cpts = []  # Global index of local C-points
         self.block_size_this_lvl = []  # Block size per process and level with ghost point
         self.index_local_c = []  # Local indices of C-Points
         self.index_local_f = []  # Local indices of F-Points
         self.index_local = []  # Local indices of all points
+        self.g_coarsest = []  # FAS residual for the time stepping on coarsest grid
+        self.u_coarsest = []  # Solution for the time stepping on coarsest grid
+        self.comm_front = []  # Communication inside F-relax per MGRIT level
+        self.comm_back = []  # Communication inside F-relax per MGRIT level
         self.first_is_f_point = []  # Communication after C-relax
         self.first_is_c_point = []  # Communication after F-relax
         self.last_is_f_point = []  # Communication after F-relax
         self.last_is_c_point = []  # Communication after C-relax
         self.send_to = []  # Which process contains next time point
         self.get_from = []  # Which process contains previous time point
-        self.nes_it = nested_iteration  # Local nested iteration value
-        self.solve_iter = 0  # The actual MGRIT iteration, for output
-        self.output_lvl = output_lvl  # Output level, only 0,1,2
-        self.random_init_guess = random_init_guess  # Random initial guess
 
+        # Set output level and output function
+        self.output_lvl = output_lvl  # Output level, only 0,1,2
         if output_fcn is not None and callable(output_fcn):
             self.output_fcn = output_fcn
         else:
             self.output_fcn = None
 
+        # Set local MGRIT parameters
         for lvl in range(self.lvl_max):
             self.t.append(np.copy(problem[lvl].t))
             if lvl != self.lvl_max - 1:
@@ -173,9 +185,11 @@ class Mgrit:
 
         self.setup_comm_info()
 
+        # Use or do not use nested iteration
         if nested_iteration:
             self.nested_iteration()
 
+        # Stop timer for setup time
         self.comm_time.barrier()
         self.runtime_setup = time.time() - runtime_setup_start
 
@@ -186,8 +200,9 @@ class Mgrit:
 
     def log_info(self, message: str) -> None:
         """
-        Writes a transferred message to the logger.
+        Writes a message to the logger.
         Only one process
+
         :param message: Message
         """
         if self.comm_time_rank == 0:
@@ -202,7 +217,8 @@ class Mgrit:
 
     def create_u(self, lvl: int) -> None:
         """
-        Creates the solution vectors for each point in time on the process for a given level
+        Creates solution vectors for all local time points on a given MGRIT level.
+
         :param lvl: MGRIT level
         """
         self.u.append([object] * self.block_size_this_lvl[lvl])
@@ -219,12 +235,12 @@ class Mgrit:
 
     def iteration(self, lvl: int, cycle_type: str, iteration: int, first_f: bool) -> None:
         """
-        Performs one MGRIT iteration
+        MGRIT iteration on level lvl
+
         :param lvl: MGRIT level
         :param cycle_type: Cycle type
-        :param iteration: Number of the current iteration
+        :param iteration: Number of current iteration
         :param first_f: F-relaxation at the beginning
-        :return:
         """
         if lvl == self.lvl_max - 1:
             self.forward_solve(lvl=lvl)
@@ -254,10 +270,11 @@ class Mgrit:
 
     def f_relax(self, lvl: int) -> None:
         """
-        Performs a F-relaxation:
-        The so-called F-relaxation performs a relaxation on F-points
-        and propagates the solution from one C-point to all F-points
-        up to the next C-point.
+        F-relaxation on level lvl.
+
+        F-relaxation updates solution values at F-points by propagating the solution
+        from one C-point to all F-points up to the next C-point.
+
         :param lvl: MGRIT level
         """
         runtime_f = time.time()
@@ -286,9 +303,11 @@ class Mgrit:
 
     def c_relax(self, lvl: int) -> None:
         """
-        Performs a C-relaxation:
-        The so-called C-relaxation performs a relaxation on C-points
-        and propagates the solution to a C-point.
+        C-relaxation on level lvl.
+
+        C-relaxation updates solution values at C-points by propagating the
+        solution from the preceeding F-points.
+
         :param lvl: MGRIT level
         """
         runtime_c = time.time()
@@ -307,18 +326,13 @@ class Mgrit:
 
     def convergence_criterion(self, iteration: int) -> None:
         """
-        Computes the space-time residual by solving A(u) = g with
-             |   I                |
-         A = | -Phi   I           |
-             |       ...   ...    |
-             |            -Phi  I |
-        where Phi propagates u_{i-1} from t = t_{i-1} to t = t_i:
-          u_i = Phi(u_{i-1}) (including forcing from RHS of PDE)
-        and with
-          g = (u_0 0 ... 0)^T
-        The residual can be computed by
+        Stopping criterion based on the 2-norm of the space-time residual.
+
+        Computes the space-time residual
           r_i = Phi(u_{i-1}) - u_i, i = 1, .... nt,
           r_0 = 0
+
+        :param iteration: MGRIT iteration number
         """
         runtime_conv = time.time()
         r_norm = []
@@ -351,12 +365,13 @@ class Mgrit:
         val = val ** 0.5
         self.conv[iteration] = val
 
-        logging.debug(f"Convergence criteria on {self.comm_time_rank} took {time.time() - runtime_conv} s")
+        logging.debug(f"Convergence criterion on {self.comm_time_rank} took {time.time() - runtime_conv} s")
 
     def forward_solve(self, lvl: int) -> None:
         """
-        Solves the problem directly with time stepping
-            :param lvl: MGRIT level
+        Solves the problem directly on level lvl with time stepping.
+
+        :param lvl: MGRIT level
         """
 
         runtime_fs = time.time()
@@ -376,7 +391,8 @@ class Mgrit:
     def get_c_point(self, lvl: int) -> Application:
         """
         Exchanges the first/last C-point between two processes
-        :param lvl: the corresponding MGRIT level
+
+        :param lvl: MGRIT level
         """
         rank = self.comm_time_rank
         tmp_send = False
@@ -396,8 +412,10 @@ class Mgrit:
 
     def fas_residual(self, lvl: int) -> None:
         """
-        Injects the fine grid approximation and its residual to the coarse grid
-        :param lvl: the corresponding MGRIT level
+        Injects the fine-grid approximation and its residual
+        from level lvl to the next coarser grid.
+
+        :param lvl: MGRIT level
         """
         runtime_fas_res = time.time()
         tmp = self.get_c_point(lvl=lvl)
@@ -448,8 +466,9 @@ class Mgrit:
 
     def nested_iteration(self) -> None:
         """
-        Generates an initial approximation by solving the problem on the coarsest grid and interpolating
-        of the approximation to the finest level.
+        Generates an initial approximation on the finest grid
+        by solving the problem on the coarsest grid and interpolating
+        the approximation to the finest level.
         """
         self.forward_solve(self.lvl_max - 1)
 
@@ -465,7 +484,7 @@ class Mgrit:
 
     def ouput_run_information(self) -> None:
         """
-        Outputs run information
+        Outputs information of pyMGRIT run.
         """
         msg = ['Run parameter overview',
                '  ' + '{0: <25}'.format(f'time interval') + ' : ' + '[' + str(self.problem[0].t[0]) + ', ' + str(
@@ -485,8 +504,10 @@ class Mgrit:
 
     def f_exchange(self, lvl: int) -> None:
         """
-        Point exchange if the first point of a process is a C-points.
-        Typically, after an F-point update
+        Point exchange on level lvl if the first point of a process is a C-point.
+
+        Typically called after an F-point update.
+
         :param lvl: MGRIT level
         """
         runtime_ex = time.time()
@@ -499,8 +520,10 @@ class Mgrit:
 
     def c_exchange(self, lvl: int) -> None:
         """
-        Point exchange if the first point of a process is a F-points.
-        Typically, after an C-point update
+        Point exchange on level lvl if the first point of a process is an F-point.
+
+        Typically called after a C-point update.
+
         :param lvl: MGRIT level
         """
         runtime_ex = time.time()
@@ -513,10 +536,14 @@ class Mgrit:
 
     def solve(self) -> dict:
         """
-        Main function for solving the problem.
-        Performs MGRIT iterations until a stopping criteria is reached or the maximum number of iterations
-        :return:
+        Driver function for solving the problem using MGRIT.
+
+        Performs MGRIT iterations until a stopping criterion is fulfilled or
+        the maximum number of iterations is reached.
+
+        :return: dictionary with residual history, setup time, and solve time
         """
+        # Start time of solve phase
         self.comm_time.barrier()
         self.log_info("Start solve")
 
@@ -547,6 +574,7 @@ class Mgrit:
             if self.conv[iteration + 1] < self.tol:
                 break
 
+        # Stop timer of solve phase
         self.comm_time.barrier()
         self.runtime_solve = time.time() - runtime_solve_start
         self.log_info(f"Solve took {self.runtime_solve} s")
@@ -560,7 +588,9 @@ class Mgrit:
 
     def error_correction(self, lvl: int) -> None:
         """
-        Computes the error approximation and updates the finer level
+        Computes the error approximation on level lvl and
+        updates the approximation on the next finer level.
+
         :param lvl: MGRIT level
         """
         for i in range(len(self.index_local_c[lvl])):
@@ -571,11 +601,13 @@ class Mgrit:
 
     def split_points(self, length: int, size: int, rank: int) -> Tuple[int, int]:
         """
-        Splits points evenly in "size" parts and computes the first point and block size of the process interval
+        Splits *length* points evenly in *size* parts and computes the index of the
+        first point and block size of the local time interval.
+
         :param length: Number of points
         :param size: Number of processes
-        :param rank: Rank
-        :return: Block size and first point
+        :param rank: Process rank
+        :return: Block size and index of first point
         """
         block_size = self.split_into(number_points=length, number_processes=size)[rank]
 
@@ -591,6 +623,7 @@ class Mgrit:
     def split_into(number_points: int, number_processes: int) -> np.ndarray:
         """
         Split points
+
         :param number_points: Number of points
         :param number_processes: Number of processes
         :return:
@@ -600,15 +633,15 @@ class Mgrit:
 
     def setup_points(self, lvl: int) -> None:
         """
-        Computes grid information per process
+        Computes local grid information for level *lvl*.
+
         :param lvl: MGRIT level
-        :return:
         """
         points_time = np.size(self.problem[lvl].t)
         all_pts = np.array(range(0, points_time))
 
         # Compute points per process
-        # First level: Dividing the points evenly
+        # First level: Divide the points evenly
         # Other levels: Depends on the first level
         if lvl == 0:
             block_size_this_lvl, first_i_this_lvl = self.split_points(length=np.size(all_pts),
@@ -662,7 +695,7 @@ class Mgrit:
 
     def setup_comm_info(self) -> None:
         """
-        Computes which process holds the previous and next point for each lvl and process
+        Computes which process holds the previous and next point for each lvl and process.
         """
         start = np.zeros(self.comm_time_size)
         stop = np.zeros(self.comm_time_size)
