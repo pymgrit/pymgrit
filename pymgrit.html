@@ -1060,9 +1060,21 @@ Every user-defined vector class must inherit from this class.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pymgrit.Vector.pack">
+<em class="property">abstract </em><code class="sig-name descname">pack</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.pack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifying communication data</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pymgrit.Vector.set_values">
 <em class="property">abstract </em><code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vector data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.Vector.unpack">
+<em class="property">abstract </em><code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Vector.unpack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpacking communication data</p>
 </dd></dl>
 
 </dd></dl>
@@ -1117,6 +1129,17 @@ Every user-defined vector class must inherit from this class.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pymgrit.VectorHeat1D2Pts.pack">
+<code class="sig-name descname">pack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.VectorHeat1D2Pts.pack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pack data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>values of vector object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="pymgrit.VectorHeat1D2Pts.set_values">
 <code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">first_time_point</em>, <em class="sig-param">second_time_point</em>, <em class="sig-param">dtau</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.VectorHeat1D2Pts.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vector data</p>
@@ -1127,6 +1150,17 @@ Every user-defined vector class must inherit from this class.</p>
 <li><p><strong>second_time_point</strong> – values for second time point</p></li>
 <li><p><strong>dtau</strong> – time-step size within pair</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymgrit.VectorHeat1D2Pts.unpack">
+<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.VectorHeat1D2Pts.unpack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpack and set data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> – values for vector object</p>
 </dd>
 </dl>
 </dd></dl>

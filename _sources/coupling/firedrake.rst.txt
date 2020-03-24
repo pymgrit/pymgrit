@@ -133,6 +133,22 @@ Vector class
             """
             return np.linalg.norm(self.values)
 
+        def unpack(self, values):
+            """
+            Unpack and set data
+
+            :param values: values for vector object
+            """
+            self.values = values
+
+        def pack(self):
+            """
+            Pack data
+
+            :return: values of vector object
+            """
+            return self.values
+
 
 Application class
 ^^^^^^^^^^^^^^^^^

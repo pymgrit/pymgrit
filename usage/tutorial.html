@@ -220,7 +220,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
-<p>Furthermore, we must define the following seven member functions: <cite>set_values</cite>, <cite>get_values</cite>, <cite>clone_zero</cite>, <cite>clone_rand</cite>, <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite>.</p>
+<p>Furthermore, we must define the following seven member functions: <cite>set_values</cite>, <cite>get_values</cite>, <cite>clone_zero</cite>, <cite>clone_rand</cite>, <cite>__add__</cite>, <cite>__sub__</cite>, <cite>norm</cite>, <cite>pack</cite> and <cite>unpack</cite>..</p>
 <p>The function <cite>set_values</cite> receives data values and overwrites the values of the vector data and <cite>get_values</cite> returns the vector data.
 For our class <cite>VectorDahlquist</cite>, the vector data is the scalar member variable <cite>value</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -257,6 +257,9 @@ We define the norm of a vector object as the norm (from <a href="#id1"><span cla
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The functions <cite>pack</cite> and <cite>unpack</cite> define define which data is communicated and how the data is unpacked after receiving.
+For our class <cite>VectorDahlquist</cite>, packing means to send only the member variable <cite>value</cite> and unpacking means to write the
+scalar value to the member variable <cite>value</cite>.</p>
 <div class="section" id="summary">
 <h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
 <p>The vector class must inherit from PyMGRIT’s core <cite>Vector</cite> class.</p>
@@ -271,6 +274,8 @@ We define the norm of a vector object as the norm (from <a href="#id1"><span cla
 <li><p><cite>__add__</cite> : Addition of two vector objects</p></li>
 <li><p><cite>__sub__</cite> : Subtraction of two vector objects</p></li>
 <li><p><cite>norm</cite> : Norm of a vector object (for measuring convergence)</p></li>
+<li><p><cite>pack</cite> : Specifying communication data</p></li>
+<li><p><cite>unpack</cite> : Unpacking communication data</p></li>
 </ul>
 </div></blockquote>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -311,6 +316,12 @@ We define the norm of a vector object as the norm (from <a href="#id1"><span cla
 
     <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">pack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
 </div>
@@ -448,7 +459,7 @@ For our test problem, we take a backward Euler step:</p>
   <span class="n">cycle</span> <span class="nb">type</span>                <span class="p">:</span> <span class="n">V</span>
   <span class="n">stopping</span> <span class="n">tolerance</span>        <span class="p">:</span> <span class="mf">1e-10</span>
   <span class="n">communicator</span> <span class="n">size</span> <span class="n">time</span>    <span class="p">:</span> <span class="mi">1</span>
-  <span class="n">communicator</span> <span class="n">size</span> <span class="n">space</span>   <span class="p">:</span> <span class="o">-</span><span class="mi">99</span>
+  <span class="n">communicator</span> <span class="n">size</span> <span class="n">space</span>   <span class="p">:</span> <span class="mi">1</span>
 </pre></div>
 </div>
 <p>and returns the residual history, setup time, and solve time in dictionary <cite>info</cite> with the following key values:</p>
