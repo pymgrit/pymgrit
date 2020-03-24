@@ -4,7 +4,7 @@ install_requires = [
     'numpy>=1.17.0',
     'scipy>=1.4.1',
     'mpi4py>=3.0',
-    'matplotlib>=3.1.3'
+    'matplotlib>=3.0.3'
 ]
 
 extras_requires = {

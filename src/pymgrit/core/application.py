@@ -2,11 +2,11 @@
 Abstract application class for user-defined application classes.
 Every user-defined application class must inherit from this class.
 
-  Required attributes:
-    - vector_template
-    - vector_t_start
-  Required functions:
-    - step
+Required attributes:
+  - vector_template
+  - vector_t_start
+Required functions:
+  - step
 """
 from abc import ABCMeta, abstractmethod
 import numpy as np
