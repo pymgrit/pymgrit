@@ -81,7 +81,13 @@ We define the norm of a vector object as the norm (from ``numpy`) of the member 
 
 The functions `pack` and `unpack` define define which data is communicated and how the data is unpacked after receiving.
 For our class `VectorDahlquist`, packing means to send only the member variable `value` and unpacking means to write the
-scalar value to the member variable `value`.
+scalar value to the member variable `value`::
+
+        def pack(self):
+            return self.value
+
+        def unpack(self, value):
+            self.value = value
 
 Summary
 ^^^^^^^
