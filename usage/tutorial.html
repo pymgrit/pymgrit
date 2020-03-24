@@ -259,7 +259,14 @@ We define the norm of a vector object as the norm (from <a href="#id1"><span cla
 </div>
 <p>The functions <cite>pack</cite> and <cite>unpack</cite> define define which data is communicated and how the data is unpacked after receiving.
 For our class <cite>VectorDahlquist</cite>, packing means to send only the member variable <cite>value</cite> and unpacking means to write the
-scalar value to the member variable <cite>value</cite>.</p>
+scalar value to the member variable <cite>value</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+<span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
 <div class="section" id="summary">
 <h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
 <p>The vector class must inherit from PyMGRIT’s core <cite>Vector</cite> class.</p>
