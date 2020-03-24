@@ -11,6 +11,6 @@ pip3 install .
 pip3 install sphinx sphinx-rtd-theme
 rm -fr docs/source/pymgrit*
 sphinx-apidoc -f -o docs/source src/pymgrit
-sphinx-build -b html docs/source docs/build/html
+sphinx-build -E docs/source docs/build/html
 
 touch docs/build/html/.nojekyll

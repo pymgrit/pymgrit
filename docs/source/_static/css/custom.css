@@ -1,0 +1,4 @@
+.genindextable tr td {
+    width: 100%!important;
+    display: block;
+}
