@@ -41,7 +41,7 @@ Then, we define the class `VectorDahlquist` containing a scalar member variable 
             super(VectorDahlquist, self).__init__()
             self.value = value
 
-Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, `norm`, `pack` and `unpack`..
+Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, `norm`, `pack` and `unpack`.
 
 The function `set_values` receives data values and overwrites the values of the vector data and `get_values` returns the vector data.
 For our class `VectorDahlquist`, the vector data is the scalar member variable `value`::
@@ -64,7 +64,7 @@ The function `clone_zero` returns a vector object initialized with zeros; `clone
 
 The functions `__add__`, `__sub__`, and `norm` define the addition and subtraction of two vector objects and the norm of a vector object, respectively.
 For our class `VectorDahlquist`, adding or subtracting two vector objects means adding or subtracting the values of the member variable `value` by using the functions `get_values` and `set_values`.
-We define the norm of a vector object as the norm (from ``numpy`) of the member variable `value`::
+We define the norm of a vector object as the norm (from ``numpy``) of the member variable `value`::
 
         def __add__(self, other):
             tmp = VectorDahlquist(0)
@@ -79,9 +79,9 @@ We define the norm of a vector object as the norm (from ``numpy`) of the member 
         def norm(self):
             return np.linalg.norm(self.value)
 
-The functions `pack` and `unpack` define define which data is communicated and how the data is unpacked after receiving.
-For our class `VectorDahlquist`, packing means to send only the member variable `value` and unpacking means to write the
-scalar value to the member variable `value`::
+The functions `pack` and `unpack` define the data to be communicated and how data is unpacked after receiving it.
+For our class `VectorDahlquist`, packing means setting the data to be communicated to the member variable `value` and
+unpacking means setting the member variable `value` to the received scalar value::
 
         def pack(self):
             return self.value
