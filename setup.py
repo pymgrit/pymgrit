@@ -4,7 +4,7 @@ install_requires = [
     'numpy>=1.17.0',
     'scipy>=1.4.1',
     'mpi4py>=3.0',
-    'matplotlib>=3.0.3'
+    'matplotlib>=3.1.3'
 ]
 
 extras_requires = {
@@ -23,7 +23,7 @@ def long_description():
 
 
 setup(name='pymgrit',
-      version='1.0.0',
+      version='1.0.1',
       description='Python implementation of the MGRIT algorithm',
       long_description=long_description(),
       long_description_content_type="text/x-rst",
@@ -34,7 +34,7 @@ setup(name='pymgrit',
       packages=find_packages(where='src', exclude=['doc']),
       install_requires=install_requires,
       extras_require=extras_requires,
-      python_requires=">=3.5",
+      python_requires=">=3.6",
       include_package_data=True,
       package_dir={'': 'src'},
       test_suite='nose.collector',
