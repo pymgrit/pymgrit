@@ -226,7 +226,6 @@ Depending on the solver setting (see `output_lvl` in `Solver parameters`_), the 
         path = 'results/' + 'dahlquist'
         # Create path if not existing
         pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-
         # Save solution to file; here, we just have a single solution value at each time point.
         # Useful member variables of MGRIT solver:
         #   - self.t[0]           : local fine-grid (level 0) time interval
