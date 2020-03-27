@@ -77,6 +77,7 @@ Citing
     :hidden:
 
     coupling/firedrake
+    coupling/petsc
 
 .. toctree::
     :caption: Help
