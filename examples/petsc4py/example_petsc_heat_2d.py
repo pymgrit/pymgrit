@@ -151,7 +151,6 @@ class HeatPetsc(Application):
         self.space_disc = self.get_a()
         self.id = self.get_id()
 
-        # Necessary attributes
         self.vector_template = VectorPetsc(self.dmda.createGlobalVec())
         self.vector_t_start = VectorPetsc(self.u_exact(0).get_values())
 
@@ -246,7 +245,7 @@ class HeatPetsc(Application):
 
     def compute_rhs(self, u_start: VectorPetsc, t_start: float, t_stop: float) -> PETSc.Vec:
         """
-        Right-hand side of spatial system for implicit time integration methods
+        Right-hand side of spatial system
 
         :param u_start: approximate solution for the input time t_start
         :param t_start: time associated with the input approximate solution u_start
@@ -352,9 +351,9 @@ def main():
     dmda_fine = dmda_coarse.refine()
 
     # Set up the problem
-    heat_petsc_0 = HeatPetsc(dmda=dmda_fine, comm_x=comm_x, freq=2, a=1.0, t_start=0, t_stop=1, nt=33)
-    heat_petsc_1 = HeatPetsc(dmda=dmda_coarse, comm_x=comm_x, freq=2, a=1.0, t_interval=heat_petsc_0.t[::2])
-    heat_petsc_2 = HeatPetsc(dmda=dmda_coarse, comm_x=comm_x, freq=2, a=1.0, t_interval=heat_petsc_1.t[::2])
+    heat_petsc_0 = HeatPetsc(dmda=dmda_fine, comm_x=comm_x, freq=1, a=1.0, t_start=0, t_stop=1, nt=33)
+    heat_petsc_1 = HeatPetsc(dmda=dmda_coarse, comm_x=comm_x, freq=1, a=1.0, t_interval=heat_petsc_0.t[::2])
+    heat_petsc_2 = HeatPetsc(dmda=dmda_coarse, comm_x=comm_x, freq=1, a=1.0, t_interval=heat_petsc_1.t[::2])
 
     # Setup three-level MGRIT solver with the space and time communicators and
     # solve the problem
