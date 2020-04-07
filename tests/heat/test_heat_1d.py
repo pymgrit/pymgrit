@@ -1,7 +1,6 @@
 """
 Tests heat_1d
 """
-import nose
 import numpy as np
 
 from pymgrit.heat.heat_1d import Heat1D
@@ -129,7 +128,3 @@ def test_vector_heat_1d_get_values():
     """
     vector_heat_1d = VectorHeat1D(2)
     np.testing.assert_equal(vector_heat_1d.get_values(), np.zeros(2))
-
-
-if __name__ == '__main__':
-    nose.run()

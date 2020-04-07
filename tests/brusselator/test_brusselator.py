@@ -1,7 +1,6 @@
 """
 Tests brusselator
 """
-import nose
 import numpy as np
 
 from pymgrit.brusselator.brusselator import Brusselator
@@ -116,13 +115,10 @@ def test_vector_brusselator_get_values():
     vector_brusselator = VectorBrusselator()
     np.testing.assert_equal(vector_brusselator.get_values(), np.zeros(2))
 
+
 def test_vector_brusselator_plot_solution():
     """
     Test get_values()
     """
     vector_brusselator = VectorBrusselator()
     np.testing.assert_equal(vector_brusselator.plot_solution(), None)
-
-
-if __name__ == '__main__':
-    nose.run()

@@ -1,7 +1,6 @@
 """
 Tests heat_1d_2pts_bdf2
 """
-import nose
 import numpy as np
 
 from pymgrit.heat.heat_1d_2pts_bdf2 import Heat1DBDF2
@@ -58,7 +57,3 @@ def test_heat_1d_2pts_bdf2_step():
         [0.01235156, 0.02015287, 0.01986458, 0.01000559, -0.00781242, -0.02812508, -0.04182745, -0.03889518,
          -0.01671786]))
     np.testing.assert_almost_equal(heat_1d_res.get_values()[2], 0.1)
-
-
-if __name__ == '__main__':
-    nose.run()

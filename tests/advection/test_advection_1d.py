@@ -1,7 +1,6 @@
 """
 Tests advection_1d
 """
-import nose
 import numpy as np
 
 from pymgrit.advection.advection_1d import Advection1D
@@ -131,7 +130,3 @@ def test_vector_advection_1d_get_values():
     """
     vector_advection_1d = VectorAdvection1D(2)
     np.testing.assert_equal(vector_advection_1d.get_values(), np.zeros(2))
-
-
-if __name__ == '__main__':
-    nose.run()

@@ -18,8 +18,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install mpich
-        run: sudo apt update && sudo apt install -y mpich
+      - name: Install openmpi
+        run: sudo apt update && sudo apt install -y openmpi-bin
 
       - name: Cache pip
         uses: actions/cache@v1

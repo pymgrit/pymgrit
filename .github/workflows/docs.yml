@@ -13,6 +13,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install openmpi
+      run: sudo apt update && sudo apt install -y openmpi-bin
+
     - name: Build and deploy
       uses: JacksonMaxfield/github-pages-deploy-action-python@master
       env:

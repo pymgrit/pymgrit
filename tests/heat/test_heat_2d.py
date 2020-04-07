@@ -1,8 +1,7 @@
 """
 Tests heat_2d
 """
-import nose
-from nose.tools import *
+import pytest
 import numpy as np
 
 from pymgrit.heat.heat_2d import Heat2D
@@ -132,7 +131,6 @@ def test_heat_2d_constructor_cn():
          0., 0., 0., 0., 0.]))
 
 
-@raises(Exception)
 def test_heat_2d_constructor_exception_method():
     """
     Test constructor
@@ -144,11 +142,11 @@ def test_heat_2d_constructor_exception_method():
     nx = 5
     ny = 5
     a = 1
-    heat_2d = Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, method='DE',
-                     rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
+    with pytest.raises(Exception):
+        Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, method='DE',
+               rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
 
 
-@raises(Exception)
 def test_heat_2d_constructor_exception_boundary_left():
     """
     Test constructor
@@ -160,11 +158,11 @@ def test_heat_2d_constructor_exception_boundary_left():
     nx = 5
     ny = 5
     a = 1
-    heat_2d = Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_left='2',
-                     rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
+    with pytest.raises(Exception):
+        Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_left='2',
+               rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
 
 
-@raises(Exception)
 def test_heat_2d_constructor_exception_boundary_bottom():
     """
     Test constructor
@@ -176,11 +174,11 @@ def test_heat_2d_constructor_exception_boundary_bottom():
     nx = 5
     ny = 5
     a = 1
-    heat_2d = Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_bottom='2',
-                     rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
+    with pytest.raises(Exception):
+        Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_bottom='2',
+               rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
 
 
-@raises(Exception)
 def test_heat_2d_constructor_exception_boundary_right():
     """
     Test constructor
@@ -192,11 +190,11 @@ def test_heat_2d_constructor_exception_boundary_right():
     nx = 5
     ny = 5
     a = 1
-    heat_2d = Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_right='2',
-                     rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
+    with pytest.raises(Exception):
+        Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_right='2',
+               rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
 
 
-@raises(Exception)
 def test_heat_2d_constructor_exception_boundary_top():
     """
     Test constructor
@@ -208,8 +206,9 @@ def test_heat_2d_constructor_exception_boundary_top():
     nx = 5
     ny = 5
     a = 1
-    heat_2d = Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_top='2',
-                     rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
+    with pytest.raises(Exception):
+        Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_top='2',
+               rhs=lambda x, y, t: 2 * x * y, t_start=0, t_stop=1, nt=11)
 
 
 def test_heat_2d_constructor_boundary():
@@ -223,9 +222,9 @@ def test_heat_2d_constructor_boundary():
     nx = 5
     ny = 5
     a = 1
-    heat_2d = Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_top=lambda y: 2,
-                     bc_left=lambda y: 2, bc_right=lambda y: 2, bc_bottom=lambda y: 2, rhs=lambda x, y, t: 2 * x * y,
-                     t_start=0, t_stop=1, nt=11)
+    Heat2D(a=a, x_start=x_start, x_end=x_end, y_start=y_start, y_end=y_end, nx=nx, ny=ny, bc_top=lambda y: 2,
+           bc_left=lambda y: 2, bc_right=lambda y: 2, bc_bottom=lambda y: 2, rhs=lambda x, y, t: 2 * x * y,
+           t_start=0, t_stop=1, nt=11)
 
 
 def test_heat_2d_step_be():
@@ -380,7 +379,3 @@ def test_vector_heat_2d_get_values():
     """
     vector_heat_2d = VectorHeat2D(nx=3, ny=3)
     np.testing.assert_equal(vector_heat_2d.get_values(), np.zeros((3, 3)))
-
-
-if __name__ == '__main__':
-    nose.run()

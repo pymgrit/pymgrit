@@ -1,7 +1,6 @@
 """
 Tests grid transfer copy
 """
-import nose
 import numpy as np
 
 from pymgrit.core.grid_transfer_copy import GridTransferCopy
@@ -65,7 +64,3 @@ def test_grid_transfer_copy_interpolation():
     grid_transfer_copy = GridTransferCopy()
 
     np.testing.assert_equal(True, isinstance(grid_transfer_copy.interpolation(VectorSimple()), VectorSimple))
-
-
-if __name__ == '__main__':
-    nose.run()
