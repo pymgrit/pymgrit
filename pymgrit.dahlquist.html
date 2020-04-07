@@ -178,18 +178,18 @@
 <span id="pymgrit-dahlquist-dahlquist-module"></span><h2>pymgrit.dahlquist.dahlquist module<a class="headerlink" href="#module-pymgrit.dahlquist.dahlquist" title="Permalink to this headline">¶</a></h2>
 <p>Scalar ODE example:
 Vector and application class for Dahlquist’s test problem</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.dahlquist.dahlquist.Dahlquist">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.dahlquist.dahlquist.</code><code class="sig-name descname">Dahlquist</code><span class="sig-paren">(</span><em class="sig-param">method='BE'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.Dahlquist" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.dahlquist.dahlquist.</code><code class="sig-name descname">Dahlquist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'BE'</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.Dahlquist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
 <dt>Application class for Dahlquist’s test problem,</dt><dd><p>u’ = lambda u,</p>
 </dd>
 </dl>
 <p>with lambda = -1 and IC u(0) = 1</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.dahlquist.dahlquist.Dahlquist.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.dahlquist.dahlquist.VectorDahlquist</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.dahlquist.dahlquist.VectorDahlquist<a class="headerlink" href="#pymgrit.dahlquist.dahlquist.Dahlquist.step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist" title="pymgrit.dahlquist.dahlquist.VectorDahlquist">pymgrit.dahlquist.dahlquist.VectorDahlquist</a></span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist" title="pymgrit.dahlquist.dahlquist.VectorDahlquist">pymgrit.dahlquist.dahlquist.VectorDahlquist</a><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.Dahlquist.step" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Time integration routine for Dahlquist’s test problem:</dt><dd><p>BE: Backward Euler
 FE: Forward Euler
@@ -213,50 +213,50 @@ MR: implicit Mid-point Rule</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.dahlquist.dahlquist.VectorDahlquist">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.dahlquist.dahlquist.</code><code class="sig-name descname">VectorDahlquist</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.dahlquist.dahlquist.</code><code class="sig-name descname">VectorDahlquist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
 <p>Vector class for the Dahlquist test equation</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.dahlquist.dahlquist.VectorDahlquist.clone_rand">
 <code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist.clone_rand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with random values</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.dahlquist.dahlquist.VectorDahlquist.clone_zero">
 <code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist.clone_zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with zeros</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.dahlquist.dahlquist.VectorDahlquist.get_values">
 <code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist.get_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get vector data</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.dahlquist.dahlquist.VectorDahlquist.norm">
 <code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Norm of a vector object</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.dahlquist.dahlquist.VectorDahlquist.pack">
 <code class="sig-name descname">pack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist.pack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specifying communication data</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.dahlquist.dahlquist.VectorDahlquist.set_values">
-<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist.set_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vector data</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.dahlquist.dahlquist.VectorDahlquist.unpack">
-<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist.unpack" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.dahlquist.dahlquist.VectorDahlquist.unpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unpacking communication data</p>
 </dd></dl>
 

@@ -177,7 +177,7 @@
 <div class="section" id="module-pymgrit.heat.heat_1d">
 <span id="pymgrit-heat-heat-1d-module"></span><h2>pymgrit.heat.heat_1d module<a class="headerlink" href="#module-pymgrit.heat.heat_1d" title="Permalink to this headline">¶</a></h2>
 <p>Vector and application class for the 1D heat equation</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.heat.heat_1d.Heat1D">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d.</code><code class="sig-name descname">Heat1D</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">a</em>, <em class="sig-param">init_cond=&lt;function Heat1D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs=&lt;function Heat1D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.Heat1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
@@ -186,7 +186,7 @@
 </dd>
 </dl>
 <p>with homogeneous Dirichlet boundary conditions in space.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d.Heat1D.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.Heat1D.compute_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define spatial discretization matrix for 1D heat equation</p>
@@ -196,9 +196,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d.Heat1D.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.heat_1d.VectorHeat1D</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.heat_1d.VectorHeat1D<a class="headerlink" href="#pymgrit.heat.heat_1d.Heat1D.step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.heat.heat_1d.VectorHeat1D" title="pymgrit.heat.heat_1d.VectorHeat1D">pymgrit.heat.heat_1d.VectorHeat1D</a></span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.heat.heat_1d.VectorHeat1D" title="pymgrit.heat.heat_1d.VectorHeat1D">pymgrit.heat.heat_1d.VectorHeat1D</a><a class="headerlink" href="#pymgrit.heat.heat_1d.Heat1D.step" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Time integration routine for 1D heat equation example problem:</dt><dd><p>Backward Euler (BDF1)</p>
 </dd>
@@ -222,12 +222,12 @@
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.heat.heat_1d.VectorHeat1D">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d.</code><code class="sig-name descname">VectorHeat1D</code><span class="sig-paren">(</span><em class="sig-param">size</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d.</code><code class="sig-name descname">VectorHeat1D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
 <p>Vector class for the 1D heat equation</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d.VectorHeat1D.clone_rand">
 <code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D.clone_rand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with random values</p>
@@ -238,7 +238,7 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d.VectorHeat1D.clone_zero">
 <code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D.clone_zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with zeros</p>
@@ -249,7 +249,7 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d.VectorHeat1D.get_values">
 <code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D.get_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get vector data</p>
@@ -260,7 +260,7 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d.VectorHeat1D.norm">
 <code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Norm of a vector object</p>
@@ -271,7 +271,7 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d.VectorHeat1D.pack">
 <code class="sig-name descname">pack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D.pack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pack data</p>
@@ -282,9 +282,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d.VectorHeat1D.set_values">
-<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D.set_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vector data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -293,9 +293,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d.VectorHeat1D.unpack">
-<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D.unpack" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.VectorHeat1D.unpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unpack and set data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -311,7 +311,7 @@
 <span id="pymgrit-heat-heat-1d-2pts-bdf1-module"></span><h2>pymgrit.heat.heat_1d_2pts_bdf1 module<a class="headerlink" href="#module-pymgrit.heat.heat_1d_2pts_bdf1" title="Permalink to this headline">¶</a></h2>
 <p>Application class for 1D heat problem using BDF1 time integration</p>
 <p>Note: values at two consecutive time points are grouped as pairs</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf1.</code><code class="sig-name descname">Heat1DBDF1</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">dtau: float</em>, <em class="sig-param">a: float</em>, <em class="sig-param">init_cond: Callable = &lt;function Heat1DBDF1.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs: Callable = &lt;function Heat1DBDF1.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
@@ -320,7 +320,7 @@
 </dd>
 </dl>
 <p>with homogeneous Dirichlet boundary conditions in space</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1.compute_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define spatial discretization matrix for heat equation problem.</p>
@@ -330,9 +330,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts<a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1.step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts" title="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts">pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</a></span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts" title="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts">pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</a><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1.step" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Time integration routine for 1D heat equation example problem:</dt><dd><p>Backward Euler (BDF1)</p>
 </dd>
@@ -368,7 +368,7 @@
 <span id="pymgrit-heat-heat-1d-2pts-bdf2-module"></span><h2>pymgrit.heat.heat_1d_2pts_bdf2 module<a class="headerlink" href="#module-pymgrit.heat.heat_1d_2pts_bdf2" title="Permalink to this headline">¶</a></h2>
 <p>Application class for 1D heat problem using BDF2 time integration</p>
 <p>Note: values at two consecutive time points are grouped as pairs</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf2.</code><code class="sig-name descname">Heat1DBDF2</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">dtau: float</em>, <em class="sig-param">a: float</em>, <em class="sig-param">init_cond: Callable = &lt;function Heat1DBDF2.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs: Callable = &lt;function Heat1DBDF2.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
@@ -377,7 +377,7 @@
 </dd>
 </dl>
 <p>with homogeneous Dirichlet boundary conditions in space</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2.compute_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define spatial discretization matrix for heat equation problem.</p>
@@ -387,9 +387,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts<a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2.step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts" title="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts">pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</a></span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts" title="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts">pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts</a><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2.step" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Time integration routine for 1D heat equation:</dt><dd><p>BDF2</p>
 </dd>
@@ -433,7 +433,7 @@ Backward Euler
 Crank-Nicolson</p>
 </dd>
 </dl>
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.heat.heat_2d.Heat2D">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_2d.</code><code class="sig-name descname">Heat2D</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">y_start: float</em>, <em class="sig-param">y_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">ny: int</em>, <em class="sig-param">a: float</em>, <em class="sig-param">rhs: Callable = &lt;function Heat2D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">init_cond: Callable = &lt;function Heat2D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">method: str = 'BE'</em>, <em class="sig-param">bc_left: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">bc_right: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">bc_bottom: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">bc_top: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.Heat2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
@@ -443,7 +443,7 @@ in [x_start, x_end] x [y_start, y_end] x (t_start, t_end],</p>
 </dd>
 </dl>
 <p>with homogeneous Dirichlet boundary conditions in space.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.Heat2D.compute_matrix">
 <code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.Heat2D.compute_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define spatial discretization matrix for 2D heat equation</p>
@@ -456,9 +456,9 @@ in [x_start, x_end] x [y_start, y_end] x (t_start, t_end],</p>
 <p>with f_x = (a / dx^2) and f_y = (a / dy^2)</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.Heat2D.compute_rhs">
-<code class="sig-name descname">compute_rhs</code><span class="sig-paren">(</span><em class="sig-param">u_start: numpy.ndarray</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.Heat2D.compute_rhs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">compute_rhs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.Heat2D.compute_rhs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Right-hand side of spatial system for implicit time integration methods</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -474,9 +474,9 @@ in [x_start, x_end] x [y_start, y_end] x (t_start, t_end],</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.Heat2D.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.heat.heat_2d.VectorHeat2D</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.heat.heat_2d.VectorHeat2D<a class="headerlink" href="#pymgrit.heat.heat_2d.Heat2D.step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.heat.heat_2d.VectorHeat2D" title="pymgrit.heat.heat_2d.VectorHeat2D">pymgrit.heat.heat_2d.VectorHeat2D</a></span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.heat.heat_2d.VectorHeat2D" title="pymgrit.heat.heat_2d.VectorHeat2D">pymgrit.heat.heat_2d.VectorHeat2D</a><a class="headerlink" href="#pymgrit.heat.heat_2d.Heat2D.step" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Time integration routine for 2D heat equation example problem:</dt><dd><p>Backward Euler (BE)
 Forward Euler (FE)
@@ -505,12 +505,12 @@ theta =  1  -&gt; BE</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.heat.heat_2d.VectorHeat2D">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_2d.</code><code class="sig-name descname">VectorHeat2D</code><span class="sig-paren">(</span><em class="sig-param">nx</em>, <em class="sig-param">ny</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_2d.</code><code class="sig-name descname">VectorHeat2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nx</span></em>, <em class="sig-param"><span class="n">ny</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
 <p>Vector class for the 2D heat equation</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.VectorHeat2D.clone_rand">
 <code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D.clone_rand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with random values</p>
@@ -521,7 +521,7 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.VectorHeat2D.clone_zero">
 <code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D.clone_zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with zeros</p>
@@ -532,7 +532,7 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.VectorHeat2D.get_values">
 <code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D.get_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get vector data</p>
@@ -543,7 +543,7 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.VectorHeat2D.norm">
 <code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Norm of a vector object</p>
@@ -554,7 +554,7 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.VectorHeat2D.pack">
 <code class="sig-name descname">pack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D.pack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pack data</p>
@@ -565,9 +565,9 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.VectorHeat2D.set_values">
-<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D.set_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vector data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -576,9 +576,9 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.heat_2d.VectorHeat2D.unpack">
-<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D.unpack" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.VectorHeat2D.unpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unpack and set data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -594,12 +594,12 @@ theta =  1  -&gt; BE</p>
 <span id="pymgrit-heat-vector-heat-1d-2pts-module"></span><h2>pymgrit.heat.vector_heat_1d_2pts module<a class="headerlink" href="#module-pymgrit.heat.vector_heat_1d_2pts" title="Permalink to this headline">¶</a></h2>
 <p>Vector class for 1D heat problem</p>
 <p>Note: values at two consecutive time points are grouped as pairs</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.vector_heat_1d_2pts.</code><code class="sig-name descname">VectorHeat1D2Pts</code><span class="sig-paren">(</span><em class="sig-param">size</em>, <em class="sig-param">dtau</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.vector_heat_1d_2pts.</code><code class="sig-name descname">VectorHeat1D2Pts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">dtau</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
 <p>Vector class for grouping values at two consecutive time points</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_rand">
 <code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_rand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with random values</p>
@@ -610,7 +610,7 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_zero">
 <code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.clone_zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with zeros</p>
@@ -621,7 +621,7 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.get_values">
 <code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.get_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get vector data</p>
@@ -632,7 +632,7 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.norm">
 <code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Norm of a vector object</p>
@@ -643,7 +643,7 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.pack">
 <code class="sig-name descname">pack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.pack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pack data</p>
@@ -654,9 +654,9 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.set_values">
-<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">first_time_point</em>, <em class="sig-param">second_time_point</em>, <em class="sig-param">dtau</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.set_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">first_time_point</span></em>, <em class="sig-param"><span class="n">second_time_point</span></em>, <em class="sig-param"><span class="n">dtau</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vector data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -669,9 +669,9 @@ theta =  1  -&gt; BE</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.unpack">
-<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.unpack" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.vector_heat_1d_2pts.VectorHeat1D2Pts.unpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unpack and set data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

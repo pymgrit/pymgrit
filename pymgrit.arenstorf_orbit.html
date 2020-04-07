@@ -177,9 +177,9 @@
 <div class="section" id="module-pymgrit.arenstorf_orbit.arenstorf_orbit">
 <span id="pymgrit-arenstorf-orbit-arenstorf-orbit-module"></span><h2>pymgrit.arenstorf_orbit.arenstorf_orbit module<a class="headerlink" href="#module-pymgrit.arenstorf_orbit.arenstorf_orbit" title="Permalink to this headline">¶</a></h2>
 <p>Vector and application class for the Arenstorf orbit problem</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.ArenstorfOrbit">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.arenstorf_orbit.arenstorf_orbit.</code><code class="sig-name descname">ArenstorfOrbit</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.ArenstorfOrbit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.arenstorf_orbit.arenstorf_orbit.</code><code class="sig-name descname">ArenstorfOrbit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.ArenstorfOrbit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
 <dt>Application for Arenstorf orbit problem,</dt><dd><p>x’’ = x + 2y’ - b*(x + a)/D_1 - a*(x - b)/D_2,
@@ -190,9 +190,9 @@ y’’ = y - 2x’ - b*y/D_1 - a*y/D_2</p>
 <dt>and ICs</dt><dd><p>x(0) = 0.994,  x’(0) = 0,  y(0) = 0,  y’(0) = -2.00158510637908</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.ArenstorfOrbit.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit<a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.ArenstorfOrbit.step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit" title="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit">pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit</a></span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit" title="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit">pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit</a><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.ArenstorfOrbit.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time integration routine for the application</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -210,63 +210,63 @@ y’’ = y - 2x’ - b*y/D_1 - a*y/D_2</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.arenstorf_orbit.arenstorf_orbit.</code><code class="sig-name descname">VectorArenstorfOrbit</code><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
 <p>Vector for the Arenstorf orbit problem</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.clone_rand">
 <code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.clone_rand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with random values</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.clone_zero">
 <code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.clone_zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with zeros</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.get_values">
 <code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.get_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get vector data</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.norm">
 <code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Norm of a vector object</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.pack">
 <code class="sig-name descname">pack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.pack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specifying communication data</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.plot">
 <code class="sig-name descname">plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.set_values">
-<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.set_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vector data</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.unpack">
-<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param">values</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.unpack" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.VectorArenstorfOrbit.unpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unpacking communication data</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pymgrit.arenstorf_orbit.arenstorf_orbit.arenstorf">
-<code class="sig-prename descclassname">pymgrit.arenstorf_orbit.arenstorf_orbit.</code><code class="sig-name descname">arenstorf</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">y</em>, <em class="sig-param">a</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.arenstorf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pymgrit.arenstorf_orbit.arenstorf_orbit.</code><code class="sig-name descname">arenstorf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.arenstorf_orbit.arenstorf_orbit.arenstorf" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

@@ -177,9 +177,9 @@
 <div class="section" id="module-pymgrit.brusselator.brusselator">
 <span id="pymgrit-brusselator-brusselator-module"></span><h2>pymgrit.brusselator.brusselator module<a class="headerlink" href="#module-pymgrit.brusselator.brusselator" title="Permalink to this headline">¶</a></h2>
 <p>Vector and application class for the 1D Brusselator system</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.brusselator.brusselator.Brusselator">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.brusselator.brusselator.</code><code class="sig-name descname">Brusselator</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.Brusselator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.brusselator.brusselator.</code><code class="sig-name descname">Brusselator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.Brusselator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
 <dt>Application class for Brusselator system,</dt><dd><p>x’ = A + x^2y - (B + 1)x,
@@ -188,9 +188,9 @@ y’ = Bx - x^2y,</p>
 <dt>with A = 1, B = 3, and ICs</dt><dd><p>x(0) = 0,  y(0) = 1</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.brusselator.brusselator.Brusselator.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">u_start: pymgrit.brusselator.brusselator.VectorBrusselator</em>, <em class="sig-param">t_start: float</em>, <em class="sig-param">t_stop: float</em><span class="sig-paren">)</span> &#x2192; pymgrit.brusselator.brusselator.VectorBrusselator<a class="headerlink" href="#pymgrit.brusselator.brusselator.Brusselator.step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.brusselator.brusselator.VectorBrusselator" title="pymgrit.brusselator.brusselator.VectorBrusselator">pymgrit.brusselator.brusselator.VectorBrusselator</a></span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.brusselator.brusselator.VectorBrusselator" title="pymgrit.brusselator.brusselator.VectorBrusselator">pymgrit.brusselator.brusselator.VectorBrusselator</a><a class="headerlink" href="#pymgrit.brusselator.brusselator.Brusselator.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time integration routine for Brusselator system: RK4</p>
 <blockquote>
 <div><blockquote>
@@ -224,63 +224,63 @@ y’ = Bx - x^2y,</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pymgrit.brusselator.brusselator.VectorBrusselator">
 <em class="property">class </em><code class="sig-prename descclassname">pymgrit.brusselator.brusselator.</code><code class="sig-name descname">VectorBrusselator</code><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
 <p>Vector class for Brusselator system</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.brusselator.brusselator.VectorBrusselator.clone_rand">
 <code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.clone_rand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with random values</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.brusselator.brusselator.VectorBrusselator.clone_zero">
 <code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.clone_zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with zeros</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.brusselator.brusselator.VectorBrusselator.get_values">
 <code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.get_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get vector data</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.brusselator.brusselator.VectorBrusselator.norm">
 <code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Norm of a vector object</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.brusselator.brusselator.VectorBrusselator.pack">
 <code class="sig-name descname">pack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.pack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specifying communication data</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.brusselator.brusselator.VectorBrusselator.plot_solution">
 <code class="sig-name descname">plot_solution</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.plot_solution" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.brusselator.brusselator.VectorBrusselator.set_values">
-<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.set_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vector data</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pymgrit.brusselator.brusselator.VectorBrusselator.unpack">
-<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.unpack" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.VectorBrusselator.unpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unpacking communication data</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pymgrit.brusselator.brusselator.brusselator">
-<code class="sig-prename descclassname">pymgrit.brusselator.brusselator.</code><code class="sig-name descname">brusselator</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.brusselator" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pymgrit.brusselator.brusselator.</code><code class="sig-name descname">brusselator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.brusselator.brusselator.brusselator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Right-hand side of Brusselator system
 :param t: time associated with the input approximate solution y
 :param y: approximate solution for the input time t
