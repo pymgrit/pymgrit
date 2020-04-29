@@ -32,7 +32,7 @@ class GridTransferCopy(grid_transfer.GridTransfer):
         :return: Input vector u at the same time point on next coarser time grid
         :rtype: Vector
         """
-        return copy.deepcopy(u)
+        return u.clone()
 
     def interpolation(self, u: Vector) -> Vector:
         """
@@ -44,4 +44,4 @@ class GridTransferCopy(grid_transfer.GridTransfer):
         :return: Input vector u at the same time point on next finer time grid
         :rtype: Vector
         """
-        return copy.deepcopy(u)
+        return u.clone()

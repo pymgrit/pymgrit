@@ -105,6 +105,15 @@ Code
             """
             return self.values.norm(PETSc.NormType.FROBENIUS)
 
+        def clone(self) -> '__class__':
+            """
+            Initialize vector object with copied values
+
+            :rtype: vector object with zero values
+            """
+
+            return VectorPetsc(self.get_values())
+
         def clone_zero(self) -> '__class__':
             """
             Initialize vector object with zeros

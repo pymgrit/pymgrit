@@ -85,6 +85,16 @@ Vector class
             """
             return self.values
 
+        def clone(self):
+            """
+            Initialize vector object with copied values
+
+            :rtype: vector object with zero values
+            """
+            tmp = VectorDiffusion2D(size=self.size, comm_space=self.comm_space)
+            tmp.set_values(self.get_values())
+            return tmp
+
         def clone_zero(self):
             """
             Initialize vector object with zeros
@@ -156,22 +166,23 @@ Application class
 ::
 
     class Diffusion2D(Application):
-        """
-        Application class containing the description of the diffusion problem.
+    """
+    Application class containing the description of the diffusion problem.
 
-        The spatial domain is a 10x10 square with
-        periodic boundary conditions in each direction.
+    The spatial domain is a 10x10 square with
+    periodic boundary conditions in each direction.
 
-        The initial condition is a Gaussian in the centre of the domain.
+    The initial condition is a Gaussian in the centre of the domain.
 
-        The spatial discretisation is P1 DG (piecewise linear discontinous
-        elements) and uses an interior penalty method which penalises jumps
-        at element interfaces.
-        """
+    The spatial discretisation is P1 DG (piecewise linear discontinous
+    elements) and uses an interior penalty method which penalises jumps
+    at element interfaces.
+    """
 
-        def __init__(self, mesh: object, kappa: float, mu: float = 5., *args, **kwargs):
+        def __init__(self, mesh: object, kappa: float, comm_space: MPI.Comm, mu: float = 5., *args, **kwargs):
             """
             Constructor
+
             :param mesh: spatial domain
             :param kappa: diffusion coefficient
             :param mu: penalty weighting function
@@ -182,6 +193,7 @@ Application class
             self.mesh = mesh
             V = FunctionSpace(self.mesh, "DG", 1)
             self.function_space = V
+            self.comm_space = comm_space
 
             # Placeholder for time step - will be updated in the update method
             self.dt = Constant(0.)
@@ -194,12 +206,12 @@ Application class
 
             # Set up the rhs and bilinear form of the equation
             a = (inner(gamma, phi) * dx
-                    + self.dt * (
-                          inner(grad(gamma), grad(phi) * kappa) * dx
+                + self.dt * (
+                        inner(grad(gamma), grad(phi) * kappa) * dx
                         - inner(2 * avg(outer(phi, n)), avg(grad(gamma) * kappa)) * dS
                         - inner(avg(grad(phi) * kappa), 2 * avg(outer(gamma, n))) * dS
                         + mu * inner(2 * avg(outer(phi, n)), 2 * avg(outer(gamma, n) * kappa)) * dS
-                    )
+                )
                 )
             rhs = inner(gamma, self.f) * dx
 
@@ -211,12 +223,11 @@ Application class
             self.solver = NonlinearVariationalSolver(prob)
 
             # Set the data structure for any user-defined time point
-            self.vector_template = VectorDiffusion2D(len(self.function_space))
+            self.vector_template = VectorDiffusion2D(size=len(self.function_space), comm_space=self.comm_space)
 
             # Set initial condition:
             # Setting up a Gaussian blob in the centre of the domain.
-            self.vector_t_start = VectorDiffusion2D(len(self.function_space))
-
+            self.vector_t_start = VectorDiffusion2D(size=len(self.function_space), comm_space=self.comm_space)
             x = SpatialCoordinate(self.mesh)
             initial_tracer = exp(-((x[0] - 5) ** 2 + (x[1] - 5) ** 2))
             tmp = Function(self.function_space)
@@ -247,7 +258,7 @@ Application class
             self.solver.solve()
 
             # Copy data from Firedrake Function object to VectorDiffusion2D object
-            ret = VectorDiffusion2D(len(self.function_space))
+            ret = VectorDiffusion2D(size=len(self.function_space), comm_space=self.comm_space)
             ret.set_values(np.copy(self.soln.dat.data))
 
             return ret
@@ -273,9 +284,9 @@ Example run
     mesh = PeriodicSquareMesh(n, n, 10, comm=comm_x)
 
     # Set up the problem
-    diffusion0 = Diffusion2D(mesh=mesh, kappa=0.1, t_start=0, t_stop=10, nt=65)
-    diffusion1 = Diffusion2D(mesh=mesh, kappa=0.1, t_start=0, t_stop=10, nt=17)
-    diffusion2 = Diffusion2D(mesh=mesh, kappa=0.1, t_start=0, t_stop=10, nt=5)
+    diffusion0 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=65)
+    diffusion1 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=17)
+    diffusion2 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=5)
 
     # Setup three-level MGRIT solver with the space and time communicators and
     # solve the problem

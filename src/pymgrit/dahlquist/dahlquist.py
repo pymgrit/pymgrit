@@ -31,13 +31,14 @@ class VectorDahlquist(Vector):
     def norm(self):
         return np.linalg.norm(self.value)
 
+    def clone(self):
+        return VectorDahlquist(self.value)
+
     def clone_zero(self):
         return VectorDahlquist(0)
 
     def clone_rand(self):
-        tmp = VectorDahlquist(0)
-        tmp.set_values(np.random.rand(1)[0])
-        return tmp
+        return VectorDahlquist(np.random.rand(1)[0])
 
     def set_values(self, value):
         self.value = value

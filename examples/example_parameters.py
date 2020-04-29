@@ -40,6 +40,10 @@ def main():
                                                                 # 0 -> output_fcn is never called
                                                                 # 1 -> output_fcn is called at the end of the simulation
                                                                 # 2 -> output_fcn is called after each MGRIT iteration
+                  t_norm=2,                                     # Temporal norm
+                                                                # 1 -> One-norm
+                                                                # 2 -> Two-norm
+                                                                # 3 -> Infinity-norm
                   random_init_guess=False                       # Use (True) or do not use (False) random initial guess
                                                                 # for all unknowns (default: False)
                   )

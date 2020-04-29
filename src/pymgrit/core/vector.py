@@ -60,6 +60,12 @@ class Vector(ABC):
         """
 
     @abstractmethod
+    def clone(self):
+        """
+        Initialize vector object with same values
+        """
+
+    @abstractmethod
     def clone_rand(self):
         """
         Initialize vector object with random values

@@ -22,6 +22,9 @@ class VectorSimple(Vector):
     def norm(self):
         pass
 
+    def clone(self):
+        pass
+
     def clone_zero(self):
         pass
 
