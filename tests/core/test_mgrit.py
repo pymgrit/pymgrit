@@ -1,7 +1,6 @@
 """
 Tests for the mgrit class
 """
-import nose
 import numpy as np
 
 from pymgrit.core.mgrit import Mgrit
@@ -219,7 +218,3 @@ def test_setup_comm_info():
     for i in range(size):
         assert all([a == b for a, b in zip(send_to[i], test_send_to[i])])
         assert all([a == b for a, b in zip(get_from[i], test_get_from[i])])
-
-
-if __name__ == '__main__':
-    nose.run()

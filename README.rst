@@ -1,11 +1,11 @@
-|Test Status| |Lint Status| |Docs Status| |Publish Status|
+|Test Status| |Code Coverage| |Lint Status| |Docs Status| |Publish Status|
 
 .. |Lint Status| image:: https://github.com/pymgrit/pymgrit/workflows/Lint/badge.svg
    :target: https://github.com/pymgrit/pymgrit/actions?query=workflow%3ALint
 .. |Test Status| image:: https://github.com/pymgrit/pymgrit/workflows/Test/badge.svg
    :target: https://github.com/pymgrit/pymgrit/actions?query=workflow%3ATest
 .. |Code Coverage| image:: https://codecov.io/gh/pymgrit/pymgrit/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/pymgrit/pymgrit   
+   :target: https://codecov.io/gh/pymgrit/pymgrit
 .. |Docs Status| image:: https://github.com/pymgrit/pymgrit/workflows/Docs/badge.svg
    :target: https://github.com/pymgrit/pymgrit/actions?query=workflow%3ADocs
 .. |Publish Status| image:: https://github.com/pymgrit/pymgrit/workflows/Publish/badge.svg

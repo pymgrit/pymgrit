@@ -1,7 +1,6 @@
 """
 Tests arenstorf_orbit
 """
-import nose
 import numpy as np
 
 from pymgrit.arenstorf_orbit.arenstorf_orbit import ArenstorfOrbit
@@ -154,7 +153,3 @@ def test_vector_arenstorf_orbit_plot():
     """
     vector_arenstorf_orbit = VectorArenstorfOrbit()
     np.testing.assert_equal(vector_arenstorf_orbit.plot(), None)
-
-
-if __name__ == '__main__':
-    nose.run()

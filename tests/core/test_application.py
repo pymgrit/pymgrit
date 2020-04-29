@@ -1,8 +1,7 @@
 """
 Tests for the application class
 """
-import nose
-from nose.tools import *
+import pytest
 import numpy as np
 
 from pymgrit.core.application import Application
@@ -52,12 +51,12 @@ def test_application_constructor2():
     np.testing.assert_almost_equal(a.t, result)
 
 
-@raises(Exception)
 def test_application_constructor3():
     """
     Test the constructor
     """
-    a = ApplicationTest()
+    with pytest.raises(Exception):
+        ApplicationTest()
 
 
 def test_application_constructor4():
@@ -69,45 +68,41 @@ def test_application_constructor4():
     np.testing.assert_almost_equal(a.t, result)
 
 
-@raises(Exception)
 def test_application_constructor5():
     """
     Test the constructor
     """
-    a = ApplicationTest(t_start=2, t_stop=5)
+    with pytest.raises(Exception):
+        ApplicationTest(t_start=2, t_stop=5)
 
 
-@raises(Exception)
 def test_application_constructor6():
     """
     Test the constructor
     """
-    a = ApplicationTest(nt=4, t_stop=5)
+    with pytest.raises(Exception):
+        ApplicationTest(nt=4, t_stop=5)
 
 
-@raises(Exception)
 def test_application_constructor7():
     """
     Test the constructor
     """
-    a = ApplicationTest(nt=4, t_start=5)
+    with pytest.raises(Exception):
+        ApplicationTest(nt=4, t_start=5)
 
 
-@raises(Exception)
-def test_application_constructor7():
+def test_application_constructor8():
     """
     Test the constructor
     """
-    a = ApplicationTest(t_interval=5)
+    with pytest.raises(Exception):
+        ApplicationTest(t_interval=5)
 
 
-@raises(Exception)
 def test_application_missing_attribute():
     """
     Test the constructor
     """
-    a = ApplicationTest2(t_start=0, t_stop=1, nt=11)
-
-
-if __name__ == '__main__':
-    nose.run()
+    with pytest.raises(Exception):
+        ApplicationTest2(t_start=0, t_stop=1, nt=11)

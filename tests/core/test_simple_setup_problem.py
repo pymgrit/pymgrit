@@ -1,7 +1,6 @@
 """
 Tests simple_setup_problem
 """
-import nose
 import numpy as np
 
 from pymgrit.core.vector import Vector
@@ -42,6 +41,7 @@ class VectorSimple(Vector):
 
     def unpack(self):
         pass
+
 
 class ApplicationSimple(Application):
     def __init__(self, *args, **kwargs):
@@ -100,7 +100,3 @@ def test_simple_setup_problem_warning():
     np.testing.assert_equal(problem[1].t_start, 0)
     np.testing.assert_equal(problem[1].t_end, 0)
     np.testing.assert_equal(problem[1].t, np.linspace(0, 1, 2)[::2])
-
-
-if __name__ == '__main__':
-    nose.run()

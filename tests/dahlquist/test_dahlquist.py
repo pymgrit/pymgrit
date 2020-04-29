@@ -1,8 +1,7 @@
 """
 Tests dahlquist
 """
-import nose
-from nose.tools import *
+import pytest
 import numpy as np
 
 from pymgrit.dahlquist.dahlquist import Dahlquist
@@ -45,12 +44,12 @@ def test_dahlquist_constructor_tr():
     np.testing.assert_equal('TR', dahlquist.method)
 
 
-@raises(Exception)
 def test_dahlquist_constructor_exception():
     """
     Test constructor
     """
-    dahlquist = Dahlquist(t_start=0, t_stop=1, nt=11, method='unknown')
+    with pytest.raises(Exception):
+        Dahlquist(t_start=0, t_stop=1, nt=11, method='unknown')
 
 
 def test_dahlquist_step_be():
@@ -166,7 +165,3 @@ def test_vector_dahlquist_get_values():
     """
     vector_dahlquist = VectorDahlquist(5)
     np.testing.assert_equal(vector_dahlquist.get_values(), 5)
-
-
-if __name__ == '__main__':
-    nose.run()

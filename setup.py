@@ -37,5 +37,5 @@ setup(name='pymgrit',
       python_requires=">=3.6",
       include_package_data=True,
       package_dir={'': 'src'},
-      test_suite='nose.collector',
+      test_suite='pytest',
       zip_safe=False)
