@@ -383,7 +383,7 @@ on the next coarser level.</p>
 <p>MGRIT solver in FAS formulation</p>
 <dl class="py class">
 <dt id="pymgrit.core.mgrit.Mgrit">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.mgrit.</code><code class="sig-name descname">Mgrit</code><span class="sig-paren">(</span><em class="sig-param">problem: List[pymgrit.core.application.Application], transfer: List[pymgrit.core.grid_transfer.GridTransfer] = None, max_iter: int = 100, tol: float = 1e-07, nested_iteration: bool = True, cf_iter: int = 1, cycle_type: str = 'V', comm_time: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Intracomm object&gt;, comm_space: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Comm object&gt;, logging_lvl: int = 20, output_fcn=None, output_lvl=1, random_init_guess: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.mgrit.</code><code class="sig-name descname">Mgrit</code><span class="sig-paren">(</span><em class="sig-param">problem: List[pymgrit.core.application.Application], transfer: List[pymgrit.core.grid_transfer.GridTransfer] = None, max_iter: int = 100, tol: float = 1e-07, nested_iteration: bool = True, cf_iter: int = 1, cycle_type: str = 'V', comm_time: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Intracomm object&gt;, comm_space: mpi4py.MPI.Comm = &lt;mpi4py.MPI.Comm object&gt;, logging_lvl: int = 20, output_fcn=None, output_lvl=1, t_norm=2, random_init_guess: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>MGRIT solver class</p>
 <p>Implementation of MGRIT FAS algorithm for solving
@@ -712,6 +712,12 @@ Every user-defined vector class must inherit from this class.</p>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt id="pymgrit.core.vector.Vector.clone">
+<em class="property">abstract </em><code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize vector object with same values</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="pymgrit.core.vector.Vector.clone_rand">
 <em class="property">abstract </em><code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.vector.Vector.clone_rand" title="Permalink to this definition">¶</a></dt>

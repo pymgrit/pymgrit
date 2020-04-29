@@ -221,7 +221,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 </pre></div>
 </div>
-<p>Furthermore, we must define the following seven member functions: <cite>set_values</cite>, <cite>get_values</cite>, <cite>clone_zero</cite>, <cite>clone_rand</cite>, <cite>__add__</cite>, <cite>__sub__</cite>, <cite>norm</cite>, <cite>pack</cite> and <cite>unpack</cite>.</p>
+<p>Furthermore, we must define the following seven member functions: <cite>set_values</cite>, <cite>get_values</cite>, <cite>clone</cite>, <cite>clone_zero</cite>, <cite>clone_rand</cite>, <cite>__add__</cite>, <cite>__sub__</cite>, <cite>norm</cite>, <cite>pack</cite> and <cite>unpack</cite>.</p>
 <p>The function <cite>set_values</cite> receives data values and overwrites the values of the vector data and <cite>get_values</cite> returns the vector data.
 For our class <cite>VectorDahlquist</cite>, the vector data is the scalar member variable <cite>value</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -231,14 +231,15 @@ For our class <cite>VectorDahlquist</cite>, the vector data is the scalar member
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 </pre></div>
 </div>
-<p>The function <cite>clone_zero</cite> returns a vector object initialized with zeros; <cite>clone_rand</cite> similarly returns a vector object initialized with random data. For our class <cite>VectorDahlquist</cite>, these member functions are defined as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">clone_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<p>The function <cite>clone</cite> clones the object. The function <cite>clone_zero</cite> returns a vector object initialized with zeros; <cite>clone_rand</cite> similarly returns a vector object initialized with random data. For our class <cite>VectorDahlquist</cite>, these member functions are defined as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">clone_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">clone_rand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">tmp</span>
+    <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>The functions <cite>__add__</cite>, <cite>__sub__</cite>, and <cite>norm</cite> define the addition and subtraction of two vector objects and the norm of a vector object, respectively.
@@ -277,6 +278,7 @@ unpacking means setting the member variable <cite>value</cite> to the received s
 <div><ul class="simple">
 <li><p><cite>set_values</cite> : Setting vector data</p></li>
 <li><p><cite>get_values</cite> : Getting vector data</p></li>
+<li><p><cite>clone</cite> : Initialization of vector data with equivalent values</p></li>
 <li><p><cite>clone_zero</cite> : Initialization of vector data with zeros</p></li>
 <li><p><cite>clone_rand</cite> : Initialization of vector data with random values</p></li>
 <li><p><cite>__add__</cite> : Addition of two vector objects</p></li>
@@ -304,13 +306,14 @@ unpacking means setting the member variable <cite>value</cite> to the received s
     <span class="k">def</span> <span class="nf">get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
+    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">clone_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">clone_rand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">tmp</span>
+        <span class="k">return</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDahlquist</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>

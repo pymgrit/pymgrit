@@ -336,6 +336,10 @@ of PyMGRIT’s core routine <cite>Mgrit()</cite>.</p>
                                                             <span class="c1"># 0 -&gt; output_fcn is never called</span>
                                                             <span class="c1"># 1 -&gt; output_fcn is called at the end of the simulation</span>
                                                             <span class="c1"># 2 -&gt; output_fcn is called after each MGRIT iteration</span>
+              <span class="n">t_norm</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>                                     <span class="c1"># Temporal norm</span>
+                                                            <span class="c1"># 1 -&gt; One-norm</span>
+                                                            <span class="c1"># 2 -&gt; Two-norm</span>
+                                                            <span class="c1"># 3 -&gt; Infinity-norm</span>
               <span class="n">random_init_guess</span><span class="o">=</span><span class="kc">False</span>                       <span class="c1"># Use (True) or do not use (False) random initial guess</span>
                                                             <span class="c1"># for all unknowns (default: False)</span>
               <span class="p">)</span>
