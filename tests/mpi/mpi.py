@@ -8,7 +8,7 @@ import numpy as np
 
 
 if __name__ == '__main__':
-    conv_regex = re.compile(r'.*conv:\s(\d+\.\d+e-\d+).*')
+    conv_regex = re.compile(r'.*conv:\s(\d+\.\d+(e\-\d+)?).*')
 
     # Read all input from stdin
     stdin = sys.stdin.read()
@@ -25,14 +25,27 @@ if __name__ == '__main__':
     # Get the conv values as floats
     convs_actual = []
     for c in conv:
-        convs_actual.append(float(conv_regex.match(c).group(1)))
+        match = conv_regex.match(c)
+        if match is None:
+            raise Exception("Could not find conv value in %s" % c)
+
+        convs_actual.append(float(match.group(1)))
 
     # Get expected results from results directory
     filename = os.path.dirname(os.path.realpath(__file__)) + '/results/' + sys.argv[1]
-    with open(filename) as f:
-        convs_desired = list(map(float, f.read().split()))
+    convs_desired = None
+    try:
+        with open(filename) as f:
+            convs_desired = list(map(float, f.read().split()))
+    except IOError:
+        print("Could not open result file: %s" % filename)
+        raise
+
+    if convs_desired is None or len(convs_desired) == 0:
+        print("No desired results found!")
+        sys.exit(1)
 
     # Compare results
     np.testing.assert_almost_equal(convs_actual, convs_desired)
 
-    print('Successfully tested mpi test script with %s tasks' % sys.argv[1])
+    print('Successfully tested example %s script with %s tasks' % (sys.argv[1], sys.argv[2]))

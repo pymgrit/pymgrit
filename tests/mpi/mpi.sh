@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
-DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+set -e
 
-mpiexec -n $1 --use-hwthread-cpus --oversubscribe python3 ${DIR}/../../examples/example_dahlquist.py | ${DIR}/mpi.py $1
+DIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 || (echo "Could not change into current directory!" && exit 1) ; pwd -P )"
+
+mpiexec --quiet -n 2 --use-hwthread-cpus --oversubscribe python3 ${DIR}/../../examples/example_$1.py | ${DIR}/mpi.py $1 2
+mpiexec --quiet -n 3 --use-hwthread-cpus --oversubscribe python3 ${DIR}/../../examples/example_$1.py | ${DIR}/mpi.py $1 3
+mpiexec --quiet -n 4 --use-hwthread-cpus --oversubscribe python3 ${DIR}/../../examples/example_$1.py | ${DIR}/mpi.py $1 4
+mpiexec --quiet -n 5 --use-hwthread-cpus --oversubscribe python3 ${DIR}/../../examples/example_$1.py | ${DIR}/mpi.py $1 5

@@ -1,4 +1,5 @@
 results/
+!tests/mpi/results
 
 # Jetbrains
 .idea/
