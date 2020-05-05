@@ -56,6 +56,16 @@ class VectorHeat1D(Vector):
         """
         return np.linalg.norm(self.values)
 
+    def clone(self):
+        """
+        Clone vector object
+
+        :rtype: vector object with zero values
+        """
+        tmp = VectorHeat1D(self.size)
+        tmp.set_values(self.get_values())
+        return tmp
+
     def clone_zero(self):
         """
         Initialize vector object with zeros

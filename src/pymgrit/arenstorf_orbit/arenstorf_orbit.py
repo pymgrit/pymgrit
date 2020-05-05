@@ -36,6 +36,11 @@ class VectorArenstorfOrbit(Vector):
     def norm(self):
         return np.linalg.norm(np.array([self.y0, self.y1, self.y2, self.y3]))
 
+    def clone(self):
+        tmp = VectorArenstorfOrbit()
+        tmp.set_values(self.get_values())
+        return tmp
+
     def clone_zero(self):
         return VectorArenstorfOrbit()
 

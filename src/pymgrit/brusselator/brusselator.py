@@ -24,6 +24,11 @@ class VectorBrusselator(Vector):
     def get_values(self):
         return self.value
 
+    def clone(self):
+        tmp = VectorBrusselator()
+        tmp.set_values(self.get_values())
+        return tmp
+
     def clone_zero(self):
         return VectorBrusselator()
 

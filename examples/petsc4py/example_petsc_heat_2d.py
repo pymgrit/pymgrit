@@ -70,6 +70,15 @@ class VectorPetsc(PymgritVector):
         """
         return self.values.norm(PETSc.NormType.FROBENIUS)
 
+    def clone(self) -> '__class__':
+        """
+        Initialize vector object with copied values
+
+        :rtype: vector object with zero values
+        """
+
+        return VectorPetsc(self.get_values())
+
     def clone_zero(self) -> '__class__':
         """
         Initialize vector object with zeros
@@ -342,7 +351,7 @@ def main():
 
     # Split the communicator into space and time communicator
     comm_world = MPI.COMM_WORLD
-    comm_x, comm_t = split_communicator(comm_world, 2)
+    comm_x, comm_t = split_communicator(comm_world, 4)
 
     # Create PETSc DMDA grids
     nx = 129

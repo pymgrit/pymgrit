@@ -41,7 +41,7 @@ Then, we define the class `VectorDahlquist` containing a scalar member variable 
             super(VectorDahlquist, self).__init__()
             self.value = value
 
-Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, `norm`, `pack` and `unpack`.
+Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, `norm`, `pack` and `unpack`.
 
 The function `set_values` receives data values and overwrites the values of the vector data and `get_values` returns the vector data.
 For our class `VectorDahlquist`, the vector data is the scalar member variable `value`::
@@ -52,15 +52,16 @@ For our class `VectorDahlquist`, the vector data is the scalar member variable `
         def get_values(self):
             return self.value
 
-The function `clone_zero` returns a vector object initialized with zeros; `clone_rand` similarly returns a vector object initialized with random data. For our class `VectorDahlquist`, these member functions are defined as follows::
+The function `clone` clones the object. The function `clone_zero` returns a vector object initialized with zeros; `clone_rand` similarly returns a vector object initialized with random data. For our class `VectorDahlquist`, these member functions are defined as follows::
+
+        def clone(self):
+            return VectorDahlquist(self.value)
 
         def clone_zero(self):
             return VectorDahlquist(0)
 
         def clone_rand(self):
-            tmp = VectorDahlquist(0)
-            tmp.set_values(np.random.rand(1)[0])
-            return tmp
+            return VectorDahlquist(np.random.rand(1)[0])
 
 The functions `__add__`, `__sub__`, and `norm` define the addition and subtraction of two vector objects and the norm of a vector object, respectively.
 For our class `VectorDahlquist`, adding or subtracting two vector objects means adding or subtracting the values of the member variable `value` by using the functions `get_values` and `set_values`.
@@ -99,6 +100,7 @@ The following member functions must be defined:
 
     - `set_values` : Setting vector data
     - `get_values` : Getting vector data
+    - `clone` : Initialization of vector data with equivalent values
     - `clone_zero` : Initialization of vector data with zeros
     - `clone_rand` : Initialization of vector data with random values
     - `__add__` : Addition of two vector objects
@@ -127,13 +129,14 @@ The following member functions must be defined:
         def get_values(self):
             return self.value
 
+        def clone(self):
+            return VectorDahlquist(self.value)
+
         def clone_zero(self):
             return VectorDahlquist(0)
 
         def clone_rand(self):
-            tmp = VectorDahlquist(0)
-            tmp.set_values(np.random.rand(1)[0])
-            return tmp
+            return VectorDahlquist(np.random.rand(1)[0])
 
         def __add__(self, other):
             tmp = VectorDahlquist(0)

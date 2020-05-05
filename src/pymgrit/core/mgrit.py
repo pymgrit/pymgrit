@@ -3,7 +3,6 @@ MGRIT solver in FAS formulation
 """
 import time
 import logging
-import copy
 import sys
 from operator import itemgetter
 from typing import Tuple, List
@@ -33,7 +32,7 @@ class Mgrit:
     def __init__(self, problem: List[Application], transfer: List[GridTransfer] = None,
                  max_iter: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
                  cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
-                 logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1,
+                 logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1, t_norm=2,
                  random_init_guess: bool = False) -> None:
         """
         Initialize MGRIT solver.
@@ -84,6 +83,10 @@ class Mgrit:
             if len(set(problem[lvl - 1].t.tolist()).intersection(set(problem[lvl].t.tolist()))) != len(problem[lvl].t):
                 raise Exception(
                     'Some points from level ' + str(lvl - 1) + ' are not points of level ' + str(lvl))
+
+        if t_norm not in [1, 2, 3]:
+            raise Exception(
+                'Unknown norm. Please choose 1 (one norm), 2 (two-norm) or 3 (inf-norm)')
 
         self.comm_time = comm_time
         self.comm_space = comm_space
@@ -146,6 +149,7 @@ class Mgrit:
         self.last_is_c_point = []  # Communication after C-relax
         self.send_to = []  # Which process contains next time point
         self.get_from = []  # Which process contains previous time point
+        self.t_norm = 1 if t_norm == 1 else None if t_norm == 2 else np.inf
 
         # Set output level and output function
         self.output_lvl = output_lvl  # Output level, only 0,1,2
@@ -178,7 +182,7 @@ class Mgrit:
             if lvl == self.lvl_max - 1:
                 for i in range(len(self.problem[lvl].t)):
                     if i == 0:
-                        self.u_coarsest.append(copy.deepcopy(self.problem[lvl].vector_t_start))
+                        self.u_coarsest.append(self.problem[lvl].vector_t_start.clone())
                     else:
                         self.u_coarsest.append(self.problem[lvl].vector_template.clone_zero())
                     self.g_coarsest.append(self.problem[lvl].vector_template.clone_zero())
@@ -228,7 +232,7 @@ class Mgrit:
             else:
                 self.u[lvl][i] = self.problem[lvl].vector_template.clone_zero()
         if self.comm_time_rank == 0:
-            self.u[lvl][0] = copy.deepcopy(self.problem[lvl].vector_t_start)
+            self.u[lvl][0] = self.problem[lvl].vector_t_start.clone()
 
     def iteration(self, lvl: int, cycle_type: str, iteration: int, first_f: bool) -> None:
         """
@@ -345,22 +349,8 @@ class Mgrit:
                     r_norm.append(residual.norm())
 
         tmp = self.comm_time.allgather(r_norm)
-        tmp = [item for sublist in tmp for item in sublist]
 
-        val = 0
-        for item in tmp:
-            val += item ** 2
-
-        if self.spatial_parallel:
-            val = val ** 0.5
-            tmp = self.comm_space.allgather(val)
-
-            val = 0
-            for item in tmp:
-                val += item ** 2
-
-        val = val ** 0.5
-        self.conv[iteration] = val
+        self.conv[iteration] = np.linalg.norm(np.array([item for sublist in tmp for item in sublist]), ord = self.t_norm)
 
         logging.debug(f"Convergence criterion on {self.comm_time_rank} took {time.time() - runtime_conv} s")
 
@@ -430,7 +420,7 @@ class Mgrit:
             self.v[lvl + 1][i if rank == 0 else i + 1] = self.restriction[lvl](
                 self.u[lvl][self.index_local_c[lvl][i]])
 
-        self.u[lvl + 1] = copy.deepcopy(self.v[lvl + 1])
+        self.u[lvl + 1] = [item.clone() for item in self.v[lvl + 1]]
         if np.size(self.index_local_c[lvl]) > 0:
             for i in range(len(self.index_local_c[lvl])):
                 if i != 0 or self.comm_time_rank != 0:

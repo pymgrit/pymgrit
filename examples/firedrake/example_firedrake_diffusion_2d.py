@@ -37,7 +37,7 @@ class VectorDiffusion2D(Vector):
           is saved in an object of the Diffusion2D application class.
     """
 
-    def __init__(self, size):
+    def __init__(self, size: int, comm_space: MPI.Comm):
         """
         Constructor.
 
@@ -47,6 +47,7 @@ class VectorDiffusion2D(Vector):
         super(VectorDiffusion2D, self).__init__()
         self.size = size
         self.values = np.zeros(size)
+        self.comm_space = comm_space
 
     def set_values(self, values):
         """
@@ -64,13 +65,23 @@ class VectorDiffusion2D(Vector):
         """
         return self.values
 
+    def clone(self):
+        """
+        Initialize vector object with copied values
+
+        :rtype: vector object with zero values
+        """
+        tmp = VectorDiffusion2D(size=self.size, comm_space=self.comm_space)
+        tmp.set_values(self.get_values())
+        return tmp
+
     def clone_zero(self):
         """
         Initialize vector object with zeros
 
         :rtype: vector object with zero values
         """
-        return VectorDiffusion2D(self.size)
+        return VectorDiffusion2D(size=self.size, comm_space=self.comm_space)
 
     def clone_rand(self):
         """
@@ -78,7 +89,7 @@ class VectorDiffusion2D(Vector):
 
         :rtype: vector object with random values
         """
-        tmp = VectorDiffusion2D(self.size)
+        tmp = VectorDiffusion2D(size=self.size, comm_space=self.comm_space)
         tmp.set_values(np.random.rand(self.size))
         return tmp
 
@@ -89,7 +100,7 @@ class VectorDiffusion2D(Vector):
         :param other: vector object to be added to self
         :return: sum of vector object self and input object other
         """
-        tmp = VectorDiffusion2D(self.size)
+        tmp = VectorDiffusion2D(self.size, comm_space=self.comm_space)
         tmp.set_values(self.get_values() + other.get_values())
         return tmp
 
@@ -100,7 +111,7 @@ class VectorDiffusion2D(Vector):
         :param other: vector object to be subtracted from self
         :return: difference of vector object self and input object other
         """
-        tmp = VectorDiffusion2D(self.size)
+        tmp = VectorDiffusion2D(self.size, comm_space=self.comm_space)
         tmp.set_values(self.get_values() - other.get_values())
         return tmp
 
@@ -110,8 +121,8 @@ class VectorDiffusion2D(Vector):
 
         :return: 2-norm of vector object
         """
-        return np.linalg.norm(self.values)
-
+        tmp = self.comm_space.allgather(self.values)
+        return np.linalg.norm(np.array([item for sublist in tmp for item in sublist]))
 
     def unpack(self, values):
         """
@@ -129,6 +140,7 @@ class VectorDiffusion2D(Vector):
         """
         return self.values
 
+
 class Diffusion2D(Application):
     """
     Application class containing the description of the diffusion problem.
@@ -143,7 +155,7 @@ class Diffusion2D(Application):
     at element interfaces.
     """
 
-    def __init__(self, mesh: object, kappa: float, mu: float = 5., *args, **kwargs):
+    def __init__(self, mesh: object, kappa: float, comm_space: MPI.Comm, mu: float = 5., *args, **kwargs):
         """
         Constructor
 
@@ -157,6 +169,7 @@ class Diffusion2D(Application):
         self.mesh = mesh
         V = FunctionSpace(self.mesh, "DG", 1)
         self.function_space = V
+        self.comm_space = comm_space
 
         # Placeholder for time step - will be updated in the update method
         self.dt = Constant(0.)
@@ -186,11 +199,11 @@ class Diffusion2D(Application):
         self.solver = NonlinearVariationalSolver(prob)
 
         # Set the data structure for any user-defined time point
-        self.vector_template = VectorDiffusion2D(len(self.function_space))
+        self.vector_template = VectorDiffusion2D(size=len(self.function_space), comm_space=self.comm_space)
 
         # Set initial condition:
         # Setting up a Gaussian blob in the centre of the domain.
-        self.vector_t_start = VectorDiffusion2D(len(self.function_space))
+        self.vector_t_start = VectorDiffusion2D(size=len(self.function_space), comm_space=self.comm_space)
         x = SpatialCoordinate(self.mesh)
         initial_tracer = exp(-((x[0] - 5) ** 2 + (x[1] - 5) ** 2))
         tmp = Function(self.function_space)
@@ -221,7 +234,7 @@ class Diffusion2D(Application):
         self.solver.solve()
 
         # Copy data from Firedrake Function object to VectorDiffusion2D object
-        ret = VectorDiffusion2D(len(self.function_space))
+        ret = VectorDiffusion2D(size=len(self.function_space), comm_space=self.comm_space)
         ret.set_values(np.copy(self.soln.dat.data))
 
         return ret
@@ -238,13 +251,12 @@ def main():
     mesh = PeriodicSquareMesh(n, n, 10, comm=comm_x)
 
     # Set up the problem
-    diffusion0 = Diffusion2D(mesh=mesh, kappa=0.1, t_start=0, t_stop=10, nt=65)
-    diffusion1 = Diffusion2D(mesh=mesh, kappa=0.1, t_start=0, t_stop=10, nt=17)
-    diffusion2 = Diffusion2D(mesh=mesh, kappa=0.1, t_start=0, t_stop=10, nt=5)
+    diffusion0 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=17)
+    diffusion1 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=9)
 
     # Setup three-level MGRIT solver with the space and time communicators and
     # solve the problem
-    mgrit = Mgrit(problem=[diffusion0, diffusion1, diffusion2], comm_time=comm_t, comm_space=comm_x)
+    mgrit = Mgrit(problem=[diffusion0, diffusion1], comm_time=comm_t, comm_space=comm_x)
     info = mgrit.solve()
 
 

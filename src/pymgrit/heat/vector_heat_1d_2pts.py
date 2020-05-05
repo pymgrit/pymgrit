@@ -62,6 +62,16 @@ class VectorHeat1D2Pts(Vector):
         """
         return np.linalg.norm(np.append(self.values_first_time_point, self.values_second_time_point))
 
+    def clone(self):
+        """
+        Clone vector object
+
+        :return: vector object with zero values
+        """
+        tmp = VectorHeat1D2Pts(self.size, self.dtau)
+        tmp.set_values(self.values_first_time_point, self.values_second_time_point, self.dtau)
+        return tmp
+
     def clone_zero(self):
         """
         Initialize vector object with zeros

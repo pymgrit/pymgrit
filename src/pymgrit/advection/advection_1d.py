@@ -27,6 +27,11 @@ class VectorAdvection1D(Vector):
     def get_values(self):
         return self.values
 
+    def clone(self):
+        tmp = VectorAdvection1D(self.size)
+        tmp.set_values(self.get_values())
+        return tmp
+
     def clone_zero(self):
         return VectorAdvection1D(self.size)
 
