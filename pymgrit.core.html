@@ -436,9 +436,26 @@ r_0 = 0</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="pymgrit.core.mgrit.Mgrit.create_coarsest_level">
+<code class="sig-name descname">create_coarsest_level</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.create_coarsest_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates vectors u and g for coarsest level</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pymgrit.core.mgrit.Mgrit.create_u">
 <code class="sig-name descname">create_u</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lvl</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.create_u" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates solution vectors for all local time points on a given MGRIT level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lvl</strong> – MGRIT level</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.core.mgrit.Mgrit.create_v_g">
+<code class="sig-name descname">create_v_g</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lvl</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.create_v_g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates vectors v and g for all local time points on a given MGRIT level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>lvl</strong> – MGRIT level</p>
@@ -560,15 +577,10 @@ the approximation to the finest level.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.core.mgrit.Mgrit.setup_comm_info">
-<code class="sig-name descname">setup_comm_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.setup_comm_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes which process holds the previous and next point for each lvl and process.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="pymgrit.core.mgrit.Mgrit.setup_points">
-<code class="sig-name descname">setup_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lvl</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.setup_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes local grid information for level <em>lvl</em>.</p>
+<dt id="pymgrit.core.mgrit.Mgrit.setup_points_and_comm_info">
+<code class="sig-name descname">setup_points_and_comm_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lvl</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.setup_points_and_comm_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes local grid information for level <em>lvl</em>.
+Computes which process holds the previous and next point for each lvl and process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>lvl</strong> – MGRIT level</p>
@@ -591,7 +603,7 @@ the maximum number of iterations is reached.</p>
 
 <dl class="py method">
 <dt id="pymgrit.core.mgrit.Mgrit.split_into">
-<em class="property">static </em><code class="sig-name descname">split_into</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number_points</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">number_processes</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.split_into" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">split_into</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number_points</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">number_processes</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.split_into" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split points</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -624,6 +636,35 @@ first point and block size of the local time interval.</p>
 </dd>
 </dl>
 </dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pymgrit.core.mgrit_with_plots">
+<span id="pymgrit-core-mgrit-with-plots-module"></span><h2>pymgrit.core.mgrit_with_plots module<a class="headerlink" href="#module-pymgrit.core.mgrit_with_plots" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="pymgrit.core.mgrit_with_plots.MgritWithPlots">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.mgrit_with_plots.</code><code class="sig-name descname">MgritWithPlots</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.mgrit_with_plots.MgritWithPlots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pymgrit.core.mgrit.Mgrit" title="pymgrit.core.mgrit.Mgrit"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.mgrit.Mgrit</span></code></a></p>
+<dl class="py method">
+<dt id="pymgrit.core.mgrit_with_plots.MgritWithPlots.plot">
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plot_function</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.mgrit_with_plots.MgritWithPlots.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.core.mgrit_with_plots.MgritWithPlots.plot_convergence">
+<code class="sig-name descname">plot_convergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fig_size_x</span><span class="o">=</span><span class="default_value">6.4</span></em>, <em class="sig-param"><span class="n">fig_size_y</span><span class="o">=</span><span class="default_value">4.8</span></em>, <em class="sig-param"><span class="n">dpi</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">text_size</span><span class="o">=</span><span class="default_value">15</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.mgrit_with_plots.MgritWithPlots.plot_convergence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.core.mgrit_with_plots.MgritWithPlots.plot_cycle">
+<code class="sig-name descname">plot_cycle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">save_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fig_size_x</span><span class="o">=</span><span class="default_value">6.4</span></em>, <em class="sig-param"><span class="n">fig_size_y</span><span class="o">=</span><span class="default_value">4.8</span></em>, <em class="sig-param"><span class="n">dpi</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">text_size</span><span class="o">=</span><span class="default_value">15</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.mgrit_with_plots.MgritWithPlots.plot_cycle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.core.mgrit_with_plots.MgritWithPlots.plot_parallel_distribution">
+<code class="sig-name descname">plot_parallel_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_procs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fig_size_x</span><span class="o">=</span><span class="default_value">6.4</span></em>, <em class="sig-param"><span class="n">fig_size_y</span><span class="o">=</span><span class="default_value">4.8</span></em>, <em class="sig-param"><span class="n">dpi</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">text_size</span><span class="o">=</span><span class="default_value">15</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.mgrit_with_plots.MgritWithPlots.plot_parallel_distribution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

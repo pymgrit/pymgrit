@@ -199,6 +199,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pymgrit.core.html#module-pymgrit.core.grid_transfer">pymgrit.core.grid_transfer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pymgrit.core.html#module-pymgrit.core.grid_transfer_copy">pymgrit.core.grid_transfer_copy module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pymgrit.core.html#module-pymgrit.core.mgrit">pymgrit.core.mgrit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pymgrit.core.html#module-pymgrit.core.mgrit_with_plots">pymgrit.core.mgrit_with_plots module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pymgrit.core.html#module-pymgrit.core.simple_setup_problem">pymgrit.core.simple_setup_problem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pymgrit.core.html#module-pymgrit.core.split">pymgrit.core.split module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pymgrit.core.html#module-pymgrit.core.vector">pymgrit.core.vector module</a></li>
@@ -826,9 +827,26 @@ r_0 = 0</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="pymgrit.Mgrit.create_coarsest_level">
+<code class="sig-name descname">create_coarsest_level</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.Mgrit.create_coarsest_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates vectors u and g for coarsest level</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pymgrit.Mgrit.create_u">
 <code class="sig-name descname">create_u</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lvl</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.create_u" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates solution vectors for all local time points on a given MGRIT level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lvl</strong> – MGRIT level</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.Mgrit.create_v_g">
+<code class="sig-name descname">create_v_g</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lvl</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.create_v_g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates vectors v and g for all local time points on a given MGRIT level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>lvl</strong> – MGRIT level</p>
@@ -950,15 +968,10 @@ the approximation to the finest level.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.Mgrit.setup_comm_info">
-<code class="sig-name descname">setup_comm_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.setup_comm_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes which process holds the previous and next point for each lvl and process.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="pymgrit.Mgrit.setup_points">
-<code class="sig-name descname">setup_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lvl</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.setup_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes local grid information for level <em>lvl</em>.</p>
+<dt id="pymgrit.Mgrit.setup_points_and_comm_info">
+<code class="sig-name descname">setup_points_and_comm_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lvl</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.Mgrit.setup_points_and_comm_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes local grid information for level <em>lvl</em>.
+Computes which process holds the previous and next point for each lvl and process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>lvl</strong> – MGRIT level</p>
@@ -981,7 +994,7 @@ the maximum number of iterations is reached.</p>
 
 <dl class="py method">
 <dt id="pymgrit.Mgrit.split_into">
-<em class="property">static </em><code class="sig-name descname">split_into</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number_points</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">number_processes</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.Mgrit.split_into" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">split_into</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number_points</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">number_processes</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.Mgrit.split_into" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split points</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

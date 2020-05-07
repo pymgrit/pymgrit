@@ -36,6 +36,14 @@ pymgrit.core.mgrit module
    :undoc-members:
    :show-inheritance:
 
+pymgrit.core.mgrit\_with\_plots module
+--------------------------------------
+
+.. automodule:: pymgrit.core.mgrit_with_plots
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pymgrit.core.simple\_setup\_problem module
 ------------------------------------------
 
