@@ -135,7 +135,6 @@ class Mgrit:
         self.int_start = 0  # Index of first time point of local time interval
         self.int_stop = 0  # Index of last time points of local time interval
         self.cpts = []  # Global index of local C-points
-        self.block_size_this_lvl = []  # Block size per process and level with ghost point
         self.index_local_c = []  # Local indices of C-Points
         self.index_local_f = []  # Local indices of F-Points
         self.index_local = []  # Local indices of all points
@@ -168,26 +167,13 @@ class Mgrit:
                 self.m.append(int((len(self.problem[lvl].t) - 1) / (len(self.problem[lvl + 1].t) - 1)))
             else:
                 self.m.append(1)
-            self.setup_points(lvl=lvl)
+            self.setup_points_and_comm_info(lvl=lvl)
             self.step.append(problem[lvl].step)
             self.create_u(lvl=lvl)
-            if lvl == 0:
-                self.v.append(None)
-                self.g.append(None)
-            else:
-                self.v.append([])
-                self.g.append([])
-                self.v[-1] = [item.clone_zero() for item in self.u[lvl]]
-                self.g[-1] = [item.clone_zero() for item in self.u[lvl]]
-            if lvl == self.lvl_max - 1:
-                for i in range(len(self.problem[lvl].t)):
-                    if i == 0:
-                        self.u_coarsest.append(self.problem[lvl].vector_t_start.clone())
-                    else:
-                        self.u_coarsest.append(self.problem[lvl].vector_template.clone_zero())
-                    self.g_coarsest.append(self.problem[lvl].vector_template.clone_zero())
+            self.create_v_g(lvl=lvl)
 
-        self.setup_comm_info()
+        # Create coarse grid problem for direct solve
+        self.create_coarsest_level()
 
         # Use or do not use nested iteration
         if nested_iteration:
@@ -215,24 +201,6 @@ class Mgrit:
                     logging.info(message)
             else:
                 logging.info(message)
-
-    def create_u(self, lvl: int) -> None:
-        """
-        Creates solution vectors for all local time points on a given MGRIT level.
-
-        :param lvl: MGRIT level
-        """
-        self.u.append([object] * self.block_size_this_lvl[lvl])
-        for i in range(len(self.u[lvl])):
-            if lvl == 0:
-                if self.random_init_guess:
-                    self.u[lvl][i] = self.problem[lvl].vector_template.clone_rand()
-                else:
-                    self.u[lvl][i] = self.problem[lvl].vector_template.clone_zero()
-            else:
-                self.u[lvl][i] = self.problem[lvl].vector_template.clone_zero()
-        if self.comm_time_rank == 0:
-            self.u[lvl][0] = self.problem[lvl].vector_t_start.clone()
 
     def iteration(self, lvl: int, cycle_type: str, iteration: int, first_f: bool) -> None:
         """
@@ -350,7 +318,7 @@ class Mgrit:
 
         tmp = self.comm_time.allgather(r_norm)
 
-        self.conv[iteration] = np.linalg.norm(np.array([item for sublist in tmp for item in sublist]), ord = self.t_norm)
+        self.conv[iteration] = np.linalg.norm(np.array([item for sublist in tmp for item in sublist]), ord=self.t_norm)
 
         logging.debug(f"Convergence criterion on {self.comm_time_rank} took {time.time() - runtime_conv} s")
 
@@ -603,31 +571,14 @@ class Mgrit:
         :param rank: Process rank
         :return: Block size and index of first point
         """
-        block_size = self.split_into(number_points=length, number_processes=size)[rank]
+        split = self.split_into(number_points=length, number_processes=size)
 
-        first_i = 0
-        if block_size > 0:
-            for i in range(size):
-                if i == rank:
-                    break
-                first_i += self.split_into(number_points=length, number_processes=size)[i]
-        return block_size, first_i
+        return split[rank], np.sum(split[:rank]) if split[rank] > 0 else 0
 
-    @staticmethod
-    def split_into(number_points: int, number_processes: int) -> np.ndarray:
-        """
-        Split points
-
-        :param number_points: Number of points
-        :param number_processes: Number of processes
-        :return:
-        """
-        return np.array([int(number_points / number_processes + 1)] * (number_points % number_processes) +
-                        [int(number_points / number_processes)] * (number_processes - number_points % number_processes))
-
-    def setup_points(self, lvl: int) -> None:
+    def setup_points_and_comm_info(self, lvl: int) -> None:
         """
         Computes local grid information for level *lvl*.
+        Computes which process holds the previous and next point for each lvl and process.
 
         :param lvl: MGRIT level
         """
@@ -658,7 +609,9 @@ class Mgrit:
                           sublist])
 
         # Add ghost point if needed, set time interval
+        with_ghost_point = False
         if self.comm_time_rank != 0 and all_pts.size > 0:
+            with_ghost_point = True
             tmp = np.zeros(len(all_pts) + 1, dtype=int)
             tmp[0] = all_pts[0] - 1
             tmp[1:] = all_pts
@@ -668,7 +621,6 @@ class Mgrit:
 
         self.t[lvl] = self.problem[lvl].t[all_pts_with_ghost]
         self.cpts.append(cpts)
-        self.block_size_this_lvl.append(len(all_pts_with_ghost))
 
         # Communication in F-relax
         self.comm_front.append(bool(fpts.size > 0 and fpts[np.argmin(fpts)] - 1 in all_fpts))
@@ -687,39 +639,71 @@ class Mgrit:
             all_pts.size > 0 and all_pts[-1] in fpts2 and all_pts[-1] != points_time - 1 and all_pts[
                 -1] + 1 in all_cpts))
 
-    def setup_comm_info(self) -> None:
+        # Setup communication info
+        split = self.problem[0].t[
+            np.cumsum(self.split_into(number_points=len(self.problem[0].t), number_processes=self.comm_time_size)) - 1]
+        tmp_send_to = -99
+        tmp_get_from = -99
+        if len(all_pts_with_ghost) > 0:
+            if self.t[lvl][-1] != self.problem[lvl].t[-1]:
+                last_point_next = self.problem[lvl].t[np.argwhere(self.problem[lvl].t == self.t[lvl][-1])[0][0] + 1]
+                tmp_send_to = np.searchsorted(split, last_point_next)
+            if with_ghost_point or self.t[lvl][0] != self.problem[0].t[0]:
+                tmp_get_from = np.searchsorted(split, self.t[lvl][0])
+        self.send_to.append(tmp_send_to)
+        self.get_from.append(tmp_get_from)
+
+    def split_into(self, number_points: int, number_processes: int) -> np.ndarray:
         """
-        Computes which process holds the previous and next point for each lvl and process.
+        Split points
+
+        :param number_points: Number of points
+        :param number_processes: Number of processes
+        :return:
         """
-        start = np.zeros(self.comm_time_size)
-        stop = np.zeros(self.comm_time_size)
-        for lvl in range(self.lvl_max):
-            points_time = np.size(self.problem[lvl].t)
-            all_pts = np.array(range(0, points_time))
-            this_level = np.zeros(0, dtype=int)
-            for proc in range(self.comm_time_size):
-                if lvl == 0:
-                    block_size_this_lvl, first_i_this_lvl = self.split_points(length=np.size(all_pts),
-                                                                              size=self.comm_time_size,
-                                                                              rank=proc)
-                    tmp = all_pts[first_i_this_lvl:first_i_this_lvl + block_size_this_lvl]
-                    start[proc] = self.problem[lvl].t[tmp[0]]
-                    stop[proc] = self.problem[lvl].t[tmp[-1]]
+        return np.array([int(number_points / number_processes + 1)] * (number_points % number_processes) +
+                        [int(number_points / number_processes)] * (number_processes - number_points % number_processes))
+
+    def create_u(self, lvl: int) -> None:
+        """
+        Creates solution vectors for all local time points on a given MGRIT level.
+
+        :param lvl: MGRIT level
+        """
+        self.u.append([object] * len(self.t[lvl]))
+        for i in range(len(self.u[lvl])):
+            if lvl == 0:
+                if self.random_init_guess:
+                    self.u[lvl][i] = self.problem[lvl].vector_template.clone_rand()
                 else:
-                    tmp = np.where((self.problem[lvl].t >= start[proc]) & (self.problem[lvl].t <= stop[proc]))[0]
-                this_level = np.hstack((this_level, np.ones(len(tmp)) * proc)).astype(int)
-            points = np.where(self.comm_time_rank == this_level)[0]
-            if points.size > 0:
-                if points[0] == 0:
-                    front = -99
-                else:
-                    front = this_level[points[0] - 1]
-                if points[-1] == points_time - 1:
-                    back = -99
-                else:
-                    back = this_level[points[-1] + 1]
+                    self.u[lvl][i] = self.problem[lvl].vector_template.clone_zero()
             else:
-                front = -99
-                back = -99
-            self.send_to.append(back)
-            self.get_from.append(front)
+                self.u[lvl][i] = self.problem[lvl].vector_template.clone_zero()
+        if self.comm_time_rank == 0:
+            self.u[lvl][0] = self.problem[lvl].vector_t_start.clone()
+
+    def create_v_g(self, lvl: int) -> None:
+        """
+        Creates vectors v and g for all local time points on a given MGRIT level.
+
+        :param lvl: MGRIT level
+        """
+        if lvl == 0:
+            self.v.append(None)
+            self.g.append(None)
+        else:
+            self.v.append([])
+            self.g.append([])
+            self.v[-1] = [item.clone_zero() for item in self.u[lvl]]
+            self.g[-1] = [item.clone_zero() for item in self.u[lvl]]
+
+    def create_coarsest_level(self):
+        """
+        Creates vectors u and g for coarsest level
+        """
+        for i in range(len(self.problem[-1].t)):
+            if i == 0:
+                self.u_coarsest.append(self.problem[-1].vector_t_start.clone())
+            else:
+                self.u_coarsest.append(self.problem[-1].vector_template.clone_zero())
+            self.g_coarsest.append(self.problem[-1].vector_template.clone_zero())

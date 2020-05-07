@@ -49,7 +49,7 @@ def test_split_points():
     result_proc0 = (4, 0)
     result_proc1 = (3, 4)
     result_proc2 = (3, 7)
-    mgrit = Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
+    mgrit = Mgrit(problem=[heat0], nested_iteration=False)
     np.testing.assert_equal(result_proc0, mgrit.split_points(10, 3, 0))
     np.testing.assert_equal(result_proc1, mgrit.split_points(10, 3, 1))
     np.testing.assert_equal(result_proc2, mgrit.split_points(10, 3, 2))
@@ -69,9 +69,9 @@ def test_heat_equation_run():
     np.testing.assert_almost_equal(result_conv, res['conv'])
 
 
-def test_setup_points():
+def test_setup_points_and_comm_info():
     """
-    Test for the function setup points
+    Test for the function setup_points_and_comm_info
     """
     heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=65)
     heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=17)
@@ -90,6 +90,8 @@ def test_setup_points():
     first_is_f_point = []
     last_is_c_point = []
     last_is_f_point = []
+    send_to = []
+    get_from = []
     for i in range(size):
         mgrit.comm_time_size = size
         mgrit.comm_time_rank = i
@@ -106,9 +108,11 @@ def test_setup_points():
         mgrit.first_is_c_point = []  # Communication after F-relax
         mgrit.last_is_f_point = []  # Communication after F-relax
         mgrit.last_is_c_point = []  # Communication after C-relax
+        mgrit.send_to = []
+        mgrit.get_from = []
         for lvl in range(mgrit.lvl_max):
             mgrit.t.append(np.copy(mgrit.problem[lvl].t))
-            mgrit.setup_points(lvl=lvl)
+            mgrit.setup_points_and_comm_info(lvl=lvl)
         cpts.append(mgrit.cpts)
         comm_front.append(mgrit.comm_front)
         comm_back.append(mgrit.comm_back)
@@ -120,6 +124,8 @@ def test_setup_points():
         first_is_f_point.append(mgrit.first_is_f_point)
         last_is_c_point.append(mgrit.last_is_c_point)
         last_is_f_point.append(mgrit.last_is_f_point)
+        send_to.append(mgrit.send_to)
+        get_from.append(mgrit.get_from)
     test_cpts = [[np.array([0, 4, 8]), np.array([0]), np.array([0])],
                  [np.array([12, 16]), np.array([4]), np.array([1])],
                  [np.array([20, 24, 28]), np.array([], dtype=int), np.array([], dtype=int)],
@@ -179,6 +185,9 @@ def test_setup_points():
                             [False, False, False]]
     test_last_is_c_point = [[False, False, True], [False, True, True], [True, False, False], [False, False, True],
                             [False, False, False], [False, False, True], [False, False, False]]
+    test_send_to = [[1, 1, 1], [2, 2, 3], [3, 3, -99], [4, 4, 5], [5, 5, -99], [6, 6, 6], [-99, -99, -99]]
+    test_get_from = [[-99, -99, -99], [0, 0, 0], [1, 1, -99], [2, 2, 1], [3, 3, -99], [4, 4, 3], [5, 5, 5]]
+
     for i in range(size):
         assert all([a == b for a, b in zip(first_is_c_point[i], test_first_is_c_point[i])])
         assert all([a == b for a, b in zip(first_is_f_point[i], test_first_is_f_point[i])])
@@ -187,34 +196,9 @@ def test_setup_points():
         assert all([a == b for a, b in zip(comm_front[i], test_comm_front[i])])
         assert all([a == b for a, b in zip(comm_back[i], test_comm_back[i])])
         assert all([a == b for a, b in zip(block_size_this_lvl[i], test_block_size_this_lvl[i])])
+        assert all([a == b for a, b in zip(send_to[i], test_send_to[i])])
+        assert all([a == b for a, b in zip(get_from[i], test_get_from[i])])
         [np.testing.assert_equal(a, b) for a, b in zip(cpts[i], test_cpts[i])]
         [np.testing.assert_equal(a, b) for a, b in zip(index_local[i], test_index_local[i])]
         [np.testing.assert_equal(a, b) for a, b in zip(index_local_c[i], test_index_local_c[i])]
         [np.testing.assert_equal(a, b) for a, b in zip(index_local_f[i], test_index_local_f[i])]
-
-
-def test_setup_comm_info():
-    """
-    Test for the function comm_info
-    """
-    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=65)
-    heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=17)
-    heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=5)
-    problem = [heat0, heat1, heat2]
-    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2)
-    size = 7
-    send_to = []
-    get_from = []
-    for i in range(size):
-        mgrit.comm_time_size = size
-        mgrit.comm_time_rank = i
-        mgrit.send_to = []
-        mgrit.get_from = []
-        mgrit.setup_comm_info()
-        send_to.append(mgrit.send_to)
-        get_from.append(mgrit.get_from)
-    test_send_to = [[1, 1, 1], [2, 2, 3], [3, 3, -99], [4, 4, 5], [5, 5, -99], [6, 6, 6], [-99, -99, -99]]
-    test_get_from = [[-99, -99, -99], [0, 0, 0], [1, 1, -99], [2, 2, 1], [3, 3, -99], [4, 4, 3], [5, 5, 5]]
-    for i in range(size):
-        assert all([a == b for a, b in zip(send_to[i], test_send_to[i])])
-        assert all([a == b for a, b in zip(get_from[i], test_get_from[i])])
