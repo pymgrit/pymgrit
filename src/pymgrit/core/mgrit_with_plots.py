@@ -76,12 +76,12 @@ class MgritWithPlots(Mgrit):
                         boxes.append(FancyBboxPatch(
                             [a + b for a, b in zip(left_lower[j], [-0.25, i])], split[j] - 0.25, 0.4,
                             boxstyle="round,pad=-0.0040,rounding_size=0.015", fc=colors[j],
-                            label='Processor ' + str(j)))
+                            label='Process ' + str(j)))
                     else:
                         boxes.append(FancyBboxPatch(
                             [a + b for a, b in zip(left_lower[j], [-0.25, i])], np.sum(split) - 0.25, 0.4,
                             boxstyle="round,pad=-0.0040,rounding_size=0.015", fc=colors[j],
-                            label='Processor ' + str(j)))
+                            label='Process ' + str(j)))
                         break
             for item in boxes:
                 ax.add_patch(item)
@@ -90,21 +90,16 @@ class MgritWithPlots(Mgrit):
                                     bbox_to_anchor=(1, 0.5), prop={'weight': 'bold', 'size': text_size})
 
             for i in range(self.lvl_max):
-                tmp_coarse = np.prod(self.m[:i])
-                size_lvl.append(np.ceil(nt / tmp_coarse))
-                plt.plot([0, nt - 1], [i, i], color='black')
+                if i != self.lvl_max -1:
+                    tmp_coarse = np.where(np.in1d(self.problem[0].t, self.problem[i + 1].t))[0]
+                tmp_fine = np.where(np.in1d(self.problem[0].t, self.problem[i].t))[0]
+                plt.plot([0, nt - 1], [i, i], color='k')
 
-                for j in range(int((size_lvl[-1]))):
-                    if j % self.m[i] == 0:
-                        if size_lvl[-1] // self.m[i] * self.m[i] >= j:
-                            plt.plot([j * tmp_coarse, j * tmp_coarse],
-                                     [((self.lvl_max - 1) - i) + 0.1, ((self.lvl_max - 1) - i) - 0.1],
-                                     color='black')
-                    else:
-                        if size_lvl[-1] // self.m[i] * self.m[i] >= j:
-                            plt.plot([j * tmp_coarse, j * tmp_coarse],
-                                     [((self.lvl_max - 1) - i) + 0.05, ((self.lvl_max - 1) - i) - 0.05],
-                                     color='black')
+                for j in range(nt):
+                    if j in tmp_coarse:
+                        plt.plot([j, j],[((self.lvl_max - 1) - i) + 0.1, ((self.lvl_max - 1) - i) - 0.1], color='k')
+                    elif j in tmp_fine:
+                        plt.plot([j, j],[((self.lvl_max - 1) - i) + 0.05, ((self.lvl_max - 1) - i) - 0.05],color='k')
 
             [s.set_visible(False) for s in ax.spines.values()]
             ax.set_xticks([])

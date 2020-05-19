@@ -62,7 +62,7 @@ class Mgrit:
 
         # Set standard grid transfer operators if no transfer operators are given
         if transfer is None:
-            transfer = [GridTransferCopy() for i in range(len(problem) - 1)]
+            transfer = [GridTransferCopy() for _ in range(len(problem) - 1)]
 
         # Check input parameters
         if len(problem) != (len(transfer) + 1):
@@ -148,7 +148,8 @@ class Mgrit:
         self.last_is_c_point = []  # Communication after C-relax
         self.send_to = []  # Which process contains next time point
         self.get_from = []  # Which process contains previous time point
-        self.t_norm = 1 if t_norm == 1 else None if t_norm == 2 else np.inf
+        self.global_t = [] #Global time information
+        self.t_norm = 1 if t_norm == 1 else None if t_norm == 2 else np.inf # Time norm
 
         # Set output level and output function
         self.output_lvl = output_lvl  # Output level, only 0,1,2
@@ -164,7 +165,12 @@ class Mgrit:
                 self.restriction.append(transfer[lvl].restriction)
                 self.interpolation.append(transfer[lvl].interpolation)
             if lvl < self.lvl_max - 1:
-                self.m.append(int((len(self.problem[lvl].t) - 1) / (len(self.problem[lvl + 1].t) - 1)))
+                tmp_cpts = np.where(np.in1d(self.problem[lvl].t, self.problem[lvl + 1].t))[0]
+                tmp_m = np.mean(np.absolute(tmp_cpts[1:] - tmp_cpts[:-1]), 0)
+                self.m.append(int(tmp_m))
+                if not tmp_m.is_integer():
+                    logging.warning('Varying coarsening factor between level ' + str(lvl) + ' and ' + str(
+                        lvl + 1) + '. Poorly tested.')
             else:
                 self.m.append(1)
             self.setup_points_and_comm_info(lvl=lvl)
@@ -330,11 +336,20 @@ class Mgrit:
         """
 
         runtime_fs = time.time()
+        tmp_g = self.comm_time.gather([self.g[lvl][i].pack() for i in self.index_local_c[lvl]], root=0)
+        tmp_u = self.comm_time.gather([self.u[lvl][i].pack() for i in self.index_local_c[lvl]], root=0)
         if self.comm_time_rank == 0:
-            for i in range(1, len(self.problem[lvl].t)):
+            tmp_g = [item for sublist in tmp_g for item in sublist]
+            tmp_u = [item for sublist in tmp_u for item in sublist]
+            for i in range(len(self.g_coarsest)):
+                self.g_coarsest[i].unpack(tmp_g[i])
+                self.u_coarsest[i].unpack(tmp_u[i])
+
+        if self.comm_time_rank == 0:
+            for i in range(1, len(self.global_t[lvl])):
                 self.u_coarsest[i] = self.g_coarsest[i] + self.step[lvl](u_start=self.u_coarsest[i - 1],
-                                                                         t_start=self.problem[lvl].t[i - 1],
-                                                                         t_stop=self.problem[lvl].t[i])
+                                                                         t_start=self.global_t[lvl][i - 1],
+                                                                         t_stop=self.global_t[lvl][i])
         tmp_u_coarsest = self.comm_time.bcast([item.pack() for item in self.u_coarsest], root=0)
         for i in range(len(self.u_coarsest)):
             self.u_coarsest[i].unpack(tmp_u_coarsest[i])
@@ -381,12 +396,10 @@ class Mgrit:
         rank = self.comm_time_rank
 
         if self.comm_time_rank != 0 and self.v[lvl + 1]:
-            # print('tmp on rank', tmp, rank)
             self.v[lvl + 1][0] = self.restriction[lvl](tmp)
 
         for i in range(len(self.index_local_c[lvl])):
-            self.v[lvl + 1][i if rank == 0 else i + 1] = self.restriction[lvl](
-                self.u[lvl][self.index_local_c[lvl][i]])
+            self.v[lvl + 1][i if rank == 0 else i + 1] = self.restriction[lvl](self.u[lvl][self.index_local_c[lvl][i]])
 
         self.u[lvl + 1] = [item.clone() for item in self.v[lvl + 1]]
         if np.size(self.index_local_c[lvl]) > 0:
@@ -413,16 +426,6 @@ class Mgrit:
                             - self.step[lvl + 1](u_start=self.v[lvl + 1][self.index_local[lvl + 1][i] - 1],
                                                  t_start=self.t[lvl + 1][self.index_local[lvl + 1][i] - 1],
                                                  t_stop=self.t[lvl + 1][self.index_local[lvl + 1][i]])
-
-        if lvl == self.lvl_max - 2:
-            tmp_g = self.comm_time.gather([self.g[lvl + 1][i].pack() for i in self.index_local_c[lvl + 1]], root=0)
-            tmp_u = self.comm_time.gather([self.u[lvl + 1][i].pack() for i in self.index_local_c[lvl + 1]], root=0)
-            if self.comm_time_rank == 0:
-                tmp_g = [item for sublist in tmp_g for item in sublist]
-                tmp_u = [item for sublist in tmp_u for item in sublist]
-                for i in range(len(self.g_coarsest)):
-                    self.g_coarsest[i].unpack(tmp_g[i])
-                    self.u_coarsest[i].unpack(tmp_u[i])
 
         logging.debug(f"Fas residual on {self.comm_time_rank} took {time.time() - runtime_fas_res} s")
 
@@ -474,10 +477,15 @@ class Mgrit:
         """
         runtime_ex = time.time()
         rank = self.comm_time_rank
+        tmp_send = False
+        req_s = None
+        if self.last_is_f_point[lvl]:
+            req_s = self.comm_time.isend(self.u[lvl][-1].pack(), dest=self.send_to[lvl], tag=self.send_to[lvl])
+            tmp_send = True
         if self.first_is_c_point[lvl]:
             self.u[lvl][0].unpack(self.comm_time.recv(source=self.get_from[lvl], tag=rank))
-        if self.last_is_f_point[lvl]:
-            self.comm_time.send(self.u[lvl][-1].pack(), dest=self.send_to[lvl], tag=self.send_to[lvl])
+        if tmp_send:
+            req_s.wait()
         logging.debug(f"Exchange on {self.comm_time_rank} took {time.time() - runtime_ex} s")
 
     def c_exchange(self, lvl: int) -> None:
@@ -489,11 +497,16 @@ class Mgrit:
         :param lvl: MGRIT level
         """
         runtime_ex = time.time()
+        tmp_send = False
+        req_s = None
         rank = self.comm_time_rank
+        if self.last_is_c_point[lvl]:
+            req_s = self.comm_time.isend(self.u[lvl][-1].pack(), dest=self.send_to[lvl], tag=self.send_to[lvl])
+            tmp_send = True
         if self.first_is_f_point[lvl]:
             self.u[lvl][0].unpack(self.comm_time.recv(source=self.get_from[lvl], tag=rank))
-        if self.last_is_c_point[lvl]:
-            self.comm_time.send(self.u[lvl][-1].pack(), dest=self.send_to[lvl], tag=self.send_to[lvl])
+        if tmp_send:
+            req_s.wait()
         logging.debug(f"Exchange on {self.comm_time_rank} took {time.time() - runtime_ex} s")
 
     def solve(self) -> dict:
@@ -582,24 +595,28 @@ class Mgrit:
 
         :param lvl: MGRIT level
         """
-        points_time = np.size(self.problem[lvl].t)
+        self.global_t.append(np.copy(self.problem[lvl].t))
+        points_time = np.size(self.global_t[lvl])
         all_pts = np.array(range(0, points_time))
 
         # Compute points per process
         # First level: Divide the points evenly
         # Other levels: Depends on the first level
         if lvl == 0:
-            block_size_this_lvl, first_i_this_lvl = self.split_points(length=np.size(all_pts),
+            block_size_this_lvl, first_i_this_lvl = self.split_points(length=points_time,
                                                                       size=self.comm_time_size,
                                                                       rank=self.comm_time_rank)
             all_pts = all_pts[first_i_this_lvl:first_i_this_lvl + block_size_this_lvl]
-            self.int_start = self.problem[lvl].t[all_pts[0]]
-            self.int_stop = self.problem[lvl].t[all_pts[-1]]
+            self.int_start = self.global_t[lvl][all_pts[0]]
+            self.int_stop = self.global_t[lvl][all_pts[-1]]
         else:
-            all_pts = np.where((self.problem[lvl].t >= self.int_start) & (self.problem[lvl].t <= self.int_stop))[0]
+            all_pts = np.where((self.global_t[lvl] >= self.int_start) & (self.global_t[lvl] <= self.int_stop))[0]
 
         # Compute C- and F-points
-        all_cpts = np.array(range(0, points_time, self.m[lvl]))
+        if lvl != self.lvl_max - 1:
+            all_cpts = np.where(np.in1d(self.problem[lvl].t, self.problem[lvl + 1].t))[0]
+        else:
+            all_cpts = np.array(range(0, points_time, self.m[lvl]))
         all_fpts = np.array(list(set(np.array(range(0, points_time))) - set(all_cpts)))
         cpts = np.sort(np.array(list(set(all_pts) - set(all_fpts)), dtype='int'))
         fpts = np.array(list(set(all_pts) - set(cpts)))
@@ -619,7 +636,7 @@ class Mgrit:
         else:
             all_pts_with_ghost = all_pts
 
-        self.t[lvl] = self.problem[lvl].t[all_pts_with_ghost]
+        self.t[lvl] = self.global_t[lvl][all_pts_with_ghost]
         self.cpts.append(cpts)
 
         # Communication in F-relax
@@ -632,23 +649,26 @@ class Mgrit:
         self.index_local_f.append(np.nonzero(fpts2[:, None] == all_pts_with_ghost)[1])
 
         # Communication before and after C- and F-relax
-        self.first_is_c_point.append(bool(all_pts.size > 0 and all_pts[0] in cpts and all_pts[0] != 0))
+        self.first_is_c_point.append(
+            bool(all_pts.size > 0 and all_pts[0] in cpts and all_pts[0] != 0 and all_pts[0] - 1 in all_fpts))
         self.first_is_f_point.append(bool(all_pts.size > 0 and all_pts[0] in fpts2 and all_pts[0] - 1 in all_cpts))
-        self.last_is_c_point.append(bool(all_pts.size > 0 and all_pts[-1] in cpts and all_pts[-1] != points_time - 1))
+        self.last_is_c_point.append(bool(
+            all_pts.size > 0 and all_pts[-1] in cpts and all_pts[-1] != points_time - 1 and all_pts[
+                -1] + 1 in all_fpts))
         self.last_is_f_point.append(bool(
             all_pts.size > 0 and all_pts[-1] in fpts2 and all_pts[-1] != points_time - 1 and all_pts[
                 -1] + 1 in all_cpts))
 
         # Setup communication info
-        split = self.problem[0].t[
-            np.cumsum(self.split_into(number_points=len(self.problem[0].t), number_processes=self.comm_time_size)) - 1]
+        split = self.global_t[0][
+            np.cumsum(self.split_into(number_points=len(self.global_t[0]), number_processes=self.comm_time_size)) - 1]
         tmp_send_to = -99
         tmp_get_from = -99
         if len(all_pts_with_ghost) > 0:
-            if self.t[lvl][-1] != self.problem[lvl].t[-1]:
-                last_point_next = self.problem[lvl].t[np.argwhere(self.problem[lvl].t == self.t[lvl][-1])[0][0] + 1]
+            if self.t[lvl][-1] != self.global_t[lvl][-1]:
+                last_point_next = self.global_t[lvl][np.argwhere(self.global_t[lvl] == self.t[lvl][-1])[0][0] + 1]
                 tmp_send_to = np.searchsorted(split, last_point_next)
-            if with_ghost_point or self.t[lvl][0] != self.problem[0].t[0]:
+            if with_ghost_point or self.t[lvl][0] != self.global_t[0][0]:
                 tmp_get_from = np.searchsorted(split, self.t[lvl][0])
         self.send_to.append(tmp_send_to)
         self.get_from.append(tmp_get_from)
@@ -670,15 +690,14 @@ class Mgrit:
 
         :param lvl: MGRIT level
         """
-        self.u.append([object] * len(self.t[lvl]))
-        for i in range(len(self.u[lvl])):
-            if lvl == 0:
-                if self.random_init_guess:
-                    self.u[lvl][i] = self.problem[lvl].vector_template.clone_rand()
-                else:
-                    self.u[lvl][i] = self.problem[lvl].vector_template.clone_zero()
+        if lvl == 0:
+            if self.random_init_guess:
+                self.u.append([self.problem[lvl].vector_template.clone_rand() for _ in range(len(self.t[lvl]))])
             else:
-                self.u[lvl][i] = self.problem[lvl].vector_template.clone_zero()
+                self.u.append([self.problem[lvl].vector_template.clone_zero() for _ in range(len(self.t[lvl]))])
+        else:
+            self.u.append([self.problem[lvl].vector_template.clone_zero() for _ in range(len(self.t[lvl]))])
+
         if self.comm_time_rank == 0:
             self.u[lvl][0] = self.problem[lvl].vector_t_start.clone()
 
@@ -692,18 +711,13 @@ class Mgrit:
             self.v.append(None)
             self.g.append(None)
         else:
-            self.v.append([])
-            self.g.append([])
-            self.v[-1] = [item.clone_zero() for item in self.u[lvl]]
-            self.g[-1] = [item.clone_zero() for item in self.u[lvl]]
+            self.v.append([item.clone_zero() for item in self.u[lvl]])
+            self.g.append([item.clone_zero() for item in self.u[lvl]])
 
     def create_coarsest_level(self):
         """
         Creates vectors u and g for coarsest level
         """
-        for i in range(len(self.problem[-1].t)):
-            if i == 0:
-                self.u_coarsest.append(self.problem[-1].vector_t_start.clone())
-            else:
-                self.u_coarsest.append(self.problem[-1].vector_template.clone_zero())
-            self.g_coarsest.append(self.problem[-1].vector_template.clone_zero())
+        self.u_coarsest = [self.problem[-1].vector_template.clone_zero() for _ in range(len(self.global_t[-1]))]
+        self.u_coarsest[0] = self.problem[-1].vector_t_start.clone()
+        self.g_coarsest = [self.problem[-1].vector_template.clone_zero() for _ in range(len(self.global_t[-1]))]

@@ -175,16 +175,16 @@ def test_setup_points_and_comm_info():
                           [np.array([3, 7]), np.array([], dtype=int), np.array([], dtype=int)],
                           [np.array([2, 6]), np.array([1]), np.array([1])],
                           [np.array([1, 5, 9]), np.array([3]), np.array([1])]]
-    test_first_is_c_point = [[False, False, False], [False, False, True], [True, False, False], [False, True, True],
-                             [False, False, False], [False, True, True], [True, False, True]]
+    test_first_is_c_point = [[False, False, False], [False, False, False], [True, False, False], [False, True, False],
+                             [False, False, False], [False, True, False], [True, False, False]]
     test_first_is_f_point = [[False, False, False], [False, False, False], [False, True, False],
                              [True, False, False], [False, False, False], [False, False, False],
                              [False, False, False]]
     test_last_is_f_point = [[False, False, False], [True, False, False], [False, True, False],
                             [False, False, False], [False, True, False], [True, False, False],
                             [False, False, False]]
-    test_last_is_c_point = [[False, False, True], [False, True, True], [True, False, False], [False, False, True],
-                            [False, False, False], [False, False, True], [False, False, False]]
+    test_last_is_c_point = [[False, False, False], [False, True, False], [True, False, False], [False, False, False],
+                            [False, False, False], [False, False, False], [False, False, False]]
     test_send_to = [[1, 1, 1], [2, 2, 3], [3, 3, -99], [4, 4, 5], [5, 5, -99], [6, 6, 6], [-99, -99, -99]]
     test_get_from = [[-99, -99, -99], [0, 0, 0], [1, 1, -99], [2, 2, 1], [3, 3, -99], [4, 4, 3], [5, 5, 5]]
 
