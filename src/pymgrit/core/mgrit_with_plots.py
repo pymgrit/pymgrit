@@ -126,6 +126,7 @@ class MgritWithPlots(Mgrit):
                 if nest_it:
                     x_axis = np.arange(0, len_nes, 1)
                     strings = mask(len=len_nes, result=result)
+                    strings[-1] = ''
                 else:
                     x_axis = np.arange(iter * len_res + len_nes, len_nes + (iter + 1) * len_res, 1)
                     strings = mask(len=len_res, result=result)
@@ -134,7 +135,7 @@ class MgritWithPlots(Mgrit):
                 plt.plot(x_axis, np.abs(result), color='k')
                 if iter != 0:
                     strings[0] = strings[0][1:]
-                for i in range(len(result) if not nest_it else len(result) - 1):
+                for i in range(len(result)):
                     plt.text(x_axis[i], np.abs(result[i]), strings[i], size=text_size, weight='bold', ha="center",
                              va="center",
                              bbox=dict(boxstyle="round", facecolor='white', edgecolor='k'))
@@ -147,8 +148,9 @@ class MgritWithPlots(Mgrit):
             result_nes = result_iter = np.zeros(0)
             x_ticks = []
             if self.nes_it:
-                for i in range(self.lvl_max):
+                for i in range(self.lvl_max-1):
                     result_nes = np.hstack((result_nes, np.linspace(-i, i, 2 * i + 1)))
+                result_nes = np.hstack((result_nes, self.lvl_max-1))
                 x_ticks.append(plot_part(iter=0, len_res=0, len_nes=len(result_nes), result=result_nes, nest_it=True))
             if self.cycle_type == 'V':
                 result_iter = np.hstack(
@@ -165,8 +167,8 @@ class MgritWithPlots(Mgrit):
             [s.set_visible(False) for s in ax.spines.values()]
             ax.set_xticks(x_ticks)
             ax.set_xticklabels(
-                ['Nested iteration'] + ['Iteration ' + str(i) for i in range(iterations)] if self.nes_it else [
-                    'Iteration ' + str(i) for i in range(iterations)])
+                ['Nested iteration'] + ['Iteration ' + str(i+1) for i in range(iterations)] if self.nes_it else [
+                    'Iteration ' + str(i+1) for i in range(iterations)])
             ax.set_yticks(np.arange(0, self.lvl_max, 1).tolist())
             ax.set_yticklabels(['Level ' + str(i) for i in range(self.lvl_max - 1, -1, -1)])
             # ax.tick_params(axis='both', which='both', length=0)
