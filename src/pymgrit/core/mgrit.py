@@ -148,8 +148,8 @@ class Mgrit:
         self.last_is_c_point = []  # Communication after C-relax
         self.send_to = []  # Which process contains next time point
         self.get_from = []  # Which process contains previous time point
-        self.global_t = [] #Global time information
-        self.t_norm = 1 if t_norm == 1 else None if t_norm == 2 else np.inf # Time norm
+        self.global_t = []  # Global time information
+        self.t_norm = 1 if t_norm == 1 else None if t_norm == 2 else np.inf  # Time norm
 
         # Set output level and output function
         self.output_lvl = output_lvl  # Output level, only 0,1,2
@@ -166,10 +166,12 @@ class Mgrit:
                 self.interpolation.append(transfer[lvl].interpolation)
             if lvl < self.lvl_max - 1:
                 tmp_cpts = np.where(np.in1d(self.problem[lvl].t, self.problem[lvl + 1].t))[0]
-                tmp_m = np.mean(np.absolute(tmp_cpts[1:] - tmp_cpts[:-1]), 0)
+                tmp_m = np.mean(np.absolute(
+                    tmp_cpts[1:] if len(tmp_cpts[1:]) > 0 else [1] - tmp_cpts[:-1] if len(tmp_cpts[:-1]) > 0 else [1]),
+                                0)
                 self.m.append(int(tmp_m))
                 if not tmp_m.is_integer():
-                    logging.warning('Varying coarsening factor between level ' + str(lvl) + ' and ' + str(
+                    logging.warning('Non-uniform coarsening between level ' + str(lvl) + ' and ' + str(
                         lvl + 1) + '. Poorly tested.')
             else:
                 self.m.append(1)
@@ -336,23 +338,32 @@ class Mgrit:
         """
 
         runtime_fs = time.time()
-        tmp_g = self.comm_time.gather([self.g[lvl][i].pack() for i in self.index_local_c[lvl]], root=0)
-        tmp_u = self.comm_time.gather([self.u[lvl][i].pack() for i in self.index_local_c[lvl]], root=0)
-        if self.comm_time_rank == 0:
-            tmp_g = [item for sublist in tmp_g for item in sublist]
-            tmp_u = [item for sublist in tmp_u for item in sublist]
-            for i in range(len(self.g_coarsest)):
-                self.g_coarsest[i].unpack(tmp_g[i])
-                self.u_coarsest[i].unpack(tmp_u[i])
+        if self.lvl_max != 1:
+            if self.comm_time_size != 1:
+                tmp_g = self.comm_time.gather([self.g[lvl][i].pack() for i in self.index_local_c[lvl]], root=0)
+                tmp_u = self.comm_time.gather([self.u[lvl][i].pack() for i in self.index_local_c[lvl]], root=0)
+                if self.comm_time_rank == 0:
+                    tmp_g = [item for sublist in tmp_g for item in sublist]
+                    tmp_u = [item for sublist in tmp_u for item in sublist]
+                    for i in range(len(self.g_coarsest)):
+                        self.g_coarsest[i].unpack(tmp_g[i])
+                        self.u_coarsest[i].unpack(tmp_u[i])
+            else:
+                self.g_coarsest = self.g[lvl]
+                self.u_coarsest = self.u[lvl]
 
         if self.comm_time_rank == 0:
             for i in range(1, len(self.global_t[lvl])):
                 self.u_coarsest[i] = self.g_coarsest[i] + self.step[lvl](u_start=self.u_coarsest[i - 1],
                                                                          t_start=self.global_t[lvl][i - 1],
                                                                          t_stop=self.global_t[lvl][i])
-        tmp_u_coarsest = self.comm_time.bcast([item.pack() for item in self.u_coarsest], root=0)
-        for i in range(len(self.u_coarsest)):
-            self.u_coarsest[i].unpack(tmp_u_coarsest[i])
+
+        if self.lvl_max != 1:
+            if self.comm_time_size != 1:
+                tmp_u_coarsest = self.comm_time.bcast([item.pack() for item in self.u_coarsest], root=0)
+                for i in range(len(self.u_coarsest)):
+                    self.u_coarsest[i].unpack(tmp_u_coarsest[i])
+
         if self.cpts[lvl].size > 0:
             self.u[lvl] = [self.u_coarsest[i] for i in self.cpts[lvl]]
             if self.comm_time_rank != 0:

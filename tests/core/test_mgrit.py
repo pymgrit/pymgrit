@@ -68,6 +68,12 @@ def test_heat_equation_run():
     result_conv = np.array([0.00267692, 0.00018053])
     np.testing.assert_almost_equal(result_conv, res['conv'])
 
+def test_time_stepping():
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=65)
+    mgrit = Mgrit(problem=[heat0], cf_iter=1, nested_iteration=True, max_iter=2, random_init_guess=False)
+    res = mgrit.solve()
+    result_conv = np.array([])
+    np.testing.assert_almost_equal(result_conv, res['conv'])
 
 def test_setup_points_and_comm_info():
     """
