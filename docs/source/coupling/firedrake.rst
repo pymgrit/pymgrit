@@ -50,6 +50,18 @@ Vector class
 
     import numpy as np
 
+    from mpi4py import MPI
+
+    from pymgrit.core.mgrit import Mgrit
+    from pymgrit.core.split import split_communicator
+    from pymgrit.core.application import Application
+    from pymgrit.core.vector import Vector
+
+    from firedrake import PeriodicSquareMesh
+    from firedrake import FunctionSpace, Constant, TestFunction, TrialFunction, Function, FacetNormal, inner, dx, grad, avg
+    from firedrake import outer, LinearVariationalProblem, NonlinearVariationalSolver, dS, exp, SpatialCoordinate
+
+
     class VectorDiffusion2D(Vector):
         """
         Vector class for the 2D diffusion equation
@@ -59,15 +71,17 @@ Vector class
               is saved in an object of the Diffusion2D application class.
         """
 
-        def __init__(self, size):
+        def __init__(self, size: int, comm_space: MPI.Comm):
             """
             Constructor.
 
             :param size: number of degrees of freedom in spatial domain
             """
+
             super(VectorDiffusion2D, self).__init__()
             self.size = size
             self.values = np.zeros(size)
+            self.comm_space = comm_space
 
         def set_values(self, values):
             """
@@ -101,7 +115,7 @@ Vector class
 
             :rtype: vector object with zero values
             """
-            return VectorDiffusion2D(self.size)
+            return VectorDiffusion2D(size=self.size, comm_space=self.comm_space)
 
         def clone_rand(self):
             """
@@ -109,7 +123,7 @@ Vector class
 
             :rtype: vector object with random values
             """
-            tmp = VectorDiffusion2D(self.size)
+            tmp = VectorDiffusion2D(size=self.size, comm_space=self.comm_space)
             tmp.set_values(np.random.rand(self.size))
             return tmp
 
@@ -120,7 +134,7 @@ Vector class
             :param other: vector object to be added to self
             :return: sum of vector object self and input object other
             """
-            tmp = VectorDiffusion2D(self.size)
+            tmp = VectorDiffusion2D(self.size, comm_space=self.comm_space)
             tmp.set_values(self.get_values() + other.get_values())
             return tmp
 
@@ -131,7 +145,7 @@ Vector class
             :param other: vector object to be subtracted from self
             :return: difference of vector object self and input object other
             """
-            tmp = VectorDiffusion2D(self.size)
+            tmp = VectorDiffusion2D(self.size, comm_space=self.comm_space)
             tmp.set_values(self.get_values() - other.get_values())
             return tmp
 
@@ -141,7 +155,8 @@ Vector class
 
             :return: 2-norm of vector object
             """
-            return np.linalg.norm(self.values)
+            tmp = self.comm_space.allgather(self.values)
+            return np.linalg.norm(np.array([item for sublist in tmp for item in sublist]))
 
         def unpack(self, values):
             """
