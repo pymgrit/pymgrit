@@ -13,6 +13,7 @@ Subpackages
    pymgrit.core
    pymgrit.dahlquist
    pymgrit.heat
+   pymgrit.induction_machine
 
 Module contents
 ---------------

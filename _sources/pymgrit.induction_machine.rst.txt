@@ -4,22 +4,6 @@ pymgrit.induction\_machine package
 Submodules
 ----------
 
-pymgrit.induction\_machine.getdpsetup module
---------------------------------------------
-
-.. automodule:: pymgrit.induction_machine.getdpsetup
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pymgrit.induction\_machine.grid\_transfer\_copy module
-------------------------------------------------------
-
-.. automodule:: pymgrit.induction_machine.grid_transfer_copy
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pymgrit.induction\_machine.grid\_transfer\_machine module
 ---------------------------------------------------------
 
@@ -28,10 +12,18 @@ pymgrit.induction\_machine.grid\_transfer\_machine module
    :undoc-members:
    :show-inheritance:
 
-pymgrit.induction\_machine.im\_3kW module
------------------------------------------
+pymgrit.induction\_machine.helper module
+----------------------------------------
 
-.. automodule:: pymgrit.induction_machine.im_3kW
+.. automodule:: pymgrit.induction_machine.helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pymgrit.induction\_machine.induction\_machine module
+----------------------------------------------------
+
+.. automodule:: pymgrit.induction_machine.induction_machine
    :members:
    :undoc-members:
    :show-inheritance:
@@ -44,18 +36,10 @@ pymgrit.induction\_machine.mgrit\_machine module
    :undoc-members:
    :show-inheritance:
 
-pymgrit.induction\_machine.mgrit\_machine2 module
--------------------------------------------------
+pymgrit.induction\_machine.mgrit\_machine\_conv\_jl module
+----------------------------------------------------------
 
-.. automodule:: pymgrit.induction_machine.mgrit_machine2
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pymgrit.induction\_machine.odegetdp module
-------------------------------------------
-
-.. automodule:: pymgrit.induction_machine.odegetdp
+.. automodule:: pymgrit.induction_machine.mgrit_machine_conv_jl
    :members:
    :undoc-members:
    :show-inheritance:

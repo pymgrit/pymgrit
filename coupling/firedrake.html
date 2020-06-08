@@ -219,6 +219,18 @@ As usual, for PyMGRIT the following is required:</p>
 <h3>Vector class<a class="headerlink" href="#vector-class" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+
+<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.split</span> <span class="kn">import</span> <span class="n">split_communicator</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.application</span> <span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.vector</span> <span class="kn">import</span> <span class="n">Vector</span>
+
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">PeriodicSquareMesh</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">FunctionSpace</span><span class="p">,</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">TestFunction</span><span class="p">,</span> <span class="n">TrialFunction</span><span class="p">,</span> <span class="n">Function</span><span class="p">,</span> <span class="n">FacetNormal</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">avg</span>
+<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">outer</span><span class="p">,</span> <span class="n">LinearVariationalProblem</span><span class="p">,</span> <span class="n">NonlinearVariationalSolver</span><span class="p">,</span> <span class="n">dS</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">SpatialCoordinate</span>
+
+
 <span class="k">class</span> <span class="nc">VectorDiffusion2D</span><span class="p">(</span><span class="n">Vector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Vector class for the 2D diffusion equation</span>
@@ -228,15 +240,17 @@ As usual, for PyMGRIT the following is required:</p>
 <span class="sd">          is saved in an object of the Diffusion2D application class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">comm_space</span><span class="p">:</span> <span class="n">MPI</span><span class="o">.</span><span class="n">Comm</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
 
 <span class="sd">        :param size: number of degrees of freedom in spatial domain</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="nb">super</span><span class="p">(</span><span class="n">VectorDiffusion2D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span> <span class="o">=</span> <span class="n">comm_space</span>
 
     <span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -270,7 +284,7 @@ As usual, for PyMGRIT the following is required:</p>
 
 <span class="sd">        :rtype: vector object with zero values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">clone_rand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -278,7 +292,7 @@ As usual, for PyMGRIT the following is required:</p>
 
 <span class="sd">        :rtype: vector object with random values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
         <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">tmp</span>
 
@@ -289,7 +303,7 @@ As usual, for PyMGRIT the following is required:</p>
 <span class="sd">        :param other: vector object to be added to self</span>
 <span class="sd">        :return: sum of vector object self and input object other</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
         <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">tmp</span>
 
@@ -300,7 +314,7 @@ As usual, for PyMGRIT the following is required:</p>
 <span class="sd">        :param other: vector object to be subtracted from self</span>
 <span class="sd">        :return: difference of vector object self and input object other</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
         <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">tmp</span>
 
@@ -310,7 +324,8 @@ As usual, for PyMGRIT the following is required:</p>
 
 <span class="sd">        :return: 2-norm of vector object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="o">.</span><span class="n">allgather</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">tmp</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
