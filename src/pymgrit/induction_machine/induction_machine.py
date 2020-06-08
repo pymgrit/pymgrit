@@ -1,5 +1,5 @@
 """
-Application class of an induction machine using the model 'im_3_kW' from
+Application class for the model 'im_3_kW' of an induction machine
 https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines
 """
 

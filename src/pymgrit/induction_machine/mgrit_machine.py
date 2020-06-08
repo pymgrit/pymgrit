@@ -1,5 +1,5 @@
 """
-MGRIT optimized for the getdp induction
+MGRIT optimized for the induction
 machine model "im_3kW". (https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines)
 """
 

@@ -1,5 +1,5 @@
 """
-Vector for the the getdp induction
+Vector for the induction
 machine model "im_3kW". (https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines)
 """
 from typing import List
