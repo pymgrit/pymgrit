@@ -25,7 +25,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -101,10 +101,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="coupling/firedrake.html">Firedrake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coupling/petsc.html">PETSc</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Help</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="help/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
             
@@ -467,7 +463,7 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 <a class="reference external" href="https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines">https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines</a></p>
 <dl class="py class">
 <dt id="pymgrit.induction_machine.induction_machine.InductionMachine">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.induction_machine.induction_machine.</code><code class="sig-name descname">InductionMachine</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">grid</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">path_im3kw</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">path_getdp</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">imposed_speed</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">nb_trelax</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">analysis_type</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">nb_max_iter</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">60</span></em>, <em class="sig-param"><span class="n">relaxation_factor</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.5</span></em>, <em class="sig-param"><span class="n">stop_criterion</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1e-06</span></em>, <em class="sig-param"><span class="n">nonlinear</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pwm</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pro_file</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'im_3kW.pro'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.induction_machine.InductionMachine" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.induction_machine.induction_machine.</code><code class="sig-name descname">InductionMachine</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.induction_machine.InductionMachine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <p>Simulating an induction machine using the model ‘im_3_kW’ from
 <a class="reference external" href="https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines">https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines</a></p>

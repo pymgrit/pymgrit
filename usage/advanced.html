@@ -25,7 +25,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -108,10 +108,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../coupling/firedrake.html">Firedrake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coupling/petsc.html">PETSc</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Help</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../help/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
             
@@ -338,7 +334,7 @@ coarsening on different levels of the time-grid hierarchy for solving a 1D heat 
 <span class="sd">        Constructor.</span>
 <span class="sd">        :rtype: GridTransferHeat object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GridTransferHeat</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The grid transfer class must contain the two member functions <cite>restriction()</cite> and <cite>interpolation()</cite>.</p>
@@ -460,7 +456,7 @@ transfer between levels 0 and 1 as well as between levels 1 and 2 and an object 
 <span class="sd">        Constructor.</span>
 <span class="sd">        :rtype: GridTransferHeat object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GridTransferHeat</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
     <span class="c1"># Define restriction operator</span>
     <span class="k">def</span> <span class="nf">restriction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">VectorHeat1D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorHeat1D</span><span class="p">:</span>
@@ -559,7 +555,7 @@ convergence criterion based on the maximum norm of the relative difference at C-
 <span class="sd">        Cumstomized MGRIT constructor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Call parent constructor</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MgritCustomized</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># New member variable for saving the C-point values of the last iteration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_it</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># Initialize the new member variable</span>

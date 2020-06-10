@@ -25,7 +25,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -102,10 +102,6 @@
 <li class="toctree-l1"><a class="reference internal" href="coupling/firedrake.html">Firedrake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coupling/petsc.html">PETSc</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Help</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="help/faq.html">Frequently Asked Questions</a></li>
-</ul>
 
             
           
@@ -179,7 +175,7 @@
 <p>Vector and application class for the 1D heat equation</p>
 <dl class="py class">
 <dt id="pymgrit.heat.heat_1d.Heat1D">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d.</code><code class="sig-name descname">Heat1D</code><span class="sig-paren">(</span><em class="sig-param">x_start</em>, <em class="sig-param">x_end</em>, <em class="sig-param">nx</em>, <em class="sig-param">a</em>, <em class="sig-param">init_cond=&lt;function Heat1D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs=&lt;function Heat1D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.Heat1D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d.</code><code class="sig-name descname">Heat1D</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d.Heat1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
 <dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [x_start,x_end], t in [0,T],</p>
@@ -324,7 +320,7 @@
 <p>Note: values at two consecutive time points are grouped as pairs</p>
 <dl class="py class">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf1.</code><code class="sig-name descname">Heat1DBDF1</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">dtau: float</em>, <em class="sig-param">a: float</em>, <em class="sig-param">init_cond: Callable = &lt;function Heat1DBDF1.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs: Callable = &lt;function Heat1DBDF1.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf1.</code><code class="sig-name descname">Heat1DBDF1</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf1.Heat1DBDF1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
 <dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [x_start,x_end], t in [0,T],</p>
@@ -381,7 +377,7 @@
 <p>Note: values at two consecutive time points are grouped as pairs</p>
 <dl class="py class">
 <dt id="pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf2.</code><code class="sig-name descname">Heat1DBDF2</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">dtau: float</em>, <em class="sig-param">a: float</em>, <em class="sig-param">init_cond: Callable = &lt;function Heat1DBDF2.&lt;lambda&gt;&gt;</em>, <em class="sig-param">rhs: Callable = &lt;function Heat1DBDF2.&lt;lambda&gt;&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_1d_2pts_bdf2.</code><code class="sig-name descname">Heat1DBDF2</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_1d_2pts_bdf2.Heat1DBDF2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
 <dt>Application class for the heat equation in 1D space,</dt><dd><p>u_t - a*u_xx = b(x,t),  a &gt; 0, x in [x_start, x_end], t in [t_start, t_end],</p>
@@ -446,7 +442,7 @@ Crank-Nicolson</p>
 </dl>
 <dl class="py class">
 <dt id="pymgrit.heat.heat_2d.Heat2D">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_2d.</code><code class="sig-name descname">Heat2D</code><span class="sig-paren">(</span><em class="sig-param">x_start: float</em>, <em class="sig-param">x_end: float</em>, <em class="sig-param">y_start: float</em>, <em class="sig-param">y_end: float</em>, <em class="sig-param">nx: int</em>, <em class="sig-param">ny: int</em>, <em class="sig-param">a: float</em>, <em class="sig-param">rhs: Callable = &lt;function Heat2D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">init_cond: Callable = &lt;function Heat2D.&lt;lambda&gt;&gt;</em>, <em class="sig-param">method: str = 'BE'</em>, <em class="sig-param">bc_left: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">bc_right: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">bc_bottom: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">bc_top: Union[int</em>, <em class="sig-param">float</em>, <em class="sig-param">Callable] = 0</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.Heat2D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.heat.heat_2d.</code><code class="sig-name descname">Heat2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.heat.heat_2d.Heat2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <dl class="simple">
 <dt>Application class for the heat equation in 2D space,</dt><dd><p>u_t - a(u_xx + u_yy) = b(x,y,t),  a &gt; 0,

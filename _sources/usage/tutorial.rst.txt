@@ -38,7 +38,7 @@ Then, we define the class `VectorDahlquist` containing a scalar member variable 
         """
 
         def __init__(self, value):
-            super(VectorDahlquist, self).__init__()
+            super().__init__()
             self.value = value
 
 Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, `norm`, `pack` and `unpack`.
@@ -120,7 +120,7 @@ The following member functions must be defined:
         """
 
         def __init__(self, value):
-            super(VectorDahlquist, self).__init__()
+            super().__init__()
             self.value = value
 
         def set_values(self, value):
@@ -180,7 +180,7 @@ that holds the initial condition at time `t_start`::
         """
 
         def __init__(self, *args, **kwargs):
-            super(Dahlquist, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
 
             # Set the data structure for any user-defined time point
             self.vector_template = VectorDahlquist(0)
@@ -228,7 +228,7 @@ The application class must contain the following member variables and member fun
         """
 
         def __init__(self, *args, **kwargs):
-            super(Dahlquist, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
 
             # Set the data structure for any user-defined time point
             self.vector_template = VectorDahlquist(0)

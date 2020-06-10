@@ -79,8 +79,3 @@ Citing
     coupling/firedrake
     coupling/petsc
 
-.. toctree::
-    :caption: Help
-    :hidden:
-
-    help/faq

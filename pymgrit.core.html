@@ -25,7 +25,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -101,10 +101,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="coupling/firedrake.html">Firedrake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coupling/petsc.html">PETSc</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Help</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="help/faq.html">Frequently Asked Questions</a></li>
 </ul>
 
             
@@ -191,7 +187,7 @@ Every user-defined application class must inherit from this class.</p>
 </dl>
 <dl class="py class">
 <dt id="pymgrit.core.application.Application">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.application.</code><code class="sig-name descname">Application</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nt</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">t_interval</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.application.Application" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.application.</code><code class="sig-name descname">Application</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.application.Application" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstract application class for user-defined application classes.
 Every user-defined application class must inherit from this class.</p>
@@ -245,7 +241,7 @@ Every user-defined application class must inherit from this class.</p>
 
 <dl class="py class">
 <dt id="pymgrit.core.application.MetaApplication">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.application.</code><code class="sig-name descname">MetaApplication</code><a class="headerlink" href="#pymgrit.core.application.MetaApplication" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.core.application.</code><code class="sig-name descname">MetaApplication</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">namespace</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.application.MetaApplication" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></p>
 <p>MetaClass for the application class.
 Checks whether required attributes are set.</p>
