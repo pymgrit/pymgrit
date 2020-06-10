@@ -32,7 +32,7 @@ class GridTransferMachine(GridTransfer):
         :param fine_grid:  Fine grid name
         :param path_meshes: Path to meshes
         """
-        super(GridTransferMachine, self).__init__()
+        super().__init__()
         data_coarse_pre = path_meshes + coarse_grid + '.pre'
         data_coarse_msh = path_meshes + coarse_grid + '.msh'
         check_version(msh_file=data_coarse_msh)

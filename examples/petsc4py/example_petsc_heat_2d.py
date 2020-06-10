@@ -149,7 +149,7 @@ class HeatPetsc(Application):
         :param args:
         :param kwargs:
         """
-        super(HeatPetsc, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.dmda = dmda
         self.mx, self.my = self.dmda.sizes
         self.dx = 1.0 / (self.mx - 1)
@@ -310,7 +310,7 @@ class GridTransferPetsc(GridTransfer):
         :param fine_prob:
         :param coarse_prob:
         """
-        super(GridTransferPetsc, self).__init__()
+        super().__init__()
 
         self.coarse_prob = coarse_prob
         self.fine_prob = fine_prob

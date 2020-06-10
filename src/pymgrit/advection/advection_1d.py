@@ -17,7 +17,7 @@ class VectorAdvection1D(Vector):
     """
 
     def __init__(self, size):
-        super(VectorAdvection1D, self).__init__()
+        super().__init__()
         self.size = size
         self.values = np.zeros(size)
 
@@ -69,7 +69,7 @@ class Advection1D(Application):
     """
 
     def __init__(self, c, x_start, x_end, nx, *args, **kwargs):
-        super(Advection1D, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.c = c  # (constant) advection speed
 

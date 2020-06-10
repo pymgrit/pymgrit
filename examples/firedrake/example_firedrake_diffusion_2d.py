@@ -44,7 +44,7 @@ class VectorDiffusion2D(Vector):
         :param size: number of degrees of freedom in spatial domain
         """
 
-        super(VectorDiffusion2D, self).__init__()
+        super().__init__()
         self.size = size
         self.values = np.zeros(size)
         self.comm_space = comm_space
@@ -163,7 +163,7 @@ class Diffusion2D(Application):
         :param kappa: diffusion coefficient
         :param mu: penalty weighting function
         """
-        super(Diffusion2D, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # Spatial domain and function space
         self.mesh = mesh

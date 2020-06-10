@@ -17,7 +17,7 @@ class VectorArenstorfOrbit(Vector):
     """
 
     def __init__(self):
-        super(VectorArenstorfOrbit, self).__init__()
+        super().__init__()
         self.y0 = 0
         self.y1 = 0
         self.y2 = 0
@@ -95,7 +95,7 @@ class ArenstorfOrbit(Application):
     """
 
     def __init__(self, *args, **kwargs):
-        super(ArenstorfOrbit, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.vector_template = VectorArenstorfOrbit()  # Setting the class which is used for each time point
         self.vector_t_start = VectorArenstorfOrbit()
         self.vector_t_start.set_values(np.array([0.994, 0.0, 0.0, -2.00158510637908]))

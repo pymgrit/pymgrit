@@ -15,7 +15,7 @@ class VectorBrusselator(Vector):
     """
 
     def __init__(self):
-        super(VectorBrusselator, self).__init__()
+        super().__init__()
         self.value = np.zeros(2)
 
     def set_values(self, value):
@@ -86,7 +86,7 @@ class Brusselator(Application):
     """
 
     def __init__(self, *args, **kwargs):
-        super(Brusselator, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.vector_template = VectorBrusselator()
         self.vector_t_start = VectorBrusselator()
 

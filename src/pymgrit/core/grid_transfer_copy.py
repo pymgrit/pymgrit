@@ -20,7 +20,7 @@ class GridTransferCopy(grid_transfer.GridTransfer):
         """
         Constructor.
         """
-        super(GridTransferCopy, self).__init__()
+        super().__init__()
 
     def restriction(self, u: Vector) -> Vector:
         """

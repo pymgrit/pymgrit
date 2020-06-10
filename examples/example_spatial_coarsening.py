@@ -27,7 +27,7 @@ class GridTransferHeat(GridTransfer):
         Constructor.
         :rtype: GridTransferHeat object
         """
-        super(GridTransferHeat, self).__init__()
+        super().__init__()
 
     # Define restriction operator
     def restriction(self, u: VectorHeat1D) -> VectorHeat1D:

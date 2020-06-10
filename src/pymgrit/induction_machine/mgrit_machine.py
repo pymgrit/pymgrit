@@ -17,7 +17,7 @@ class MgritMachine(Mgrit):
         """
         MGRIT optimized for the getdp induction machine
         """
-        super(MgritMachine, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def nested_iteration(self) -> None:
         """

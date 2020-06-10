@@ -19,7 +19,7 @@ class MgritMachineConvJl(Mgrit):
 
         :param compute_f_after_convergence: computes solution of F-points at the end
         """
-        super(MgritMachineConvJl, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.last_it = []
         self.convergence_criteria(iteration=0)
 

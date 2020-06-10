@@ -14,7 +14,7 @@ class MgritWithPlots(Mgrit):
         :param kwargs:
         """
         # Call parent constructor
-        super(MgritWithPlots, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def plot(self, plot_function):
         if self.comm_time.rank == 0:

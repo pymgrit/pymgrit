@@ -23,7 +23,7 @@ class MgritCustomized(Mgrit):
         Cumstomized MGRIT constructor.
         """
         # Call parent constructor
-        super(MgritCustomized, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # New member variable for saving the C-point values of the last iteration
         self.last_it = []
         # Initialize the new member variable

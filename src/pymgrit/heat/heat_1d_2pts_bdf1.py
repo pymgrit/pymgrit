@@ -35,7 +35,7 @@ class Heat1DBDF1(Application):
         :param rhs: right-hand side
         """
 
-        super(Heat1DBDF1, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Spatial domain with homogeneous Dirichlet boundary conditions
         self.x_start = x_start
         self.x_end = x_end

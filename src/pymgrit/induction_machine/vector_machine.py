@@ -20,7 +20,7 @@ class VectorMachine(Vector):
         :param u_middle_size:
         :param u_back_size:
         """
-        super(VectorMachine, self).__init__()
+        super().__init__()
         self.u_front_size = u_front_size
         self.u_middle_size = u_middle_size
         self.u_back_size = u_back_size

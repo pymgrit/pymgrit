@@ -22,7 +22,7 @@ class MetaApplication(ABCMeta):
     required_attributes = []
 
     def __call__(cls, *args, **kwargs):
-        obj = super(MetaApplication, cls).__call__(*args, **kwargs)
+        obj = super().__call__(*args, **kwargs)
         for attr_name in obj.required_attributes:
             if not hasattr(obj, attr_name):
                 raise ValueError('required attribute (%s) not set' % attr_name)

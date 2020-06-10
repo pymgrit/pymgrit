@@ -192,7 +192,7 @@ Then, we define the class GridTransferHeat for the 1D heat equation::
             Constructor.
             :rtype: GridTransferHeat object
             """
-            super(GridTransferHeat, self).__init__()
+            super().__init__()
 
 The grid transfer class must contain the two member functions `restriction()` and `interpolation()`.
 
@@ -314,7 +314,7 @@ Complete code::
             Constructor.
             :rtype: GridTransferHeat object
             """
-            super(GridTransferHeat, self).__init__()
+            super().__init__()
 
         # Define restriction operator
         def restriction(self, u: VectorHeat1D) -> VectorHeat1D:
@@ -418,7 +418,7 @@ convergence criterion based on the maximum norm of the relative difference at C-
             Cumstomized MGRIT constructor.
             """
             # Call parent constructor
-            super(MgritCustomized, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
             # New member variable for saving the C-point values of the last iteration
             self.last_it = []
             # Initialize the new member variable

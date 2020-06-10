@@ -15,7 +15,7 @@ class VectorDahlquist(Vector):
     """
 
     def __init__(self, value):
-        super(VectorDahlquist, self).__init__()
+        super().__init__()
         self.value = value
 
     def __add__(self, other):
@@ -69,7 +69,7 @@ class Dahlquist(Application):
                        'TR' -> Trapezoidal rule
                        'MR' -> Implicit Mid-point Rule
         """
-        super(Dahlquist, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.vector_template = VectorDahlquist(0)  # Set the class to be used for each time point
         self.vector_t_start = VectorDahlquist(1)  # Set the initial condition
         self.lambda_value = constant_lambda

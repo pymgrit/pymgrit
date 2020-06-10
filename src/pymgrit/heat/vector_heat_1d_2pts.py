@@ -22,7 +22,7 @@ class VectorHeat1D2Pts(Vector):
         :param size: number of spatial degrees of freedom
         :param dtau: time-step size within pair
         """
-        super(VectorHeat1D2Pts, self).__init__()
+        super().__init__()
         self.size = size
         self.dtau = dtau
         self.values_first_time_point = np.zeros(size)

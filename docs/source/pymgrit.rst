@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    pymgrit.advection
    pymgrit.arenstorf_orbit
@@ -12,6 +13,7 @@ Subpackages
    pymgrit.core
    pymgrit.dahlquist
    pymgrit.heat
+   pymgrit.induction_machine
 
 Module contents
 ---------------

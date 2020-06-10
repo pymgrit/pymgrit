@@ -29,7 +29,7 @@ class VectorHeat2D(Vector):
         :param nx: number of degrees of freedom in x-direction
         :param ny: number of degrees of freedom in y-direction
         """
-        super(VectorHeat2D, self).__init__()
+        super().__init__()
         self.nx = nx
         self.ny = ny
         self.values = np.zeros((self.nx, self.ny))
@@ -159,7 +159,7 @@ class Heat2D(Application):
         :param bc_bottom: boundary condition for bottom boundary
         :param bc_top: boundary condition for top boundary
         """
-        super(Heat2D, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Spatial domain (including boundary points)
         self.x_start = x_start
         self.x_end = x_end

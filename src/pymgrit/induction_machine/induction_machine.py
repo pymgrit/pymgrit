@@ -38,7 +38,7 @@ class InductionMachine(Application):
         :param path_getdp: path to getdp
         :param imposed_speed: imposed speed
         """
-        super(InductionMachine, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.pro_path = path_im3kw + pro_file
         if not os.path.isfile(self.pro_path):
