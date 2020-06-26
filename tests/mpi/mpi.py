@@ -46,6 +46,6 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Compare results
-    np.testing.assert_almost_equal(convs_actual, convs_desired)
+    np.testing.assert_almost_equal(convs_actual, convs_desired, decimal=5)
 
     print('Successfully tested example %s script with %s tasks' % (sys.argv[1], sys.argv[2]))
