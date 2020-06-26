@@ -12,7 +12,7 @@ try:
 except ImportError as e:
     import sys
 
-    sys.exit("This examples requires firedrake. See https://pymgrit.github.io/pymgrit/coupling/firedrake.html")
+    sys.exit("This example requires firedrake. See https://pymgrit.github.io/pymgrit/coupling/firedrake.html")
 
 import numpy as np
 

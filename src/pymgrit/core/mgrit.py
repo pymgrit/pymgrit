@@ -166,11 +166,9 @@ class Mgrit:
                 self.interpolation.append(transfer[lvl].interpolation)
             if lvl < self.lvl_max - 1:
                 tmp_cpts = np.where(np.in1d(self.problem[lvl].t, self.problem[lvl + 1].t))[0]
-                tmp_m = np.mean(np.absolute(
-                    tmp_cpts[1:] if len(tmp_cpts[1:]) > 0 else [1] - tmp_cpts[:-1] if len(tmp_cpts[:-1]) > 0 else [1]),
-                                0)
+                tmp_m = np.diff(tmp_cpts)[0]
                 self.m.append(int(tmp_m))
-                if not tmp_m.is_integer():
+                if not np.all(np.isclose(np.diff(tmp_cpts), np.diff(tmp_cpts)[0])) and self.comm_time_rank == 0:
                     logging.warning('Non-uniform coarsening between level ' + str(lvl) + ' and ' + str(
                         lvl + 1) + '. Poorly tested.')
             else:
@@ -631,10 +629,9 @@ class Mgrit:
         all_fpts = np.array(list(set(np.array(range(0, points_time))) - set(all_cpts)))
         cpts = np.sort(np.array(list(set(all_pts) - set(all_fpts)), dtype='int'))
         fpts = np.array(list(set(all_pts) - set(cpts)))
-        fpts2 = np.array([item for sublist in np.array([np.array(xi) for xi in np.asarray(
-            [list(map(itemgetter(1), g)) for k, g in groupby(enumerate(fpts), lambda x: x[0] - x[1])])])[::-1] for item
-                          in
-                          sublist])
+        fpts2 = np.array([item for sublist in np.array([np.array(xi, dtype=object) for xi in np.array(
+            [list(map(itemgetter(1), g)) for k, g in groupby(enumerate(fpts), lambda x: x[0] - x[1])], dtype=object)],
+                                                       dtype=object)[::-1] for item in sublist])
 
         # Add ghost point if needed, set time interval
         with_ghost_point = False

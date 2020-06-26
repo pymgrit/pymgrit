@@ -13,7 +13,7 @@ try:
 except ImportError as e:
     import sys
 
-    sys.exit("This examples requires petsc4py.")
+    sys.exit("This example requires petsc4py.")
 
 
 class VectorPetsc(PymgritVector):
