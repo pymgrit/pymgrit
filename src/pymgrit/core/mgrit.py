@@ -38,6 +38,7 @@ class Mgrit:
         Initialize MGRIT solver.
 
         :param problem: List of problems (one for each MGRIT level)
+        :param omega: C-relaxation weight
         :param transfer: List of spatial transfer operators (one for each pair of consecutive MGRIT levels)
         :param max_iter: Maximum number of iterations
         :param tol: stopping tolerance
@@ -113,7 +114,7 @@ class Mgrit:
 
         # Initialize MGRIT parameters
         self.problem = problem  # List of problems (one per MGRIT level)
-        self.omega = omega # c-relaxation weight
+        self.omega = omega # C-relaxation weight
         self.lvl_max = len(problem)  # Max number of MGRIT levels
         self.step = []  # List of time integration routines (one per MGRIT level)
         self.u = []  # List of solutions (one per MGRIT level)
@@ -300,8 +301,8 @@ class Mgrit:
                                                                          t_start=self.t[lvl][i - 1],
                                                                          t_stop=self.t[lvl][i])
 
-                new_value = omega * self.u[lvl][i].get_values() + (1.0 - omega) * uOld[lvl][i].get_values()
-                self.u[lvl][i].set_values(new_values)
+                new_value = self.omega * self.u[lvl][i].get_values() + (1.0 - self.omega) * uOld[lvl][i].get_values()
+                self.u[lvl][i].set_values(new_value)
 
         logging.debug(f"C-relax on {self.comm_time_rank} took {time.time() - runtime_c} s")
 
@@ -474,7 +475,7 @@ class Mgrit:
                    np.max(self.problem[0].t[1:] - self.problem[0].t[:-1])),
                '  ' + '{0: <25}'.format(f'number of levels') + ' : ' + str(self.lvl_max),
                '  ' + '{0: <25}'.format(f'coarsening factors') + ' : ' + str(self.m[:-1]),
-               '  ' + '{0: <25}'.format(f'relaxation wight') + ' : ' + str(self.omega),
+               '  ' + '{0: <25}'.format(f'relaxation weight') + ' : ' + str(self.omega),
                '  ' + '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter),
                '  ' + '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it),
                '  ' + '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type),
