@@ -2,6 +2,7 @@
 MGRIT solver in FAS formulation
 """
 import time
+import copy
 import logging
 import sys
 from operator import itemgetter
