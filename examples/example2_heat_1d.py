@@ -1,6 +1,5 @@
 """
-Apply five-level MGRIT F-cycles with FCF-relaxation and non-unitary C-relaxation weight
-to solve the 1D heat equation
+Apply five-level MGRIT F-cycles with FCF-relaxation to solve the 1D heat equation
     u_t - a*u_xx = b(x,t),  a > 0, x in [0,1], t in [0,T],
 with RHS b(x,t) = -sin(pi*x)(sin(t) - a*pi^2*cos(t)),
 homogeneous Dirichlet BCs in space,
@@ -49,9 +48,20 @@ def main():
 
     # Setup five-level MGRIT solver and solve the problem
     problem = [heat0, heat1, heat2, heat3, heat4]
-    mgrit = Mgrit(problem=problem, omega = 1.3, cf_iter=1, cycle_type='F', nested_iteration=False, max_iter=10,
+
+    '''
+    Unitary C-relaxation weight
+    '''
+    mgrit = Mgrit(problem=problem, tol=1e-8, cf_iter=1, cycle_type='F', nested_iteration=False, max_iter=10,
                   logging_lvl=20, random_init_guess=False)
     info = mgrit.solve()
+
+    '''
+    Non-unitary C-relaxation weight
+    '''
+    mgrit2 = Mgrit(problem=problem, omega=1.3, tol=1e-8, cf_iter=1, cycle_type='F', nested_iteration=False, max_iter=10,
+                  logging_lvl=20, random_init_guess=False)
+    info = mgrit2.solve()
 
 
 if __name__ == '__main__':
