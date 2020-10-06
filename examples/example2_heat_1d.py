@@ -49,16 +49,12 @@ def main():
     # Setup five-level MGRIT solver and solve the problem
     problem = [heat0, heat1, heat2, heat3, heat4]
 
-    '''
-    Unitary C-relaxation weight
-    '''
+    # Unitary C-relaxation weight
     mgrit = Mgrit(problem=problem, tol=1e-8, cf_iter=1, cycle_type='F', nested_iteration=False, max_iter=10,
                   logging_lvl=20, random_init_guess=False)
     info = mgrit.solve()
 
-    '''
-    Non-unitary C-relaxation weight
-    '''
+    # Non-unitary C-relaxation weight
     mgrit2 = Mgrit(problem=problem, omega=1.3, tol=1e-8, cf_iter=1, cycle_type='F', nested_iteration=False, max_iter=10,
                   logging_lvl=20, random_init_guess=False)
     info = mgrit2.solve()
