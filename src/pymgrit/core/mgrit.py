@@ -288,7 +288,7 @@ class Mgrit:
 
         :param lvl: MGRIT level
         """
-        runtime_c = time.time()     
+        runtime_c = time.time()
         uOld = copy.deepcopy(self.u)
         if self.index_local_c[lvl].size > 0:
             for i in np.nditer(self.index_local_c[lvl]):
