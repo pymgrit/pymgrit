@@ -2,6 +2,7 @@
 MGRIT solver in FAS formulation
 """
 import time
+import copy
 import logging
 import sys
 from operator import itemgetter
@@ -29,7 +30,7 @@ class Mgrit:
     and the solved space-time matrix stencil is [-Phi I].
     """
 
-    def __init__(self, problem: List[Application], transfer: List[GridTransfer] = None,
+    def __init__(self, problem: List[Application], omega: float = 1.0, transfer: List[GridTransfer] = None,
                  max_iter: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
                  cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
                  logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1, t_norm=2,
@@ -38,6 +39,7 @@ class Mgrit:
         Initialize MGRIT solver.
 
         :param problem: List of problems (one for each MGRIT level)
+        :param omega: C-relaxation weight
         :param transfer: List of spatial transfer operators (one for each pair of consecutive MGRIT levels)
         :param max_iter: Maximum number of iterations
         :param tol: stopping tolerance
@@ -113,6 +115,7 @@ class Mgrit:
 
         # Initialize MGRIT parameters
         self.problem = problem  # List of problems (one per MGRIT level)
+        self.omega = omega # C-relaxation weight
         self.lvl_max = len(problem)  # Max number of MGRIT levels
         self.step = []  # List of time integration routines (one per MGRIT level)
         self.u = []  # List of solutions (one per MGRIT level)
@@ -286,6 +289,7 @@ class Mgrit:
         :param lvl: MGRIT level
         """
         runtime_c = time.time()
+        uOld = copy.deepcopy(self.u)
         if self.index_local_c[lvl].size > 0:
             for i in np.nditer(self.index_local_c[lvl]):
                 if i != 0 or self.comm_time_rank != 0:
@@ -297,6 +301,10 @@ class Mgrit:
                         self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
                                                                          t_start=self.t[lvl][i - 1],
                                                                          t_stop=self.t[lvl][i])
+
+                new_value = self.omega * self.u[lvl][i].get_values() + (1.0 - self.omega) * uOld[lvl][i].get_values()
+                self.u[lvl][i].set_values(new_value)
+
         logging.debug(f"C-relax on {self.comm_time_rank} took {time.time() - runtime_c} s")
 
     def convergence_criterion(self, iteration: int) -> None:
@@ -468,6 +476,7 @@ class Mgrit:
                    np.max(self.problem[0].t[1:] - self.problem[0].t[:-1])),
                '  ' + '{0: <25}'.format(f'number of levels') + ' : ' + str(self.lvl_max),
                '  ' + '{0: <25}'.format(f'coarsening factors') + ' : ' + str(self.m[:-1]),
+               '  ' + '{0: <25}'.format(f'relaxation weight') + ' : ' + str(self.omega),
                '  ' + '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter),
                '  ' + '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it),
                '  ' + '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type),
