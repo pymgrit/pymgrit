@@ -48,6 +48,17 @@ class VectorHeat1D(Vector):
         tmp.set_values(self.get_values() - other.get_values())
         return tmp
 
+    def __mul__(self, other):
+        """
+        Multiplication of one vector object with  (self and other)
+
+        :param other: vector object to be subtracted from self
+        :return: difference of vector object self and input object other
+        """
+        tmp = VectorHeat1D(self.size)
+        tmp.set_values(self.get_values() * other)
+        return tmp
+
     def norm(self):
         """
         Norm of a vector object

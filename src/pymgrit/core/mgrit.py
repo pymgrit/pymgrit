@@ -115,7 +115,7 @@ class Mgrit:
 
         # Initialize MGRIT parameters
         self.problem = problem  # List of problems (one per MGRIT level)
-        self.omega = omega # C-relaxation weight
+        self.omega = omega  # C-relaxation weight
         self.lvl_max = len(problem)  # Max number of MGRIT levels
         self.step = []  # List of time integration routines (one per MGRIT level)
         self.u = []  # List of solutions (one per MGRIT level)
@@ -289,21 +289,19 @@ class Mgrit:
         :param lvl: MGRIT level
         """
         runtime_c = time.time()
-        uOld = copy.deepcopy(self.u)
         if self.index_local_c[lvl].size > 0:
             for i in np.nditer(self.index_local_c[lvl]):
                 if i != 0 or self.comm_time_rank != 0:
                     if lvl == 0:
                         self.u[lvl][i] = self.step[lvl](u_start=self.u[lvl][i - 1],
                                                         t_start=self.t[lvl][i - 1],
-                                                        t_stop=self.t[lvl][i])
+                                                        t_stop=self.t[lvl][i]) * self.omega + \
+                                         self.u[lvl][i] * (1.0 - self.omega)
                     else:
-                        self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
-                                                                         t_start=self.t[lvl][i - 1],
-                                                                         t_stop=self.t[lvl][i])
-
-                new_value = self.omega * self.u[lvl][i].get_values() + (1.0 - self.omega) * uOld[lvl][i].get_values()
-                self.u[lvl][i].set_values(new_value)
+                        self.u[lvl][i] = (self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
+                                                                          t_start=self.t[lvl][i - 1],
+                                                                          t_stop=self.t[lvl][i])) * self.omega + \
+                                         self.u[lvl][i] * (1.0 - self.omega)
 
         logging.debug(f"C-relax on {self.comm_time_rank} took {time.time() - runtime_c} s")
 
