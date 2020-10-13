@@ -33,6 +33,11 @@ class VectorArenstorfOrbit(Vector):
         tmp.set_values(self.get_values() - other.get_values())
         return tmp
 
+    def __mul__(self, other):
+        tmp = VectorArenstorfOrbit()
+        tmp.set_values(self.get_values() * other)
+        return tmp
+
     def norm(self):
         return np.linalg.norm(np.array([self.y0, self.y1, self.y2, self.y3]))
 

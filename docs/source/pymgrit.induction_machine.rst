@@ -52,7 +52,6 @@ pymgrit.induction\_machine.vector\_machine module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

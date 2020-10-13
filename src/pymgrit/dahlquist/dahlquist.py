@@ -28,6 +28,11 @@ class VectorDahlquist(Vector):
         tmp.set_values(self.get_values() - other.get_values())
         return tmp
 
+    def __mul__(self, other):
+        tmp = VectorDahlquist(0)
+        tmp.set_values(self.get_values() * other)
+        return tmp
+
     def norm(self):
         return np.linalg.norm(self.value)
 

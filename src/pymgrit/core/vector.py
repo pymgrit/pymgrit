@@ -54,6 +54,15 @@ class Vector(ABC):
         """
 
     @abstractmethod
+    def __mul__(self, other: '__class__') -> '__class__':
+        """
+        Multiplication of one vector object with a float (self and other)
+
+        :param other: object to be multiplied with self
+        :return: difference of vector object self and input object other
+        """
+
+    @abstractmethod
     def norm(self):
         """
         Norm of a vector object

@@ -56,6 +56,17 @@ class VectorHeat2D(Vector):
         tmp.set_values(self.get_values() - other.get_values())
         return tmp
 
+    def __mul__(self, other):
+        """
+        Multiplication of a vector object and a float (self and other)
+
+        :param other: object to be multiplied with self
+        :return: difference of vector object self and input object other
+        """
+        tmp = VectorHeat2D(self.nx, self.ny)
+        tmp.set_values(self.get_values() * other)
+        return tmp
+
     def norm(self):
         """
         Norm of a vector object

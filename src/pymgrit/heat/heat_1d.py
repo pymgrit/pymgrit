@@ -50,9 +50,9 @@ class VectorHeat1D(Vector):
 
     def __mul__(self, other):
         """
-        Multiplication of one vector object with  (self and other)
+        Multiplication of one vector object with a float (self and other)
 
-        :param other: vector object to be subtracted from self
+        :param other: object to be multiplied with self
         :return: difference of vector object self and input object other
         """
         tmp = VectorHeat1D(self.size)

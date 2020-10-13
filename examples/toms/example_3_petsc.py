@@ -50,6 +50,15 @@ class VectorPetsc(PymgritVector):
         """
         return VectorPetsc(self.get_values() - other.get_values())
 
+    def __mul__(self, other) -> 'VectorMachine':
+        """
+        Multiplication of a vector object and a float (self and other)
+
+        :param other: object to be multiplied with self
+        :return: difference of vector object self and input object other
+        """
+        return VectorPetsc(self.get_values() * other)
+
     def norm(self) -> float:
         """
         Norm of a vector object

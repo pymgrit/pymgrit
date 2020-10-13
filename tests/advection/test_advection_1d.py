@@ -79,6 +79,15 @@ def test_vector_advection_1d_sub():
     vector_advection_1d_res = vector_advection_1d_2 - vector_advection_1d_1
     np.testing.assert_equal(vector_advection_1d_res.values, np.ones(5))
 
+def test_vector_advection_1d_mul():
+    """
+    Test __mul__
+    """
+    vector_advection_1d_1 = VectorAdvection1D(5)
+    vector_advection_1d_1.values = np.ones(5)
+
+    vector_advection_1d_res = vector_advection_1d_1 * 5
+    np.testing.assert_equal(vector_advection_1d_res.values, np.ones(5)*5)
 
 def test_vector_advection_1d_norm():
     """

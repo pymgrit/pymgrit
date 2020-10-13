@@ -52,7 +52,7 @@ class VectorAdvection1D(Vector):
 
     def __mul__(self, other):
         tmp = VectorAdvection1D(self.size)
-        tmp.set_values(self.get_values() - other)
+        tmp.set_values(self.get_values() * other)
         return tmp
 
     def norm(self):

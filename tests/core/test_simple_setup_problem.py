@@ -18,6 +18,9 @@ class VectorSimple(Vector):
     def __sub__(self, other):
         pass
 
+    def __mul__(self, other):
+        pass
+
     def norm(self):
         pass
 

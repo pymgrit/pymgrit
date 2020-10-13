@@ -78,6 +78,27 @@ class VectorMachine(Vector):
         tmp.tr = self.tr - other.tr
         return tmp
 
+    def __mul__(self, other) -> 'VectorMachine':
+        """
+        Multiplication of a vector object and a float (self and other)
+
+        :param other: object to be multiplied with self
+        :return: difference of vector object self and input object other
+        """
+        tmp = VectorMachine(len(self.u_front), len(self.u_middle), len(self.u_back))
+        tmp.u_front = self.u_front * other
+        tmp.u_back = self.u_back * other
+        tmp.u_middle = self.u_middle * other
+        tmp.jl = self.jl * other
+        tmp.ia = self.ia * other
+        tmp.ib = self.ib * other
+        tmp.ic = self.ic * other
+        tmp.ua = self.ua * other
+        tmp.ub = self.ub * other
+        tmp.uc = self.uc * other
+        tmp.tr = self.tr * other
+        return tmp
+
     def norm(self) -> float:
         """
         Norm of a vector object

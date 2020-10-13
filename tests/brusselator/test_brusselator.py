@@ -65,6 +65,15 @@ def test_vector_brusselator_sub():
     vector_brusselator_res = vector_brusselator_2 - vector_brusselator_1
     np.testing.assert_equal(vector_brusselator_res.value, np.ones(2))
 
+def test_vector_brusselator_mul():
+    """
+    Test __mul__
+    """
+    vector_brusselator_1 = VectorBrusselator()
+    vector_brusselator_1.value = np.ones(2)
+
+    vector_brusselator_res = vector_brusselator_1 * 2
+    np.testing.assert_equal(vector_brusselator_res.value, np.ones(2)*2)
 
 def test_vector_brusselator_norm():
     """

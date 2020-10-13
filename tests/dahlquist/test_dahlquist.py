@@ -118,6 +118,16 @@ def test_vector_dahlquist_sub():
     np.testing.assert_equal(vector_dahlquist_res.value, 1)
 
 
+def test_vector_dahlquist_mul():
+    """
+    Test __sub__
+    """
+    vector_dahlquist_1 = VectorDahlquist(1)
+
+    vector_dahlquist_res = vector_dahlquist_1 * 7
+    np.testing.assert_equal(vector_dahlquist_res.value, 7)
+
+
 def test_vector_dahlquist_norm():
     """
     Test norm()

@@ -54,6 +54,18 @@ class VectorHeat1D2Pts(Vector):
         tmp.set_values(first_self - first_other, second_self - second_other, dtau_self)
         return tmp
 
+    def __mul__(self, other):
+        """
+        Multiplication of one vector object with a float (self and other)
+
+        :param other: object to be multiplied with self
+        :return: difference of vector object self and input object other
+        """
+        tmp = VectorHeat1D2Pts(self.size, self.dtau)
+        first_self, second_self, dtau_self = self.get_values()
+        tmp.set_values(first_self * other, second_self * other, dtau_self)
+        return tmp
+
     def norm(self):
         """
         Norm of a vector object

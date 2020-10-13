@@ -12,7 +12,6 @@ pymgrit.advection.advection\_1d module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

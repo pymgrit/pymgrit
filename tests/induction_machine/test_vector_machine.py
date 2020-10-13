@@ -77,9 +77,6 @@ def test_vector_machine_sub():
     """
     Test __sub__
     """
-    """
-    Test __add__
-    """
     vector_machine_1 = VectorMachine(u_front_size=4, u_middle_size=5, u_back_size=6)
     vector_machine_1.u_front = np.ones(4)
     vector_machine_1.u_middle = np.ones(5)
@@ -119,6 +116,37 @@ def test_vector_machine_sub():
     np.testing.assert_equal(vector_machine_res.ic, 10)
     np.testing.assert_equal(vector_machine_res.tr, 10)
 
+def test_vector_machine_mul():
+    """
+    Test __mul__
+    """
+    vector_machine_1 = VectorMachine(u_front_size=4, u_middle_size=5, u_back_size=6)
+    vector_machine_1.u_front = np.ones(4)
+    vector_machine_1.u_middle = np.ones(5)
+    vector_machine_1.u_back = np.ones(6)
+    vector_machine_1.ua = 1
+    vector_machine_1.ub = 2
+    vector_machine_1.uc = 3
+    vector_machine_1.ia = 4
+    vector_machine_1.ib = 5
+    vector_machine_1.ic = 6
+    vector_machine_1.tr = 7
+    vector_machine_1.jl = 8
+
+    fac = 5
+    vector_machine_res = vector_machine_1 * fac
+    np.testing.assert_equal(vector_machine_res.u_front, np.ones(4)*fac)
+    np.testing.assert_equal(vector_machine_res.u_middle, fac * np.ones(5))
+    np.testing.assert_equal(vector_machine_res.u_back, fac * np.ones(6))
+
+    np.testing.assert_equal(vector_machine_res.jl, 8*fac)
+    np.testing.assert_equal(vector_machine_res.ua, 1*fac)
+    np.testing.assert_equal(vector_machine_res.ub, 2*fac)
+    np.testing.assert_equal(vector_machine_res.uc, 3*fac)
+    np.testing.assert_equal(vector_machine_res.ia, 4*fac)
+    np.testing.assert_equal(vector_machine_res.ib, 5*fac)
+    np.testing.assert_equal(vector_machine_res.ic, 6*fac)
+    np.testing.assert_equal(vector_machine_res.tr, 7*fac)
 
 def test_vector_machine_norm():
     """
