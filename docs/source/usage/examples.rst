@@ -170,7 +170,7 @@ of PyMGRIT's core routine `Mgrit()`.
                                                                 # 'F' -> F-cycles
                   comm_time=MPI.COMM_WORLD,                     # Time communicator (default: MPI.COMM_WORLD)
                   comm_space=MPI.COMM_NULL,                     # Space communicator (default: MPI.COMM_NULL)
-                  omega=1,                                      # C - relaxation weight (default: 1)
+                  weight_c=1,                                      # C - relaxation weight (default: 1)
                   logging_lvl=20,                               # Logging level (default: 20):
                                                                 # 10: Debug -> Runtime of all components
                                                                 # 20: Info  -> Info per iteration + summary

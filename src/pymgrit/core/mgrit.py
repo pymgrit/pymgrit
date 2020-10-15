@@ -30,7 +30,7 @@ class Mgrit:
     and the solved space-time matrix stencil is [-Phi I].
     """
 
-    def __init__(self, problem: List[Application], omega: float = 1.0, transfer: List[GridTransfer] = None,
+    def __init__(self, problem: List[Application], transfer: List[GridTransfer] = None, weight_c: float = 1.0,
                  max_iter: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
                  cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
                  logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1, t_norm=2,
@@ -39,7 +39,7 @@ class Mgrit:
         Initialize MGRIT solver.
 
         :param problem: List of problems (one for each MGRIT level)
-        :param omega: C-relaxation weight
+        :param weight_c: C-relaxation weight
         :param transfer: List of spatial transfer operators (one for each pair of consecutive MGRIT levels)
         :param max_iter: Maximum number of iterations
         :param tol: stopping tolerance
@@ -115,7 +115,7 @@ class Mgrit:
 
         # Initialize MGRIT parameters
         self.problem = problem  # List of problems (one per MGRIT level)
-        self.omega = omega  # C-relaxation weight
+        self.weight_c = weight_c  # C-relaxation weight
         self.lvl_max = len(problem)  # Max number of MGRIT levels
         self.step = []  # List of time integration routines (one per MGRIT level)
         self.u = []  # List of solutions (one per MGRIT level)
@@ -295,13 +295,13 @@ class Mgrit:
                     if lvl == 0:
                         self.u[lvl][i] = self.step[lvl](u_start=self.u[lvl][i - 1],
                                                         t_start=self.t[lvl][i - 1],
-                                                        t_stop=self.t[lvl][i]) * self.omega + \
-                                         self.u[lvl][i] * (1.0 - self.omega)
+                                                        t_stop=self.t[lvl][i]) * self.weight_c + \
+                                         self.u[lvl][i] * (1.0 - self.weight_c)
                     else:
                         self.u[lvl][i] = (self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
                                                                           t_start=self.t[lvl][i - 1],
-                                                                          t_stop=self.t[lvl][i])) * self.omega + \
-                                         self.u[lvl][i] * (1.0 - self.omega)
+                                                                          t_stop=self.t[lvl][i])) * self.weight_c + \
+                                         self.u[lvl][i] * (1.0 - self.weight_c)
 
         logging.debug(f"C-relax on {self.comm_time_rank} took {time.time() - runtime_c} s")
 

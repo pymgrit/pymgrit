@@ -55,7 +55,7 @@ def main():
     info = mgrit.solve()
 
     # Non-unitary C-relaxation weight
-    mgrit2 = Mgrit(problem=problem, omega=1.3, tol=1e-8, cf_iter=1, cycle_type='F', nested_iteration=False, max_iter=10,
+    mgrit2 = Mgrit(problem=problem, weight_c=1.3, tol=1e-8, cf_iter=1, cycle_type='F', nested_iteration=False, max_iter=10,
                   logging_lvl=20, random_init_guess=False)
     info = mgrit2.solve()
 
