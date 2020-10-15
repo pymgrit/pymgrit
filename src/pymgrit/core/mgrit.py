@@ -474,7 +474,7 @@ class Mgrit:
                    np.max(self.problem[0].t[1:] - self.problem[0].t[:-1])),
                '  ' + '{0: <25}'.format(f'number of levels') + ' : ' + str(self.lvl_max),
                '  ' + '{0: <25}'.format(f'coarsening factors') + ' : ' + str(self.m[:-1]),
-               '  ' + '{0: <25}'.format(f'relaxation weight') + ' : ' + str(self.omega),
+               '  ' + '{0: <25}'.format(f'relaxation weight') + ' : ' + str(self.weight_c),
                '  ' + '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter),
                '  ' + '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it),
                '  ' + '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type),
