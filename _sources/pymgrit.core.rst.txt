@@ -68,7 +68,6 @@ pymgrit.core.vector module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

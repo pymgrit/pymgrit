@@ -12,7 +12,6 @@ pymgrit.arenstorf\_orbit.arenstorf\_orbit module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

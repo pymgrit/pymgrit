@@ -44,7 +44,6 @@ pymgrit.heat.vector\_heat\_1d\_2pts module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

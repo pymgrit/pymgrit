@@ -41,7 +41,7 @@ Then, we define the class `VectorDahlquist` containing a scalar member variable 
             super().__init__()
             self.value = value
 
-Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, `norm`, `pack` and `unpack`.
+Furthermore, we must define the following seven member functions: `set_values`, `get_values`, `clone`, `clone_zero`, `clone_rand`, `__add__`, `__sub__`, `__mul__`, `norm`, `pack` and `unpack`.
 
 The function `set_values` receives data values and overwrites the values of the vector data and `get_values` returns the vector data.
 For our class `VectorDahlquist`, the vector data is the scalar member variable `value`::
@@ -63,8 +63,9 @@ The function `clone` clones the object. The function `clone_zero` returns a vect
         def clone_rand(self):
             return VectorDahlquist(np.random.rand(1)[0])
 
-The functions `__add__`, `__sub__`, and `norm` define the addition and subtraction of two vector objects and the norm of a vector object, respectively.
+The functions `__add__`, `__sub__`, `__mul__`, and `norm` define the addition and subtraction of two vector objects and the norm of a vector object, respectively.
 For our class `VectorDahlquist`, adding or subtracting two vector objects means adding or subtracting the values of the member variable `value` by using the functions `get_values` and `set_values`.
+The multiplication defines the multiplication of a vector objects with a float.
 We define the norm of a vector object as the norm (from ``numpy``) of the member variable `value`::
 
         def __add__(self, other):
@@ -75,6 +76,11 @@ We define the norm of a vector object as the norm (from ``numpy``) of the member
         def __sub__(self, other):
             tmp = VectorDahlquist(0)
             tmp.set_values(self.get_values() - other.get_values())
+            return tmp
+
+        def __mul__(self, other):
+            tmp = VectorDahlquist(0)
+            tmp.set_values(self.get_values() * other)
             return tmp
 
         def norm(self):
@@ -105,6 +111,7 @@ The following member functions must be defined:
     - `clone_rand` : Initialization of vector data with random values
     - `__add__` : Addition of two vector objects
     - `__sub__` : Subtraction of two vector objects
+    - `__mul__` : Multiplication of a vector object with a float
     - `norm` : Norm of a vector object (for measuring convergence)
     - `pack` : Specifying communication data
     - `unpack` : Unpacking communication data
@@ -146,6 +153,11 @@ The following member functions must be defined:
         def __sub__(self, other):
             tmp = VectorDahlquist(0)
             tmp.set_values(self.get_values() - other.get_values())
+            return tmp
+
+        def __mul__(self, other):
+            tmp = VectorDahlquist(0)
+            tmp.set_values(self.get_values() * other)
             return tmp
 
         def norm(self):
