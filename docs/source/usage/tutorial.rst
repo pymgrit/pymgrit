@@ -2,6 +2,10 @@
 Tutorial
 **********
 
+tutorial_notebook.ipynb_
+
+.. _tutorial_notebook.ipynb: https://github.com/pymgrit/pymgrit/blob/master/notebooks/03_tutorial_notebook.ipynb
+
 This tutorial demonstrates basic usage of the PyMGRIT package. Our goal is solving Dahlquist's test problem,
 
 .. math::
