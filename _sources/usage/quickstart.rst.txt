@@ -2,6 +2,10 @@
 Quickstart
 **********
 
+quickstart_notebook.ipynb_
+
+.. _quickstart_notebook.ipynb: https://github.com/pymgrit/pymgrit/blob/master/notebooks/02_quickstart_notebook.ipynb
+
 PyMGRIT is easy to use! In the following, we generate a discrete Dahlquist test problem and solve the resulting linear system using a two-level MGRIT algorithm.
 
 Look at the Application :doc:`Dahlquist <../applications/dahlquist>` for more information about this test problem.

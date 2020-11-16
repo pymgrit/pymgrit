@@ -190,7 +190,10 @@ The source code for these and more examples is available in the <a class="refere
 </div></blockquote>
 <div class="section" id="basic-usage">
 <h2>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py">example_dahlquist.py</a></p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py">example_dahlquist.py</a></div>
+<div class="line"><a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/notebooks/04_example_basic_usage_notebook.ipynb">example_basic_usage_notebook.ipynb</a></div>
+</div>
 <p>This example demonstrates basic usage of the PyMGRIT package for solving a simple test problem with a two-level MGRIT solver,
 using PyMGRIT’s core routines <cite>simple_setup_problem()</cite>, <cite>Mgrit()</cite>, and <cite>mgrit.solve()</cite>.
 Note: This example is also considered in <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a>.</p>
@@ -249,7 +252,10 @@ the solver routine <cite>mgrit.solve()</cite> of the MGRIT solver.</p>
 </div>
 <div class="section" id="multigrid-hierarchy">
 <h2>Multigrid hierarchy<a class="headerlink" href="#multigrid-hierarchy" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_multilevel_structure.py">example_multilevel_structure.py</a></p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_multilevel_structure.py">example_multilevel_structure.py</a></div>
+<div class="line"><a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/notebooks/05_example_multigrid_hierarchy_notebook.ipynb">example_multigrid_hierarchy_notebook.ipynb</a></div>
+</div>
 <p>There are several ways to create a time-multigrid hierarchy for a problem:</p>
 <ol class="arabic simple">
 <li><p>Using PyMGRIT’s core function <cite>simple_setup_problem()</cite></p></li>
@@ -297,7 +303,10 @@ builds MGRIT solvers using the resulting four multilevel objects:</p>
 </div>
 <div class="section" id="solver-parameters">
 <h2>Solver parameters<a class="headerlink" href="#solver-parameters" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_parameters.py">example_parameters.py</a></p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_parameters.py">example_parameters.py</a></div>
+<div class="line"><a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/notebooks/06_example_solver_parameters_notebook.ipynb">example_solver_parameters.ipynb</a></div>
+</div>
 <p>The MGRIT algorithm in PyMGRIT has a variety of parameters and features. This example describes the parameters
 of PyMGRIT’s core routine <cite>Mgrit()</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
@@ -351,7 +360,10 @@ of PyMGRIT’s core routine <cite>Mgrit()</cite>.</p>
 </div>
 <div class="section" id="output-function">
 <h2>Output function<a class="headerlink" href="#output-function" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn_serial.py">example_output_fcn_serial.py</a> and <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py">example_output_fcn.py</a></p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn_serial.py">example_output_fcn_serial.py</a> and <a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py">example_output_fcn.py</a></div>
+<div class="line"><a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/notebooks/07_example_output_function_notebook.ipynb">example_output_function_notebook.ipynb</a></div>
+</div>
 <p>In this example, we show how to save and plot the MGRIT approximation of the solution of Dahlquist’s test problem.
 An output function is defined that saves the solution (here, a single solution value at each time point is written to an
 output file via the <code class="docutils literal notranslate"><span class="pre">numpy</span></code> function <cite>save()</cite>). This output function is passed to the MGRIT solver.

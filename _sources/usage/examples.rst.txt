@@ -17,9 +17,11 @@ The source code for these and more examples is available in the examples_ folder
 Basic usage
 -----------
 
-example_dahlquist.py_
+| example_dahlquist.py_
+| example_basic_usage_notebook.ipynb_
 
 .. _example_dahlquist.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_dahlquist.py
+.. _example_basic_usage_notebook.ipynb: https://github.com/pymgrit/pymgrit/blob/master/notebooks/04_example_basic_usage_notebook.ipynb
 
 This example demonstrates basic usage of the PyMGRIT package for solving a simple test problem with a two-level MGRIT solver,
 using PyMGRIT's core routines `simple_setup_problem()`, `Mgrit()`, and `mgrit.solve()`.
@@ -81,9 +83,11 @@ and returns the residual history, setup time, and solve time in dictionary `info
 Multigrid hierarchy
 -------------------
 
-example_multilevel_structure.py_
+| example_multilevel_structure.py_
+| example_multigrid_hierarchy_notebook.ipynb_
 
 .. _example_multilevel_structure.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_multilevel_structure.py
+.. _example_multigrid_hierarchy_notebook.ipynb: https://github.com/pymgrit/pymgrit/blob/master/notebooks/05_example_multigrid_hierarchy_notebook.ipynb
 
 There are several ways to create a time-multigrid hierarchy for a problem:
 
@@ -136,9 +140,12 @@ builds MGRIT solvers using the resulting four multilevel objects:
 Solver parameters
 -----------------
 
-example_parameters.py_
+| example_parameters.py_
+| example_solver_parameters.ipynb_
+
 
 .. _example_parameters.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_parameters.py
+.. _example_solver_parameters.ipynb: https://github.com/pymgrit/pymgrit/blob/master/notebooks/06_example_solver_parameters_notebook.ipynb
 
 The MGRIT algorithm in PyMGRIT has a variety of parameters and features. This example describes the parameters
 of PyMGRIT's core routine `Mgrit()`.
@@ -197,10 +204,13 @@ of PyMGRIT's core routine `Mgrit()`.
 Output function
 ---------------
 
-example_output_fcn_serial.py_ and example_output_fcn.py_
+| example_output_fcn_serial.py_ and example_output_fcn.py_
+| example_output_function_notebook.ipynb_
+
 
 .. _example_output_fcn_serial.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn_serial.py
 .. _example_output_fcn.py: https://github.com/pymgrit/pymgrit/tree/master/examples/example_output_fcn.py
+.. _example_output_function_notebook.ipynb: https://github.com/pymgrit/pymgrit/blob/master/notebooks/07_example_output_function_notebook.ipynb
 
 In this example, we show how to save and plot the MGRIT approximation of the solution of Dahlquist's test problem.
 An output function is defined that saves the solution (here, a single solution value at each time point is written to an
