@@ -363,15 +363,15 @@ def run_mgrit(nt, space_procs, coarsening, freq=1, a=1.0, t_start=0, t_stop=1, c
 
 
 if __name__ == '__main__':
-    #setup, solve, setup_and_solve = run_timestepping(nt=2 ** 14 + 1, space_procs=1)
-    # setup, solve, setup_and_solve =  run_timestepping(nt=2 ** 14 + 1, space_procs=2)
-    # setup, solve, setup_and_solve =  run_timestepping(nt=2 ** 14 + 1, space_procs=4)
-    # setup, solve, setup_and_solve =  run_timestepping(nt=2 ** 14 + 1, space_procs=8)
-    # setup, solve, setup_and_solve =  run_timestepping(nt=2 ** 14 + 1, space_procs=16)
-    # setup, solve, setup_and_solve =  run_timestepping(nt=2 ** 14 + 1, space_procs=32)
-    # setup, solve, setup_and_solve =  run_timestepping(nt=2 ** 14 + 1, space_procs=64)
-    # setup, solve, setup_and_solve =  run_timestepping(nt=2 ** 1, space_procs=space_procs[i], coarsening=item, spatial_coarsening=False,
-    #                 cycle='F')
+    # setup, solve, setup_and_solve = run_timestepping(nt=2 ** 14 + 1, space_procs=1)
+    # setup, solve, setup_and_solve = run_timestepping(nt=2 ** 14 + 1, space_procs=2)
+    # setup, solve, setup_and_solve = run_timestepping(nt=2 ** 14 + 1, space_procs=4)
+    # setup, solve, setup_and_solve = run_timestepping(nt=2 ** 14 + 1, space_procs=8)
+    # setup, solve, setup_and_solve = run_timestepping(nt=2 ** 14 + 1, space_procs=16)
+    # setup, solve, setup_and_solve = run_timestepping(nt=2 ** 14 + 1, space_procs=32)
+    # setup, solve, setup_and_solve = run_timestepping(nt=2 ** 14 + 1, space_procs=64)
 
     setup, solve, setup_and_solve = run_mgrit(nt=2 ** 14 + 1, space_procs=4, coarsening=[32, 16, 4, 4], cycle='V')
-    # setup, solve, setup_and_solve =  run_mgrit(nt=2 ** 14 + 1, space_procs=4, coarsening=[32, 16, 4, 4], cycle='F')
+    # setup, solve, setup_and_solve = run_mgrit(nt=2 ** 14 + 1, space_procs=4, coarsening=[32, 16, 4, 4], cycle='F')
+    if MPI.COMM_WORLD.Get_size() == 1:
+        print('Setup:', setup, 'Solve:', solve, 'Setup + Solve:', setup_and_solve)
