@@ -37,9 +37,11 @@ If the initial conditions are chosen to be
 
     x(0) = 0.994, \;\;\; x'(0) = 0, \;\;\; y(0) = 0, \;\;\; y'(0) = -2.00158510637908252240537862224,
 
-then the solution is periodic with period :math:`T = 17.0652165601579625588917206249`.
+then the solution is periodic with period :math:`T = 17.0652165601579625588917206249`. This example is taken from [#]_.
 
 The Arenstorf orbit computed by example_arenstorf.py_ :
 
 .. figure:: ../figures/arenstorf_orbit.png
     :alt: arenstorf orbit
+
+.. [#] Gander M.J., Hairer E. (2008) Nonlinear Convergence Analysis for the Parareal Algorithm. In: Langer U., Discacciati M., Keyes D.E., Widlund O.B., Zulehner W. (eds) Domain Decomposition Methods in Science and Engineering XVII. Lecture Notes in Computational Science and Engineering, vol 60. Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-540-75199-1_4

@@ -22,7 +22,7 @@ It can be described by the following system of ODEs:
     y' &= Bx - x^2y,
 
 with positive concentrations :math:`A` and :math:`B`. If :math:`A` and :math:`B` are constant and :math:`B > A^2 + 1`,
-the system will form a limit cycle.
+the system will form a limit cycle. This example is taken from [#]_.
 
 In example_brusselator.py_, :math:`A = 1`, :math:`B = 3`, and the initial conditions are chosen to be
 
@@ -33,3 +33,5 @@ which produces the output:
 
 .. figure:: ../figures/brusselator.png
     :alt: solution of brusselator problem
+
+.. [#] Gander M.J., Hairer E. (2008) Nonlinear Convergence Analysis for the Parareal Algorithm. In: Langer U., Discacciati M., Keyes D.E., Widlund O.B., Zulehner W. (eds) Domain Decomposition Methods in Science and Engineering XVII. Lecture Notes in Computational Science and Engineering, vol 60. Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-540-75199-1_4
