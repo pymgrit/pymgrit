@@ -65,6 +65,12 @@ def test_vector_arenstorf_orbit_add():
     np.testing.assert_equal(vector_arenstorf_orbit_res.y2, 3)
     np.testing.assert_equal(vector_arenstorf_orbit_res.y3, 3)
 
+    vector_arenstorf_orbit_res += vector_arenstorf_orbit_1
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y0, 4)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y1, 4)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y2, 4)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y3, 4)
+
 
 def test_vector_arenstorf_orbit_sub():
     """
@@ -87,6 +93,12 @@ def test_vector_arenstorf_orbit_sub():
     np.testing.assert_equal(vector_arenstorf_orbit_res.y2, 1)
     np.testing.assert_equal(vector_arenstorf_orbit_res.y3, 1)
 
+    vector_arenstorf_orbit_res -= vector_arenstorf_orbit_2
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y0, -1)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y1, -1)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y2, -1)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y3, -1)
+
 def test_vector_arenstorf_orbit_mul():
     """
     Test __mul__
@@ -103,6 +115,17 @@ def test_vector_arenstorf_orbit_mul():
     np.testing.assert_equal(vector_arenstorf_orbit_res.y2, 5)
     np.testing.assert_equal(vector_arenstorf_orbit_res.y3, 5)
 
+    vector_arenstorf_orbit_res = 7 * vector_arenstorf_orbit_1
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y0, 7)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y1, 7)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y2, 7)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y3, 7)
+
+    vector_arenstorf_orbit_res *= 7
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y0, 49)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y1, 49)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y2, 49)
+    np.testing.assert_equal(vector_arenstorf_orbit_res.y3, 49)
 
 def test_vector_arenstorf_orbit_norm():
     """

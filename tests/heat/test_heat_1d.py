@@ -64,6 +64,9 @@ def test_vector_heat_1d_add():
     vector_heat_1d_res = vector_heat_1d_1 + vector_heat_1d_2
     np.testing.assert_equal(vector_heat_1d_res.values, 3 * np.ones(5))
 
+    vector_heat_1d_res += vector_heat_1d_1
+    np.testing.assert_equal(vector_heat_1d_res.values, 4 * np.ones(5))
+
 
 def test_vector_heat_1d_sub():
     """
@@ -77,6 +80,10 @@ def test_vector_heat_1d_sub():
     vector_heat_1d_res = vector_heat_1d_2 - vector_heat_1d_1
     np.testing.assert_equal(vector_heat_1d_res.values, np.ones(5))
 
+    vector_heat_1d_res -= vector_heat_1d_2
+    np.testing.assert_equal(vector_heat_1d_res.values, -np.ones(5))
+
+
 def test_vector_heat_1d_mul():
     """
     Test __mul__
@@ -85,7 +92,14 @@ def test_vector_heat_1d_mul():
     vector_heat_1d_1.values = np.ones(5)
 
     vector_heat_1d_res = vector_heat_1d_1 * 3
-    np.testing.assert_equal(vector_heat_1d_res.values, np.ones(5)*3)
+    np.testing.assert_equal(vector_heat_1d_res.values, np.ones(5) * 3)
+
+    vector_heat_1d_res = 5 * vector_heat_1d_1
+    np.testing.assert_equal(vector_heat_1d_res.values, np.ones(5) * 5)
+
+    vector_heat_1d_res *= 7
+    np.testing.assert_equal(vector_heat_1d_res.values, np.ones(5) * 35)
+
 
 def test_vector_heat_1d_norm():
     """

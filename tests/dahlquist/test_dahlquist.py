@@ -106,6 +106,9 @@ def test_vector_dahlquist_add():
     vector_dahlquist_res = vector_dahlquist_1 + vector_dahlquist_2
     np.testing.assert_equal(vector_dahlquist_res.value, 3)
 
+    vector_dahlquist_res += vector_dahlquist_1
+    np.testing.assert_equal(vector_dahlquist_res.value, 4)
+
 
 def test_vector_dahlquist_sub():
     """
@@ -117,6 +120,9 @@ def test_vector_dahlquist_sub():
     vector_dahlquist_res = vector_dahlquist_2 - vector_dahlquist_1
     np.testing.assert_equal(vector_dahlquist_res.value, 1)
 
+    vector_dahlquist_res -= vector_dahlquist_2
+    np.testing.assert_equal(vector_dahlquist_res.value, -1)
+
 
 def test_vector_dahlquist_mul():
     """
@@ -126,6 +132,12 @@ def test_vector_dahlquist_mul():
 
     vector_dahlquist_res = vector_dahlquist_1 * 7
     np.testing.assert_equal(vector_dahlquist_res.value, 7)
+
+    vector_dahlquist_res = 8 * vector_dahlquist_1
+    np.testing.assert_equal(vector_dahlquist_res.value, 8)
+
+    vector_dahlquist_res *= 7
+    np.testing.assert_equal(vector_dahlquist_res.value, 56)
 
 
 def test_vector_dahlquist_norm():

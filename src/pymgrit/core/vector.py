@@ -59,7 +59,7 @@ class Vector(ABC):
         Multiplication of one vector object with a float (self and other)
 
         :param other: object to be multiplied with self
-        :return: difference of vector object self and input object other
+        :return: multiplication of vector object self and input object other
         """
 
     @abstractmethod
@@ -109,3 +109,43 @@ class Vector(ABC):
         """
         Unpacking communication data
         """
+
+    def __rmul__(self, other):
+        """
+        Right multiplication of one vector object with a float (self and other). Based on function __mul__.
+
+        :param other: object to be multiplied with self
+        :return: multiplication of vector object self and input object other
+        """
+
+        return self * other
+
+    def __imul__(self, other):
+        """
+        In-place multiplication based on function __mul__
+
+        :param other: object to be multiplied with self
+        :return: multiplication of vector object self and input vector object other
+        """
+
+        return self * other
+
+    def __iadd__(self, other):
+        """
+        In-place addition based on function __add__
+
+        :param other: object to be multiplied with self
+        :return: sum of vector object self and input vector object other
+        """
+
+        return self + other
+
+    def __isub__(self, other):
+        """
+        In-place subtraction based on function __sub__
+
+        :param other: vector object to be subtracted from self
+        :return: difference of vector object self and input vector object other
+        """
+
+        return self - other

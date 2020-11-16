@@ -52,6 +52,9 @@ def test_vector_brusselator_add():
     vector_brusselator_res = vector_brusselator_1 + vector_brusselator_2
     np.testing.assert_equal(vector_brusselator_res.value, 3 * np.ones(2))
 
+    vector_brusselator_res += vector_brusselator_1
+    np.testing.assert_equal(vector_brusselator_res.value, 4 * np.ones(2))
+
 
 def test_vector_brusselator_sub():
     """
@@ -65,6 +68,9 @@ def test_vector_brusselator_sub():
     vector_brusselator_res = vector_brusselator_2 - vector_brusselator_1
     np.testing.assert_equal(vector_brusselator_res.value, np.ones(2))
 
+    vector_brusselator_res -= vector_brusselator_2
+    np.testing.assert_equal(vector_brusselator_res.value, -np.ones(2))
+
 def test_vector_brusselator_mul():
     """
     Test __mul__
@@ -74,6 +80,12 @@ def test_vector_brusselator_mul():
 
     vector_brusselator_res = vector_brusselator_1 * 2
     np.testing.assert_equal(vector_brusselator_res.value, np.ones(2)*2)
+
+    vector_brusselator_res = 3 * vector_brusselator_1
+    np.testing.assert_equal(vector_brusselator_res.value, np.ones(2)*3)
+
+    vector_brusselator_res *= 2
+    np.testing.assert_equal(vector_brusselator_res.value, np.ones(2)*6)
 
 def test_vector_brusselator_norm():
     """
