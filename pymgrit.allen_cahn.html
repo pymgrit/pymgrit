@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pymgrit.allen_cahn package &mdash; PyMGRIT 1.0.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PyMGRIT
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/parallelism.html">Parallelism</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/advanced.html">Advanced usage</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Applications</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="applications/dahlquist.html">Dahlquist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/brusselator.html">Brusselator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/arenstorf_orbit.html">Arenstorf orbit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/heat_equation.html">Heat Equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications/advection.html">Advection</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Coupling</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="coupling/firedrake.html">Firedrake</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupling/petsc.html">PETSc</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyMGRIT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>pymgrit.allen_cahn package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pymgrit.allen_cahn.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pymgrit-allen-cahn-package">
+<h1>pymgrit.allen_cahn package<a class="headerlink" href="#pymgrit-allen-cahn-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pymgrit.allen_cahn.allen_cahn">
+<span id="pymgrit-allen-cahn-allen-cahn-module"></span><h2>pymgrit.allen_cahn.allen_cahn module<a class="headerlink" href="#module-pymgrit.allen_cahn.allen_cahn" title="Permalink to this headline">¶</a></h2>
+<p>Vector and application class for the 2D Allen-Cahn equation</p>
+<p>Based on <a class="reference external" href="https://epubs.siam.org/doi/abs/10.1137/080738398?mobileUi=0">https://epubs.siam.org/doi/abs/10.1137/080738398?mobileUi=0</a> and
+<a class="reference external" href="https://dl.acm.org/doi/10.1145/3310410">https://dl.acm.org/doi/10.1145/3310410</a></p>
+<dl class="py class">
+<dt id="pymgrit.allen_cahn.allen_cahn.AllenCahn">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.allen_cahn.allen_cahn.</code><code class="sig-name descname">AllenCahn</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.AllenCahn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
+<dl class="simple">
+<dt>Application class for the Allen-Cahn in 2D space,</dt><dd><p>u_t =  (u_xx + u_yy) + 1/ eps^2 u(1-u),  a &gt; 0,
+on [-0.5, 0.5] x [-0.5, 0.5] x (t_start, t_end],</p>
+</dd>
+</dl>
+<p>with periodic boundary conditions, eps &gt; 0,
+and subject to the initial condition</p>
+<blockquote>
+<div><p>u(x,0)  = tanh((R0-<a href="#id1"><span class="problematic" id="id2">|x|</span></a>)/sqrt(2eps).</p>
+</div></blockquote>
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.AllenCahn.compute_matrix">
+<code class="sig-name descname">compute_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.AllenCahn.compute_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define spatial discretization matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>space discretizaton</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.AllenCahn.compute_radius">
+<code class="sig-name descname">compute_radius</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.AllenCahn.compute_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute radius of u</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Radius</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.AllenCahn.exact_radius">
+<code class="sig-name descname">exact_radius</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.AllenCahn.exact_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute exact radius</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Exact radius</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.AllenCahn.initial_guess">
+<code class="sig-name descname">initial_guess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.AllenCahn.initial_guess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set initial condition</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Initial guess</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.AllenCahn.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D" title="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D">pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D</a></span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D" title="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D">pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D</a><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.AllenCahn.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time integration routine for 2D Allen-Cahn problem:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u_start</strong> – approximate solution for the input time t_start</p></li>
+<li><p><strong>t_start</strong> – time associated with the input approximate solution u_start</p></li>
+<li><p><strong>t_stop</strong> – time to evolve the input approximate solution to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>approximate solution at input time t_stop</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D">
+<em class="property">class </em><code class="sig-prename descclassname">pymgrit.allen_cahn.allen_cahn.</code><code class="sig-name descname">VectorAllenCahn2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nx</span></em>, <em class="sig-param"><span class="n">ny</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
+<p>Vector class for the 2D Allen-Cahn equation</p>
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.clone">
+<code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone vector object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>vector object with zero values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.clone_rand">
+<code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.clone_rand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize vector object with random values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>vector object with random values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.clone_zero">
+<code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.clone_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize vector object with zeros</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>vector object with zero values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.get_values">
+<code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.get_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get vector data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>values of vector object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.norm">
+<code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Norm of a vector object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>2-norm of vector object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.pack">
+<code class="sig-name descname">pack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.pack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pack data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>values of vector object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.set_values">
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.set_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set vector data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> – values for vector object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.unpack">
+<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.allen_cahn.allen_cahn.VectorAllenCahn2D.unpack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpack and set data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> – values for vector object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pymgrit.allen_cahn">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit.allen_cahn" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jens Hahne and Stephanie Friedhoff
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

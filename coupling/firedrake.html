@@ -205,7 +205,10 @@ in which you want to use the coupling of both tools.</p>
 </div>
 <div class="section" id="diffusion-example">
 <h2>Diffusion example<a class="headerlink" href="#diffusion-example" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/examples/firedrake/example_firedrake_diffusion_2d.py">example_firedrake_diffusion_2d.py</a></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/firedrake/diffusion_2d_firedrake.py">diffusion_2d_firedrake.py</a></p></li>
+<li><p><a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/examples/firedrake/example_diffusion_2d_firedrake.py">example_diffusion_2d_firedrake.py</a></p></li>
+</ul>
 <p>The following example shows how to set up and solve a 2D diffusion problem using PyMGRIT and Firedrake. The spatial
 problem is  solved (in parallel) using Firedrake and (backward Euler) time integration is handled by PyMGRIT.
 As usual, for PyMGRIT the following is required:</p>
@@ -216,40 +219,33 @@ As usual, for PyMGRIT the following is required:</p>
 </ul>
 <div class="section" id="vector-class">
 <h3>Vector class<a class="headerlink" href="#vector-class" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">Function</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;This example requires firedrake. See https://pymgrit.github.io/pymgrit/coupling/firedrake.html&quot;</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.split</span> <span class="kn">import</span> <span class="n">split_communicator</span>
-<span class="kn">from</span> <span class="nn">pymgrit.core.application</span> <span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="kn">from</span> <span class="nn">pymgrit.core.vector</span> <span class="kn">import</span> <span class="n">Vector</span>
 
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">PeriodicSquareMesh</span>
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">FunctionSpace</span><span class="p">,</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">TestFunction</span><span class="p">,</span> <span class="n">TrialFunction</span><span class="p">,</span> <span class="n">Function</span><span class="p">,</span> <span class="n">FacetNormal</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">grad</span><span class="p">,</span> <span class="n">avg</span>
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">outer</span><span class="p">,</span> <span class="n">LinearVariationalProblem</span><span class="p">,</span> <span class="n">NonlinearVariationalSolver</span><span class="p">,</span> <span class="n">dS</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">SpatialCoordinate</span>
 
-
-<span class="k">class</span> <span class="nc">VectorDiffusion2D</span><span class="p">(</span><span class="n">Vector</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">VectorFiredrake</span><span class="p">(</span><span class="n">Vector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Vector class for the 2D diffusion equation</span>
-
-<span class="sd">    Note: Vector objects only hold the values of all spatial degrees of</span>
-<span class="sd">          freedom associated with a time point. Firedrake related data</span>
-<span class="sd">          is saved in an object of the Diffusion2D application class.</span>
+<span class="sd">    Vector class for Firedrake Function object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">comm_space</span><span class="p">:</span> <span class="n">MPI</span><span class="o">.</span><span class="n">Comm</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Function</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
-
-<span class="sd">        :param size: number of degrees of freedom in spatial domain</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span> <span class="o">=</span> <span class="n">comm_space</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">Function</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deepcopy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Wrong datatype&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -273,9 +269,7 @@ As usual, for PyMGRIT the following is required:</p>
 
 <span class="sd">        :rtype: vector object with zero values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">tmp</span>
+        <span class="k">return</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">clone_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -283,7 +277,9 @@ As usual, for PyMGRIT the following is required:</p>
 
 <span class="sd">        :rtype: vector object with zero values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">*</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">tmp</span>
 
     <span class="k">def</span> <span class="nf">clone_rand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -291,8 +287,10 @@ As usual, for PyMGRIT the following is required:</p>
 
 <span class="sd">        :rtype: vector object with random values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">tmp_values</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+        <span class="n">tmp_values</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp_values</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">[:]))</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">tmp_values</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tmp</span>
 
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -302,8 +300,10 @@ As usual, for PyMGRIT the following is required:</p>
 <span class="sd">        :param other: vector object to be added to self</span>
 <span class="sd">        :return: sum of vector object self and input object other</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">tmp_value</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+        <span class="n">tmp_value</span><span class="o">.</span><span class="n">dat</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span><span class="o">.</span><span class="n">dat</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">tmp_value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tmp</span>
 
     <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -313,19 +313,23 @@ As usual, for PyMGRIT the following is required:</p>
 <span class="sd">        :param other: vector object to be subtracted from self</span>
 <span class="sd">        :return: difference of vector object self and input object other</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">tmp_value</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+        <span class="n">tmp_value</span><span class="o">.</span><span class="n">dat</span> <span class="o">-=</span> <span class="n">other</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span><span class="o">.</span><span class="n">dat</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">tmp_value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tmp</span>
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;VectorMachine&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Multiplication of a vector object and a float (self and other)</span>
 
 <span class="sd">        :param other: object to be multiplied with self</span>
 <span class="sd">        :return: difference of vector object self and input object other</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span> <span class="o">*</span> <span class="n">other</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">tmp_value</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">get_values</span><span class="p">()</span>
+        <span class="n">tmp_value</span><span class="o">.</span><span class="n">dat</span> <span class="o">*=</span> <span class="n">other</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">tmp_value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tmp</span>
 
     <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -334,8 +338,7 @@ As usual, for PyMGRIT the following is required:</p>
 
 <span class="sd">        :return: 2-norm of vector object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="o">.</span><span class="n">allgather</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">tmp</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -343,7 +346,7 @@ As usual, for PyMGRIT the following is required:</p>
 
 <span class="sd">        :param values: values for vector object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">values</span>
 
     <span class="k">def</span> <span class="nf">pack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -351,25 +354,34 @@ As usual, for PyMGRIT the following is required:</p>
 
 <span class="sd">        :return: values of vector object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="application-class">
 <h3>Application class<a class="headerlink" href="#application-class" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Diffusion2D</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Application class containing the description of the diffusion problem.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">FunctionSpace</span><span class="p">,</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">TestFunction</span><span class="p">,</span> <span class="n">TrialFunction</span><span class="p">,</span> <span class="n">Function</span><span class="p">,</span> <span class="n">FacetNormal</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">grad</span>
+    <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">outer</span><span class="p">,</span> <span class="n">LinearVariationalProblem</span><span class="p">,</span> <span class="n">NonlinearVariationalSolver</span><span class="p">,</span> <span class="n">dS</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">SpatialCoordinate</span><span class="p">,</span> <span class="n">avg</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="sd">The spatial domain is a 10x10 square with</span>
-<span class="sd">periodic boundary conditions in each direction.</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;This example requires firedrake. See https://pymgrit.github.io/pymgrit/coupling/firedrake.html&quot;</span><span class="p">)</span>
 
-<span class="sd">The initial condition is a Gaussian in the centre of the domain.</span>
+<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
 
-<span class="sd">The spatial discretisation is P1 DG (piecewise linear discontinous</span>
-<span class="sd">elements) and uses an interior penalty method which penalises jumps</span>
-<span class="sd">at element interfaces.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">pymgrit.core.application</span> <span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">pymgrit.firedrake.vector_firedrake</span> <span class="kn">import</span> <span class="n">VectorFiredrake</span>
+
+
+<span class="k">class</span> <span class="nc">Diffusion2D</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Application class containing the description of the diffusion problem.</span>
+
+<span class="sd">    The spatial discretisation is P1 DG (piecewise linear discontinous</span>
+<span class="sd">    elements) and uses an interior penalty method which penalises jumps</span>
+<span class="sd">    at element interfaces.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">kappa</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">comm_space</span><span class="p">:</span> <span class="n">MPI</span><span class="o">.</span><span class="n">Comm</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -383,50 +395,48 @@ As usual, for PyMGRIT the following is required:</p>
 
         <span class="c1"># Spatial domain and function space</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span>
-        <span class="n">V</span> <span class="o">=</span> <span class="n">FunctionSpace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">&quot;DG&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">function_space</span> <span class="o">=</span> <span class="n">V</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function_space</span> <span class="o">=</span> <span class="n">FunctionSpace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">&quot;DG&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span> <span class="o">=</span> <span class="n">comm_space</span>
 
         <span class="c1"># Placeholder for time step - will be updated in the update method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
 
         <span class="c1"># Things we need for the form</span>
-        <span class="n">gamma</span> <span class="o">=</span> <span class="n">TestFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-        <span class="n">phi</span> <span class="o">=</span> <span class="n">TrialFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">TestFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_space</span><span class="p">)</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">TrialFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_space</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_space</span><span class="p">)</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">FacetNormal</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 
         <span class="c1"># Set up the rhs and bilinear form of the equation</span>
         <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">inner</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="p">(</span>
-                    <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
-                    <span class="o">-</span> <span class="n">inner</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">avg</span><span class="p">(</span><span class="n">outer</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">n</span><span class="p">)),</span> <span class="n">avg</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">))</span> <span class="o">*</span> <span class="n">dS</span>
-                    <span class="o">-</span> <span class="n">inner</span><span class="p">(</span><span class="n">avg</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">),</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">avg</span><span class="p">(</span><span class="n">outer</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">n</span><span class="p">)))</span> <span class="o">*</span> <span class="n">dS</span>
-                    <span class="o">+</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">avg</span><span class="p">(</span><span class="n">outer</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">n</span><span class="p">)),</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">avg</span><span class="p">(</span><span class="n">outer</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">))</span> <span class="o">*</span> <span class="n">dS</span>
-            <span class="p">)</span>
-            <span class="p">)</span>
+             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="p">(</span>
+                     <span class="n">inner</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="n">grad</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
+                     <span class="o">-</span> <span class="n">inner</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">avg</span><span class="p">(</span><span class="n">outer</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">n</span><span class="p">)),</span> <span class="n">avg</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">))</span> <span class="o">*</span> <span class="n">dS</span>
+                     <span class="o">-</span> <span class="n">inner</span><span class="p">(</span><span class="n">avg</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">),</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">avg</span><span class="p">(</span><span class="n">outer</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">n</span><span class="p">)))</span> <span class="o">*</span> <span class="n">dS</span>
+                     <span class="o">+</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">inner</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">avg</span><span class="p">(</span><span class="n">outer</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">n</span><span class="p">)),</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">avg</span><span class="p">(</span><span class="n">outer</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa</span><span class="p">))</span> <span class="o">*</span> <span class="n">dS</span>
+             <span class="p">)</span>
+             <span class="p">)</span>
         <span class="n">rhs</span> <span class="o">=</span> <span class="n">inner</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
 
         <span class="c1"># Function to hold the solution</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">soln</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">soln</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_space</span><span class="p">)</span>
 
         <span class="c1"># Setup problem and solver</span>
         <span class="n">prob</span> <span class="o">=</span> <span class="n">LinearVariationalProblem</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">soln</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">NonlinearVariationalSolver</span><span class="p">(</span><span class="n">prob</span><span class="p">)</span>
 
         <span class="c1"># Set the data structure for any user-defined time point</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vector_template</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_space</span><span class="p">),</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector_template</span> <span class="o">=</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">soln</span><span class="p">)</span>
 
         <span class="c1"># Set initial condition:</span>
         <span class="c1"># Setting up a Gaussian blob in the centre of the domain.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vector_t_start</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_space</span><span class="p">),</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">SpatialCoordinate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
         <span class="n">initial_tracer</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_space</span><span class="p">)</span>
         <span class="n">tmp</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">initial_tracer</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vector_t_start</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector_t_start</span> <span class="o">=</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_start</span><span class="p">:</span> <span class="n">VectorDiffusion2D</span><span class="p">,</span> <span class="n">t_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorDiffusion2D</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_start</span><span class="p">:</span> <span class="n">VectorFiredrake</span><span class="p">,</span> <span class="n">t_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">t_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorFiredrake</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Time integration routine for 2D diffusion problem:</span>
 <span class="sd">            Backward Euler</span>
@@ -439,49 +449,45 @@ As usual, for PyMGRIT the following is required:</p>
         <span class="c1"># Time-step size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">t_stop</span> <span class="o">-</span> <span class="n">t_start</span><span class="p">)</span>
 
-        <span class="c1"># Get data from VectorDiffusion2D object u_start</span>
-        <span class="c1"># and copy to Firedrake Function object tmp</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">Function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_space</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u_start</span><span class="o">.</span><span class="n">values</span><span class="p">)):</span>
-            <span class="n">tmp</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">u_start</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">u_start</span><span class="o">.</span><span class="n">get_values</span><span class="p">())</span>
 
         <span class="c1"># Take Backward Euler step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
-        <span class="c1"># Copy data from Firedrake Function object to VectorDiffusion2D object</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">VectorDiffusion2D</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function_space</span><span class="p">),</span> <span class="n">comm_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_space</span><span class="p">)</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">soln</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">soln</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="example-run">
 <h3>Example run<a class="headerlink" href="#example-run" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">PeriodicSquareMesh</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">PeriodicSquareMesh</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;This example requires firedrake. See https://pymgrit.github.io/pymgrit/coupling/firedrake.html&quot;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+
 <span class="kn">from</span> <span class="nn">pymgrit.core.mgrit</span> <span class="kn">import</span> <span class="n">Mgrit</span>
 <span class="kn">from</span> <span class="nn">pymgrit.core.split</span> <span class="kn">import</span> <span class="n">split_communicator</span>
+<span class="kn">from</span> <span class="nn">pymgrit.firedrake.diffusion_2d_firedrake</span> <span class="kn">import</span> <span class="n">Diffusion2D</span>
 
 <span class="c1"># Split the communicator into space and time communicator</span>
 <span class="n">comm_world</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
-<span class="n">comm_x</span><span class="p">,</span> <span class="n">comm_t</span> <span class="o">=</span> <span class="n">split_communicator</span><span class="p">(</span><span class="n">comm_world</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">comm_x</span><span class="p">,</span> <span class="n">comm_t</span> <span class="o">=</span> <span class="n">split_communicator</span><span class="p">(</span><span class="n">comm_world</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Define spatial domain</span>
-<span class="c1"># The domain is a 10x10 square with periodic boundary conditions in each direction.</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">PeriodicSquareMesh</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">comm</span><span class="o">=</span><span class="n">comm_x</span><span class="p">)</span>
 
 <span class="c1"># Set up the problem</span>
-<span class="n">diffusion0</span> <span class="o">=</span> <span class="n">Diffusion2D</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="n">comm_x</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">65</span><span class="p">)</span>
-<span class="n">diffusion1</span> <span class="o">=</span> <span class="n">Diffusion2D</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="n">comm_x</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
-<span class="n">diffusion2</span> <span class="o">=</span> <span class="n">Diffusion2D</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="n">comm_x</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">diffusion0</span> <span class="o">=</span> <span class="n">Diffusion2D</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="n">comm_x</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="n">diffusion1</span> <span class="o">=</span> <span class="n">Diffusion2D</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="n">comm_x</span><span class="p">,</span> <span class="n">t_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_stop</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 
 <span class="c1"># Setup three-level MGRIT solver with the space and time communicators and</span>
 <span class="c1"># solve the problem</span>
-<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="p">[</span><span class="n">diffusion0</span><span class="p">,</span> <span class="n">diffusion1</span><span class="p">,</span> <span class="n">diffusion2</span><span class="p">],</span> <span class="n">comm_time</span><span class="o">=</span><span class="n">comm_t</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="n">comm_x</span><span class="p">)</span>
+<span class="n">mgrit</span> <span class="o">=</span> <span class="n">Mgrit</span><span class="p">(</span><span class="n">problem</span><span class="o">=</span><span class="p">[</span><span class="n">diffusion0</span><span class="p">,</span> <span class="n">diffusion1</span><span class="p">],</span> <span class="n">comm_time</span><span class="o">=</span><span class="n">comm_t</span><span class="p">,</span> <span class="n">comm_space</span><span class="o">=</span><span class="n">comm_x</span><span class="p">)</span>
 <span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 </div>

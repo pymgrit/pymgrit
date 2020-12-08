@@ -32,9 +32,11 @@ in which you want to use the coupling of both tools.
 Diffusion example
 -----------------
 
-`example_firedrake_diffusion_2d.py`_
+* `diffusion_2d_firedrake.py`_
+* `example_diffusion_2d_firedrake.py`_
 
-.. _example_firedrake_diffusion_2d.py: https://github.com/pymgrit/pymgrit/blob/master/examples/firedrake/example_firedrake_diffusion_2d.py
+.. _diffusion_2d_firedrake.py: https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/firedrake/diffusion_2d_firedrake.py
+.. _example_diffusion_2d_firedrake.py: https://github.com/pymgrit/pymgrit/blob/master/examples/firedrake/example_diffusion_2d_firedrake.py
 
 The following example shows how to set up and solve a 2D diffusion problem using PyMGRIT and Firedrake. The spatial
 problem is  solved (in parallel) using Firedrake and (backward Euler) time integration is handled by PyMGRIT.
@@ -48,40 +50,33 @@ Vector class
 ^^^^^^^^^^^^
 ::
 
+    try:
+        from firedrake import norm, Function
+    except ImportError as e:
+        import sys
+
+        sys.exit("This example requires firedrake. See https://pymgrit.github.io/pymgrit/coupling/firedrake.html")
+
     import numpy as np
 
-    from mpi4py import MPI
-
-    from pymgrit.core.mgrit import Mgrit
-    from pymgrit.core.split import split_communicator
-    from pymgrit.core.application import Application
     from pymgrit.core.vector import Vector
 
-    from firedrake import PeriodicSquareMesh
-    from firedrake import FunctionSpace, Constant, TestFunction, TrialFunction, Function, FacetNormal, inner, dx, grad, avg
-    from firedrake import outer, LinearVariationalProblem, NonlinearVariationalSolver, dS, exp, SpatialCoordinate
 
-
-    class VectorDiffusion2D(Vector):
+    class VectorFiredrake(Vector):
         """
-        Vector class for the 2D diffusion equation
-
-        Note: Vector objects only hold the values of all spatial degrees of
-              freedom associated with a time point. Firedrake related data
-              is saved in an object of the Diffusion2D application class.
+        Vector class for Firedrake Function object
         """
 
-        def __init__(self, size: int, comm_space: MPI.Comm):
+        def __init__(self, values: Function):
             """
             Constructor.
-
-            :param size: number of degrees of freedom in spatial domain
             """
 
             super().__init__()
-            self.size = size
-            self.values = np.zeros(size)
-            self.comm_space = comm_space
+            if isinstance(values, Function):
+                self.values = values.copy(deepcopy=True)
+            else:
+                raise Exception('Wrong datatype')
 
         def set_values(self, values):
             """
@@ -105,9 +100,7 @@ Vector class
 
             :rtype: vector object with zero values
             """
-            tmp = VectorDiffusion2D(size=self.size, comm_space=self.comm_space)
-            tmp.set_values(self.get_values())
-            return tmp
+            return VectorFiredrake(self.values)
 
         def clone_zero(self):
             """
@@ -115,7 +108,9 @@ Vector class
 
             :rtype: vector object with zero values
             """
-            return VectorDiffusion2D(size=self.size, comm_space=self.comm_space)
+            tmp = VectorFiredrake(self.values)
+            tmp = tmp * 0
+            return tmp
 
         def clone_rand(self):
             """
@@ -123,8 +118,10 @@ Vector class
 
             :rtype: vector object with random values
             """
-            tmp = VectorDiffusion2D(size=self.size, comm_space=self.comm_space)
-            tmp.set_values(np.random.rand(self.size))
+            tmp = VectorFiredrake(self.values)
+            tmp_values = tmp.get_values()
+            tmp_values.dat.data[:] = np.random.rand(len(tmp_values.dat.data[:]))
+            tmp.set_values(tmp_values)
             return tmp
 
         def __add__(self, other):
@@ -134,8 +131,10 @@ Vector class
             :param other: vector object to be added to self
             :return: sum of vector object self and input object other
             """
-            tmp = VectorDiffusion2D(self.size, comm_space=self.comm_space)
-            tmp.set_values(self.get_values() + other.get_values())
+            tmp = VectorFiredrake(self.values)
+            tmp_value = tmp.get_values()
+            tmp_value.dat += other.get_values().dat
+            tmp.set_values(tmp_value)
             return tmp
 
         def __sub__(self, other):
@@ -145,19 +144,23 @@ Vector class
             :param other: vector object to be subtracted from self
             :return: difference of vector object self and input object other
             """
-            tmp = VectorDiffusion2D(self.size, comm_space=self.comm_space)
-            tmp.set_values(self.get_values() - other.get_values())
+            tmp = VectorFiredrake(self.values)
+            tmp_value = tmp.get_values()
+            tmp_value.dat -= other.get_values().dat
+            tmp.set_values(tmp_value)
             return tmp
 
-        def __mul__(self, other) -> 'VectorMachine':
+        def __mul__(self, other):
             """
             Multiplication of a vector object and a float (self and other)
 
             :param other: object to be multiplied with self
             :return: difference of vector object self and input object other
             """
-            tmp = VectorDiffusion2D(self.size, comm_space=self.comm_space)
-            tmp.set_values(self.get_values() * other)
+            tmp = VectorFiredrake(self.values)
+            tmp_value = tmp.get_values()
+            tmp_value.dat *= other
+            tmp.set_values(tmp_value)
             return tmp
 
         def norm(self):
@@ -166,8 +169,7 @@ Vector class
 
             :return: 2-norm of vector object
             """
-            tmp = self.comm_space.allgather(self.values)
-            return np.linalg.norm(np.array([item for sublist in tmp for item in sublist]))
+            return norm(self.values)
 
         def unpack(self, values):
             """
@@ -175,7 +177,7 @@ Vector class
 
             :param values: values for vector object
             """
-            self.values = values
+            self.values.dat.data[:] = values
 
         def pack(self):
             """
@@ -183,7 +185,7 @@ Vector class
 
             :return: values of vector object
             """
-            return self.values
+            return self.values.dat.data[:]
 
 
 Application class
@@ -191,19 +193,28 @@ Application class
 
 ::
 
+    try:
+        from firedrake import FunctionSpace, Constant, TestFunction, TrialFunction, Function, FacetNormal, inner, dx, grad
+        from firedrake import outer, LinearVariationalProblem, NonlinearVariationalSolver, dS, exp, SpatialCoordinate, avg
+    except ImportError as e:
+        import sys
+
+        sys.exit("This example requires firedrake. See https://pymgrit.github.io/pymgrit/coupling/firedrake.html")
+
+    from mpi4py import MPI
+
+    from pymgrit.core.application import Application
+    from pymgrit.firedrake.vector_firedrake import VectorFiredrake
+
+
     class Diffusion2D(Application):
-    """
-    Application class containing the description of the diffusion problem.
+        """
+        Application class containing the description of the diffusion problem.
 
-    The spatial domain is a 10x10 square with
-    periodic boundary conditions in each direction.
-
-    The initial condition is a Gaussian in the centre of the domain.
-
-    The spatial discretisation is P1 DG (piecewise linear discontinous
-    elements) and uses an interior penalty method which penalises jumps
-    at element interfaces.
-    """
+        The spatial discretisation is P1 DG (piecewise linear discontinous
+        elements) and uses an interior penalty method which penalises jumps
+        at element interfaces.
+        """
 
         def __init__(self, mesh: object, kappa: float, comm_space: MPI.Comm, mu: float = 5., *args, **kwargs):
             """
@@ -217,50 +228,48 @@ Application class
 
             # Spatial domain and function space
             self.mesh = mesh
-            V = FunctionSpace(self.mesh, "DG", 1)
-            self.function_space = V
+            self.function_space = FunctionSpace(self.mesh, "DG", 1)
             self.comm_space = comm_space
 
             # Placeholder for time step - will be updated in the update method
             self.dt = Constant(0.)
 
             # Things we need for the form
-            gamma = TestFunction(V)
-            phi = TrialFunction(V)
-            self.f = Function(V)
+            gamma = TestFunction(self.function_space)
+            phi = TrialFunction(self.function_space)
+            self.f = Function(self.function_space)
             n = FacetNormal(mesh)
 
             # Set up the rhs and bilinear form of the equation
             a = (inner(gamma, phi) * dx
-                + self.dt * (
-                        inner(grad(gamma), grad(phi) * kappa) * dx
-                        - inner(2 * avg(outer(phi, n)), avg(grad(gamma) * kappa)) * dS
-                        - inner(avg(grad(phi) * kappa), 2 * avg(outer(gamma, n))) * dS
-                        + mu * inner(2 * avg(outer(phi, n)), 2 * avg(outer(gamma, n) * kappa)) * dS
-                )
-                )
+                 + self.dt * (
+                         inner(grad(gamma), grad(phi) * kappa) * dx
+                         - inner(2 * avg(outer(phi, n)), avg(grad(gamma) * kappa)) * dS
+                         - inner(avg(grad(phi) * kappa), 2 * avg(outer(gamma, n))) * dS
+                         + mu * inner(2 * avg(outer(phi, n)), 2 * avg(outer(gamma, n) * kappa)) * dS
+                 )
+                 )
             rhs = inner(gamma, self.f) * dx
 
             # Function to hold the solution
-            self.soln = Function(V)
+            self.soln = Function(self.function_space)
 
             # Setup problem and solver
             prob = LinearVariationalProblem(a, rhs, self.soln)
             self.solver = NonlinearVariationalSolver(prob)
 
             # Set the data structure for any user-defined time point
-            self.vector_template = VectorDiffusion2D(size=len(self.function_space), comm_space=self.comm_space)
+            self.vector_template = VectorFiredrake(self.soln)
 
             # Set initial condition:
             # Setting up a Gaussian blob in the centre of the domain.
-            self.vector_t_start = VectorDiffusion2D(size=len(self.function_space), comm_space=self.comm_space)
             x = SpatialCoordinate(self.mesh)
             initial_tracer = exp(-((x[0] - 5) ** 2 + (x[1] - 5) ** 2))
             tmp = Function(self.function_space)
             tmp.interpolate(initial_tracer)
-            self.vector_t_start.set_values(np.copy(tmp.dat.data))
+            self.vector_t_start = VectorFiredrake(tmp)
 
-        def step(self, u_start: VectorDiffusion2D, t_start: float, t_stop: float) -> VectorDiffusion2D:
+        def step(self, u_start: VectorFiredrake, t_start: float, t_stop: float) -> VectorFiredrake:
             """
             Time integration routine for 2D diffusion problem:
                 Backward Euler
@@ -273,48 +282,46 @@ Application class
             # Time-step size
             self.dt.assign(t_stop - t_start)
 
-            # Get data from VectorDiffusion2D object u_start
-            # and copy to Firedrake Function object tmp
-            tmp = Function(self.function_space)
-            for i in range(len(u_start.values)):
-                tmp.dat.data[i] = u_start.values[i]
-            self.f.assign(tmp)
+            self.f.assign(u_start.get_values())
 
             # Take Backward Euler step
             self.solver.solve()
 
-            # Copy data from Firedrake Function object to VectorDiffusion2D object
-            ret = VectorDiffusion2D(size=len(self.function_space), comm_space=self.comm_space)
-            ret.set_values(np.copy(self.soln.dat.data))
+            return VectorFiredrake(self.soln)
 
-            return ret
 
 Example run
 ^^^^^^^^^^^
 
 ::
 
+    try:
+        from firedrake import PeriodicSquareMesh
+    except ImportError as e:
+        import sys
+
+        sys.exit("This example requires firedrake. See https://pymgrit.github.io/pymgrit/coupling/firedrake.html")
+
     from mpi4py import MPI
 
-    from firedrake import PeriodicSquareMesh
     from pymgrit.core.mgrit import Mgrit
     from pymgrit.core.split import split_communicator
+    from pymgrit.firedrake.diffusion_2d_firedrake import Diffusion2D
 
     # Split the communicator into space and time communicator
     comm_world = MPI.COMM_WORLD
-    comm_x, comm_t = split_communicator(comm_world, 2)
+    comm_x, comm_t = split_communicator(comm_world, 1)
 
     # Define spatial domain
-    # The domain is a 10x10 square with periodic boundary conditions in each direction.
     n = 20
     mesh = PeriodicSquareMesh(n, n, 10, comm=comm_x)
 
     # Set up the problem
-    diffusion0 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=65)
-    diffusion1 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=17)
-    diffusion2 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=5)
+    diffusion0 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=17)
+    diffusion1 = Diffusion2D(mesh=mesh, kappa=0.1, comm_space=comm_x, t_start=0, t_stop=10, nt=9)
 
     # Setup three-level MGRIT solver with the space and time communicators and
     # solve the problem
-    mgrit = Mgrit(problem=[diffusion0, diffusion1, diffusion2], comm_time=comm_t, comm_space=comm_x)
+    mgrit = Mgrit(problem=[diffusion0, diffusion1], comm_time=comm_t, comm_space=comm_x)
     info = mgrit.solve()
+
