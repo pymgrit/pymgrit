@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>pymgrit.induction_machine package &mdash; PyMGRIT 1.0.5 documentation</title>
   
@@ -13,11 +14,16 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,11 +33,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -51,7 +56,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PyMGRIT
+            <a href="index.html" class="icon icon-home"> PyMGRIT
           
 
           
@@ -143,6 +148,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -154,7 +161,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/pymgrit.induction_machine.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -168,12 +175,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="pymgrit-induction-machine-package">
+  <section id="pymgrit-induction-machine-package">
 <h1>pymgrit.induction_machine package<a class="headerlink" href="#pymgrit-induction-machine-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pymgrit.induction_machine.grid_transfer_machine">
+</section>
+<section id="module-pymgrit.induction_machine.grid_transfer_machine">
 <span id="pymgrit-induction-machine-grid-transfer-machine-module"></span><h2>pymgrit.induction_machine.grid_transfer_machine module<a class="headerlink" href="#module-pymgrit.induction_machine.grid_transfer_machine" title="Permalink to this headline">¶</a></h2>
 <p>Grid Transfer class for the induction
 machine model “im_3kW”. (<a class="reference external" href="https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines">https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines</a>)</p>
@@ -181,15 +188,15 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 <p>Interpolation: standard finite element interpolation
 Restriction: injection</p>
 <dl class="py class">
-<dt id="pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.induction_machine.grid_transfer_machine.</code><code class="sig-name descname">GridTransferMachine</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coarse_grid</span></em>, <em class="sig-param"><span class="n">fine_grid</span></em>, <em class="sig-param"><span class="n">path_meshes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.grid_transfer_machine.</span></span><span class="sig-name descname"><span class="pre">GridTransferMachine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coarse_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fine_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_meshes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.grid_transfer.GridTransfer" title="pymgrit.core.grid_transfer.GridTransfer"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.grid_transfer.GridTransfer</span></code></a></p>
 <p>Grid Transfer class for the induction machine im_3kW
 Interpolation: standard finite element interpolation
 Restriction: injection</p>
 <dl class="py method">
-<dt id="pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine.interpolation">
-<code class="sig-name descname">interpolation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine">pymgrit.induction_machine.vector_machine.VectorMachine</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine">pymgrit.induction_machine.vector_machine.VectorMachine</a><a class="headerlink" href="#pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine.interpolation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine.interpolation">
+<span class="sig-name descname"><span class="pre">interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine"><span class="pre">pymgrit.induction_machine.vector_machine.VectorMachine</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine"><span class="pre">pymgrit.induction_machine.vector_machine.VectorMachine</span></a><a class="headerlink" href="#pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine.interpolation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -202,8 +209,8 @@ Restriction: injection</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine.restriction">
-<code class="sig-name descname">restriction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine">pymgrit.induction_machine.vector_machine.VectorMachine</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine">pymgrit.induction_machine.vector_machine.VectorMachine</a><a class="headerlink" href="#pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine.restriction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine.restriction">
+<span class="sig-name descname"><span class="pre">restriction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine"><span class="pre">pymgrit.induction_machine.vector_machine.VectorMachine</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine"><span class="pre">pymgrit.induction_machine.vector_machine.VectorMachine</span></a><a class="headerlink" href="#pymgrit.induction_machine.grid_transfer_machine.GridTransferMachine.restriction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restriction</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -217,14 +224,14 @@ Restriction: injection</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pymgrit.induction_machine.helper">
+</section>
+<section id="module-pymgrit.induction_machine.helper">
 <span id="pymgrit-induction-machine-helper-module"></span><h2>pymgrit.induction_machine.helper module<a class="headerlink" href="#module-pymgrit.induction_machine.helper" title="Permalink to this headline">¶</a></h2>
 <p>Helper functions for the induction
 machine model “im_3kW”. (<a class="reference external" href="https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines">https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines</a>)</p>
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.cart2pol">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">cart2pol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.induction_machine.helper.cart2pol" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.cart2pol">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">cart2pol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#pymgrit.induction_machine.helper.cart2pol" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform Cartesian coordinates to polar</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -240,13 +247,13 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.check_version">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">check_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msh_file</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.helper.check_version" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.check_version">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">check_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msh_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.helper.check_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.compute_data">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">compute_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pre</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">msh</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">new_unknown_start</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">inner_r</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.04568666666666668</span></em><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#pymgrit.induction_machine.helper.compute_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.compute_data">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">compute_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pre</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msh</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_unknown_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_r</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.04568666666666668</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#pymgrit.induction_machine.helper.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute grid information</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -264,8 +271,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.compute_mesh_transfer">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">compute_mesh_transfer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">vtx</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">wts</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">dif</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">dif2</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">nan</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.induction_machine.helper.compute_mesh_transfer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.compute_mesh_transfer">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">compute_mesh_transfer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vtx</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wts</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dif</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dif2</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#pymgrit.induction_machine.helper.compute_mesh_transfer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute mesh transfer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -285,8 +292,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.get_arrays">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">get_arrays</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes_dict</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">lines_dict</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">elements_dict</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">inner_r</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">unknown_to_cor</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">boundary</span><span class="p">:</span> <span class="n">List</span></em>, <em class="sig-param"><span class="n">new_start</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#pymgrit.induction_machine.helper.get_arrays" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.get_arrays">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">get_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elements_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_r</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unknown_to_cor</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#pymgrit.induction_machine.helper.get_arrays" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute mapping between grids</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -307,8 +314,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.get_elements">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">get_elements</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Dict<span class="p">, </span>Dict<span class="p">, </span>Dict<span class="p">, </span>Dict<span class="p">]</span><a class="headerlink" href="#pymgrit.induction_machine.helper.get_elements" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.get_elements">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">get_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#pymgrit.induction_machine.helper.get_elements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get elements from file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -321,8 +328,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.get_nodes">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">get_nodes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Dict<span class="p">, </span>Dict<span class="p">]</span><a class="headerlink" href="#pymgrit.induction_machine.helper.get_nodes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.get_nodes">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">get_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#pymgrit.induction_machine.helper.get_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get nodes from file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -335,8 +342,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.get_preresolution">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">get_preresolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#pymgrit.induction_machine.helper.get_preresolution" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.get_preresolution">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">get_preresolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="headerlink" href="#pymgrit.induction_machine.helper.get_preresolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read pre file and returns number of unknowns</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -349,8 +356,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.get_values_from">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">get_values_from</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.induction_machine.helper.get_values_from" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.get_values_from">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">get_values_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#pymgrit.induction_machine.helper.get_values_from" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read values from file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -363,8 +370,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.getdp_read_resolution">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">getdp_read_resolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">num_dofs</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#pymgrit.induction_machine.helper.getdp_read_resolution" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.getdp_read_resolution">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">getdp_read_resolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_dofs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#pymgrit.induction_machine.helper.getdp_read_resolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read unknown values from file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -380,8 +387,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.interp_weights">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">interp_weights</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xyz</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">uvw</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">d</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">tol</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.1</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>numpy.ndarray<span class="p">, </span>numpy.ndarray<span class="p">]</span><a class="headerlink" href="#pymgrit.induction_machine.helper.interp_weights" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.interp_weights">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">interp_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvw</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#pymgrit.induction_machine.helper.interp_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolation between two grids</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -399,8 +406,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.interpolation_factors">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">interpolation_factors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_coarse</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">data_fine</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#pymgrit.induction_machine.helper.interpolation_factors" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.interpolation_factors">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">interpolation_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_coarse</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_fine</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#pymgrit.induction_machine.helper.interpolation_factors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the interpolation factor for each point by two given grids</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -416,8 +423,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.is_numeric">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">is_numeric</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#pymgrit.induction_machine.helper.is_numeric" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.is_numeric">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">is_numeric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#pymgrit.induction_machine.helper.is_numeric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if obj is numeric</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -430,8 +437,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.pre_file">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">pre_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Dict<span class="p">, </span>Dict<span class="p">, </span>List<span class="p">]</span><a class="headerlink" href="#pymgrit.induction_machine.helper.pre_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.pre_file">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">pre_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#pymgrit.induction_machine.helper.pre_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read pre file and return mapping between nodes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -444,8 +451,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py function">
-<dt id="pymgrit.induction_machine.helper.set_resolution">
-<code class="sig-prename descclassname">pymgrit.induction_machine.helper.</code><code class="sig-name descname">set_resolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">num_dofs</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.induction_machine.helper.set_resolution" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.helper.set_resolution">
+<span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.helper.</span></span><span class="sig-name descname"><span class="pre">set_resolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_dofs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.induction_machine.helper.set_resolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create resolution file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -459,20 +466,20 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-pymgrit.induction_machine.induction_machine">
+</section>
+<section id="module-pymgrit.induction_machine.induction_machine">
 <span id="pymgrit-induction-machine-induction-machine-module"></span><h2>pymgrit.induction_machine.induction_machine module<a class="headerlink" href="#module-pymgrit.induction_machine.induction_machine" title="Permalink to this headline">¶</a></h2>
 <p>Application class for the model ‘im_3_kW’ of an induction machine
 <a class="reference external" href="https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines">https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines</a></p>
 <dl class="py class">
-<dt id="pymgrit.induction_machine.induction_machine.InductionMachine">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.induction_machine.induction_machine.</code><code class="sig-name descname">InductionMachine</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.induction_machine.InductionMachine" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.induction_machine.InductionMachine">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.induction_machine.</span></span><span class="sig-name descname"><span class="pre">InductionMachine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.induction_machine.InductionMachine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.application.Application</span></code></a></p>
 <p>Simulating an induction machine using the model ‘im_3_kW’ from
 <a class="reference external" href="https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines">https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines</a></p>
 <dl class="py method">
-<dt id="pymgrit.induction_machine.induction_machine.InductionMachine.run_getdp">
-<code class="sig-name descname">run_getdp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; Dict<a class="headerlink" href="#pymgrit.induction_machine.induction_machine.InductionMachine.run_getdp" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.induction_machine.InductionMachine.run_getdp">
+<span class="sig-name descname"><span class="pre">run_getdp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stop</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><a class="headerlink" href="#pymgrit.induction_machine.induction_machine.InductionMachine.run_getdp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls getdp</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -489,8 +496,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.induction_machine.InductionMachine.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_start</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine">pymgrit.induction_machine.vector_machine.VectorMachine</a></span></em>, <em class="sig-param"><span class="n">t_start</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">t_stop</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine">pymgrit.induction_machine.vector_machine.VectorMachine</a><a class="headerlink" href="#pymgrit.induction_machine.induction_machine.InductionMachine.step" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.induction_machine.InductionMachine.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine"><span class="pre">pymgrit.induction_machine.vector_machine.VectorMachine</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stop</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine"><span class="pre">pymgrit.induction_machine.vector_machine.VectorMachine</span></a><a class="headerlink" href="#pymgrit.induction_machine.induction_machine.InductionMachine.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time integration routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -508,19 +515,19 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pymgrit.induction_machine.mgrit_machine">
+</section>
+<section id="module-pymgrit.induction_machine.mgrit_machine">
 <span id="pymgrit-induction-machine-mgrit-machine-module"></span><h2>pymgrit.induction_machine.mgrit_machine module<a class="headerlink" href="#module-pymgrit.induction_machine.mgrit_machine" title="Permalink to this headline">¶</a></h2>
 <p>MGRIT optimized for the induction
 machine model “im_3kW”. (<a class="reference external" href="https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines">https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines</a>)</p>
 <dl class="py class">
-<dt id="pymgrit.induction_machine.mgrit_machine.MgritMachine">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.induction_machine.mgrit_machine.</code><code class="sig-name descname">MgritMachine</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine.MgritMachine" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.mgrit_machine.MgritMachine">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.mgrit_machine.</span></span><span class="sig-name descname"><span class="pre">MgritMachine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine.MgritMachine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.mgrit.Mgrit" title="pymgrit.core.mgrit.Mgrit"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.mgrit.Mgrit</span></code></a></p>
 <p>MGRIT optimized for the getdp induction machine</p>
 <dl class="py method">
-<dt id="pymgrit.induction_machine.mgrit_machine.MgritMachine.nested_iteration">
-<code class="sig-name descname">nested_iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine.MgritMachine.nested_iteration" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.mgrit_machine.MgritMachine.nested_iteration">
+<span class="sig-name descname"><span class="pre">nested_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine.MgritMachine.nested_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates an initial approximation on the finest grid
 by solving the problem on the coarsest grid and interpolating
 the approximation to the finest level.</p>
@@ -529,20 +536,20 @@ the approximation to the finest level.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pymgrit.induction_machine.mgrit_machine_conv_jl">
+</section>
+<section id="module-pymgrit.induction_machine.mgrit_machine_conv_jl">
 <span id="pymgrit-induction-machine-mgrit-machine-conv-jl-module"></span><h2>pymgrit.induction_machine.mgrit_machine_conv_jl module<a class="headerlink" href="#module-pymgrit.induction_machine.mgrit_machine_conv_jl" title="Permalink to this headline">¶</a></h2>
 <p>MGRIT optimized for the induction
 machine model “im_3kW”. (<a class="reference external" href="https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines">https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines</a>)
 Using joule losses as stopping criteria</p>
 <dl class="py class">
-<dt id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.induction_machine.mgrit_machine_conv_jl.</code><code class="sig-name descname">MgritMachineConvJl</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">compute_f_after_convergence</span><span class="p">:</span> <span class="n">bool</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.mgrit_machine_conv_jl.</span></span><span class="sig-name descname"><span class="pre">MgritMachineConvJl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compute_f_after_convergence</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.mgrit.Mgrit" title="pymgrit.core.mgrit.Mgrit"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.mgrit.Mgrit</span></code></a></p>
 <p>MGRIT optimized for the getdp induction machine</p>
 <dl class="py method">
-<dt id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.convergence_criteria">
-<code class="sig-name descname">convergence_criteria</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iteration</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.convergence_criteria" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.convergence_criteria">
+<span class="sig-name descname"><span class="pre">convergence_criteria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.convergence_criteria" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximum norm of all C-points</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -552,8 +559,8 @@ Using joule losses as stopping criteria</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.iteration">
-<code class="sig-name descname">iteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lvl</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">cycle_type</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">iteration</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">first_f</span><span class="p">:</span> <span class="n">bool</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.iteration" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.iteration">
+<span class="sig-name descname"><span class="pre">iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycle_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_f</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>MGRIT iteration on level lvl</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -568,8 +575,8 @@ Using joule losses as stopping criteria</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.nested_iteration">
-<code class="sig-name descname">nested_iteration</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.nested_iteration" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.nested_iteration">
+<span class="sig-name descname"><span class="pre">nested_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.nested_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates an initial approximation on the finest grid
 by solving the problem on the coarsest grid and interpolating
 the approximation to the finest level.</p>
@@ -577,8 +584,8 @@ the approximation to the finest level.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.solve">
-<code class="sig-name descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.solve" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#pymgrit.induction_machine.mgrit_machine_conv_jl.MgritMachineConvJl.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Driver function for solving the problem using MGRIT.</p>
 <p>Performs MGRIT iterations until a stopping criterion is fulfilled or
 the maximum number of iterations is reached.</p>
@@ -592,26 +599,26 @@ the maximum number of iterations is reached.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pymgrit.induction_machine.vector_machine">
+</section>
+<section id="module-pymgrit.induction_machine.vector_machine">
 <span id="pymgrit-induction-machine-vector-machine-module"></span><h2>pymgrit.induction_machine.vector_machine module<a class="headerlink" href="#module-pymgrit.induction_machine.vector_machine" title="Permalink to this headline">¶</a></h2>
 <p>Vector for the induction
 machine model “im_3kW”. (<a class="reference external" href="https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines">https://gitlab.onelab.info/doc/models/-/wikis/Electric-machines</a>)</p>
 <dl class="py class">
-<dt id="pymgrit.induction_machine.vector_machine.VectorMachine">
-<em class="property">class </em><code class="sig-prename descclassname">pymgrit.induction_machine.vector_machine.</code><code class="sig-name descname">VectorMachine</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_front_size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">u_middle_size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">u_back_size</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.vector_machine.VectorMachine">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pymgrit.induction_machine.vector_machine.</span></span><span class="sig-name descname"><span class="pre">VectorMachine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_front_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_middle_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_back_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pymgrit.core.html#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.vector.Vector</span></code></a></p>
 <p>Vector for the induction machine im_3kW</p>
 <dl class="py method">
-<dt id="pymgrit.induction_machine.vector_machine.VectorMachine.clone">
-<code class="sig-name descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.clone" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.vector_machine.VectorMachine.clone">
+<span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initial solution vector with all zeros
 :rtype: object</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.vector_machine.VectorMachine.clone_rand">
-<code class="sig-name descname">clone_rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine">pymgrit.induction_machine.vector_machine.VectorMachine</a><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.clone_rand" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.vector_machine.VectorMachine.clone_rand">
+<span class="sig-name descname"><span class="pre">clone_rand</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine"><span class="pre">pymgrit.induction_machine.vector_machine.VectorMachine</span></a><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.clone_rand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with random values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -621,8 +628,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.vector_machine.VectorMachine.clone_zero">
-<code class="sig-name descname">clone_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine">pymgrit.induction_machine.vector_machine.VectorMachine</a><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.clone_zero" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.vector_machine.VectorMachine.clone_zero">
+<span class="sig-name descname"><span class="pre">clone_zero</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.induction_machine.vector_machine.VectorMachine" title="pymgrit.induction_machine.vector_machine.VectorMachine"><span class="pre">pymgrit.induction_machine.vector_machine.VectorMachine</span></a><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.clone_zero" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize vector object with zeros</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -632,8 +639,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.vector_machine.VectorMachine.get_values">
-<code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.get_values" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.vector_machine.VectorMachine.get_values">
+<span class="sig-name descname"><span class="pre">get_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.get_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get vector data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -643,8 +650,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.vector_machine.VectorMachine.norm">
-<code class="sig-name descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.norm" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.vector_machine.VectorMachine.norm">
+<span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">float</span><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Norm of a vector object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -654,8 +661,8 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.vector_machine.VectorMachine.pack">
-<code class="sig-name descname">pack</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.pack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.vector_machine.VectorMachine.pack">
+<span class="sig-name descname"><span class="pre">pack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.pack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pack data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -665,14 +672,14 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.vector_machine.VectorMachine.set_values">
-<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">jl</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">ia</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">ib</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">ic</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">ua</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">ub</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">uc</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">tr</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.set_values" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.vector_machine.VectorMachine.set_values">
+<span class="sig-name descname"><span class="pre">set_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ia</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ib</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ic</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ua</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ub</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.set_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set vector data</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pymgrit.induction_machine.vector_machine.VectorMachine.unpack">
-<code class="sig-name descname">unpack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span><span class="p">:</span> <span class="n">List</span></em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.unpack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pymgrit.induction_machine.vector_machine.VectorMachine.unpack">
+<span class="sig-name descname"><span class="pre">unpack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.induction_machine.vector_machine.VectorMachine.unpack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unpack and set data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -683,39 +690,36 @@ machine model “im_3kW”. (<a class="reference external" href="https://gitlab.
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pymgrit.induction_machine">
+</section>
+<section id="module-pymgrit.induction_machine">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pymgrit.induction_machine" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Jens Hahne and Stephanie Friedhoff
+        &#169; Copyright 2020, Jens Hahne and Stephanie Friedhoff.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PETSc &mdash; PyMGRIT 1.0.5 documentation</title>
   
@@ -13,11 +14,16 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,11 +33,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -52,7 +58,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PyMGRIT
+            <a href="../index.html" class="icon icon-home"> PyMGRIT
           
 
           
@@ -151,6 +157,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -162,7 +170,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/coupling/petsc.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -176,19 +184,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="petsc">
+  <section id="petsc">
 <h1>PETSc<a class="headerlink" href="#petsc" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://www.mcs.anl.gov/petsc/">PETSc</a> is a suite of data structures and routines for the scalable (parallel) solution of scientific applications
 modeled by partial differential equations.</p>
-<div class="section" id="installation">
+<section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Please follow the following steps:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip3</span> <span class="n">install</span> <span class="n">pymgrit</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pip3</span> <span class="n">install</span> <span class="n">petsc4py</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="d-heat-equation-example">
+</section>
+<section id="d-heat-equation-example">
 <h2>2D heat equation example<a class="headerlink" href="#d-heat-equation-example" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://github.com/pymgrit/pymgrit/blob/master/examples/petsc4py/example_heat_2d_petsc4py.py">example_petsc_heat_2d.py</a></p>
 <p>The following example demonstrates the combination of PyMGRIT and <a class="reference external" href="https://www.mcs.anl.gov/petsc/petsc4py-current/docs/">petsc4py</a> for the forced 2D heat equation with</p>
@@ -198,7 +206,7 @@ modeled by partial differential equations.</p>
 such that the exact solution is given by</p>
 <div class="math notranslate nohighlight">
 \[u(x,y,t)=\sin(2\pi x)sin(2\pi y)cos(t) \;\; \text{ on } \; [0,1]\times[0,1]\times[t_0,t_{end}].\]</div>
-<div class="section" id="code">
+<section id="code">
 <h3>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -595,44 +603,37 @@ such that the exact solution is given by</p>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="firedrake.html" class="btn btn-neutral float-left" title="Firedrake" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="firedrake.html" class="btn btn-neutral float-left" title="Firedrake" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Jens Hahne and Stephanie Friedhoff
+        &#169; Copyright 2020, Jens Hahne and Stephanie Friedhoff.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

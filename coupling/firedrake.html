@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Firedrake &mdash; PyMGRIT 1.0.5 documentation</title>
   
@@ -13,11 +14,16 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,11 +33,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -53,7 +58,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PyMGRIT
+            <a href="../index.html" class="icon icon-home"> PyMGRIT
           
 
           
@@ -154,6 +159,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -165,7 +172,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/coupling/firedrake.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -179,12 +186,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="firedrake">
+  <section id="firedrake">
 <h1>Firedrake<a class="headerlink" href="#firedrake" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://www.firedrakeproject.org/index.html">Firedrake</a> is an automated system for the solution of partial differential equations using the finite element method
 (FEM). In combination with PyMGRIT, Firedrake can set up and solve the spatial problem (in parallel), while PyMGRIT
 takes care of the parallelization in the time dimension.</p>
-<div class="section" id="installation">
+<section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Please follow the following steps:</p>
 <ul>
@@ -202,8 +209,8 @@ takes care of the parallelization in the time dimension.</p>
 </ul>
 <p>That’s it, you can now enjoy the benefits of both tools. Remember to activate the virtual environment in the shell
 in which you want to use the coupling of both tools.</p>
-</div>
-<div class="section" id="diffusion-example">
+</section>
+<section id="diffusion-example">
 <h2>Diffusion example<a class="headerlink" href="#diffusion-example" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/pymgrit/pymgrit/tree/master/src/pymgrit/firedrake/diffusion_2d_firedrake.py">diffusion_2d_firedrake.py</a></p></li>
@@ -217,7 +224,7 @@ As usual, for PyMGRIT the following is required:</p>
 <li><p><a class="reference internal" href="#application-class">Application class</a></p></li>
 <li><p><a class="reference internal" href="#example-run">Example run</a></p></li>
 </ul>
-<div class="section" id="vector-class">
+<section id="vector-class">
 <h3>Vector class<a class="headerlink" href="#vector-class" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">Function</span>
@@ -357,8 +364,8 @@ As usual, for PyMGRIT the following is required:</p>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dat</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="application-class">
+</section>
+<section id="application-class">
 <h3>Application class<a class="headerlink" href="#application-class" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">FunctionSpace</span><span class="p">,</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">TestFunction</span><span class="p">,</span> <span class="n">TrialFunction</span><span class="p">,</span> <span class="n">Function</span><span class="p">,</span> <span class="n">FacetNormal</span><span class="p">,</span> <span class="n">inner</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">grad</span>
@@ -457,8 +464,8 @@ As usual, for PyMGRIT the following is required:</p>
         <span class="k">return</span> <span class="n">VectorFiredrake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">soln</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="example-run">
+</section>
+<section id="example-run">
 <h3>Example run<a class="headerlink" href="#example-run" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">firedrake</span> <span class="kn">import</span> <span class="n">PeriodicSquareMesh</span>
@@ -491,46 +498,38 @@ As usual, for PyMGRIT the following is required:</p>
 <span class="n">info</span> <span class="o">=</span> <span class="n">mgrit</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="petsc.html" class="btn btn-neutral float-right" title="PETSc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../applications/advection.html" class="btn btn-neutral float-left" title="Advection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="petsc.html" class="btn btn-neutral float-right" title="PETSc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../applications/advection.html" class="btn btn-neutral float-left" title="Advection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Jens Hahne and Stephanie Friedhoff
+        &#169; Copyright 2020, Jens Hahne and Stephanie Friedhoff.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

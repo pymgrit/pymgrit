@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Welcome to PyMGRIT’s documentation! &mdash; PyMGRIT 1.0.5 documentation</title>
   
@@ -13,11 +14,16 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
   
   
+
   
+  
+
   
 
   
@@ -27,11 +33,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +57,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> PyMGRIT
+            <a href="#" class="icon icon-home"> PyMGRIT
           
 
           
@@ -144,6 +149,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -155,7 +162,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -169,18 +176,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-pymgrit-s-documentation">
+  <section id="welcome-to-pymgrit-s-documentation">
 <h1>Welcome to PyMGRIT’s documentation!<a class="headerlink" href="#welcome-to-pymgrit-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://github.com/pymgrit/pymgrit">PyMGRIT</a> is a package for the Multigrid-Reduction-in-Time (MGRIT) algorithm in Python.</p>
-<div class="section" id="mgrit">
+<section id="mgrit">
 <h2>MGRIT<a class="headerlink" href="#mgrit" title="Permalink to this headline">¶</a></h2>
 <p>The MGRIT algorithm is a reduction-based time-multigrid method for solving time-dependent problems. In contrast to
 solving sequentially for one time step after the other, the MGRIT algorithm is an iterative method that allows
 calculating multiple time steps simultaneously by using a time-grid hierarchy. The MGRIT method is a non-intrusive
 approach that essentially uses the same time integrator as a traditional time-stepping algorithm. Therefore, it is
 particularly well suited for introducing time parallelism in simulations using existing application codes.</p>
-</div>
-<div class="section" id="overview">
+</section>
+<section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Get PyMGRIT <a class="reference internal" href="usage/installation.html"><span class="doc">installed</span></a>.</p></li>
@@ -189,16 +196,16 @@ particularly well suited for introducing time parallelism in simulations using e
 <li><p>Learn about <a class="reference internal" href="usage/examples.html"><span class="doc">basic</span></a> and <a class="reference internal" href="usage/advanced.html"><span class="doc">advanced</span></a> PyMGRIT features.</p></li>
 <li><p>Run <a class="reference internal" href="usage/parallelism.html"><span class="doc">parallel simulations</span></a>.</p></li>
 </ul>
-</div>
-<div class="section" id="getting-help">
+</section>
+<section id="getting-help">
 <h2>Getting help<a class="headerlink" href="#getting-help" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Try the <a class="reference internal" href="help/faq.html"><span class="doc">FAQ</span></a>.</p></li>
 <li><p>Looking for specific information? Try the <a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a> or <a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a>.</p></li>
 <li><p>Report bugs with PyMGRIT in our <a class="reference external" href="https://github.com/pymgrit/pymgrit/issues">issue tracker</a>.</p></li>
 </ul>
-</div>
-<div class="section" id="citing">
+</section>
+<section id="citing">
 <h2>Citing<a class="headerlink" href="#citing" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@MISC</span><span class="p">{</span><span class="n">PyMGRIT</span><span class="p">,</span>
   <span class="n">author</span> <span class="o">=</span> <span class="s2">&quot;Hahne, J. and Friedhoff, S.&quot;</span><span class="p">,</span>
@@ -215,43 +222,36 @@ particularly well suited for introducing time parallelism in simulations using e
 </div>
 <div class="toctree-wrapper compound">
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="usage/installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+        <a href="usage/installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Jens Hahne and Stephanie Friedhoff
+        &#169; Copyright 2020, Jens Hahne and Stephanie Friedhoff.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
