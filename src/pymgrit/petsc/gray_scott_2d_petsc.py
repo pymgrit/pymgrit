@@ -26,13 +26,14 @@ class GrayScott(Application):
     """
 
     def __init__(self, dmda: PETSc.DMDA, comm_x: MPI.Comm, du=1.0, dv=0.01, a=0.09, b=0.086, lsol_tol: float = 1e-10,
-                 nlsol_tol: float = 1e-10, lsol_maxiter: int = 100, nlsol_maxiter: int = 100,
+                 nlsol_tol: float = 1e-10, lsol_maxiter: int = 100, nlsol_maxiter: int = 100, L=1.0,
                  method='IMPL', *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.dmda = dmda
         self.mx, self.my = self.dmda.sizes
-        self.dx = 100.0 / self.mx
-        self.dy = 100.0 / self.my
+        self.L = L
+        self.dx = self.L / self.mx
+        self.dy = self.L / self.my
         (self.xs, self.xe), (self.ys, self.ye) = self.dmda.getRanges()
         self.du = du
         self.dv = dv
@@ -41,7 +42,7 @@ class GrayScott(Application):
         self.method = method
         self.local_x = dmda.createLocalVec()
 
-        if self.method == 'IMPL' or self.method == 'IMEX':
+        if self.method == 'IMPL' or self.method == 'IMEX' or self.method == 'EXPL':
             pass
         else:
             raise Exception("Unknown method. Choose IMPL (implicit) or IMEX (implicit-explicit)")
@@ -63,7 +64,7 @@ class GrayScott(Application):
             self.ksp.setTolerances(rtol=lsol_tol, atol=lsol_tol, max_it=lsol_maxiter)
             self.dt = self.t[1] - self.t[0]
             self.ksp.setOperators(self.id - self.dt * self.space_disc)
-        else:
+        elif self.method == 'IMPL':
             self.snes = PETSc.SNES()
             self.snes.create(comm=comm_x)
             self.snes.setFromOptions()
@@ -84,8 +85,9 @@ class GrayScott(Application):
             if not np.isclose(self.dt, (t_stop - t_start)):
                 self.ksp.setOperators(self.id - (t_stop - t_start) * self.space_disc)
                 self.dt = (t_stop - t_start)
-            self.ksp.solve(self.compute_rhs_imex(u_start=u_start, t_start=t_start, t_stop=t_stop), result)
-        else:
+            rhs = self.compute_rhs_imex(u_start=u_start, t_start=t_start, t_stop=t_stop)
+            self.ksp.solve(rhs, result)
+        elif self.method == 'IMPL':
             self.local_x = self.dmda.createLocalVec()
             self.dt = (t_stop - t_start)
             F = self.dmda.createGlobalVec()
@@ -93,6 +95,22 @@ class GrayScott(Application):
             J = self.dmda.createMatrix()
             self.snes.setJacobian(self.formJacobian, J)
             self.snes.solve(u_start.get_values(), result)
+        else:
+            f = self.dmda.createGlobalVec()
+            u = u_start.get_values()
+
+            fa = self.dmda.getVecArray(f)
+            xa = self.dmda.getVecArray(u)
+
+            self.space_disc.mult(u, f)
+            self.diff_A = xa[:, :, 0] + (t_stop - t_start) * (
+                    fa[:, :, 0] - xa[:, :, 0] * xa[:, :, 1] ** 2 + self.a * (1 - xa[:, :, 0]))
+            self.diff_B = xa[:, :, 1] + (t_stop - t_start) * (
+                    fa[:, :, 1] + xa[:, :, 0] * xa[:, :, 1] ** 2 - self.b * xa[:, :, 1])
+
+            fa = self.dmda.getVecArray(result)
+            fa[:, :, 0] = self.diff_A
+            fa[:, :, 1] = self.diff_B
         return VectorPetsc(result)
 
     def compute_matrix(self) -> PETSc.Mat:
@@ -192,12 +210,8 @@ class GrayScott(Application):
         fa = self.dmda.getVecArray(f)
         xa = self.dmda.getVecArray(u)
 
-        for i in range(self.xs, self.xe):
-            for j in range(self.ys, self.ye):
-                fa[i, j, 0] += xa[i, j, 0] - (t_stop - t_start) * xa[i, j, 0] * xa[i, j, 1] ** 2 + (
-                        t_stop - t_start) * self.a * (1 - xa[i, j, 0])
-                fa[i, j, 1] += xa[i, j, 1] + (t_stop - t_start) * xa[i, j, 0] * xa[i, j, 1] ** 2 - (
-                        t_stop - t_start) * self.b * xa[i, j, 1]
+        fa[:, :, 0] = xa[:, :, 0] + (t_stop - t_start) * (-xa[:, :, 0] * xa[:, :, 1] ** 2 + self.a * (1 - xa[:, :, 0]))
+        fa[:, :, 1] = xa[:, :, 1] + (t_stop - t_start) * (xa[:, :, 0] * xa[:, :, 1] ** 2 - self.b * xa[:, :, 1])
 
         return f
 
@@ -302,8 +316,10 @@ class GrayScott(Application):
         xa = self.dmda.getVecArray(u)
         for i in range(self.xs, self.xe):
             for j in range(self.ys, self.ye):
-                xa[i, j, 0] = 1.0 - 0.5 * np.power(np.sin(np.pi * i * self.dx / 100) *
-                                                   np.sin(np.pi * j * self.dy / 100), 100)
-                xa[i, j, 1] = 0.25 * np.power(np.sin(np.pi * i * self.dx / 100) *
-                                              np.sin(np.pi * j * self.dy / 100), 100)
+                dxx = (i * self.dx)
+                dyy = (j * self.dy)
+                xa[i, j, 1] = 0
+                if dxx >= 1.0 and dxx <= 1.5 and dyy >= 1.0 and dyy <= 1.5:
+                    xa[i, j, 1] = (np.sin(4 * np.pi * dxx) ** 2) * (np.sin(4 * np.pi * dyy) ** 2) / 4
+                xa[i, j, 0] = 1 - 2 * xa[i, j, 1]
         return VectorPetsc(u)

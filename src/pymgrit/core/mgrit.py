@@ -153,6 +153,7 @@ class Mgrit:
         self.get_from = []  # Which process contains previous time point
         self.global_t = []  # Global time information
         self.t_norm = 1 if t_norm == 1 else None if t_norm == 2 else np.inf  # Time norm
+        self.comm_coarsest_level = [] # Communication on coarsest level
 
         # Set output level and output function
         self.output_lvl = output_lvl  # Output level, only 0,1,2
@@ -344,11 +345,10 @@ class Mgrit:
         runtime_fs = time.time()
         if self.lvl_max != 1:
             if self.comm_time_size != 1:
-                tmp_g = self.comm_time.gather([self.g[lvl][i].pack() for i in self.index_local_c[lvl]], root=0)
-                tmp_u = self.comm_time.gather([self.u[lvl][i].pack() for i in self.index_local_c[lvl]], root=0)
+                tmp_data = self.comm_time.gather([[self.g[lvl][i].pack(),self.u[lvl][i].pack()] for i in self.index_local_c[lvl]], root=0)
                 if self.comm_time_rank == 0:
-                    tmp_g = [item for sublist in tmp_g for item in sublist]
-                    tmp_u = [item for sublist in tmp_u for item in sublist]
+                    tmp_g = [item[0] for sublist in tmp_data for item in sublist]
+                    tmp_u = [item[1] for sublist in tmp_data for item in sublist]
                     for i in range(len(self.g_coarsest)):
                         self.g_coarsest[i].unpack(tmp_g[i])
                         self.u_coarsest[i].unpack(tmp_u[i])
@@ -361,17 +361,18 @@ class Mgrit:
                 self.u_coarsest[i] = self.g_coarsest[i] + self.step[lvl](u_start=self.u_coarsest[i - 1],
                                                                          t_start=self.global_t[lvl][i - 1],
                                                                          t_stop=self.global_t[lvl][i])
+                if self.comm_coarsest_level[i] != self.comm_time_rank:
+                    req_s = self.comm_time.send([self.global_t[lvl][i], self.u_coarsest[i].pack()],
+                                            dest=self.comm_coarsest_level[i],
+                                            tag=self.comm_coarsest_level[i])
+                else:
+                    self.u[lvl][i] = self.u_coarsest[i]
 
-        if self.lvl_max != 1:
-            if self.comm_time_size != 1:
-                tmp_u_coarsest = self.comm_time.bcast([item.pack() for item in self.u_coarsest], root=0)
-                for i in range(len(self.u_coarsest)):
-                    self.u_coarsest[i].unpack(tmp_u_coarsest[i])
-
-        if self.cpts[lvl].size > 0:
-            self.u[lvl] = [self.u_coarsest[i] for i in self.cpts[lvl]]
-            if self.comm_time_rank != 0:
-                self.u[lvl] = [self.u[lvl][0]] + self.u[lvl]
+        else:
+            for i in range(self.cpts[lvl].size):
+                recv = self.comm_time.recv(source=0, tag=self.comm_time_rank)
+                idx = np.where(recv[0]==self.t[lvl])[0][0]
+                self.u[lvl][idx].unpack(recv[1])
 
         logging.debug(f"Forward solve on {self.comm_time_rank} took {time.time() - runtime_fs} s")
 
@@ -688,6 +689,14 @@ class Mgrit:
         self.send_to.append(tmp_send_to)
         self.get_from.append(tmp_get_from)
 
+        #Coarsest level communication
+        if lvl == self.lvl_max - 1:
+            end_points = np.cumsum(
+                        self.split_into(number_points=len(self.global_t[0]), number_processes=self.comm_time_size))-1
+            split = self.global_t[0][end_points]
+            self.comm_coarsest_level = np.array([np.min(np.where((item <= split))) for item in self.global_t[-1]])
+
+
     def split_into(self, number_points: int, number_processes: int) -> np.ndarray:
         """
         Split points
@@ -733,6 +742,8 @@ class Mgrit:
         """
         Creates vectors u and g for coarsest level
         """
-        self.u_coarsest = [self.problem[-1].vector_template.clone_zero() for _ in range(len(self.global_t[-1]))]
-        self.u_coarsest[0] = self.problem[-1].vector_t_start.clone()
-        self.g_coarsest = [self.problem[-1].vector_template.clone_zero() for _ in range(len(self.global_t[-1]))]
+        if self.comm_time_rank == 0:
+            self.u_coarsest = [self.problem[-1].vector_template.clone_zero() for _ in range(len(self.global_t[-1]))]
+            self.u_coarsest[0] = self.problem[-1].vector_t_start.clone()
+            self.g_coarsest = [self.problem[-1].vector_template.clone_zero() for _ in range(len(self.global_t[-1]))]
+

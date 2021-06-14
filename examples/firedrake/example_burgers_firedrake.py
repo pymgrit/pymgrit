@@ -27,7 +27,7 @@ def main_1d():
     comm_x, comm_t = split_communicator(comm_world, 2)
 
     # Define spatial domain
-    mesh = PeriodicIntervalMesh(100, length=2)
+    mesh = PeriodicIntervalMesh(100, length=2, comm=comm_x)
 
     # Set up the problem
     problem_level_0 = Burgers1D(mesh=mesh, nu=1e-2, comm_space=comm_x, t_start=0, t_stop=0.5, nt=129)
@@ -43,7 +43,7 @@ def main_2d():
     comm_x, comm_t = split_communicator(comm_world, 2)
 
     # Define spatial domain
-    mesh = UnitSquareMesh(30, 30)
+    mesh = UnitSquareMesh(30, 30, comm=comm_x)
 
     # Set up the problem
     problem_level_0 = Burgers2D(mesh=mesh, nu=1e-2, comm_space=comm_x, t_start=0, t_stop=0.5, nt=129)

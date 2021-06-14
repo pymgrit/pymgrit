@@ -72,7 +72,7 @@ class VectorFiredrake(Vector):
         """
         tmp = VectorFiredrake(self.values)
         tmp_values = tmp.get_values()
-        tmp_values.dat.data[:] = np.random.rand(len(tmp_values.dat.data[:]))
+        tmp_values.dat.data[:] = np.random.rand(*tmp_values.dat.data[:].shape)
         tmp.set_values(tmp_values)
         return tmp
 
@@ -85,7 +85,7 @@ class VectorFiredrake(Vector):
         """
         tmp = VectorFiredrake(self.values)
         tmp_value = tmp.get_values()
-        tmp_value.dat += other.get_values().dat
+        tmp_value += other.get_values()
         tmp.set_values(tmp_value)
         return tmp
 
@@ -98,7 +98,7 @@ class VectorFiredrake(Vector):
         """
         tmp = VectorFiredrake(self.values)
         tmp_value = tmp.get_values()
-        tmp_value.dat -= other.get_values().dat
+        tmp_value -= other.get_values()
         tmp.set_values(tmp_value)
         return tmp
 
@@ -111,7 +111,7 @@ class VectorFiredrake(Vector):
         """
         tmp = VectorFiredrake(self.values)
         tmp_value = tmp.get_values()
-        tmp_value.dat *= other
+        tmp_value *= other
         tmp.set_values(tmp_value)
         return tmp
 
