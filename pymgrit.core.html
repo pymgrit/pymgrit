@@ -87,7 +87,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Usage</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Usage</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="usage/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Quickstart</a></li>
@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="usage/parallelism.html">Parallelism</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage/advanced.html">Advanced usage</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Applications</span></p>
+<p class="caption" role="heading"><span class="caption-text">Applications</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="applications/dahlquist.html">Dahlquist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applications/brusselator.html">Brusselator</a></li>
@@ -104,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="applications/heat_equation.html">Heat Equation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applications/advection.html">Advection</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Coupling</span></p>
+<p class="caption" role="heading"><span class="caption-text">Coupling</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="coupling/firedrake.html">Firedrake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coupling/petsc.html">PETSc</a></li>
@@ -219,7 +219,7 @@ Every user-defined application class must inherit from this class.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.application.Application.step">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stop</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">object</span><a class="headerlink" href="#pymgrit.core.application.Application.step" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_start</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_stop</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#pymgrit.core.application.Application.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time integration routine for the application</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -263,6 +263,9 @@ Checks whether required attributes are set.</p>
 </dd></dl>
 
 </section>
+<section id="pymgrit-core-at-mgrit-module">
+<h2>pymgrit.core.at_mgrit module<a class="headerlink" href="#pymgrit-core-at-mgrit-module" title="Permalink to this headline">¶</a></h2>
+</section>
 <section id="module-pymgrit.core.grid_transfer">
 <span id="pymgrit-core-grid-transfer-module"></span><h2>pymgrit.core.grid_transfer module<a class="headerlink" href="#module-pymgrit.core.grid_transfer" title="Permalink to this headline">¶</a></h2>
 <p>Abstract grid transfer class for user-defined grid transfer classes.
@@ -291,7 +294,7 @@ Allows for additional spatial coarsening and refinement between time levels.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.grid_transfer.GridTransfer.interpolation">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a><a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer.interpolation" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></span><a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer.interpolation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Spatial interpolation.
 Receives the spatial solution at a point in time
 of one level and interpolates it to the same point in
@@ -311,7 +314,7 @@ time on the next finer level.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.grid_transfer.GridTransfer.restriction">
-<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">restriction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a><a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer.restriction" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">restriction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></span><a class="headerlink" href="#pymgrit.core.grid_transfer.GridTransfer.restriction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Spatial restriction.
 Receives the spatial solution at a point in time
 of one level and restricts it to the same point in time
@@ -345,7 +348,7 @@ Copies the spatial solution from one level to another.
 This function is called for every time point.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.grid_transfer_copy.GridTransferCopy.interpolation">
-<span class="sig-name descname"><span class="pre">interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a><a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy.interpolation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></span><a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy.interpolation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies the spatial solution at one point in time
 of one level and restricts it to the same point in time
 on the next finer level.</p>
@@ -364,7 +367,7 @@ on the next finer level.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.grid_transfer_copy.GridTransferCopy.restriction">
-<span class="sig-name descname"><span class="pre">restriction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a><a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy.restriction" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">restriction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pymgrit.core.vector.Vector" title="pymgrit.core.vector.Vector"><span class="pre">pymgrit.core.vector.Vector</span></a></span></span><a class="headerlink" href="#pymgrit.core.grid_transfer_copy.GridTransferCopy.restriction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies the spatial solution at one point in time
 of one level and restricts it to the same point in time
 on the next coarser level.</p>
@@ -402,7 +405,7 @@ time-stepping problems of the form</p>
 and the solved space-time matrix stencil is [-Phi I].</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.c_exchange">
-<span class="sig-name descname"><span class="pre">c_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.c_exchange" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">c_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.c_exchange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Point exchange on level lvl if the first point of a process is an F-point.</p>
 <p>Typically called after a C-point update.</p>
 <dl class="field-list simple">
@@ -414,7 +417,7 @@ and the solved space-time matrix stencil is [-Phi I].</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.c_relax">
-<span class="sig-name descname"><span class="pre">c_relax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.c_relax" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">c_relax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.c_relax" title="Permalink to this definition">¶</a></dt>
 <dd><p>C-relaxation on level lvl.</p>
 <p>C-relaxation updates solution values at C-points by propagating the
 solution from the preceeding F-points.</p>
@@ -427,7 +430,7 @@ solution from the preceeding F-points.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.convergence_criterion">
-<span class="sig-name descname"><span class="pre">convergence_criterion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.convergence_criterion" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">convergence_criterion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.convergence_criterion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stopping criterion based on the 2-norm of the space-time residual.</p>
 <dl class="simple">
 <dt>Computes the space-time residual</dt><dd><p>r_i = Phi(u_{i-1}) - u_i, i = 1, …. nt,
@@ -449,7 +452,7 @@ r_0 = 0</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.create_u">
-<span class="sig-name descname"><span class="pre">create_u</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.create_u" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_u</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.create_u" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates solution vectors for all local time points on a given MGRIT level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -460,7 +463,7 @@ r_0 = 0</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.create_v_g">
-<span class="sig-name descname"><span class="pre">create_v_g</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.create_v_g" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_v_g</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.create_v_g" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates vectors v and g for all local time points on a given MGRIT level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -471,7 +474,7 @@ r_0 = 0</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.error_correction">
-<span class="sig-name descname"><span class="pre">error_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.error_correction" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">error_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.error_correction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the error approximation on level lvl and
 updates the approximation on the next finer level.</p>
 <dl class="field-list simple">
@@ -483,7 +486,7 @@ updates the approximation on the next finer level.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.f_exchange">
-<span class="sig-name descname"><span class="pre">f_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.f_exchange" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">f_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.f_exchange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Point exchange on level lvl if the first point of a process is a C-point.</p>
 <p>Typically called after an F-point update.</p>
 <dl class="field-list simple">
@@ -495,7 +498,7 @@ updates the approximation on the next finer level.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.f_relax">
-<span class="sig-name descname"><span class="pre">f_relax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.f_relax" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">f_relax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.f_relax" title="Permalink to this definition">¶</a></dt>
 <dd><p>F-relaxation on level lvl.</p>
 <p>F-relaxation updates solution values at F-points by propagating the solution
 from one C-point to all F-points up to the next C-point.</p>
@@ -508,7 +511,7 @@ from one C-point to all F-points up to the next C-point.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.fas_residual">
-<span class="sig-name descname"><span class="pre">fas_residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.fas_residual" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">fas_residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.fas_residual" title="Permalink to this definition">¶</a></dt>
 <dd><p>Injects the fine-grid approximation and its residual
 from level lvl to the next coarser grid.</p>
 <dl class="field-list simple">
@@ -520,7 +523,7 @@ from level lvl to the next coarser grid.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.forward_solve">
-<span class="sig-name descname"><span class="pre">forward_solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.forward_solve" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">forward_solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.forward_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solves the problem directly on level lvl with time stepping.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -531,7 +534,7 @@ from level lvl to the next coarser grid.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.get_c_point">
-<span class="sig-name descname"><span class="pre">get_c_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><span class="pre">pymgrit.core.application.Application</span></a><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.get_c_point" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_c_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><span class="pre">pymgrit.core.application.Application</span></a></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.get_c_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exchanges the first/last C-point between two processes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -542,7 +545,7 @@ from level lvl to the next coarser grid.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.iteration">
-<span class="sig-name descname"><span class="pre">iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycle_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_f</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.iteration" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycle_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_f</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>MGRIT iteration on level lvl</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -558,7 +561,7 @@ from level lvl to the next coarser grid.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.log_info">
-<span class="sig-name descname"><span class="pre">log_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.log_info" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">log_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.log_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes a message to the logger.
 Only one process</p>
 <dl class="field-list simple">
@@ -570,7 +573,7 @@ Only one process</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.nested_iteration">
-<span class="sig-name descname"><span class="pre">nested_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.nested_iteration" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">nested_iteration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.nested_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates an initial approximation on the finest grid
 by solving the problem on the coarsest grid and interpolating
 the approximation to the finest level.</p>
@@ -578,13 +581,13 @@ the approximation to the finest level.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.ouput_run_information">
-<span class="sig-name descname"><span class="pre">ouput_run_information</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.ouput_run_information" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ouput_run_information</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.ouput_run_information" title="Permalink to this definition">¶</a></dt>
 <dd><p>Outputs information of pyMGRIT run.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.setup_points_and_comm_info">
-<span class="sig-name descname"><span class="pre">setup_points_and_comm_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.setup_points_and_comm_info" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setup_points_and_comm_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.setup_points_and_comm_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes local grid information for level <em>lvl</em>.
 Computes which process holds the previous and next point for each lvl and process.</p>
 <dl class="field-list simple">
@@ -596,7 +599,7 @@ Computes which process holds the previous and next point for each lvl and proces
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">dict</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.solve" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Driver function for solving the problem using MGRIT.</p>
 <p>Performs MGRIT iterations until a stopping criterion is fulfilled or
 the maximum number of iterations is reached.</p>
@@ -609,7 +612,7 @@ the maximum number of iterations is reached.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.split_into">
-<span class="sig-name descname"><span class="pre">split_into</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number_points</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_processes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.ndarray</span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.split_into" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">split_into</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number_points</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_processes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.split_into" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split points</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -626,7 +629,7 @@ the maximum number of iterations is reached.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pymgrit.core.mgrit.Mgrit.split_points">
-<span class="sig-name descname"><span class="pre">split_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.split_points" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">split_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymgrit.core.mgrit.Mgrit.split_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits <em>length</em> points evenly in <em>size</em> parts and computes the index of the
 first point and block size of the local time interval.</p>
 <dl class="field-list simple">
@@ -682,7 +685,7 @@ first point and block size of the local time interval.</p>
 problem, the number of levels, and the coarsening factor.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pymgrit.core.simple_setup_problem.simple_setup_problem">
-<span class="sig-prename descclassname"><span class="pre">pymgrit.core.simple_setup_problem.</span></span><span class="sig-name descname"><span class="pre">simple_setup_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><span class="pre">pymgrit.core.application.Application</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coarsening</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><span class="pre">pymgrit.core.application.Application</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#pymgrit.core.simple_setup_problem.simple_setup_problem" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pymgrit.core.simple_setup_problem.</span></span><span class="sig-name descname"><span class="pre">simple_setup_problem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><span class="pre">pymgrit.core.application.Application</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coarsening</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pymgrit.core.application.Application" title="pymgrit.core.application.Application"><span class="pre">pymgrit.core.application.Application</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymgrit.core.simple_setup_problem.simple_setup_problem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple setup of a time-multigrid hierarchy for a problem.</p>
 <p>Creates a time-multigrid hierarchy using the finest
 problem, the number of levels, and the coarsening factor.</p>
@@ -706,7 +709,7 @@ problem, the number of levels, and the coarsening factor.</p>
 <p>Creates new communicators for space &amp; time parallelism</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pymgrit.core.split.split_communicator">
-<span class="sig-prename descclassname"><span class="pre">pymgrit.core.split.</span></span><span class="sig-name descname"><span class="pre">split_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comm</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">mpi4py.MPI.Comm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitting</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">mpi4py.MPI.Comm</span><span class="p"><span class="pre">,</span> </span><span class="pre">mpi4py.MPI.Comm</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#pymgrit.core.split.split_communicator" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pymgrit.core.split.</span></span><span class="sig-name descname"><span class="pre">split_communicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comm</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">mpi4py.MPI.Comm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitting</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">mpi4py.MPI.Comm</span><span class="p"><span class="pre">,</span> </span><span class="pre">mpi4py.MPI.Comm</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymgrit.core.split.split_communicator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates new communicators for space &amp; time parallelism by
 “splitting” the input communicator into two sub-communicators.</p>
 <dl class="field-list simple">
