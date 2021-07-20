@@ -8,7 +8,6 @@ import os
 import subprocess
 from subprocess import PIPE
 import tempfile
-import time
 
 import numpy as np
 
@@ -27,7 +26,7 @@ class InductionMachine(Application):
     def __init__(self, grid: str, path_im3kw: str, path_getdp: str, imposed_speed: int = 1, nb_trelax: int = 2,
                  analysis_type: int = 1, nb_max_iter: int = 60, relaxation_factor: float = 0.5,
                  stop_criterion: float = 1e-6, nonlinear: bool = False, pwm: bool = False, pro_file: str = 'im_3kW.pro',
-                 verbose: bool = False, *args, **kwargs):
+                 verbose: bool = False, steps_per_solve: int = 1, *args, **kwargs):
         """
         Constructor
 
@@ -54,13 +53,14 @@ class InductionMachine(Application):
         self.pre = grid + '.pre'
         self.further_unknowns_front = 8
         self.further_unknowns_back = 15
+        self.steps_per_solve = steps_per_solve
 
         cor_to_un, un_to_cor, boundary = pre_file(path_im3kw + self.pre)
 
         self.nx = len(un_to_cor) + self.further_unknowns_front + self.further_unknowns_back
 
-        self.gopt = {'Verbose': int(verbose), 'TimeStep': self.t[1] - self.t[0], 'Executable': self.getdp_path,
-                     'PreProcessing': '#1'}
+        self.gopt = {'Verbose': int(verbose), 'TimeStep': (self.t[1] - self.t[0]) / self.steps_per_solve,
+                     'Executable': self.getdp_path, 'PreProcessing': '#1'}
         self.fopt = ['Flag_AnalysisType', analysis_type, 'Flag_NL', self.nl, 'Flag_ImposedSpeed', imposed_speed,
                      'Nb_max_iter', nb_max_iter, 'relaxation_factor', relaxation_factor, 'stop_criterion',
                      stop_criterion, 'NbTrelax', nb_trelax, 'Flag_PWM', self.pwm]

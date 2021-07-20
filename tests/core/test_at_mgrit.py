@@ -3,7 +3,7 @@ Tests for the mgrit class
 """
 import numpy as np
 
-from pymgrit.core.mgrit import Mgrit
+from pymgrit.core.at_mgrit import AtMgrit
 from pymgrit.heat.heat_1d import Heat1D
 
 
@@ -29,32 +29,6 @@ def init_cond(x):
     return np.sin(np.pi * x)
 
 
-def test_split_into():
-    """
-    Test the function split_into
-    """
-    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2,
-                   nt=2 ** 2 + 1)
-    result = np.array([4, 3, 3])
-    mgrit = Mgrit(problem=[heat0], transfer=[], nested_iteration=False)
-    np.testing.assert_equal(result, mgrit.split_into(10, 3))
-
-
-def test_split_points():
-    """
-    Test the function split points
-    """
-    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2,
-                   nt=2 ** 2 + 1)
-    result_proc0 = (4, 0)
-    result_proc1 = (3, 4)
-    result_proc2 = (3, 7)
-    mgrit = Mgrit(problem=[heat0], nested_iteration=False)
-    np.testing.assert_equal(result_proc0, mgrit.split_points(10, 3, 0))
-    np.testing.assert_equal(result_proc1, mgrit.split_points(10, 3, 1))
-    np.testing.assert_equal(result_proc2, mgrit.split_points(10, 3, 2))
-
-
 def test_heat_equation_run():
     """
     Test one run for the heat equation
@@ -63,17 +37,11 @@ def test_heat_equation_run():
     heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=17)
     heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
-    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2, random_init_guess=False)
+    mgrit = AtMgrit(problem=problem, cf_iter=1, nested_iteration=False, max_iter=2, random_init_guess=False, k=2)
     res = mgrit.solve()
-    result_conv = np.array([0.00267692, 0.00018053])
+    result_conv = np.array([0.1767778, 0.01223507])
     np.testing.assert_almost_equal(result_conv, res['conv'])
 
-def test_time_stepping():
-    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=65)
-    mgrit = Mgrit(problem=[heat0], cf_iter=1, nested_iteration=True, max_iter=2, random_init_guess=False)
-    res = mgrit.solve()
-    result_conv = np.array([])
-    np.testing.assert_almost_equal(result_conv, res['conv'])
 
 def test_setup_points_and_comm_info():
     """
@@ -83,7 +51,7 @@ def test_setup_points_and_comm_info():
     heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=17)
     heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=5)
     problem = [heat0, heat1, heat2]
-    mgrit = Mgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2)
+    mgrit = AtMgrit(problem=problem, cf_iter=1, nested_iteration=True, max_iter=2, k=2)
     size = 7
     cpts = []
     comm_front = []
@@ -98,6 +66,7 @@ def test_setup_points_and_comm_info():
     last_is_f_point = []
     send_to = []
     get_from = []
+    local_coarse_grids = []
     for i in range(size):
         mgrit.comm_time_size = size
         mgrit.comm_time_rank = i
@@ -116,9 +85,11 @@ def test_setup_points_and_comm_info():
         mgrit.last_is_c_point = []  # Communication after C-relax
         mgrit.send_to = []
         mgrit.get_from = []
+        mgrit.local_coarse_grid = []
         for lvl in range(mgrit.lvl_max):
             mgrit.t.append(np.copy(mgrit.problem[lvl].t))
             mgrit.setup_points_and_comm_info(lvl=lvl)
+        local_coarse_grids.append(mgrit.local_coarse_grid)
         cpts.append(mgrit.cpts)
         comm_front.append(mgrit.comm_front)
         comm_back.append(mgrit.comm_back)
@@ -132,7 +103,6 @@ def test_setup_points_and_comm_info():
         last_is_f_point.append(mgrit.last_is_f_point)
         send_to.append(mgrit.send_to)
         get_from.append(mgrit.get_from)
-    test_comm_coarsest_level = [0,1,3,5,6]
     test_cpts = [[np.array([0, 4, 8]), np.array([0]), np.array([0])],
                  [np.array([12, 16]), np.array([4]), np.array([1])],
                  [np.array([20, 24, 28]), np.array([], dtype=int), np.array([], dtype=int)],
@@ -140,6 +110,8 @@ def test_setup_points_and_comm_info():
                  [np.array([40, 44]), np.array([], dtype=int), np.array([], dtype=int)],
                  [np.array([48, 52]), np.array([12]), np.array([3])],
                  [np.array([56, 60, 64]), np.array([16]), np.array([4])]]
+    test_local_coarse_grid = [np.array([0.]), np.array([0., 0.5]), np.array([]), np.array([0.5, 1.]), [],
+                              np.array([1., 1.5]), np.array([1.5, 2.])]
     test_comm_front = [[False, False, False],
                        [True, True, False],
                        [False, False, False],
@@ -195,7 +167,11 @@ def test_setup_points_and_comm_info():
     test_send_to = [[1, 1, 1], [2, 2, 3], [3, 3, -99], [4, 4, 5], [5, 5, -99], [6, 6, 6], [-99, -99, -99]]
     test_get_from = [[-99, -99, -99], [0, 0, 0], [1, 1, -99], [2, 2, 1], [3, 3, -99], [4, 4, 3], [5, 5, 5]]
 
+    test_comm_coarsest_level = [0, 1, 3, 5, 6]
     np.testing.assert_almost_equal(mgrit.comm_coarsest_level, test_comm_coarsest_level)
+
+    test_c_points_per_proc = [1, 1, 1, 1, 1]
+    np.testing.assert_almost_equal(mgrit.c_points_per_proc, test_c_points_per_proc)
 
     for i in range(size):
         assert all([a == b for a, b in zip(first_is_c_point[i], test_first_is_c_point[i])])
@@ -207,6 +183,7 @@ def test_setup_points_and_comm_info():
         assert all([a == b for a, b in zip(block_size_this_lvl[i], test_block_size_this_lvl[i])])
         assert all([a == b for a, b in zip(send_to[i], test_send_to[i])])
         assert all([a == b for a, b in zip(get_from[i], test_get_from[i])])
+        assert all([a == b for a, b in zip(local_coarse_grids[i], test_local_coarse_grid[i])])
         [np.testing.assert_equal(a, b) for a, b in zip(cpts[i], test_cpts[i])]
         [np.testing.assert_equal(a, b) for a, b in zip(index_local[i], test_index_local[i])]
         [np.testing.assert_equal(a, b) for a, b in zip(index_local_c[i], test_index_local_c[i])]

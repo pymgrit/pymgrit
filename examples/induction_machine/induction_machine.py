@@ -91,7 +91,7 @@ class MgritMachineConvJl(Mgrit):
             self.f_exchange(lvl=lvl)
             self.iteration(lvl=lvl, cycle_type='V', iteration=iteration, first_f=False)
 
-    def convergence_criteria(self, iteration: int) -> None:
+    def convergence_criterion(self, iteration: int) -> None:
         """
         Maximum norm of all C-points
 
