@@ -10,7 +10,7 @@ import numpy as np
 
 from mpi4py import MPI
 
-from mgrit import Mgrit
+from pymgrit.core.mgrit import Mgrit
 
 
 class AtMgrit(Mgrit):
