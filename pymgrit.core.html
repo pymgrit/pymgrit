@@ -263,8 +263,50 @@ Checks whether required attributes are set.</p>
 </dd></dl>
 
 </section>
-<section id="pymgrit-core-at-mgrit-module">
-<h2>pymgrit.core.at_mgrit module<a class="headerlink" href="#pymgrit-core-at-mgrit-module" title="Permalink to this headline">¶</a></h2>
+<section id="module-pymgrit.core.at_mgrit">
+<span id="pymgrit-core-at-mgrit-module"></span><h2>pymgrit.core.at_mgrit module<a class="headerlink" href="#module-pymgrit.core.at_mgrit" title="Permalink to this headline">¶</a></h2>
+<p>AT-MGRIT solver in FAS formulation</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pymgrit.core.at_mgrit.AtMgrit">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pymgrit.core.at_mgrit.</span></span><span class="sig-name descname"><span class="pre">AtMgrit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymgrit.core.at_mgrit.AtMgrit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pymgrit.core.mgrit.Mgrit" title="pymgrit.core.mgrit.Mgrit"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymgrit.core.mgrit.Mgrit</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pymgrit.core.at_mgrit.AtMgrit.create_coarsest_level">
+<span class="sig-name descname"><span class="pre">create_coarsest_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.at_mgrit.AtMgrit.create_coarsest_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates vectors u and g for coarsest level</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pymgrit.core.at_mgrit.AtMgrit.forward_solve">
+<span class="sig-name descname"><span class="pre">forward_solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.at_mgrit.AtMgrit.forward_solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves local coarse grid problems on the coarsest level</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lvl</strong> – AT-MGRIT level</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pymgrit.core.at_mgrit.AtMgrit.ouput_run_information">
+<span class="sig-name descname"><span class="pre">ouput_run_information</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.at_mgrit.AtMgrit.ouput_run_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs information of AT-MGRIT run.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pymgrit.core.at_mgrit.AtMgrit.setup_points_and_comm_info">
+<span class="sig-name descname"><span class="pre">setup_points_and_comm_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pymgrit.core.at_mgrit.AtMgrit.setup_points_and_comm_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes local grid information for level <em>lvl</em>.
+Computes which process holds the previous and next point for each lvl and process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lvl</strong> – MGRIT level</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-pymgrit.core.grid_transfer">
 <span id="pymgrit-core-grid-transfer-module"></span><h2>pymgrit.core.grid_transfer module<a class="headerlink" href="#module-pymgrit.core.grid_transfer" title="Permalink to this headline">¶</a></h2>
