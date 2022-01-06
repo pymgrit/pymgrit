@@ -8,7 +8,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 pip3 install .
-pip3 install sphinx sphinx-rtd-theme
+pip3 install sphinx sphinx-rtd-theme docutils==0.16
 rm -fr docs/source/pymgrit*
 sphinx-apidoc -f -o docs/source src/pymgrit
 sphinx-build -E docs/source docs/build/html
