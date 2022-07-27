@@ -14,7 +14,7 @@ from pymgrit.core.mgrit import Mgrit
 
 
 class AtMgrit(Mgrit):
-    def __init__(self, k, *args, **kwargs):
+    def __init__(self, k, conv_crit=0, *args, **kwargs):
         """
         Constructor
 
@@ -27,7 +27,12 @@ class AtMgrit(Mgrit):
         self.comm_green = None
         self.local_coarse_grid = None
         self.c_points_per_proc = None
-        super().__init__(*args, **kwargs)
+
+        if conv_crit not in [0, 1]:
+            raise Exception(
+                'Local convergence criteria are not implemented for AT-MGRIT. Please select a global criterion.')
+
+        super().__init__(conv_crit=conv_crit, *args, **kwargs)
 
     def forward_solve(self, lvl: int) -> None:
         """
@@ -178,8 +183,7 @@ class AtMgrit(Mgrit):
 
             if np.any(self.c_points_per_proc[1:] > 1) or self.c_points_per_proc[0] > 2:
                 if self.comm_time_size != 1:
-                    print('Too many points on proc')
-                    sys.exit()
+                    raise Exception('Too many points on proc', np.where(self.c_points_per_proc[1:] > 1)[0][0])
 
             if self.c_points_per_proc[0] == 2:
                 tmp_comm_coarsest_level = self.comm_coarsest_level[1:]

@@ -34,7 +34,7 @@ class Mgrit:
                  max_iter: int = 100, tol: float = 1e-7, nested_iteration: bool = True, cf_iter: int = 1,
                  cycle_type: str = 'V', comm_time: MPI.Comm = MPI.COMM_WORLD, comm_space: MPI.Comm = MPI.COMM_NULL,
                  logging_lvl: int = logging.INFO, output_fcn=None, output_lvl=1, t_norm=2,
-                 random_init_guess: bool = False) -> None:
+                 random_init_guess: bool = False, conv_crit: int = 0) -> None:
         """
         Initialize MGRIT solver.
 
@@ -58,6 +58,15 @@ class Mgrit:
                1 -> output_fcn is called at the end of the simulation
                2 -> output_fcn is called after each MGRIT iteration
         :param random_init_guess: Use (True) or do not use (False) random initial guess
+        :param t_norm: Norm in time (only for global convergence criterion):
+               1 -> One norm
+               2 -> Two norm
+               3 -> Inf norm
+        :param conv_crit: Convergence criterion, possible values 0, 1, 2, 3:
+               0 -> global space-time residual
+               1 -> global jump
+               2 -> local space-time residual
+               3 -> local jump
         """
         logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S',
                             level=logging_lvl, stream=sys.stdout)
@@ -89,6 +98,26 @@ class Mgrit:
         if t_norm not in [1, 2, 3]:
             raise Exception(
                 'Unknown norm. Please choose 1 (one norm), 2 (two-norm) or 3 (inf-norm)')
+
+        if conv_crit not in [0, 1, 2, 3]:
+            raise Exception(
+                'Unknown convergence criterion. Please choose: '
+                '0 (global space-time residual), '
+                '1 (global jump)'
+                '2 (local space-time residual)'
+                '3 (local jump)')
+
+        if isinstance(cf_iter, int):
+            cf_iter = [cf_iter for _ in range(len(problem))]
+        elif isinstance(cf_iter, list):
+            if len(cf_iter) < len(problem) - 1:
+                raise Exception(
+                    'Too few cf_iter. '
+                    'Specify a list of values for all but the coarsest level or an integer (used for all levels).')
+        else:
+            raise Exception(
+                'Incorrect datatype cf_iter. '
+                'Specify a list of values for all but the coarsest level or an integer ( used for all levels).')
 
         self.comm_time = comm_time
         self.comm_space = comm_space
@@ -141,8 +170,6 @@ class Mgrit:
         self.index_local_c = []  # Local indices of C-Points
         self.index_local_f = []  # Local indices of F-Points
         self.index_local = []  # Local indices of all points
-        self.g_coarsest = []  # FAS residual for the time stepping on coarsest grid
-        self.u_coarsest = []  # Solution for the time stepping on coarsest grid
         self.comm_front = []  # Communication inside F-relax per MGRIT level
         self.comm_back = []  # Communication inside F-relax per MGRIT level
         self.first_is_f_point = []  # Communication after C-relax
@@ -153,7 +180,20 @@ class Mgrit:
         self.get_from = []  # Which process contains previous time point
         self.global_t = []  # Global time information
         self.t_norm = 1 if t_norm == 1 else None if t_norm == 2 else np.inf  # Time norm
-        self.comm_coarsest_level = [] # Communication on coarsest level
+        self.conv_crit = conv_crit
+        self.global_conv_crit = True if (self.conv_crit == 0 or self.conv_crit == 1) else False
+        if not self.global_conv_crit:
+            self.log_info(
+                f"A local criterion is used. The following output describes only the convergence of "
+                f"the time points of one process")
+        self.save_values_last_iter = None
+
+        self.requests = []
+        self.tags_send = [np.array([50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000]) for _ in
+                          range(self.lvl_max)]
+        self.tags_recv = [np.array([50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000]) for _ in
+                          range(self.lvl_max)]
+        self.sender_finished = [[False for _ in range(8)] for _ in range(self.lvl_max)]
 
         # Set output level and output function
         self.output_lvl = output_lvl  # Output level, only 0,1,2
@@ -179,18 +219,24 @@ class Mgrit:
                 self.m.append(1)
             self.setup_points_and_comm_info(lvl=lvl)
             self.step.append(problem[lvl].step)
-            self.create_u(lvl=lvl)
-            self.create_v_g(lvl=lvl)
+            self.create_u_v_g(lvl=lvl)
 
-        # Create coarse grid problem for direct solve
-        self.create_coarsest_level()
+        self.finished = [False, None]
+        if self.comm_time_rank != 0:
+            self.pre_finished = [False, None]
+        else:
+            self.pre_finished = [True, 0]
 
         # Use or do not use nested iteration
         if nested_iteration:
             self.nested_iteration()
 
+        if self.conv_crit == 1 or self.conv_crit == 3:
+            self.save_values_last_iter = [item.clone() for item in self.u[0]]
+
         # Stop timer for setup time
-        self.comm_time.barrier()
+        if self.iter_max == 0:
+            self.comm_time.barrier()
         self.runtime_setup = time.time() - runtime_setup_start
 
         if self.output_fcn is not None and self.output_lvl == 2:
@@ -205,7 +251,7 @@ class Mgrit:
 
         :param message: Message
         """
-        if self.comm_time_rank == 0:
+        if self.comm_time_rank == self.comm_time_size - 1:
             if self.spatial_parallel:
                 if self.comm_space_rank == 0:
                     logging.info(message)
@@ -227,13 +273,10 @@ class Mgrit:
 
         if (lvl > 0 or (iteration == 0 and lvl == 0)) and first_f:
             self.f_relax(lvl=lvl)
-            self.f_exchange(lvl=lvl)
 
-        for _ in range(self.cf_iter):
+        for _ in range(self.cf_iter[lvl]):
             self.c_relax(lvl=lvl)
-            self.c_exchange(lvl=lvl)
             self.f_relax(lvl=lvl)
-            self.f_exchange(lvl=lvl)
 
         self.fas_residual(lvl=lvl)
 
@@ -244,7 +287,6 @@ class Mgrit:
         self.f_relax(lvl=lvl)
 
         if lvl != 0 and cycle_type == 'F':
-            self.f_exchange(lvl=lvl)
             self.iteration(lvl=lvl, cycle_type='V', iteration=iteration, first_f=False)
 
     def f_relax(self, lvl: int) -> None:
@@ -256,14 +298,25 @@ class Mgrit:
 
         :param lvl: MGRIT level
         """
+        logging.debug(f"Start f_relax on {self.comm_time_rank}")
         runtime_f = time.time()
-        tmp_send = False
-        req_s = None
-        rank = self.comm_time_rank
+
+        # Send data if the last point of the process is a C-point
+        if self.last_is_c_point[lvl]:
+            self.send(data=self.u[lvl][-1].pack(), dest=self.send_to[lvl], lvl=lvl, op_id=0)
+
+        # Receive data if the first point is an F-point and the first point of an F-interval
+        if self.first_is_f_point[lvl] and not self.sender_finished[lvl][0]:
+            self.u[lvl][0].unpack(self.receive(source=self.get_from[lvl], lvl=lvl, op_id=0))
+
+        # Iterate over F-points
         if self.index_local_f[lvl].size > 0:
             for i in np.nditer(self.index_local_f[lvl]):
-                if self.comm_front[lvl] and i == np.min(self.index_local_f[lvl]):
-                    self.u[lvl][0].unpack(self.comm_time.recv(source=self.get_from[lvl], tag=rank))
+                # Receive data if the previous F-point is on another process
+                if self.comm_front[lvl] and i == np.min(self.index_local_f[lvl]) and not self.sender_finished[lvl][1]:
+                    self.u[lvl][0].unpack(self.receive(source=self.get_from[lvl], lvl=lvl, op_id=1))
+
+                # Perform time integration, consider FAS rhs on lvl > 0.
                 if lvl == 0:
                     self.u[lvl][i] = self.step[lvl](u_start=self.u[lvl][i - 1],
                                                     t_start=self.t[lvl][i - 1],
@@ -272,13 +325,12 @@ class Mgrit:
                     self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
                                                                      t_start=self.t[lvl][i - 1],
                                                                      t_stop=self.t[lvl][i])
-                if self.comm_back[lvl] and i == np.max(self.index_local_f[lvl]):
-                    tmp_send = True
-                    req_s = self.comm_time.isend(self.u[lvl][-1].pack(), dest=self.send_to[lvl], tag=self.send_to[lvl])
-        if tmp_send:
-            req_s.wait()
 
-        logging.debug(f"F-relax on {rank} took {time.time() - runtime_f} s")
+                # Send data if the next F-point is on another process
+                if self.comm_back[lvl] and i == np.max(self.index_local_f[lvl]):
+                    self.send(data=self.u[lvl][i].pack(), dest=self.send_to[lvl], lvl=lvl, op_id=1)
+
+        logging.debug(f"F-relax on {self.comm_time_rank} took {time.time() - runtime_f} s")
 
     def c_relax(self, lvl: int) -> None:
         """
@@ -290,9 +342,20 @@ class Mgrit:
         :param lvl: MGRIT level
         """
         runtime_c = time.time()
+
+        # Send data if the last point of the process is an F-point and the last point of an F-interval
+        if self.last_is_f_point[lvl]:
+            self.send(data=self.u[lvl][-1].pack(), dest=self.send_to[lvl], lvl=lvl, op_id=2)
+
+        # Receive data if the first point is a C-point
+        if self.first_is_c_point[lvl] and not self.sender_finished[lvl][2]:
+            self.u[lvl][0].unpack(self.receive(source=self.get_from[lvl], lvl=lvl, op_id=2))
+
+        # Iterate over C-points
         if self.index_local_c[lvl].size > 0:
             for i in np.nditer(self.index_local_c[lvl]):
                 if i != 0 or self.comm_time_rank != 0:
+                    # Perform time integration, consider FAS rhs on lvl > 0
                     if lvl == 0:
                         self.u[lvl][i] = self.step[lvl](u_start=self.u[lvl][i - 1],
                                                         t_start=self.t[lvl][i - 1],
@@ -306,32 +369,90 @@ class Mgrit:
 
         logging.debug(f"C-relax on {self.comm_time_rank} took {time.time() - runtime_c} s")
 
-    def convergence_criterion(self, iteration: int) -> None:
+    def compute_jump(self) -> list:
         """
-        Stopping criterion based on the 2-norm of the space-time residual.
 
+        :return:
+        """
+        jump_norm = []
+        # Iterate over C-points
+        if self.index_local_c[0].size > 0:
+            for i in np.nditer(self.index_local_c[0]):
+                if self.comm_time_rank != 0 or i != 0:
+                    jump = self.u[0][i] - self.save_values_last_iter[i]
+                    jump_norm.append(jump.norm())
+        self.save_values_last_iter = [item.clone() for item in self.u[0]]
+        return jump_norm
+
+    def compute_residual(self) -> list:
+        """
         Computes the space-time residual
           r_i = Phi(u_{i-1}) - u_i, i = 1, .... nt,
           r_0 = 0
 
-        :param iteration: MGRIT iteration number
+        :return: list of space-time residuals
         """
-        runtime_conv = time.time()
         r_norm = []
 
-        self.f_exchange(lvl=0)
-        self.c_exchange(lvl=0)
+        # Send data if the last point of the process is an F-point and the last point of an F-interval
+        if self.last_is_f_point[0]:
+            self.send(data=self.u[0][-1].pack(), dest=self.send_to[0], lvl=0, op_id=7)
 
+        # Receive data if the first point is a C-point
+        if self.first_is_c_point[0] and not self.sender_finished[0][7]:
+            self.u[0][0].unpack(self.receive(source=self.get_from[0], lvl=0, op_id=7))
+
+        # Iterate over C-points
         if self.index_local_c[0].size > 0:
             for i in np.nditer(self.index_local_c[0]):
                 if self.comm_time_rank != 0 or i != 0:
-                    residual = self.step[0](u_start=self.u[0][i - 1], t_start=self.t[0][i - 1], t_stop=self.t[0][i]) - \
-                               self.u[0][i]
+                    residual = self.step[0](u_start=self.u[0][i - 1],
+                                            t_start=self.t[0][i - 1],
+                                            t_stop=self.t[0][i]) - self.u[0][i]
                     r_norm.append(residual.norm())
+        return r_norm
 
-        tmp = self.comm_time.allgather(r_norm)
+    def convergence_criterion(self, iteration: int) -> None:
+        """
+        Stopping criterion based on global or local criterion
 
-        self.conv[iteration] = np.linalg.norm(np.array([item for sublist in tmp for item in sublist]), ord=self.t_norm)
+        :param iteration: MGRIT iteration number
+        """
+        runtime_conv = time.time()
+
+        if self.conv_crit == 0 or self.conv_crit == 1:
+            if self.conv_crit == 0:
+                val = self.compute_residual()
+            else:
+                val = self.compute_jump()
+            tmp = MPI.COMM_WORLD.gather(val, root=0)
+            if self.comm_time_rank == 0:
+                self.conv[iteration] = np.linalg.norm(np.array([item for sublist in tmp for item in sublist]),
+                                                      ord=self.t_norm)
+            self.conv[iteration] = MPI.COMM_WORLD.bcast(self.conv[iteration], root=0)
+
+        elif self.conv_crit == 2 or self.conv_crit == 3:
+
+            if self.conv_crit == 2:
+                val = self.compute_residual()
+            else:
+                val = self.compute_jump()
+
+            # Receive convergence information from last process
+            if self.comm_time_rank > 0 and not self.sender_finished[0][6]:
+                self.pre_finished[0] = self.receive(source=self.comm_time_rank - 1, lvl=0, op_id=6)
+                if self.pre_finished[0]:
+                    self.pre_finished[1] = iteration
+
+            self.finished[0] = self.pre_finished[0] and (
+                    all(i < self.tol for i in val) or iteration == self.iter_max)
+            self.finished[1] = iteration
+
+            # Send convergence information to the next process
+            if self.comm_time_rank < self.comm_time_size - 1:
+                self.send(data=self.finished[0], dest=self.comm_time_rank + 1, lvl=0, op_id=6)
+
+            self.conv[iteration] = np.linalg.norm(val, ord=self.t_norm)
 
         logging.debug(f"Convergence criterion on {self.comm_time_rank} took {time.time() - runtime_conv} s")
 
@@ -341,64 +462,28 @@ class Mgrit:
 
         :param lvl: MGRIT level
         """
-
         runtime_fs = time.time()
-        if self.lvl_max != 1:
-            if self.comm_time_size != 1:
-                tmp_data = self.comm_time.gather([[self.g[lvl][i].pack(),self.u[lvl][i].pack()] for i in self.index_local_c[lvl]], root=0)
-                if self.comm_time_rank == 0:
-                    tmp_g = [item[0] for sublist in tmp_data for item in sublist]
-                    tmp_u = [item[1] for sublist in tmp_data for item in sublist]
-                    for i in range(len(self.g_coarsest)):
-                        self.g_coarsest[i].unpack(tmp_g[i])
-                        self.u_coarsest[i].unpack(tmp_u[i])
+
+        # Receive data if another process holds an earlier time point
+        if self.get_from[lvl] != -99 and not self.sender_finished[lvl][5]:
+            self.u[lvl][0].unpack(self.receive(source=self.get_from[lvl], lvl=lvl, op_id=5))
+
+        # Iterate over all points
+        for i in range(1, len(self.u[lvl])):
+            # Perform time integration, consider FAS rhs on lvl > 0
+            if lvl == 0:
+                self.u[lvl][i] = self.step[lvl](u_start=self.u[lvl][i - 1],
+                                                t_start=self.t[lvl][i - 1],
+                                                t_stop=self.t[lvl][i])
             else:
-                self.g_coarsest = self.g[lvl]
-                self.u_coarsest = self.u[lvl]
-
-        if self.comm_time_rank == 0:
-            for i in range(1, len(self.global_t[lvl])):
-                self.u_coarsest[i] = self.g_coarsest[i] + self.step[lvl](u_start=self.u_coarsest[i - 1],
-                                                                         t_start=self.global_t[lvl][i - 1],
-                                                                         t_stop=self.global_t[lvl][i])
-                if self.comm_coarsest_level[i] != self.comm_time_rank:
-                    req_s = self.comm_time.send([self.global_t[lvl][i], self.u_coarsest[i].pack()],
-                                            dest=self.comm_coarsest_level[i],
-                                            tag=self.comm_coarsest_level[i])
-                else:
-                    self.u[lvl][i] = self.u_coarsest[i]
-
-        else:
-            for i in range(self.cpts[lvl].size):
-                recv = self.comm_time.recv(source=0, tag=self.comm_time_rank)
-                idx = np.where(recv[0]==self.t[lvl])[0][0]
-                self.u[lvl][idx].unpack(recv[1])
+                self.u[lvl][i] = self.g[lvl][i] + self.step[lvl](u_start=self.u[lvl][i - 1],
+                                                                 t_start=self.t[lvl][i - 1],
+                                                                 t_stop=self.t[lvl][i])
+        # Send data when another process holds a later time point
+        if self.send_to[lvl] != -99:
+            self.send(data=self.u[lvl][self.index_local[lvl][-1]].pack(), dest=self.send_to[lvl], lvl=lvl, op_id=5)
 
         logging.debug(f"Forward solve on {self.comm_time_rank} took {time.time() - runtime_fs} s")
-
-    def get_c_point(self, lvl: int) -> Application:
-        """
-        Exchanges the first/last C-point between two processes
-
-        :param lvl: MGRIT level
-        """
-        rank = self.comm_time_rank
-        tmp_send = False
-        tmp = None
-        req_s = None
-
-        if self.send_to[lvl + 1] >= 0:
-            req_s = self.comm_time.isend(self.u[lvl][self.index_local_c[lvl][-1]].pack(), dest=self.send_to[lvl + 1],
-                                         tag=rank)
-            tmp_send = True
-
-        if self.get_from[lvl + 1] >= 0:
-            tmp = self.problem[lvl].vector_template.clone_zero()
-            tmp.unpack(self.comm_time.recv(source=self.get_from[lvl + 1], tag=self.get_from[lvl + 1]))
-
-        if tmp_send:
-            req_s.wait()
-        return tmp
 
     def fas_residual(self, lvl: int) -> None:
         """
@@ -408,19 +493,37 @@ class Mgrit:
         :param lvl: MGRIT level
         """
         runtime_fas_res = time.time()
-        tmp = self.get_c_point(lvl=lvl)
-        rank = self.comm_time_rank
 
-        if self.comm_time_rank != 0 and self.v[lvl + 1]:
-            self.v[lvl + 1][0] = self.restriction[lvl](tmp)
-
+        # Restrict all C-points
         for i in range(len(self.index_local_c[lvl])):
-            self.v[lvl + 1][i if rank == 0 else i + 1] = self.restriction[lvl](self.u[lvl][self.index_local_c[lvl][i]])
+            self.u[lvl + 1][i if self.comm_time_rank == 0 else i + 1] = self.restriction[lvl](
+                self.u[lvl][self.index_local_c[lvl][i]])
 
-        self.u[lvl + 1] = [item.clone() for item in self.v[lvl + 1]]
+        # Send data if the last point of the process is an F-point and the last point of an F-interval
+        if self.last_is_f_point[lvl]:
+            self.send(data=self.u[lvl][-1].pack(), dest=self.send_to[lvl], lvl=lvl, op_id=3)
+
+        # Receive data if the first point is a C-point
+        if self.first_is_c_point[lvl] and not self.sender_finished[lvl][3]:
+            self.u[lvl][0].unpack(self.receive(source=self.get_from[lvl], lvl=lvl, op_id=3))
+
+        # Send data if not the last process that has a time point on lvl+1
+        if self.send_to[lvl + 1] >= 0:
+            self.send(data=self.u[lvl + 1][self.index_local[lvl + 1][-1]].pack(), dest=self.send_to[lvl + 1], lvl=lvl,
+                      op_id=4)
+
+        # Receive data if not the first process that has a time point on lvl+1
+        if self.get_from[lvl + 1] >= 0 and not self.sender_finished[lvl][4]:
+            self.u[lvl + 1][0].unpack(self.receive(source=self.get_from[lvl + 1], lvl=lvl, op_id=4))
+
+        # Clone all C-points
+        self.v[lvl + 1] = [item.clone() for item in self.u[lvl + 1]]
+
+        # Iterate over C-points
         if np.size(self.index_local_c[lvl]) > 0:
             for i in range(len(self.index_local_c[lvl])):
                 if i != 0 or self.comm_time_rank != 0:
+                    # Compute fas rhs
                     if lvl == 0:
                         self.g[lvl + 1][self.index_local[lvl + 1][i]] = \
                             self.restriction[lvl](self.step[lvl](u_start=self.u[lvl][self.index_local_c[lvl][i] - 1],
@@ -455,11 +558,10 @@ class Mgrit:
 
         for lvl in range(self.lvl_max - 2, -1, -1):
             for i in range(len(self.index_local[lvl + 1])):
-                self.u[lvl][self.index_local_c[lvl][i]] = self.interpolation[lvl](
-                    u=self.u[lvl + 1][self.index_local[lvl + 1][i]])
+                if i != 0 or self.comm_time_rank != 0:
+                    self.u[lvl][self.index_local_c[lvl][i]] = self.interpolation[lvl](
+                        u=self.u[lvl + 1][self.index_local[lvl + 1][i]])
 
-            self.f_exchange(lvl)
-            self.c_exchange(lvl)
             if lvl > 0:
                 self.iteration(lvl=lvl, cycle_type='V', iteration=0, first_f=True)
 
@@ -476,55 +578,14 @@ class Mgrit:
                '  ' + '{0: <25}'.format(f'number of levels') + ' : ' + str(self.lvl_max),
                '  ' + '{0: <25}'.format(f'coarsening factors') + ' : ' + str(self.m[:-1]),
                '  ' + '{0: <25}'.format(f'relaxation weight') + ' : ' + str(self.weight_c),
-               '  ' + '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter),
+               '  ' + '{0: <25}'.format(f'cf_iter') + ' : ' + str(self.cf_iter[:self.lvl_max - 1]),
                '  ' + '{0: <25}'.format(f'nested iteration') + ' : ' + str(self.nes_it),
                '  ' + '{0: <25}'.format(f'cycle type') + ' : ' + str(self.cycle_type),
                '  ' + '{0: <25}'.format(f'stopping tolerance') + ' : ' + str(self.tol),
                '  ' + '{0: <25}'.format(f'time communicator size') + ' : ' + str(self.comm_time_size),
-               '  ' + '{0: <25}'.format(f'space communicator size') + ' : ' + str(self.comm_space_size)]
+               '  ' + '{0: <25}'.format(f'space communicator size') + ' : ' + str(self.comm_space_size),
+               '  ' + '{0: <25}'.format(f'convergence criterion') + ' : ' + str(self.conv_crit)]
         self.log_info(message='\n'.join(msg))
-
-    def f_exchange(self, lvl: int) -> None:
-        """
-        Point exchange on level lvl if the first point of a process is a C-point.
-
-        Typically called after an F-point update.
-
-        :param lvl: MGRIT level
-        """
-        runtime_ex = time.time()
-        rank = self.comm_time_rank
-        tmp_send = False
-        req_s = None
-        if self.last_is_f_point[lvl]:
-            req_s = self.comm_time.isend(self.u[lvl][-1].pack(), dest=self.send_to[lvl], tag=self.send_to[lvl])
-            tmp_send = True
-        if self.first_is_c_point[lvl]:
-            self.u[lvl][0].unpack(self.comm_time.recv(source=self.get_from[lvl], tag=rank))
-        if tmp_send:
-            req_s.wait()
-        logging.debug(f"Exchange on {self.comm_time_rank} took {time.time() - runtime_ex} s")
-
-    def c_exchange(self, lvl: int) -> None:
-        """
-        Point exchange on level lvl if the first point of a process is an F-point.
-
-        Typically called after a C-point update.
-
-        :param lvl: MGRIT level
-        """
-        runtime_ex = time.time()
-        tmp_send = False
-        req_s = None
-        rank = self.comm_time_rank
-        if self.last_is_c_point[lvl]:
-            req_s = self.comm_time.isend(self.u[lvl][-1].pack(), dest=self.send_to[lvl], tag=self.send_to[lvl])
-            tmp_send = True
-        if self.first_is_f_point[lvl]:
-            self.u[lvl][0].unpack(self.comm_time.recv(source=self.get_from[lvl], tag=rank))
-        if tmp_send:
-            req_s.wait()
-        logging.debug(f"Exchange on {self.comm_time_rank} took {time.time() - runtime_ex} s")
 
     def solve(self) -> dict:
         """
@@ -536,36 +597,42 @@ class Mgrit:
         :return: dictionary with residual history, setup time, and solve time
         """
         # Start time of solve phase
-        self.comm_time.barrier()
         self.log_info("Start solve")
 
         runtime_solve_start = time.time()
         for iteration in range(self.iter_max):
-
             self.solve_iter = iteration + 1
             time_it_start = time.time()
             self.iteration(lvl=0, cycle_type=self.cycle_type, iteration=iteration, first_f=True)
-            self.comm_time.barrier()
             time_it_stop = time.time()
             self.convergence_criterion(iteration=iteration + 1)
 
             if iteration == 0:
                 self.log_info('{0: <7}'.format(f"iter {iteration + 1}") +
-                              '{0: <32}'.format(f" | conv: {self.conv[iteration + 1]}") +
+                              ('{0: <32}'.format(f" | conv: {self.conv[iteration + 1]}") if self.global_conv_crit else
+                              '{0: <32}'.format(
+                                  f" | conv on process {self.comm_time_size - 1}: {self.conv[iteration + 1]}")) +
                               '{0: <37}'.format(f" | conv factor: -") +
                               '{0: <35}'.format(f" | runtime: {time_it_stop - time_it_start} s"))
             else:
                 self.log_info('{0: <7}'.format(f"iter {iteration + 1}") +
-                              '{0: <32}'.format(f" | conv: {self.conv[iteration + 1]}") +
+                              ('{0: <32}'.format(f" | conv: {self.conv[iteration + 1]}") if self.global_conv_crit else
+                              '{0: <32}'.format(
+                                  f" | conv on process {self.comm_time_size - 1}: {self.conv[iteration + 1]}")) +
                               '{0: <37}'.format(f" | conv factor: {self.conv[iteration + 1] / self.conv[iteration]}") +
                               '{0: <35}'.format(f" | runtime: {time_it_stop - time_it_start} s"))
 
             if self.output_fcn is not None and self.output_lvl == 2:
                 self.output_fcn(self)
 
-            if self.conv[iteration + 1] < self.tol:
-                break
-
+            if self.conv[iteration + 1] < self.tol or iteration == self.iter_max - 1:
+                if self.global_conv_crit:
+                    self.clean_up()
+                    break
+                else:
+                    if (self.finished[0] and self.pre_finished[0]) or iteration == self.iter_max - 1:
+                        self.clean_up()
+                        break
         # Stop timer of solve phase
         self.comm_time.barrier()
         self.runtime_solve = time.time() - runtime_solve_start
@@ -578,6 +645,73 @@ class Mgrit:
         return {'conv': self.conv[np.where(self.conv != 0)], 'time_setup': self.runtime_setup,
                 'time_solve': self.runtime_solve}
 
+    def clean_up(self) -> None:
+        MPI.Request.Waitall(self.requests)
+        if not self.global_conv_crit:
+            for lvl in range(self.lvl_max - 1):
+                if self.last_is_c_point[lvl]:
+                    self.send(data=self.u[lvl][-1].pack(), dest=self.send_to[lvl], lvl=lvl, op_id=0)
+                if self.comm_back[lvl]:
+                    self.send(data=self.u[lvl][-1].pack(), dest=self.send_to[lvl], lvl=lvl, op_id=1)
+                if self.last_is_f_point[lvl]:
+                    self.send(data=self.u[lvl][-1].pack(), dest=self.send_to[lvl], lvl=lvl, op_id=2)
+                if self.last_is_f_point[lvl]:
+                    self.send(data=self.u[lvl][-1].pack(), dest=self.send_to[lvl], lvl=lvl, op_id=3)
+                if self.send_to[lvl + 1] >= 0:
+                    self.send(data=self.u[lvl][self.index_local_c[lvl][-1]].pack(), dest=self.send_to[lvl + 1],
+                              lvl=lvl, op_id=4)
+            if self.send_to[-1] != -99:
+                self.send(data=self.u[-1][self.index_local[-1][-1]].pack(), dest=self.send_to[-1],
+                          lvl=self.lvl_max - 1, op_id=5)
+
+            # if self.comm_time_rank < self.comm_time_size - 1:
+            #     self.send(data=self.finished[0], dest=self.send_to[0], lvl=0, op_id=6)
+            if self.last_is_f_point[0]:
+                self.send(data=self.u[0][-1].pack(), dest=self.comm_time_rank + 1, lvl=0, op_id=7)
+
+            if self.finished[1] == self.pre_finished[1]:
+                for lvl in range(self.lvl_max - 1):
+                    if self.first_is_f_point[lvl] and not self.sender_finished[lvl][0]:
+                        self.u[lvl][0].unpack(self.receive(source=self.get_from[lvl], lvl=lvl, op_id=0))
+                    if self.comm_front[lvl] and not self.sender_finished[lvl][1]:
+                        self.u[lvl][0].unpack(self.receive(source=self.get_from[lvl], lvl=lvl, op_id=1))
+                    if self.first_is_c_point[lvl] and not self.sender_finished[lvl][2]:
+                        self.u[lvl][0].unpack(self.receive(source=self.get_from[lvl], lvl=lvl, op_id=2))
+                    if self.first_is_c_point[lvl] and not self.sender_finished[lvl][3]:
+                        self.u[lvl][0].unpack(self.receive(source=self.get_from[lvl], lvl=lvl, op_id=3))
+                    if self.get_from[lvl + 1] >= 0 and not self.sender_finished[lvl][4]:
+                        tmp_last_c_point = self.problem[lvl].vector_template.clone_zero()
+                        tmp_last_c_point.unpack(self.receive(source=self.get_from[lvl + 1], lvl=lvl, op_id=4))
+                if self.get_from[-1] != -99 and not self.sender_finished[self.lvl_max - 1][5]:
+                    self.u[-1][0].unpack(self.receive(source=self.get_from[-1], lvl=self.lvl_max - 1, op_id=5))
+                # if self.comm_time_rank > 0 and not self.sender_finished[0][6]:
+                #     tmp = self.receive(source=self.comm_time_rank - 1, lvl=0, op_id=6)
+                if self.first_is_c_point[0] and not self.sender_finished[0][7]:
+                    self.u[0][0].unpack(self.receive(source=self.get_from[0], lvl=0, op_id=7))
+            MPI.Request.Waitall(self.requests)
+
+    def receive(self, source, lvl, op_id):
+        logging.debug(
+            f"Comm: {self.comm_time_rank} recv from {source} |"
+            f" lvl: {lvl} | op_id: {op_id} | tag: {self.tags_recv[lvl][op_id]}")
+        tmp = self.comm_time.recv(source=source, tag=self.tags_recv[lvl][op_id])
+        self.tags_recv[lvl][op_id] += 1
+        if not self.global_conv_crit:
+            self.sender_finished[lvl][op_id] = tmp[1]
+            tmp = tmp[0]
+        return tmp
+
+    def send(self, data, dest, lvl, op_id):
+        logging.debug(
+            f"Comm: {self.comm_time_rank} send to {dest} |"
+            f" lvl: {lvl} | op_id: {op_id} | tag: {self.tags_send[lvl][op_id]}")
+        if self.global_conv_crit:
+            self.requests.append(self.comm_time.isend(data, dest=dest, tag=self.tags_send[lvl][op_id]))
+        else:
+            self.requests.append(
+                self.comm_time.isend([data, self.finished[0]], dest=dest, tag=self.tags_send[lvl][op_id]))
+        self.tags_send[lvl][op_id] += 1
+
     def error_correction(self, lvl: int) -> None:
         """
         Computes the error approximation on level lvl and
@@ -586,10 +720,10 @@ class Mgrit:
         :param lvl: MGRIT level
         """
         for i in range(len(self.index_local_c[lvl])):
-            error = self.interpolation[lvl](self.u[lvl + 1][self.index_local[lvl][i]] - self.v[lvl + 1][
-                self.index_local[lvl][i]])
-            self.u[lvl][self.index_local_c[lvl][i]] = self.u[lvl][self.index_local_c[lvl][i]] + error
-        self.c_exchange(lvl=lvl)
+            if i != 0 or self.comm_time_rank != 0:
+                error = self.interpolation[lvl](
+                    self.u[lvl + 1][self.index_local[lvl][i]] - self.v[lvl + 1][self.index_local[lvl][i]])
+                self.u[lvl][self.index_local_c[lvl][i]] = self.u[lvl][self.index_local_c[lvl][i]] + error
 
     def split_points(self, length: int, size: int, rank: int) -> Tuple[int, int]:
         """
@@ -640,6 +774,9 @@ class Mgrit:
         fpts2 = np.array([item for sublist in np.array([np.array(xi, dtype=object) for xi in np.array(
             [list(map(itemgetter(1), g)) for k, g in groupby(enumerate(fpts), lambda x: x[0] - x[1])], dtype=object)],
                                                        dtype=object)[::-1] for item in sublist])
+        # Alternative
+        # fpts3 = np.split(fpts, np.where(np.diff(fpts) != np.prod(self.m[:lvl]))[0] + 1)
+        # fpts3 = np.array([item for sublist in fpts3[::-1] for item in sublist])
 
         # Add ghost point if needed, set time interval
         with_ghost_point = False
@@ -689,14 +826,6 @@ class Mgrit:
         self.send_to.append(tmp_send_to)
         self.get_from.append(tmp_get_from)
 
-        #Coarsest level communication
-        if lvl == self.lvl_max - 1:
-            end_points = np.cumsum(
-                        self.split_into(number_points=len(self.global_t[0]), number_processes=self.comm_time_size))-1
-            split = self.global_t[0][end_points]
-            self.comm_coarsest_level = np.array([np.min(np.where((item <= split))) for item in self.global_t[-1]])
-
-
     def split_into(self, number_points: int, number_processes: int) -> np.ndarray:
         """
         Split points
@@ -708,7 +837,7 @@ class Mgrit:
         return np.array([int(number_points / number_processes + 1)] * (number_points % number_processes) +
                         [int(number_points / number_processes)] * (number_processes - number_points % number_processes))
 
-    def create_u(self, lvl: int) -> None:
+    def create_u_v_g(self, lvl: int) -> None:
         """
         Creates solution vectors for all local time points on a given MGRIT level.
 
@@ -719,31 +848,11 @@ class Mgrit:
                 self.u.append([self.problem[lvl].vector_template.clone_rand() for _ in range(len(self.t[lvl]))])
             else:
                 self.u.append([self.problem[lvl].vector_template.clone_zero() for _ in range(len(self.t[lvl]))])
-        else:
-            self.u.append([self.problem[lvl].vector_template.clone_zero() for _ in range(len(self.t[lvl]))])
-
-        if self.comm_time_rank == 0:
-            self.u[lvl][0] = self.problem[lvl].vector_t_start.clone()
-
-    def create_v_g(self, lvl: int) -> None:
-        """
-        Creates vectors v and g for all local time points on a given MGRIT level.
-
-        :param lvl: MGRIT level
-        """
-        if lvl == 0:
             self.v.append(None)
             self.g.append(None)
         else:
+            self.u.append([self.problem[lvl].vector_template.clone_zero() for _ in range(len(self.t[lvl]))])
             self.v.append([item.clone_zero() for item in self.u[lvl]])
             self.g.append([item.clone_zero() for item in self.u[lvl]])
-
-    def create_coarsest_level(self):
-        """
-        Creates vectors u and g for coarsest level
-        """
         if self.comm_time_rank == 0:
-            self.u_coarsest = [self.problem[-1].vector_template.clone_zero() for _ in range(len(self.global_t[-1]))]
-            self.u_coarsest[0] = self.problem[-1].vector_t_start.clone()
-            self.g_coarsest = [self.problem[-1].vector_template.clone_zero() for _ in range(len(self.global_t[-1]))]
-
+            self.u[lvl][0] = self.problem[lvl].vector_t_start.clone()

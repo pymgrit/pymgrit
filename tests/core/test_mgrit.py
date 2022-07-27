@@ -2,6 +2,7 @@
 Tests for the mgrit class
 """
 import numpy as np
+import pytest
 
 from pymgrit.core.mgrit import Mgrit
 from pymgrit.heat.heat_1d import Heat1D
@@ -71,9 +72,16 @@ def test_heat_equation_run():
 def test_time_stepping():
     heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=65)
     mgrit = Mgrit(problem=[heat0], cf_iter=1, nested_iteration=True, max_iter=2, random_init_guess=False)
-    res = mgrit.solve()
+    res_mgrit = mgrit.solve()
     result_conv = np.array([])
-    np.testing.assert_almost_equal(result_conv, res['conv'])
+    np.testing.assert_almost_equal(result_conv, res_mgrit['conv'])
+
+    res = [heat0.vector_t_start]
+    for i in range(1,len(heat0.t)):
+        res.append(heat0.step(u_start=res[-1], t_start=heat0.t[i-1], t_stop=heat0.t[i]))
+
+    for i in range(len(heat0.t)):
+        np.testing.assert_almost_equal(mgrit.u[0][i].get_values(), res[i].get_values())
 
 def test_setup_points_and_comm_info():
     """
@@ -132,7 +140,6 @@ def test_setup_points_and_comm_info():
         last_is_f_point.append(mgrit.last_is_f_point)
         send_to.append(mgrit.send_to)
         get_from.append(mgrit.get_from)
-    test_comm_coarsest_level = [0,1,3,5,6]
     test_cpts = [[np.array([0, 4, 8]), np.array([0]), np.array([0])],
                  [np.array([12, 16]), np.array([4]), np.array([1])],
                  [np.array([20, 24, 28]), np.array([], dtype=int), np.array([], dtype=int)],
@@ -195,8 +202,6 @@ def test_setup_points_and_comm_info():
     test_send_to = [[1, 1, 1], [2, 2, 3], [3, 3, -99], [4, 4, 5], [5, 5, -99], [6, 6, 6], [-99, -99, -99]]
     test_get_from = [[-99, -99, -99], [0, 0, 0], [1, 1, -99], [2, 2, 1], [3, 3, -99], [4, 4, 3], [5, 5, 5]]
 
-    np.testing.assert_almost_equal(mgrit.comm_coarsest_level, test_comm_coarsest_level)
-
     for i in range(size):
         assert all([a == b for a, b in zip(first_is_c_point[i], test_first_is_c_point[i])])
         assert all([a == b for a, b in zip(first_is_f_point[i], test_first_is_f_point[i])])
@@ -211,3 +216,18 @@ def test_setup_points_and_comm_info():
         [np.testing.assert_equal(a, b) for a, b in zip(index_local[i], test_index_local[i])]
         [np.testing.assert_equal(a, b) for a, b in zip(index_local_c[i], test_index_local_c[i])]
         [np.testing.assert_equal(a, b) for a, b in zip(index_local_f[i], test_index_local_f[i])]
+
+def test_unknown_cycle_type():
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=65)
+    with pytest.raises(Exception):
+        mgrit = Mgrit(problem=[heat0], cf_iter=1, nested_iteration=True, max_iter=2, cycle_type='Z')
+
+def test_unknown_norm():
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=65)
+    with pytest.raises(Exception):
+        mgrit = Mgrit(problem=[heat0], cf_iter=1, nested_iteration=True, max_iter=2, t_norm=4)
+
+def test_unknown_conv_crit():
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=65)
+    with pytest.raises(Exception):
+        mgrit = Mgrit(problem=[heat0], cf_iter=1, nested_iteration=True, max_iter=2, t_norm=4)

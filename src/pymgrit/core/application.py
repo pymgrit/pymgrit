@@ -96,7 +96,7 @@ class Application(object, metaclass=MetaApplication):
         self._vector_t_start = value
 
     @abstractmethod
-    def step(self, u_start: object, t_start: float, t_stop: float) -> object:
+    def step(self, u_start: Vector, t_start: float, t_stop: float) -> Vector:
         """
         Time integration routine for the application
 

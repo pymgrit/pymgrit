@@ -2,6 +2,7 @@
 Tests for the mgrit class
 """
 import numpy as np
+import pytest
 
 from pymgrit.core.at_mgrit import AtMgrit
 from pymgrit.heat.heat_1d import Heat1D
@@ -188,3 +189,18 @@ def test_setup_points_and_comm_info():
         [np.testing.assert_equal(a, b) for a, b in zip(index_local[i], test_index_local[i])]
         [np.testing.assert_equal(a, b) for a, b in zip(index_local_c[i], test_index_local_c[i])]
         [np.testing.assert_equal(a, b) for a, b in zip(index_local_f[i], test_index_local_f[i])]
+
+def test_exception_local_criteria():
+    heat0 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=65)
+    heat1 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=17)
+    heat2 = Heat1D(x_start=0, x_end=2, nx=5, a=1, rhs=rhs, init_cond=init_cond, t_start=0, t_stop=2, nt=5)
+    problem = [heat0, heat1, heat2]
+    with pytest.raises(Exception):
+        mgrit = AtMgrit(problem=problem, cf_iter=1, nested_iteration=False, max_iter=2, conv_crit=2, k=2)
+    with pytest.raises(Exception):
+        mgrit = AtMgrit(problem=problem, cf_iter=1, nested_iteration=False, max_iter=2, conv_crit=3, k=2)
+
+
+
+
+

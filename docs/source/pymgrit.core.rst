@@ -12,6 +12,14 @@ pymgrit.core.application module
    :undoc-members:
    :show-inheritance:
 
+pymgrit.core.at\_mgrit module
+-----------------------------
+
+.. automodule:: pymgrit.core.at_mgrit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pymgrit.core.grid\_transfer module
 ----------------------------------
 
@@ -32,6 +40,14 @@ pymgrit.core.mgrit module
 -------------------------
 
 .. automodule:: pymgrit.core.mgrit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pymgrit.core.mgrit\_new module
+------------------------------
+
+.. automodule:: pymgrit.core.mgrit_new
    :members:
    :undoc-members:
    :show-inheritance:
